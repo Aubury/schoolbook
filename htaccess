@@ -1,0 +1,28 @@
+RewriteEngine On
+RewriteBase /
+
+# Перенаправляем ВСЕ запросы к exchange_1C_Woocommerce.php на HTTP
+RewriteRule ^exchange_1C_Woocommerce.php$ http://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization},L]
+# Остальные ваши правила
+RewriteRule ^category/(.*)$ /product-category/$1 [R=301,L]
+RewriteRule ^привіт-світ/ / [R=301,L]
+
+# This file was updated by Duplicator on 2024-03-29 14:35:59.
+# See the original_files_ folder for the original source_site_htaccess file.
+# BEGIN WordPress
+# иректви (рядки) ж `BEGIN WordPress` і `END WordPress`
+# сворені автоматично і пілягають змнам тльки через фільти WordPress.
+# Зміни зролені вручну іж ими макерами бууть перзаписані.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+
+# END WordPress

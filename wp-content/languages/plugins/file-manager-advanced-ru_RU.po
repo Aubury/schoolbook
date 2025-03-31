@@ -1,0 +1,211 @@
+# Translation of Plugins - Advanced File Manager - Development (trunk) in Russian
+# This file is distributed under the same license as the Plugins - Advanced File Manager - Development (trunk) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2023-06-03 09:06:10+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
+"X-Generator: GlotPress/4.0.0\n"
+"Language: ru\n"
+"Project-Id-Version: Plugins - Advanced File Manager - Development (trunk)\n"
+
+#. Author URI of the plugin
+msgid "https://advancedfilemanager.com"
+msgstr "https://advancedfilemanager.com"
+
+#: application/pages/main.php:38
+msgid "Thank you for using <a href=\"https://wordpress.org/plugins/file-manager-advanced/\">Advanced File Manager</a>. If happy then "
+msgstr "Благодарим вас за использование <a href=\"https://wordpress.org/plugins/file-manager-advanced/\">Advanced File Manager</a>. Если вы довольны, то "
+
+#: application/pages/controls.php:127
+msgid "MIME Types Help"
+msgstr "Помощь по MIME-типам"
+
+#: application/pages/controls.php:127
+msgid "all"
+msgstr "все"
+
+#: application/pages/controls.php:126
+msgid "Enter Mimetypes allowed to upload, multiple comma(,) separated. Example: <code>image/vnd.adobe.photoshop,image/png</code>"
+msgstr "Введите Mimetypes, разрешенные для загрузки, разделенные несколькими запятыми (,). Пример: <code>image/vnd.adobe.photoshop,image/png</code>"
+
+#: application/pages/controls.php:123
+msgid "Mimetypes allowed to upload"
+msgstr "Типы Mime, разрешенные для загрузки"
+
+#: application/pages/buy_shortcode.php:10
+msgid "This is Pro Feature of Advanced File Manager, Please Buy <a href=\"https://advancedfilemanager.com/pricing\" target=\"_blank\">Advanced File Manager Shortcode</a> Addon to make shortcode work for frontend. <a href=\"https://advancedfilemanager.com/pricing\" target=\"_blank\" class=\"button button-primary\">Buy Now</a>"
+msgstr "Это Pro-функция Advanced File Manager. Пожалуйста, купите <a href=\"https://advancedfilemanager.com/pricing\" target=\"_blank\">Расширенный шорткод файлового менеджера</a>, чтобы заставить шорткод работать для внешнего интерфейса. <a href=\"https://advancedfilemanager.com/pricing\" target=\"_blank\" class=\"button button-primary\">Купить сейчас</a>"
+
+#: application/pages/controls.php:41
+msgid "Administrator (Default)"
+msgstr "Администратор (по умолчанию)"
+
+#: application/pages/controls.php:35
+msgid "Who can access File Manager?"
+msgstr "Кто может получить доступ к File Manager?"
+
+#: application/pages/main.php:19
+msgid "<strong>Important:</strong> Please update your <strong>File Manager Advanced Shortcode</strong> Addon to version 2.2. If not received any update in <a href=\""
+msgstr "<strong>Важно!</strong> Обновите надстройку <strong>шорткода File Manager Advanced</strong> до версии 2.2. Если не получено никаких обновлений в <a href=\""
+
+#: application/class_fma_admin_menus.php:90
+msgid "Saving options, Please wait..."
+msgstr "Сохранение опций, пожалуйста, подождите..."
+
+#: application/class_fma_admin_menus.php:26
+#: application/class_fma_admin_menus.php:27
+msgid "File Manager"
+msgstr "File Manager"
+
+#: application/pages/buy_shortcode.php:3 application/pages/main.php:46
+msgid "Shortcodes"
+msgstr "Шорткоды"
+
+#: application/pages/main.php:45
+msgid "Support"
+msgstr "Поддержка"
+
+#: application/pages/buy_shortcode.php:3 application/pages/controls.php:11
+#: application/pages/main.php:44
+msgid "Documentation"
+msgstr "Документация"
+
+#: application/pages/main.php:31
+msgid "Not Now"
+msgstr "Не сейчас"
+
+#: application/pages/main.php:30
+msgid "I love your plugin!"
+msgstr "Мне нравится ваш плагин!"
+
+#: application/pages/main.php:27
+msgid "<strong>Advanced File Manager</strong>, we always support you and provide better features for you, please spend some seconds to review our plugin."
+msgstr "<strong>Advanced File Manager</strong>, мы всегда поддерживаем вас и предоставляем лучшие функции для вас, пожалуйста, потратьте несколько секунд на обзор нашего плагина."
+
+#: application/pages/main.php:12
+msgid "Advanced File Manager"
+msgstr "Advanced File Manager"
+
+#: application/pages/buy_shortcode.php:6
+msgid "You have Installed Advanced File Manager Shortcode Successfully. Start working with shortcode."
+msgstr "Вы успешно установили шорткод Advanced File Manager. Начните работать с шорткодом."
+
+#: application/pages/buy_shortcode.php:6
+msgid "Congratulations,"
+msgstr "Поздравляем,"
+
+#: application/pages/controls.php:118
+msgid "Will Display .htaccess file (if exists) in file manager."
+msgstr "Отображает файл .htaccess (если он существует) в файловом менеджере."
+
+#: application/pages/controls.php:114
+msgid "Display .htaccess?"
+msgstr "Отображение .htaccess?"
+
+#: application/pages/controls.php:109
+msgid "Deleted files will go to trash folder, you can restore later."
+msgstr "Удаленные файлы попадут в папку корзины, которую вы сможете восстановить позже."
+
+#: application/pages/controls.php:105
+msgid "Enable Trash?"
+msgstr "Включить корзину?"
+
+#: application/pages/controls.php:101 application/pages/controls.php:110
+#: application/pages/controls.php:119
+msgid "Not Enabled"
+msgstr "Не включено"
+
+#: application/pages/controls.php:100
+msgid "Hide real path of file on preview."
+msgstr "Скрыть реальный путь к файлу при предварительном просмотре."
+
+#: application/pages/controls.php:96
+msgid "Hide File Path on Preview ?"
+msgstr "Скрыть путь к файлу при предварительном просмотре?"
+
+#: application/pages/controls.php:91
+msgid "File Manager Advanced Files URL, you can change according to your choice."
+msgstr "URL файла File Manager Advanced, который вы можете изменить по своему выбору."
+
+#: application/pages/controls.php:88
+msgid "Files URL"
+msgstr "URL файлов"
+
+#: application/pages/controls.php:83
+msgid "File Manager Advanced Root Path, you can change according to your choice."
+msgstr "Корневой путь File Manager Advanced, вы можете изменить его по своему выбору."
+
+#: application/pages/controls.php:80
+msgid "Public Root Path"
+msgstr "Открытый корневой путь"
+
+#: application/pages/controls.php:76
+msgid "Select file manager advanced language. Default: en (English)"
+msgstr "Выберите язык расширенного интерфейса файлового менеджера. По умолчанию: en (английский)"
+
+#: application/pages/controls.php:69
+msgid "Language"
+msgstr "Язык"
+
+#: application/pages/controls.php:65
+msgid "Select file manager advanced theme. Default: Light"
+msgstr "Выберите расширенную тему файлового менеджера. По умолчанию: светлая"
+
+#: application/pages/controls.php:63
+msgid "Bootstrap"
+msgstr "Bootstrap"
+
+#: application/pages/controls.php:62
+msgid "Windows 10"
+msgstr "Windows 10"
+
+#: application/pages/controls.php:61
+msgid "Grey"
+msgstr "Серый"
+
+#: application/pages/controls.php:60
+msgid "Dark"
+msgstr "Темная"
+
+#: application/pages/controls.php:59
+msgid "Light"
+msgstr "Светлая"
+
+#: application/pages/controls.php:56
+msgid "Theme"
+msgstr "Тема"
+
+#: application/pages/controls.php:14 application/pages/main.php:39
+msgid "Rate Us"
+msgstr "Оцените нас"
+
+#: application/pages/controls.php:13
+msgid "Thank you for using <a href=\"https://wordpress.org/plugins/file-manager-advanced/\">File Manager Advanced</a>. If happy then "
+msgstr "Благодарим вас за использование <a href=\"https://wordpress.org/plugins/file-manager-advanced/\">File Manager Advanced</a>. Если вы довольны, то "
+
+#: application/pages/controls.php:11 application/pages/main.php:13
+msgid "Buy Shortcode Addon"
+msgstr "Купить аддон шорткодов"
+
+#: application/pages/controls.php:11
+msgid "Settings"
+msgstr "Настройки"
+
+#. Author of the plugin
+msgid "modalweb"
+msgstr "modalweb"
+
+#. Description of the plugin
+msgid "Cpanel for files management in wordpress"
+msgstr "Cpanel для управления файлами в wordpress"
+
+#. Plugin URI of the plugin
+msgid "https://wordpress.org/plugins/file-manager-advanced"
+msgstr "https://wordpress.org/plugins/file-manager-advanced"
+
+#. Plugin Name of the plugin
+msgid "File Manager Advanced"
+msgstr "File Manager Advanced"

@@ -1,0 +1,122 @@
+# Translation of Plugins - DB Falling Snowflakes - Stable (latest release) in Russian
+# This file is distributed under the same license as the Plugins - DB Falling Snowflakes - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-04-28 15:07:42+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: ru\n"
+"Project-Id-Version: Plugins - DB Falling Snowflakes - Stable (latest release)\n"
+
+#: inc/admin.php:303
+msgid "Once installed it will run the script only in the period of time when you want. A lot of options to customize snowflakes and their actions."
+msgstr "После установки скрипт будет запущен только в тот период времени, когда вы захотите. Множество опций для настройки снежинок и их поведения."
+
+#: inc/admin.php:301
+msgid "The plugin generates snowflakes falling down on the foreground of the pages of the website."
+msgstr "Плагин генерирует снежинки, падающие на страницах веб-сайта."
+
+#: inc/admin.php:297
+msgid "About"
+msgstr "О плагине"
+
+#: inc/admin.php:265
+msgid "Opacity"
+msgstr "Прозрачность"
+
+#: inc/admin.php:220 inc/admin.php:229 inc/admin.php:238 inc/admin.php:247
+#: inc/admin.php:256
+msgid "Color"
+msgstr "Цвет"
+
+#: inc/admin.php:217
+msgid "Choose 5 colors of the snowflakes. The color of every other snowflake will be chosen randomly from these five ones"
+msgstr "Выберите 5 цветов снежинок. Цвет каждой второй снежинки будет выбран случайным образом из этих пяти"
+
+#: inc/admin.php:216
+msgid "Colors"
+msgstr "Цвета"
+
+#: inc/admin.php:204
+msgid "Speed"
+msgstr "Скорость"
+
+#: inc/admin.php:195
+msgid "Maximum Size"
+msgstr "Максимальный размер"
+
+#: inc/admin.php:186
+msgid "Minimum Size"
+msgstr "Минимальный размер"
+
+#: inc/admin.php:177
+msgid "Maximum number of snowflakes"
+msgstr "Максимальное количество снежинок"
+
+#: inc/admin.php:174
+msgid "Customization of the performance of the snowflakes"
+msgstr "Настройка исполнения снежинок"
+
+#: inc/admin.php:173
+msgid "Parameters"
+msgstr "Параметры"
+
+#: inc/admin.php:142
+msgid "Stop on"
+msgstr "Когда остановить"
+
+#: inc/admin.php:128 inc/admin.php:159
+msgid "Month"
+msgstr "Месяц"
+
+#: inc/admin.php:115 inc/admin.php:146
+msgid "Day"
+msgstr "День"
+
+#: inc/admin.php:111
+msgid "Start on"
+msgstr "Когда запустить"
+
+#: inc/admin.php:33
+msgid "Error: You do not have the permission to update the value"
+msgstr "Ошибка: у вас нет разрешения на обновление этого значения"
+
+#: bisteinoff-snow.php:175 inc/admin.php:104
+msgid "Settings"
+msgstr "Настройки"
+
+#: bisteinoff-snow.php:147 inc/admin.php:96
+msgid "DB Snow Flakes"
+msgstr "DB Snow Flakes"
+
+#: bisteinoff-snow.php:146
+msgid "DB Snow Flakes Settings"
+msgstr "Настройки DB Snow Flakes"
+
+#. Author URI of the plugin
+#: bisteinoff-snow.php
+msgid "https://bisteinoff.com"
+msgstr "https://bisteinoff.com"
+
+#. Author of the plugin
+#: bisteinoff-snow.php
+msgid "Denis Bisteinov"
+msgstr "Денис Биштейнов"
+
+#. Description of the plugin
+#: bisteinoff-snow.php
+msgid "Add snow falling animation to your website. Personal settings to make your own style of snowflakes and their movement. Once installed the plugin will run only during the period of time that you set."
+msgstr "Добавьте анимацию падения снега на свой веб-сайт. Персональные настройки для создания вашего собственного стиля снежинок и их движения. После установки плагин будет запущен только в течение заданного вами периода времени."
+
+#. Plugin URI of the plugin
+#: bisteinoff-snow.php
+msgid "https://github.com/bisteinoff/db-snow"
+msgstr "https://github.com/bisteinoff/db-snow"
+
+#. Plugin Name of the plugin
+#: bisteinoff-snow.php
+msgid "DB Falling Snowflakes"
+msgstr "DB Falling Snowflakes"

@@ -1,0 +1,344 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce theme v1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-04-06 10:29+0200\n"
+"PO-Revision-Date: 2015-12-05 11:20+0300\n"
+"Last-Translator: Сергій Кисіль <kysil.me@gmail.com>\n"
+"Language-Team: Сергій Кисіль <kysil.me@gmail.com>\n"
+"Language: uk_UA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 1 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 2 : 0 ;\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_x;_n;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: .\n"
+"X-Textdomain-Support: yes\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: saphali-discount.php:163 saphali-discount.php:240 saphali-discount.php:277
+#, php-format
+msgid ""
+"Минимальный заказ от %s! <br>Чтобы сделать заказ добавьте позиций на сумму %s"
+msgstr ""
+"Мінімальне замовлення від %s! <br> Щоб зробити замовлення додайте позицій на "
+"суму %s"
+
+# @ woocommerce
+#: saphali-discount.php:168
+msgid "Discount:"
+msgstr "Знижка:"
+
+# @ woocommerce
+#: saphali-discount.php:249 saphali-discount.php:356
+#, php-format
+msgid "Ваша накопительная скидка по текущей закупке составляет %s"
+msgstr "Ваша накопичувальна знижка за поточним замовленням склала %s"
+
+#: saphali-discount.php:658 saphali-discount.php:665 saphali-discount.php:707
+#: saphali-discount.php:714 saphali-discount.php:725 saphali-discount.php:736
+#: saphali-discount.php:754 saphali-discount.php:760 saphali-discount.php:2187
+#: saphali-discount.php:2195 saphali-discount.php:2241
+#: saphali-discount.php:2248 saphali-discount.php:2260
+#: saphali-discount.php:2272 saphali-discount.php:2291
+#: saphali-discount.php:2299
+#, php-format
+msgid "Для получения скидки на %s добавьте позиций на сумму %s"
+msgstr "Для отримання знижки на %s додайте позицій на суму %s"
+
+# @ woocommerce
+#: saphali-discount.php:822
+#, php-format
+msgid "от %s до %s &ndash; %s"
+msgstr "від %s до %s &ndash; %s"
+
+# @ woocommerce
+#: saphali-discount.php:835
+msgid ""
+"Накопительная скидка по текущему заказу отключена, т.к. учитывается "
+"накопительна скидка по всем заказам."
+msgstr ""
+"Накопичувальну знижку за замовленням поточним вимкнено, оскільки "
+"враховується знижка за всіма замовленнями."
+
+# @ woocommerce
+#: saphali-discount.php:845
+msgid ""
+"Накопительная скидка по по всем заказам отключена, т.к. учитывается "
+"накопительна скидка по текущему заказу."
+msgstr ""
+"Накопичувальну знижку за всіма замовленнями вимкнено, оскільки враховується "
+"накопичувальна знижка за замовленням поточним."
+
+# @ woocommerce
+#: saphali-discount.php:1509 saphali-discount.php:1518
+#, php-format
+msgid "Ваша накопительная скидка (%s) по всем Вашим заказам аннулирована"
+msgstr ""
+"Вашу накопичувальну знижку (%s) за всіма Вашими замовленнями анульовано"
+
+# @ woocommerce
+#: saphali-discount.php:1548 saphali-discount.php:1558
+#: saphali-discount.php:1590 saphali-discount.php:1592
+#: saphali-discount.php:1616 saphali-discount.php:1618
+#, php-format
+msgid "Ваша накопительная скидка по всем Вашим заказам составила %s"
+msgstr "Ваша накопичувальна знижка за всіма Вашими замовленнями склала %s"
+
+# @ woocommerce
+#: saphali-discount.php:1590 saphali-discount.php:1616
+#: saphali-discount.php:2153 saphali-discount.php:2216
+#: saphali-discount.php:2224
+msgid " <br />В заказе используется только эта скидка."
+msgstr " <br /> У замовленні використовується тільки ця знижка."
+
+#: saphali-discount.php:1731
+msgid ""
+"Вы не состоите в группе пользователей, для которой применим данный купон."
+msgstr ""
+"Ви не перебуваєте в групі користувачів, для якої застосуємий даний купон."
+
+#: saphali-discount.php:1738
+msgid "Вы не можете воспользоваться данным купоном."
+msgstr "Ви не можете скористатися даним купоном."
+
+# @ woocommerce
+#: saphali-discount.php:2021 saphali-discount.php:2031
+#: saphali-discount.php:2346 saphali-discount.php:2358
+#, php-format
+msgid "Ваша накопительная скидка (%s) по текущему заказу аннулирована"
+msgstr "Вашу накопичувальну знижку (%s) за поточним замовленням анульовано"
+
+# @ woocommerce
+#: saphali-discount.php:2073 saphali-discount.php:2077
+#: saphali-discount.php:2109 saphali-discount.php:2113
+#, php-format
+msgid "Изменена накопительная скидка с %s на %s."
+msgstr "Змiнено накопичувальну знижку з %s на %s"
+
+# @ woocommerce
+#: saphali-discount.php:2153 saphali-discount.php:2156
+#: saphali-discount.php:2216 saphali-discount.php:2224
+#: saphali-discount.php:2253
+#, php-format
+msgid "Ваша накопительная скидка по текущему заказу составила %s"
+msgstr "Ваша накопичувальна знижка за поточним замовленням склала %s"
+
+# @ woocommerce
+#: saphali-discount.php:2411
+msgid "Накопительная по магазину"
+msgstr "Загальна накопичувальна знижка"
+
+# @ woocommerce
+#: saphali-discount.php:2412
+msgid "Накопительная в корзине"
+msgstr "Знижка у кошику"
+
+# @ woocommerce
+#: saphali-discount.php:2432
+msgid "Эл. почта клиентов"
+msgstr "Ел. скринька клієнтів"
+
+#: saphali-discount.php:2433
+msgid "Any customer"
+msgstr ""
+
+# @ woocommerce
+#: saphali-discount.php:2452
+msgid ""
+"Здесь указываются адреса электронной почты для создания специальных условий "
+"использования этого купона только с указанными пользовательским email-ми."
+msgstr ""
+"Тут вказують адреси електронної пошти для створення спеціальних умов "
+"використання цього купону тільки із зазначеними email-ами"
+
+#: saphali-discount.php:2457
+msgid "Задействование"
+msgstr "Задіяння"
+
+#: saphali-discount.php:2460
+msgid ""
+"Задействовать скидку в любом случае, минуя товары, которые не подлежат "
+"задействованию скидки"
+msgstr ""
+"Задіяти знижку в будь-якому випадку, минаючи товари, які не підлягають "
+"задіяню знижки"
+
+#: saphali-discount.php:2461
+msgid ""
+"Дает возможность не аннулировать полностью скидку, если в в корзине "
+"находится позиция товара, не подлежащая скидки, т.о. предоставляет "
+"возможность задействовать скидку в любом случае, минуя товары, которые не "
+"подлежат задействованию скидки, с учетом опции \"Исключить категории\" или "
+"\"Категории товара\"."
+msgstr ""
+"Дає можливість не анулювати повністю знижку, якщо в кошику знаходиться "
+"позиція товару, що не підлягає знижці, т.ч. надає можливість задіяти знижку "
+"в будь-якому випадку, минаючи товари, які не підлягають задіянню знижки, з "
+"урахуванням опції \"Виключити категорії\" або \"Категорії товару\"."
+
+# @ woocommerce
+#: saphali-discount.php:2466
+msgid "Информация о скидке"
+msgstr "значення знижки"
+
+#: saphali-discount.php:2469
+msgid "Отображать всегда информацию о задействованной скидке"
+msgstr "Відображати завжди інформацію про знижку"
+
+#: saphali-discount.php:2470
+msgid ""
+"Дает возможность отображать информацию о задействованной скидке на страницах "
+"Корзины и Оплаты."
+msgstr ""
+"Дає можливість відображати інформацію про задіяну знижку на сторінках Кошика "
+"та Оплати."
+
+#: saphali-discount.php:2473
+msgid "Отображать информацию на всех страницах магазина"
+msgstr "Відображати інформацію на всіх сторінках магазину"
+
+#: saphali-discount.php:2474
+msgid ""
+"Дает возможность отображать информацию о задействованной скидке не только на "
+"страницах Корзины и Оплаты, но и на всех страницах магазина (каталог, "
+"категории, метки, карточка товара)."
+msgstr ""
+"Дає можливість відображати інформацію про знижку не тільки на сторінках "
+"Кошика та Оплати, але й на всіх сторінках магазину (каталог, категорії, "
+"мітки, картка товару)."
+
+#: saphali-discount.php:2479
+msgid "Сумма для минимальной закупки"
+msgstr "Сума для мінімальної закупівлі"
+
+#: saphali-discount.php:2482
+msgid ""
+"Если заполнено, то отобразится сообщение об необходимости добавить больше "
+"позиций к заказу."
+msgstr ""
+"Якщо заповнено, то відобразиться повідомлення про необхідність додати більше "
+"позицій до замовлення."
+
+#: saphali-discount.php:2510
+msgid "Применить скидку только со следующими группами пользователей"
+msgstr "Застосувати знижку лише з наступними групами користувачів"
+
+#: saphali-discount.php:2513
+msgid ""
+"Укажите группу, чтобы ограничить круг пользователей, для которых этот купон "
+"предоставляется."
+msgstr ""
+"Вкажіть групу, щоб обмежити коло користувачів, для яких цей купон надається."
+
+#: saphali-discount.php:2514 saphali-discount.php:2532
+msgid ""
+"Если ничего не выбрать, то в использовании скидки данная опция не "
+"учитывается, т.е. если остальные условия соблюдается для получения скидки, "
+"то покупатель воспользуется скидкой."
+msgstr ""
+"Якщо нічого не вибрати, то у використанні знижки дана опція не враховується, "
+"тобто якщо інші умови дотримується для отримання знижки, то покупець "
+"скористається знижкою."
+
+#: saphali-discount.php:2528
+msgid "Не применять скидку со следующими группами пользователей"
+msgstr "Не застосовувати знижку з наступними групами користувачів"
+
+#: saphali-discount.php:2531
+msgid ""
+"Укажите группу, чтобы ограничить круг пользователей, для которых этот купон "
+"не предоставляется."
+msgstr ""
+"Вкажіть групу, щоб обмежити коло користувачів, для яких цей купон не "
+"надається."
+
+# @ woocommerce
+#: saphali-discount.php:2541
+msgid "Задействовать скидку в ценовом интервале"
+msgstr "Задіяти знижку в інтервалі вартості"
+
+# @ woocommerce
+#: saphali-discount.php:2546 saphali-discount.php:2556
+#: saphali-discount.php:2565 saphali-discount.php:2581
+msgid "мин. значение"
+msgstr "мін. значення"
+
+# @ woocommerce
+#: saphali-discount.php:2546 saphali-discount.php:2557
+#: saphali-discount.php:2566 saphali-discount.php:2581
+msgid "макс. значение"
+msgstr "макс. значення"
+
+# @ woocommerce
+#: saphali-discount.php:2547 saphali-discount.php:2558
+#: saphali-discount.php:2567 saphali-discount.php:2582
+msgid "значение скидки"
+msgstr "значення знижки"
+
+# @ woocommerce
+#: saphali-discount.php:2548 saphali-discount.php:2559
+msgid "Задайте ценовой интервал, в пределах которого задействуется скидка."
+msgstr "Вкажіть інтервал вартості, в межах якого задіюється знижка."
+
+# @ woocommerce
+#: saphali-discount.php:2567 saphali-discount.php:2583
+msgid "Удалить"
+msgstr "Видалити"
+
+# @ woocommerce
+#: saphali-discount.php:2573
+msgid "Добавить ценовой интервал"
+msgstr "Додати інтервал вартості"
+
+# @ woocommerce
+#: saphali-discount.php:2634
+msgid ""
+"Значение скидки можно задать фиксированной суммой или процентом (150 или 5%)."
+msgstr ""
+"Значення знижки можна вказати фіксованою сумою або процентом (150 чи 5%)."
+
+# @ woocommerce
+#: saphali-discount.php:2643
+msgid "Накопительные скидки отключены"
+msgstr "Накопичувальні знижки вимкнено"
+
+# @ woocommerce
+#: saphali-discount.php:2643
+msgid "Hapyшeниe лицeнзии. Для paбoты свяжитесь с pазpaбoтчикoм."
+msgstr "Порушення ліцензії. Для коректної роботи зконтактуйте із розробником."
+
+#: saphali-discount.php:2773 saphali-discount.php:2786
+msgid "<h3>У Вас нет накопительной скидки</h3>"
+msgstr "<h3> У Вас немає накопичувальної знижки </h3>"
+
+# @ woocommerce
+#: saphali-discount.php:2779 saphali-discount.php:2781
+#, php-format
+msgid ""
+"<h3>Ваша накопительная скидка по всем Вашим заказам составляет <span style="
+"\"color:red\">%s</span>. Общая сумма покупок <span class=\"price\"><span "
+"class=\"amount\">%s</span></span>."
+msgstr ""
+"<h3>Ваша накопичувальна знижка за всіма Вашими замовленнями склала <span "
+"style=\"color:red\">%s</span>. Загальна сума покупок <span class=\"price"
+"\"><span class=\"amount\">%s</span></span>."
+
+#: saphali-discount.php:2779
+#, php-format
+msgid "<br /> Для получения скидки на %s нужно совершить покупку на %s.</h3>"
+msgstr ""
+"<br /> Для отримання знижки на %s потрібно зробити покупку на %s. </h3>"
+
+#: saphali-discount.php:2788
+#, php-format
+msgid ""
+"<h3>У Вас нет накопительной скидки. Пожалуйста, <a href=\"%s"
+"\">авторизируйтесь</a>, чтобы узнать Вашу текущую накопительную скидку. </h3>"
+msgstr ""
+"<h3> У Вас немає накопичувальної знижки.  Будь ласка, <a href=\"%s"
+"\">авторизуйтесь,</a> щоб дізнатися Вашу поточну накопичувальну знижку. </h3>"

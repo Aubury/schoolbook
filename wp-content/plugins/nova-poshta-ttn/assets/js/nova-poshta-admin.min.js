@@ -1,0 +1,655 @@
+jQuery(document).ready(function ($) {
+    jQuery('.notice-dismiss-np').click(function(){
+        jQuery.ajax({
+            url: '<?php echo admin_url( "admin-ajax.php" ) ?>',
+            type: 'POST',
+            data: 'action=mrkv_np_remove_notice',
+            beforeSend: function( xhr ) {
+                jQuery('.notice-new-np').remove();
+            },
+            success: function( data ) {
+                
+            }
+        });
+    });
+    const params = new URLSearchParams(window.location.search)
+    const page = params.get('page');
+    if ('morkvanp_plugin' == page) { // On 'Налаштування' tab only
+        // Add and style 'Зрозуміло' text before dismissed button for version 1.14 WP notice-error
+        const dismissBtn = jQuery('#version-warning button');
+        dismissBtn.html('<span>Зрозуміло</span>');
+        dismissBtn.css({'display':'flex','flex-direction':'row-reverse'});
+        dismissBtn.addClass('before-none-class');
+        // jQuery('#version-warning button').addClass('before-none-class');
+        const dismissBtnSpan = jQuery('#version-warning button span');
+        dismissBtnSpan.css('font-weight','600');
+        jQuery(dismissBtnSpan).hover(function() {
+            jQuery(this).css("color","#2271b1")
+        });
+        // Off and disable 'Додати розрахунок вартості доставки до замовлення' wp-option
+        jQuery('#mrkvnp_is_add_delivery_price').attr({checked: false, disabled: 'disabled'});
+
+    } // if ('morkvanp_plugin' == page) {
+
+
+    // Add WP Color Picker dependency for 'Колір спінера в Checkout' plugin setting
+    jQuery('#mrkvnp_checkout_spinner_color').wpColorPicker();
+
+    var NovaPoshtaSettings = (function ($) {
+
+        var result = {};
+        var areaInputName = $('#mrkvnp_invoice_sender_region_name');
+        var areaInputKey = $('#woocommerce_nova_poshta_shipping_method_area');
+        var cityAllInputName = $('#woocommerce_nova_poshta_shipping_method_city_all_name');
+        var cityInputName = $('#mrkvnp_invoice_sender_city_name');
+        var cityInput2Name = $('#_billing_city');
+        var cityInput3Name = $('#invoice_no_order_np_shipping_method_city_all_name');  // Якщо створювати накладну без замовлення: назва міста
+        var cityInputKey = $('#woocommerce_nova_poshta_shipping_method_city');
+        var warehouseInputName = $('#mrkvnp_invoice_sender_warehouse_name');
+        var warehouseInput2Name = $('#_billing_address_1');
+        var warehouseInput3Name = $('#invoice_no_order_np_shipping_method_warehouse_name'); // Якщо створювати накладну без замовлення: назва відділення
+        var warehouseInput3Key = $('#invoice_no_order_np_shipping_method_warehouse'); // Якщо створювати накладну без замовлення: ref відділення
+        var warehouseInputKey = $('#mrkvnp_invoice_sender_warehouse_ref');
+
+        var addressInputName = $('#mrkvnp_invoice_recipient_warehouse_name'); // Autocomplete 'Вулиця` field on 'Створити накладну' tab
+        var addressInputName2 = $('#mrkvnp_invoice_sender_address_name'); // Autocomplete 'Вулиця` field on 'Створити накладну' tab
+        var addressInputKey = $('#woocommerce_nova_poshta_shipping_method_address');
+
+        var useFixedPrice = $("#woocommerce_nova_poshta_shipping_method_use_fixed_price_on_delivery");
+        var fixedPrice = jQuery("#woocommerce_nova_poshta_shipping_method_fixed_price");
+
+        var handleUseFixedPriceOnDeliveryChange = function () {
+            if (useFixedPrice.prop('checked')) {
+                fixedPrice.closest('tr').show();
+            } else {
+                fixedPrice.closest('tr').hide();
+            }
+        };
+
+        var initUseFixedPriceOnDelivery = function () {
+            useFixedPrice.on('change', function () {
+                handleUseFixedPriceOnDeliveryChange();
+            });
+            handleUseFixedPriceOnDeliveryChange();
+        };
+
+        var initAutocomplete = function () {
+          if (typeof areaInputName.autocomplete !== "undefined") {
+
+            areaInputName.autocomplete({
+                source: function (request, response) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: NovaPoshtaHelper.ajaxUrl,
+                        data: {
+                            action: NovaPoshtaHelper.getRegionsByNameSuggestionAction,
+                            name: request.term
+                        },
+                        success: function (json) {
+                            console.log('response start');
+                            console.log(json);
+                            console.log('response ends');
+                            var data = JSON.parse(json);
+                            response(jQuery.map(data, function (description, key) {
+                                return {
+                                    label: description,
+                                    value: key
+                                }
+                            }));
+                        }
+                    })
+                },
+                focus: function (event, ui) {
+                    areaInputName.val(ui.item.label);
+                    return false;
+                },
+                select: function (event, ui) {
+                    areaInputName.val(ui.item.label);
+                    areaInputKey.val(ui.item.value);
+                    clearCity();
+                    clearWarehouse();
+                    return false;
+                }
+            });
+
+            cityInputName.autocomplete({
+                source: function (request, response) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: NovaPoshtaHelper.ajaxUrl,
+                        data: {
+                            action: NovaPoshtaHelper.getCitiesByNameSuggestionAction,
+                            name: request.term,
+                            parent_ref: areaInputKey.val()
+                        },
+                        success: function (json) {
+                            var data = JSON.parse(json);
+                            response(jQuery.map(data, function (description, key) {
+                                return {
+                                    label: description,
+                                    value: key
+                                }
+                            }));
+                        }
+                    })
+                },
+                focus: function (event, ui) {
+                    cityInputName.val(ui.item.label);
+                    return false;
+                },
+                select: function (event, ui) {
+                    cityInputName.val(ui.item.label);
+                    cityInputKey.val(ui.item.value);
+                    clearWarehouse();
+                    return false;
+                }
+            });
+
+            cityInput2Name.autocomplete({
+                source: function (request, response) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: NovaPoshtaHelper.ajaxUrl,
+                        data: {
+                            action: NovaPoshtaHelper.getCitiesByNameSuggestionAction,
+                            name: request.term,
+                        },
+                        success: function (json) {
+                            var data = JSON.parse(json);
+                            response(jQuery.map(data, function (description, key) {
+                                return {
+                                    label: description,
+                                    value: key
+                                }
+                            }));
+                        }
+                    })
+                },
+                focus: function (event, ui) {
+                    cityInput2Name.val(ui.item.label);
+                    return false;
+                },
+                select: function (event, ui) {
+                    var key = (ui.item.value);
+                    jQuery('#_billing_address_1').attr('key', key);
+                    cityInput2Name.val(ui.item.label);
+                    clearWarehouse();
+                    return false;
+                }
+            });
+
+            cityAllInputName.autocomplete({
+                minLength: 2,
+                delay: 1000,
+                source: function (request, response) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: NovaPoshtaHelper.ajaxUrl,
+                        data: {
+                            action: NovaPoshtaHelper.getCitiesByNameSuggestionAction,
+                            name: request.term,
+                            parent_ref: areaInputKey.val()
+                        },
+                        success: function (json) {
+                            var data = JSON.parse(json);
+                            response(jQuery.map(data, function (description, key) {
+                                return {
+                                    label: description,
+                                    value: key
+                                }
+                            }));
+                        }
+                    })
+                },
+                focus: function (event, ui) {
+                    cityAllInputName.val(ui.item.label);
+                    return false;
+                },
+                select: function (event, ui) {
+                    cityAllInputName.val(ui.item.label);
+                    cityInputKey.val(ui.item.value);
+                    clearWarehouse();
+                    return false;
+                }
+            });
+
+            warehouseInputName.autocomplete({
+                minLength: 0,
+                delay: 1000,
+                source: function (request, response) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: NovaPoshtaHelper.ajaxUrl,
+                        data: {
+                            action: NovaPoshtaHelper.getWarehousesBySuggestionAction,
+                            name: request.term,
+                            parent_ref: cityInputKey.val()
+                        },
+                        success: function (json) {
+                          console.log(json);
+                            var data = JSON.parse(json);
+                            response(jQuery.map(data, function (description, key) {
+                                return {
+                                    label: description,
+                                    value: key
+                                }
+                            }));
+                        }
+                    })
+                },
+                focus: function (event, ui) {
+                    warehouseInputName.val(ui.item.label);
+                    return false;
+                },
+                select: function (event, ui) {
+                    warehouseInputName.val(ui.item.label);
+                    warehouseInputKey.val(ui.item.value);
+                    return false;
+                }
+            });
+
+            warehouseInput2Name.autocomplete({
+                source: function (request, response) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: NovaPoshtaHelper.ajaxUrl,
+                        data: {
+                            action: NovaPoshtaHelper.getWarehousesBySuggestionAction,
+                            name: request.term,
+                            parent_ref: jQuery('#_billing_address_1').attr('key')
+                        },
+                        success: function (json) {
+                          console.log(json);
+                            var data = JSON.parse(json);
+                            response(jQuery.map(data, function (description, key) {
+                                return {
+                                    label: description,
+                                    value: key
+                                }
+                            }));
+                        }
+                    })
+                },
+                focus: function (event, ui) {
+                    warehouseInput2Name.val(ui.item.label);
+                    return false;
+                },
+                select: function (event, ui) {
+                    warehouseInput2Name.val(ui.item.label);
+                    warehouseInputKey.val(ui.item.value);
+                    return false;
+                }
+            });
+
+            addressInputName.autocomplete({ // Autocomplete for `Вулиця' field on `Створити накладну` tab
+                minLength: 3,
+                source: function (request, response) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+                        },
+                        url: 'https://api.novaposhta.ua/v2.0/json/',
+                        data:JSON.stringify({
+                            apiKey: jQuery('#npttnapikey').val(),
+                            modelName: "Address",
+                            calledMethod: "getStreet",
+                            methodProperties: {
+                                CityRef:jQuery("#mrkvnp_invoice_recipient_city_ref").val(),
+                                FindByString: '%'+jQuery('#mrkvnp_invoice_recipient_warehouse_name').val()+'%',
+                                Page: 1,
+                                Limit: 100
+                            }
+                        }),
+                        success: function (json) {
+                            var data = json.data;
+                            response(jQuery.map(data, function (obj, key) {
+                                searchval = obj.StreetsType + "" +obj.Description;
+                                return {
+                                    label: obj.StreetsType + " " +obj.Description,
+                                    value: obj.Ref
+                                }
+                            }));
+                        }
+                    })
+                },
+                focus: function (event, ui) {
+                    addressInputName.val(ui.item.label);
+                    return false;
+                },
+                select: function (event, ui) {
+                    addressInputName.val(ui.item.label);
+                    addressInputKey.val(ui.item.value);
+                    return false;
+                }
+            });
+
+            addressInputName2.autocomplete({
+                source: function (request, response) {
+                        console.log(request.term);
+
+                                     jQuery.ajax({
+                                         type: 'POST',
+                                         beforeSend: function(xhr) {
+                                            xhr.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+                                          },
+                                         url: 'https://api.novaposhta.ua/v2.0/json/',
+                                          data:JSON.stringify({
+                                              apiKey: jQuery('#npttnapikey').val(),
+                                              modelName: "Address",
+                                              calledMethod: "getStreet",
+                                              methodProperties: {
+                                                CityRef:jQuery("#woocommerce_nova_poshta_shipping_method_city").val(),
+                                                FindByString: request.term,
+                                                Limit: 55555
+                                              }
+                                          }),
+                                          success: function (json) {
+                                            //console.log(json);
+                                              var data = json.data;
+                                              //console.log(data);
+                                              response(jQuery.map(data, function (obj, key) {
+                                                return {
+                                                      label: obj.StreetsType + " " +obj.Description,
+                                                      value: obj.Ref
+                                                  }
+                                              }));
+                                          }
+                                     })
+                },
+                focus: function (event, ui) {
+                    addressInputName2.val(ui.item.label);
+                    return false;
+                },
+                select: function (event, ui) {
+                    addressInputName2.val(ui.item.label);
+                    addressInputKey.val(ui.item.value);
+                    return false;
+                }
+            });
+
+            cityInput3Name.autocomplete({ // Tab: 'Створити Накладну', block: 'Одержувач', поле: 'Місто'
+                minLength: 2,
+                delay: 1000,
+                source: function (request, response) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: NovaPoshtaHelper.ajaxUrl,
+                        data: {
+                            action: NovaPoshtaHelper.getCitiesByNameSuggestionAction,
+                            name: request.term,
+                            parent_ref: areaInputKey.val()
+                        },
+                        success: function (json) {
+                            var data = JSON.parse(json);
+                            response(jQuery.map(data, function (description, key) {
+                                return {
+                                    label: description,
+                                    value: key
+                                }
+                            }));
+                        }
+                    })
+                },
+                focus: function (event, ui) {
+                    cityInput3Name.val(ui.item.label);
+                    return false;
+                },
+                select: function (event, ui) {
+                    var key = (ui.item.value); // Запам'ятовуємо ref обраного міста в змінну key
+                    warehouseInput3Name.attr('key', key); // Додаємо атрибут key = ref міста до поля 'Відділення/Поштомат'
+                    cityInput3Name.val(ui.item.label); // Виводимо назву обраного міста
+                    clearWarehouse();
+                    return false;
+                }
+            });
+
+            warehouseInput3Name.autocomplete({ // Tab: 'Створити Накладну', block: 'Одержувач', поле: 'Відділення/Поштомат'
+                minLength: 0,
+                delay: 1000,
+                source: function (request, response) {
+                    jQuery.ajax({
+                        type: 'POST',
+                        url: NovaPoshtaHelper.ajaxUrl,
+                        data: {
+                            action: NovaPoshtaHelper.getWarehousesBySuggestionAction,
+                            name: request.term,
+                            parent_ref: warehouseInput3Name.attr('key') // Шукаємо всі відділення в БД з parent_ref == ref міста, обраного раніше
+                        },
+                        success: function (json) {
+                          console.log(json);
+                            var data = JSON.parse(json);
+                            response(jQuery.map(data, function (description, key) {
+                                return {
+                                    label: description,
+                                    value: key
+                                }
+                            }));
+                        }
+                    })
+                },
+                focus: function (event, ui) {
+                    warehouseInput3Name.val(ui.item.label);
+                    return false;
+                },
+                select: function (event, ui) {
+                    warehouseInput3Name.val(ui.item.label); // Виводимо назву обраного відділення/поштомату
+                    warehouseInput3Key.val(ui.item.value); // Запам'ятовуємо ref відділення в приховане input-поле
+                    return false;
+                }
+            });
+
+          }
+          else{
+            console.log('autocompete undefined');
+          }
+
+
+        };
+
+        var clearCity = function () {
+            cityInputName.val('');
+            cityInputKey.val('');
+        };
+
+        var clearWarehouse = function () {
+            warehouseInputName.val('');
+            warehouseInputKey.val('');
+        };
+        var clearAddress = function () {
+            addressInputName.val('');
+            addressInputKey.val('');
+        };
+
+        var hideKeyRows = function () {
+            $('.js-hide-nova-poshta-option').closest('tr').addClass('nova-poshta-option-hidden');
+        };
+
+        var initRating = function () {
+            $('a.np-rating-link').on('click', function () {
+                var link = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: NovaPoshtaHelper.ajaxUrl,
+                    data: {
+                        action: NovaPoshtaHelper.markPluginsAsRated
+                    },
+                    success: function (json) {
+                        var data = JSON.parse(json);
+                        if (data.result) {
+                            link.parent().text(data.message);
+                        }
+                    }
+                });
+                return true;
+            });
+        };
+
+        result.init = function () {
+            initAutocomplete();
+            hideKeyRows();
+            initUseFixedPriceOnDelivery();
+            initRating();
+        };
+
+        return result;
+
+    }(jQuery));
+    NovaPoshtaSettings.init();
+});
+
+// WooCommerce > Orders > 'Доставка в' (Shipping to) column info and writes in 'wp_novaposhta_ttn_invoices' DB table (Vue.js)
+var el = document.getElementById('mrkvnp_invoice_sender_ref');
+if ( "morkvanp_invoice" == location.search.split('page=')[1] && el ) {
+    el.addEventListener('change', function(e){
+      var phone = el.options[el.selectedIndex].getAttribute('phone');
+      var phoneel = document.getElementById('sender_phone');
+      phoneel.value = phone;
+      console.log(phone);
+      var namero = el.options[el.selectedIndex].getAttribute('namero');
+      var sender_name = document.getElementById('sender_name');
+      sender_name.value = namero;
+    });
+}
+
+jQuery(document).ready(function () {
+    if (location.search.indexOf('page=morkvanp_plugin') !== -1) { // Only 'Налаштування' tab
+
+        const inputElement = document.getElementsByClassName("updatedbtables");
+        // inputElement[0] - in hidden form public/partials/morkvanp-plugin-settings.php:23
+        // inputElement[1] - visible <a>-element in includes/class-morkvanp-plugin-callbacks.php:116
+        // in method public function mrkvnpIsByHandUpdateDB()
+        // var updatedbtablesform = jQuery("#updatedbtablesform");
+        inputElement[1].addEventListener("click", function (event) {
+            event.preventDefault();
+            showMrkvUpdateDbTablesSpinner();
+        });
+        const spinnerElement = document.getElementById("mrkvupdatedbloader");
+        // console.log(spinnerElement);
+        if(spinnerElement){
+            spinnerElement.innerHTML = "";
+        }
+
+        // Show spinner after 'Оновити базу відділень зараз' link on 'Налаштування' tab
+        showMrkvUpdateDbTablesSpinner = function() {
+            let protocol = jQuery(location).attr('protocol'); // http or https
+            let host = jQuery(location).attr('host'); // example.com
+            // Get spinner gif-file data
+            let spinnerUrl = protocol + '\/\/' + host + '/wp-content/plugins/nova-poshta-ttn/includes/img/spinner.gif';
+            let image = new Image();
+            image.src = spinnerUrl;
+            // Activate spinner
+            jQuery('#mrkvupdatedbloader').css({"margin-left":"5px"});
+            jQuery('#mrkvupdatedbloader').append(image);
+        }
+
+        // Sender from warehouse or sender from address settings control
+        var fromaddr = jQuery('input[name="mrkvnp_invoice_sender_warehouse_type"]:checked', '#mrkvnpformsettings').val();
+        if (0 == fromaddr) {
+            mrkvnpSetSenderFromWarehouse();
+        } else {
+            mrkvnpSetSenderFromAddress();
+        }
+        jQuery('#mrkvnpformsettings input[name="mrkvnp_invoice_sender_warehouse_type"').on('change', function() {
+          var fromwh = jQuery('input[name="mrkvnp_invoice_sender_warehouse_type"]:checked', '#mrkvnpformsettings').val();
+            if (0 == fromwh) {
+                mrkvnpSetSenderFromWarehouse();
+            } else {
+                mrkvnpSetSenderFromAddress();
+            }
+        });
+
+        // On click 'Оновити базу відділень зараз' link
+        jQuery('#mrkvnpupdatedb').on('click', function() {
+            var data = {
+                'action'   : 'mrkvnp_warehouses_updated', // the name of your PHP function!
+            };
+            jQuery.post(ajaxurl, data, function(response) {
+                jQuery("#mrkvnpwhupdated").html(response);
+                jQuery('#mrkvupdatedbloader').empty();
+                jQuery('#mrkvnplastupdate').empty();
+            });
+        });
+
+        // On keyup 'Розміри відправлення' (each) or 'Вага відправлення' ('Налаштування' tab)
+        jQuery('#mrkvnp_invoice_length, #mrkvnp_invoice_width, #mrkvnp_invoice_height, #mrkvnp_invoice_weight')
+            .on('keyup', function() {
+                jQuery('#mrkvnp_invoice_volume')
+                    .val(mrkvnpCalcVolumeWeightSettings());
+        });
+    } // if (location.search.indexOf('page=morkvanp_plugin') !== -1) {
+
+    if (location.search.indexOf('page=morkvanp_invoice') !== -1) { // Only 'Створити накладну' tab
+        // On keyup 'Розміри' (each) or 'Вага'
+        jQuery('#mrkvnp_invoice_cargo_length, #mrkvnp_invoice_cargo_width, #mrkvnp_invoice_cargo_height, #mrkvnp_invoice_cargo_weight')
+            .on('keyup', function() {
+                jQuery('#mrkvnp_invoice_cargo_volume')
+                    .val(mrkvnpCalcVolumeWeight());
+        });
+    }
+
+});
+
+ // Symbols counter in textarea Опис відправлення (<=100)
+function mrkvnpCountChar(val) {
+    var len = val.value.length;
+    if (len >= 100) {
+        val.value = val.value.substring(0, 100);
+    } else {
+        jQuery('#mrkvnpcharNum').text(100 - len);
+    }
+};
+
+// Show active Sender From Warehouse setting
+function mrkvnpSetSenderFromWarehouse() {
+    jQuery('#mrkvnpformsettings #mrkvnp_invoice_sender_warehouse_name').fadeIn();
+    jQuery('#mrkvnpformsettings #mrkvnp_invoice_sender_warehouse_name').closest('tr').css("height", "70px");
+    jQuery('#mrkvnpformsettings #messagefromwh').fadeIn();
+    jQuery('#mrkvnpformsettings #mrkvnp_invoice_sender_address_name').fadeOut();
+    jQuery('#mrkvnpformsettings #mrkvnp_invoice_sender_building_number').fadeOut();
+    jQuery('#mrkvnpformsettings #mrkvnp_invoice_sender_flat_number').fadeOut();
+    jQuery('#mrkvnpformsettings #messagefromaddr').fadeOut();
+    jQuery('#mrkvnpformsettings #mrkvnpfromaddr').css("top", "-33px");
+    jQuery('#mrkvnpformsettings #mrkvnpfromwh').css("top", "-43px");
+}
+
+// Show active Sender From Address setting
+function mrkvnpSetSenderFromAddress() {
+    jQuery('#mrkvnpformsettings #mrkvnp_invoice_sender_address_name').fadeIn();
+    jQuery('#mrkvnpformsettings #mrkvnp_invoice_sender_building_number').fadeIn();
+    jQuery('#mrkvnpformsettings #mrkvnp_invoice_sender_flat_number').fadeIn();
+    jQuery('#mrkvnpformsettings #mrkvnp_invoice_sender_warehouse_name').fadeOut();
+    jQuery('#mrkvnpformsettings .mrkvnp-senderwh').css("height", "0");
+    jQuery('#mrkvnpformsettings #mrkvnpfromaddr').css("top", "-45px");
+    jQuery('#mrkvnpformsettings #mrkvnpfromwh').css("top", "-40px");
+    jQuery('#mrkvnpformsettings #messagefromwh').fadeOut();
+    jQuery('#mrkvnpformsettings #messagefromaddr').fadeIn();
+}
+
+// Show volume weight on 'Налаштування' tab
+function mrkvnpCalcVolumeWeightSettings() {
+    let length = jQuery('#mrkvnp_invoice_length').val();
+    let width = jQuery('#mrkvnp_invoice_width').val();
+    let height = jQuery('#mrkvnp_invoice_height').val();
+    let weight = jQuery('#mrkvnp_invoice_weight').val();
+    let volumeWeight = length * width * height / 4000;
+    if (volumeWeight > weight) {
+        return volumeWeight;
+    } else {
+        return weight;
+    }
+}
+
+// Show volume weight on 'Створити накладну' tab
+function mrkvnpCalcVolumeWeight() {
+    const cargoLength = jQuery('#mrkvnp_invoice_cargo_length').val();
+    const cargoWidth = jQuery('#mrkvnp_invoice_cargo_width').val();
+    const cargoHeight = jQuery('#mrkvnp_invoice_cargo_height').val();
+    let cargoWeight = jQuery('#mrkvnp_invoice_cargo_weight').val();
+    let cargoVolumeWeight = (cargoLength*cargoWidth*cargoHeight)/4000;
+    if (cargoVolumeWeight > cargoWeight) {
+        return cargoVolumeWeight;
+    } else {
+        return cargoWeight;
+    }
+}

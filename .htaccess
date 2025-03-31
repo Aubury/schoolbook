@@ -1,0 +1,17 @@
+# This file was updated by Duplicator on 2025-03-31 12:10:48.
+# See the original_files_ folder for the original source_site_htaccess file.
+# BEGIN WordPress
+# Директиви (рядки) між `BEGIN WordPress` і `END WordPress`
+# створені автоматично і підлягають змінам тільки через фільтри WordPress.
+# Зміни зроблені вручну між цими маркерами будуть перезаписані.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+
+# END WordPress

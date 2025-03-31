@@ -1,0 +1,611 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Saphali - Saphali - Progressive Discounts\n"
+"POT-Creation-Date: 2018-11-09 11:01+0200\n"
+"PO-Revision-Date: 2018-11-09 11:42+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: saphali-discount.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: saphali-discount.php:120
+msgid "Накопительные скидки"
+msgstr "Accumulative discounts"
+
+#: saphali-discount.php:125
+msgid "Настройка накопительных скидок"
+msgstr "Settings"
+
+#: saphali-discount.php:135
+msgid "Сумма покупок"
+msgstr "The sum of purchases"
+
+#: saphali-discount.php:250 saphali-discount.php:252
+#, php-format
+msgid "<span style=\"color:red\">%s</span>. &sum; %s."
+msgstr ""
+
+#: saphali-discount.php:250
+#, php-format
+msgid "<br /> %s → +%s."
+msgstr ""
+
+#: saphali-discount.php:257
+#, php-format
+msgid "За последние %d дн.. "
+msgstr "Last %d days. "
+
+#: saphali-discount.php:270
+msgid "Клубная карта"
+msgstr "Club card"
+
+#: saphali-discount.php:271
+msgctxt "placeholder"
+msgid "Ваша клубная карта"
+msgstr "Your Club card"
+
+#: saphali-discount.php:356 saphali-discount.php:510 saphali-discount.php:550
+#, php-format
+msgid ""
+"Минимальный заказ от %s! <br>Чтобы сделать заказ добавьте позиций на сумму %s"
+msgstr "Minimum order of %s! <br> To order, add products to the amount of %s"
+
+#: saphali-discount.php:365
+msgid "Cumulative discount"
+msgstr ""
+
+#: saphali-discount.php:367
+msgid "Discount:"
+msgstr ""
+
+#: saphali-discount.php:465 saphali-discount.php:837 saphali-discount.php:844
+#: saphali-discount.php:852 saphali-discount.php:862 saphali-discount.php:869
+#: saphali-discount.php:877
+msgid "[Remove]"
+msgstr ""
+
+#: saphali-discount.php:469
+msgid "скидка отсутствует"
+msgstr "no discount"
+
+#: saphali-discount.php:482
+msgid "Settings"
+msgstr ""
+
+#: saphali-discount.php:482
+msgid "Coupons"
+msgstr ""
+
+#: saphali-discount.php:528 saphali-discount.php:712
+#, php-format
+msgid "Ваша накопительная скидка по текущей закупке составляет %s"
+msgstr "Your cumulative discount on the current purchase is %s"
+
+#: saphali-discount.php:712 saphali-discount.php:1214 saphali-discount.php:1216
+#: saphali-discount.php:1249 saphali-discount.php:1265
+#: saphali-discount.php:1285 saphali-discount.php:1294
+#: saphali-discount.php:1334 saphali-discount.php:1345
+#: saphali-discount.php:1366 saphali-discount.php:1385
+#: saphali-discount.php:1402 saphali-discount.php:4689
+#: saphali-discount.php:4692 saphali-discount.php:4726
+#: saphali-discount.php:4743 saphali-discount.php:4763
+#: saphali-discount.php:4772 saphali-discount.php:4812
+#: saphali-discount.php:4823 saphali-discount.php:4843
+#: saphali-discount.php:4862 saphali-discount.php:4878
+msgid "&nbsp;"
+msgstr ""
+
+#: saphali-discount.php:1076 saphali-discount.php:1087
+#: saphali-discount.php:1415 saphali-discount.php:1427
+#: saphali-discount.php:4550 saphali-discount.php:4561
+#: saphali-discount.php:4954 saphali-discount.php:4966
+#: saphali-discount.php:4988 saphali-discount.php:4994
+#, php-format
+msgid "Ваша накопительная скидка (%s) по текущему заказу аннулирована"
+msgstr "Your cumulative discount (%s) on the current order canceled"
+
+#: saphali-discount.php:1133 saphali-discount.php:1137
+#: saphali-discount.php:1170 saphali-discount.php:1174
+#: saphali-discount.php:4607 saphali-discount.php:4612
+#: saphali-discount.php:4645 saphali-discount.php:4649
+#, php-format
+msgid "Изменена накопительная скидка с %s на %s."
+msgstr "Changed the accumulative discount from %s to %s."
+
+#: saphali-discount.php:1214 saphali-discount.php:1216
+#: saphali-discount.php:1285 saphali-discount.php:1294
+#: saphali-discount.php:1334 saphali-discount.php:4689
+#: saphali-discount.php:4692 saphali-discount.php:4763
+#: saphali-discount.php:4772 saphali-discount.php:4812
+#, php-format
+msgid "Ваша накопительная скидка по текущему заказу составила %s"
+msgstr "Cumulative discount on your current order is %s"
+
+#: saphali-discount.php:1214 saphali-discount.php:1285
+#: saphali-discount.php:1294 saphali-discount.php:3886
+#: saphali-discount.php:3916 saphali-discount.php:4689
+#: saphali-discount.php:4763 saphali-discount.php:4772
+msgid " <br />В заказе используется только эта скидка."
+msgstr " <br />The order is only the discount."
+
+#: saphali-discount.php:1248 saphali-discount.php:1264
+#: saphali-discount.php:1313 saphali-discount.php:1328
+#: saphali-discount.php:1344 saphali-discount.php:1365
+#: saphali-discount.php:1384 saphali-discount.php:1401
+#: saphali-discount.php:4725 saphali-discount.php:4742
+#: saphali-discount.php:4791 saphali-discount.php:4806
+#: saphali-discount.php:4822 saphali-discount.php:4842
+#: saphali-discount.php:4861 saphali-discount.php:4877
+#, php-format
+msgid "Для получения скидки на %s добавьте позиций на сумму %s"
+msgstr "To receive a discount on the %s add items for %s"
+
+#: saphali-discount.php:1469
+#, php-format
+msgid "от %s до %s &ndash; %s"
+msgstr "from %s to %s &ndash; %s"
+
+#: saphali-discount.php:1484
+msgid ""
+"Накопительная скидка по текущему заказу отключена, т.к. учитывается "
+"накопительна скидка по всем заказам."
+msgstr ""
+"Cumulative discount on the current request is disabled, because recorded "
+"cumulative discount on all orders."
+
+#: saphali-discount.php:1495
+msgid ""
+"Накопительная скидка по по всем заказам отключена, т.к. учитывается "
+"накопительна скидка по текущему заказу."
+msgstr ""
+"Cumulative discount on all orders for disabled, because recorded cumulative "
+"discount on the current order."
+
+#: saphali-discount.php:1511
+#, php-format
+msgid ""
+"Sorry, coupon <code>%s</code> has already been applied and cannot be used in "
+"conjunction with other coupons."
+msgstr ""
+
+#: saphali-discount.php:1514
+msgid "Coupon code applied successfully."
+msgstr ""
+
+#: saphali-discount.php:1516 saphali-discount.php:4050
+msgid "Discount code applied successfully."
+msgstr ""
+
+#: saphali-discount.php:2975 saphali-discount.php:4088
+msgid ""
+"Вы не состоите в группе пользователей, для которой применим данный купон."
+msgstr ""
+"You are not a member of a user group for which this is applicable coupon."
+
+#: saphali-discount.php:2983 saphali-discount.php:4095
+msgid "Вы не можете воспользоваться данным купоном."
+msgstr "You can not use this coupon."
+
+#: saphali-discount.php:2993 saphali-discount.php:4105
+msgid "Coupon usage limit has been reached."
+msgstr ""
+
+#: saphali-discount.php:3001 saphali-discount.php:4127
+#, php-format
+msgid "The minimum spend for this coupon is %s."
+msgstr ""
+
+#: saphali-discount.php:3022 saphali-discount.php:3050
+#: saphali-discount.php:3072 saphali-discount.php:3102
+#: saphali-discount.php:3121 saphali-discount.php:3172
+#: saphali-discount.php:3193 saphali-discount.php:4144
+#: saphali-discount.php:4166 saphali-discount.php:4181
+#: saphali-discount.php:4209 saphali-discount.php:4222
+#: saphali-discount.php:4287 saphali-discount.php:4302
+msgid "Sorry, this coupon is not applicable to your cart contents."
+msgstr ""
+
+#: saphali-discount.php:3143 saphali-discount.php:4247
+#: saphali-discount.php:4264
+msgid "Sorry, this coupon is not valid for sale items."
+msgstr ""
+
+#: saphali-discount.php:3206 saphali-discount.php:4118
+msgid "This coupon has expired."
+msgstr ""
+
+#: saphali-discount.php:3215 saphali-discount.php:4314
+msgid "Coupon is not valid."
+msgstr ""
+
+#: saphali-discount.php:3219 saphali-discount.php:4318
+msgid "Invalid coupon"
+msgstr ""
+
+#: saphali-discount.php:3793 saphali-discount.php:3802
+#: saphali-discount.php:3941
+#, php-format
+msgid "Ваша накопительная скидка (%s) по всем Вашим заказам аннулирована"
+msgstr "Your cumulative discount (%s) on all your orders canceled"
+
+#: saphali-discount.php:3836 saphali-discount.php:3849
+#: saphali-discount.php:3886 saphali-discount.php:3889
+#: saphali-discount.php:3916 saphali-discount.php:3919
+#, php-format
+msgid "Ваша накопительная скидка по всем Вашим заказам составила %s"
+msgstr "Your cumulative discount on all your orders is %s"
+
+#: saphali-discount.php:3951
+#, php-format
+msgid "Ваша накопительная скидка %s по всем Вашим заказам аннулирована"
+msgstr "Your discount%s on all your orders cancelled"
+
+#: saphali-discount.php:4014
+msgid "Discount code already applied!"
+msgstr ""
+
+#: saphali-discount.php:4057
+msgid "Coupon does not exist!"
+msgstr ""
+
+#: saphali-discount.php:5045
+msgid "Накопительная по магазину"
+msgstr "Cumulative discount on shop"
+
+#: saphali-discount.php:5046
+msgid "Накопительная в корзине"
+msgstr "Cumulative discount in cart"
+
+#: saphali-discount.php:5068
+msgid "Эл. почта клиентов"
+msgstr "E-mail users"
+
+#: saphali-discount.php:5074
+msgid "Any customer"
+msgstr ""
+
+#: saphali-discount.php:5092
+msgid ""
+"Здесь указываются адреса электронной почты для создания специальных условий "
+"использования этого купона только с указанными пользовательским email-ми."
+msgstr ""
+"This specifies the e-mail address to create special conditions for use of "
+"this coupon only with specified user email's."
+
+#: saphali-discount.php:5097
+msgid "Клубные карты клиентов"
+msgstr "Club card customers"
+
+#: saphali-discount.php:5098
+msgid "Любой покупатель, без учета клубных карт"
+msgstr "Any buyer, excluding Club cards"
+
+#: saphali-discount.php:5119
+msgid "Добавить еще клубные карты"
+msgstr "Add more club cards"
+
+#: saphali-discount.php:5121
+msgid "Указать клубные карты через запятую"
+msgstr "Specify club cards, separated by commas"
+
+#: saphali-discount.php:5124
+msgid ""
+"Здесь указываются клубные карты для покупателей. Если указать их то, скидка "
+"будет предоставляться исключительно по ним."
+msgstr ""
+"Club cards are specified here for buyers. If you specify them, the discount "
+"will be available exclusively on them."
+
+#: saphali-discount.php:5129
+msgid "Задействование"
+msgstr "The Involvement"
+
+#: saphali-discount.php:5132
+msgid ""
+"Задействовать скидку в любом случае, минуя товары, которые не подлежат "
+"задействованию скидки"
+msgstr ""
+"To involve a discount in any case, passing goods which aren't subject to "
+"discount involvement"
+
+#: saphali-discount.php:5133
+msgid ""
+"Дает возможность не аннулировать полностью скидку, если в в корзине "
+"находится позиция товара, не подлежащая скидки, т.о. предоставляет "
+"возможность задействовать скидку в любом случае, минуя товары, которые не "
+"подлежат задействованию скидки, с учетом опции \"Исключить категории\" или "
+"\"Категории товара\"."
+msgstr ""
+"Gives the chance not to void completely a discount if in in a basket there "
+"is the goods line item, not subject discounts, thus gives opportunity to "
+"involve a discount in any case, passing goods which aren't subject to "
+"discount involvement, taking into account the option \"Exclude categories\" "
+"or \"Product categories\"."
+
+#: saphali-discount.php:5138
+msgid "Информация о скидке"
+msgstr "Information on a discount"
+
+#: saphali-discount.php:5141
+msgid "Отображать всегда информацию о задействованной скидке"
+msgstr "To display always information on the involved discount"
+
+#: saphali-discount.php:5142
+msgid ""
+"Дает возможность отображать информацию о задействованной скидке на страницах "
+"Корзины и Оплаты."
+msgstr ""
+"Gives the chance to display information on the involved discount on Cart and "
+"Checkout pages."
+
+#: saphali-discount.php:5145
+msgid "Отображать информацию на всех страницах магазина"
+msgstr "Display information on all pages of the store"
+
+#: saphali-discount.php:5146
+msgid ""
+"Дает возможность отображать информацию о задействованной скидке не только на "
+"страницах Корзины и Оплаты, но и на всех страницах магазина (каталог, "
+"категории, метки, карточка товара)."
+msgstr ""
+"Allows you to display information about cycling discount not only on the "
+"pages of cart and pay, but also on all pages of the store (catalog, "
+"category, tags, single product)."
+
+#: saphali-discount.php:5151
+msgid "Сумма для минимальной закупки"
+msgstr "Minimum amount for purchase"
+
+#: saphali-discount.php:5154
+msgid ""
+"Если заполнено, то отобразится сообщение об необходимости добавить больше "
+"позиций к заказу."
+msgstr ""
+"If filled, a message is displayed on the need to add more items to your "
+"order."
+
+#: saphali-discount.php:5156
+msgid "Отображать только на страницах корзины и оформления заказа"
+msgstr "Show only on the pages of the basket and checkout"
+
+#: saphali-discount.php:5186
+msgid "Применить скидку только со следующими группами пользователей"
+msgstr "Only apply a discount to the following groups of users"
+
+#: saphali-discount.php:5189
+msgid ""
+"Укажите группу, чтобы ограничить круг пользователей, для которых этот купон "
+"предоставляется."
+msgstr ""
+"Specify the group to restrict the use for which the coupon is available."
+
+#: saphali-discount.php:5190 saphali-discount.php:5208
+msgid ""
+"Если ничего не выбрать, то в использовании скидки данная опция не "
+"учитывается, т.е. если остальные условия соблюдается для получения скидки, "
+"то покупатель воспользуется скидкой."
+msgstr ""
+"If no selection is made, the use of discount this option is not taken into "
+"account, that is, if the other conditions are met for the sale, the buyer "
+"will take advantage of a discount."
+
+#: saphali-discount.php:5204
+msgid "Не применять скидку со следующими группами пользователей"
+msgstr "Do not apply a discount to the following groups of users"
+
+#: saphali-discount.php:5207
+msgid ""
+"Укажите группу, чтобы ограничить круг пользователей, для которых этот купон "
+"не предоставляется."
+msgstr ""
+"Specify the group to restrict the use for which the coupon is not available."
+
+#: saphali-discount.php:5222
+msgid "Задействовать скидку в ценовом интервале"
+msgstr "The Enable a discount in the price range"
+
+#: saphali-discount.php:5227 saphali-discount.php:5237
+#: saphali-discount.php:5246 saphali-discount.php:5262
+msgid "мин. значение"
+msgstr "min value"
+
+#: saphali-discount.php:5227 saphali-discount.php:5238
+#: saphali-discount.php:5247 saphali-discount.php:5262
+msgid "макс. значение"
+msgstr "max value"
+
+#: saphali-discount.php:5228 saphali-discount.php:5239
+#: saphali-discount.php:5248 saphali-discount.php:5263
+msgid "значение скидки"
+msgstr "discount value"
+
+#: saphali-discount.php:5229 saphali-discount.php:5240
+msgid "Задайте ценовой интервал, в пределах которого задействуется скидка."
+msgstr "Set the price range within which the discount is activated."
+
+#: saphali-discount.php:5248 saphali-discount.php:5264
+msgid "Удалить"
+msgstr "Delete"
+
+#: saphali-discount.php:5254
+msgid "Добавить ценовой интервал"
+msgstr "Add price range"
+
+#: saphali-discount.php:5383
+msgid ""
+"Значение скидки можно задать фиксированной суммой или процентом (150 или 5%)."
+msgstr "Discount value can specify a fixed amount or a percentage (150 or 5%)."
+
+#: saphali-discount.php:5392
+msgid "Накопительные скидки отключены"
+msgstr "Savings discounts off"
+
+#: saphali-discount.php:5392
+msgid "Hapyшeниe лицeнзии. Для paбoты свяжитесь с pазpaбoтчикoм."
+msgstr "Infringеment of licеnse. To enable contact with the developer."
+
+#: saphali-discount.php:5830
+#, php-format
+msgid "Общая сумма всех Ваших покупок %s."
+msgstr "Total amount of all your purchases %s."
+
+#: saphali-discount.php:5851 saphali-discount.php:5869
+msgid " "
+msgstr ""
+
+#: saphali-discount.php:5853 saphali-discount.php:5871
+msgid "<h3>У Вас нет накопительной скидки</h3>"
+msgstr "<h3>You have no cumulative discount</h3>"
+
+#: saphali-discount.php:5860
+#, php-format
+msgid ""
+"<h3>Ваша накопительная скидка по всем Вашим заказам составляет <span style="
+"\"color:red\">%s</span>. "
+msgstr ""
+"<h3>Your discount on all your orders is <span style=\"color:red\">%s</span>. "
+
+#: saphali-discount.php:5860
+#, php-format
+msgid "<br /> Для получения скидки на %s нужно совершить покупку на %s.</h3>"
+msgstr ""
+"<br /> To receive a discount on the %s you need to make a purchase at %s.</"
+"h3>"
+
+#: saphali-discount.php:5862
+#, php-format
+msgid ""
+"<h3>Ваша накопительная скидка по всем Вашим заказам составляет <span style="
+"\"color:red\">%s</span>. %s</h3>"
+msgstr ""
+"<h3>Your discount on all your orders is <span style=\"color:red\">%s</span>. "
+"%s</h3>"
+
+#: saphali-discount.php:5865
+#, php-format
+msgid " за последние %d дн. "
+msgstr " for the last %d  days "
+
+#: saphali-discount.php:5872
+#, php-format
+msgid "<h3> Для получения скидки на %s нужно совершить покупку на %s.</h3>"
+msgstr ""
+"<br /> To receive a discount on the %s you need to make a purchase at %s.</"
+"h3>"
+
+#: saphali-discount.php:5876
+#, php-format
+msgid ""
+"<h3>У Вас нет накопительной скидки. Пожалуйста, <a href=\"%s"
+"\">авторизируйтесь</a>, чтобы узнать Вашу текущую накопительную скидку или "
+"идентифицируйтесь введя номер телефона %s </h3>"
+msgstr ""
+"<h3>You do not have a discount. Please <a href=\"%s\">log in</a>to see your "
+"current cumulative discount or log in by entering your phone number %s </h3>"
+
+#: saphali-discount.php:5950
+msgid "<h3>В данном магазине нет дисконтной программы.</h3>"
+msgstr "<h3>There is no discount program in this store.</h3>"
+
+#: settings.php:10
+msgid "Saved"
+msgstr ""
+
+#: settings.php:22
+msgid "Ограничения накопительной по магазину"
+msgstr "Limitations of the сumulative discount on shop"
+
+#: settings.php:24
+msgid ""
+"Период выборки заказов для накопительной скидки <strong>по магазину</"
+"strong>, в днях"
+msgstr ""
+"Orders selection period for a cumulative discount <strong> the store </"
+"strong>, in days"
+
+#: settings.php:26
+msgid ""
+"Период, на протяжении которого будут учитываться покупки в накопительной "
+"системе в промежутке от столько-то дней до текущего момента."
+msgstr ""
+"The period during which the purchases in the accumulative system will be "
+"taken into account in the interval from so many days till the current moment."
+
+#: settings.php:30
+msgid "Плавающая кнопка"
+msgstr "Floating button"
+
+#: settings.php:51
+msgid "Иконка"
+msgstr "Icon"
+
+#: settings.php:56
+msgid "Назначить свою кнопку"
+msgstr "Assign your own button"
+
+#: settings.php:57
+msgid "Установить по умолчанию"
+msgstr "Set as default"
+
+#: settings.php:67
+msgid "Save"
+msgstr ""
+
+#: settings.php:118
+msgid "Upload/Add image"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Saphali - Saphali - Progressive Discounts"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid ""
+"http://saphali.com/en/woocommerce-plugins/woocommerce-progressive-discounts"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Progressive Discounts - organization in the store discount program for "
+"regular customers, you can also use one-time savings discounts in the cart "
+"for all buyers and role discounts (discounts only to certain users). Read "
+"more on the website <a href=\"http://saphali.com/en/woocommerce-plugins/"
+"woocommerce-progressive-discounts\">Saphali Woocommerce</a>"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Saphali"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://saphali.com/en/"
+msgstr ""
+
+#~ msgid ""
+#~ "<h3>Ваша накопительная скидка по всем Вашим заказам составляет <span "
+#~ "style=\"color:red\">%s</span>. Общая сумма покупок <span class=\"price"
+#~ "\"><span class=\"amount\">%s</span></span>."
+#~ msgstr ""
+#~ "<h3>Your cumulative discount by all your orders makes <span style=\"color:"
+#~ "red\">%s</span>. The total amount of purchases of <span class=\"price"
+#~ "\"><span class=\"amount\">%s</span></span>."
+
+#~ msgid ""
+#~ "<h3>У Вас нет накопительной скидки. Пожалуйста, <a href=\"%s"
+#~ "\">авторизируйтесь</a>, чтобы узнать Вашу текущую накопительную скидку. </"
+#~ "h3>"
+#~ msgstr ""
+#~ "<h3>You have no cumulative discount. Please, <a href=\"%s\">be "
+#~ "authorized</a> to learn your current cumulative discount.</h3>"

@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteRule pdf.pdf pdf.php [L]
+RewriteRule getapi.pdf getapi.php [L]
+RewriteRule pdfbulkprint.pdf pdfbulkprint.php [L]
+ 

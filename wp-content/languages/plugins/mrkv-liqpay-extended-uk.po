@@ -1,0 +1,164 @@
+# Translation of Plugins - Morkva Liqpay Extended - Stable (latest release) in Ukrainian
+# This file is distributed under the same license as the Plugins - Morkva Liqpay Extended - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-10-18 13:32:18+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: uk_UA\n"
+"Project-Id-Version: Plugins - Morkva Liqpay Extended - Stable (latest release)\n"
+
+#: mrkv-liqpay-extended.php:60
+msgid "<a href=\"https://wordpress.org/plugins/woocommerce/\">WooCommerce</a> is not installed. Please install <a href=\"https://wordpress.org/plugins/woocommerce/\">WooCommerce</a> before activating this plugin"
+msgstr "<a href=\"https://wordpress.org/plugins/woocommerce/\">WooCommerce</a> is not installed. Please install <a href=\"https://wordpress.org/plugins/woocommerce/\">WooCommerce</a> before activating this plugin"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:450
+msgid "commission_credit:  "
+msgstr "commission_credit:  "
+
+#: includes/class-wc-gateway-morkva-liqpay.php:442
+msgid "receiver_commission:  "
+msgstr "receiver_commission:  "
+
+#: includes/class-wc-gateway-morkva-liqpay.php:434
+msgid "liqpay_order_id:  "
+msgstr "liqpay_order_id:  "
+
+#: includes/class-wc-gateway-morkva-liqpay.php:426
+msgid "agent_commission:  "
+msgstr "agent_commission:  "
+
+#: includes/class-wc-gateway-morkva-liqpay.php:418
+msgid "acq_id:  "
+msgstr "acq_id:  "
+
+#: includes/class-wc-gateway-morkva-liqpay.php:410
+msgid "sender_card_type:  "
+msgstr "sender_card_type:  "
+
+#: includes/class-wc-gateway-morkva-liqpay.php:402
+msgid "sender_card_mask2:  "
+msgstr "sender_card_mask2:  "
+
+#: includes/class-wc-gateway-morkva-liqpay.php:165
+msgid "Тестовий режим для адміністратора"
+msgstr "Тестовий режим для адміністратора"
+
+#: includes/classes/MorkvaLiqPay.php:235
+msgid "Значення опису не задано"
+msgstr "Значення опису не задано"
+
+#: includes/classes/MorkvaLiqPay.php:228
+msgid "Валюта не підтримується"
+msgstr "Валюта не підтримується"
+
+#: includes/classes/MorkvaLiqPay.php:221
+msgid "Значення валюти не задано"
+msgstr "Значення валюти не задано"
+
+#: includes/classes/MorkvaLiqPay.php:214
+msgid "Значення суммы замовлення не задано"
+msgstr "Значення суммы замовлення не задано"
+
+#: includes/classes/MorkvaLiqPay.php:207
+msgid "Значення версії не задано"
+msgstr "Значення версії не задано"
+
+#: includes/classes/MorkvaLiqPay.php:97
+msgid "Private Key не внесено до налаштувань"
+msgstr "Private Key не внесено до налаштувань"
+
+#: includes/classes/MorkvaLiqPay.php:90
+msgid "Public Key не внесено до налаштувань"
+msgstr "Public Key не внесено до налаштувань"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:484
+msgid "Помилка під час оплати"
+msgstr "Помилка під час оплати"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:465
+msgid "Платіж LiqPay виконано успішно.<br/>Ідентифікатор платежу LiqPay:  "
+msgstr "Платіж LiqPay виконано успішно.<br/>Ідентифікатор платежу LiqPay:  "
+
+#: includes/class-wc-gateway-morkva-liqpay.php:330
+#: includes/class-wc-gateway-morkva-liqpay.php:331
+msgid "Нове замовлення"
+msgstr "Нове замовлення"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:199
+msgid "Оплата замовлення № "
+msgstr "Оплата замовлення № "
+
+#: includes/class-wc-gateway-morkva-liqpay.php:180
+msgid "Тестовий API private_key"
+msgstr "Тестовий API private_key"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:172
+msgid "Тестовий API public_key"
+msgstr "Тестовий API public_key"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:158
+msgid "Тестовий режим"
+msgstr "Тестовий режим"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:150
+msgid "API private_key"
+msgstr "API private_key"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:142
+msgid "API public_key"
+msgstr "API public_key"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:135
+msgid "Інструкція"
+msgstr "Інструкція"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:128
+msgid "Опис"
+msgstr "Опис"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:123
+msgid "Maorkva LiqPay - Моментальні платежі по всьому світу"
+msgstr "Maorkva LiqPay - Моментальні платежі по всьому світу"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:121
+msgid "Заголовок"
+msgstr "Заголовок"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:115
+#: includes/class-wc-gateway-morkva-liqpay.php:159
+#: includes/class-wc-gateway-morkva-liqpay.php:166
+msgid "Увімкнути"
+msgstr "Увімкнути"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:114
+msgid "Увімкнути/вимкнути"
+msgstr "Увімкнути/вимкнути"
+
+#: includes/class-wc-gateway-morkva-liqpay.php:86
+#: includes/class-wc-gateway-morkva-liqpay.php:130
+msgid "Платіжний сервіс, який дає змогу здійснювати миттєві платежі в інтернеті та платіжних карт Visa, MasterCard у всьому світі."
+msgstr "Платіжний сервіс, який дає змогу здійснювати миттєві платежі в інтернеті та платіжних карт Visa, MasterCard у всьому світі."
+
+#. Author URI of the plugin
+#: mrkv-liqpay-extended.php
+msgid "https://morkva.co.ua"
+msgstr "https://morkva.co.ua"
+
+#. Author of the plugin
+#: mrkv-liqpay-extended.php
+msgid "MORKVA"
+msgstr "MORKVA"
+
+#. Description of the plugin
+#: mrkv-liqpay-extended.php
+msgid "LiqPay Payment Gateway with callback by Morkva"
+msgstr "LiqPay Payment Gateway with callback by Morkva"
+
+#. Plugin Name of the plugin
+#: mrkv-liqpay-extended.php
+msgid "Morkva Liqpay Extended"
+msgstr "Morkva Liqpay Extended"

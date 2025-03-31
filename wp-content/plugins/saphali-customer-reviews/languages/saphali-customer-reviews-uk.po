@@ -1,0 +1,194 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Project-Id-Version: saphali-customer v1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-09 09:47+0300\n"
+"PO-Revision-Date: 2018-04-09 09:48+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: uk_UA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11) ? 0 : ((n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20)) ? 1 : 2);\n"
+"X-Poedit-KeywordsList: __;_e;_x;_n;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Textdomain-Support: yes\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: saphali-customer-reviews.php:178
+msgid "Обязательное поле:"
+msgstr "Обов'язкове поле:"
+
+#: saphali-customer-reviews.php:178
+msgid "Обязательные поля:"
+msgstr "Обов'язкові поля:"
+
+#: saphali-customer-reviews.php:179
+msgid "Ошибка! <br /> "
+msgstr "Помилка! <br /> "
+
+#: saphali-customer-reviews.php:230 saphali-customer-reviews.php:597
+msgid "Отзывы"
+msgstr "Відгуки"
+
+#: saphali-customer-reviews.php:230 saphali-customer-reviews.php:242
+msgid "Отзывы - Настройка"
+msgstr "Відгуки - Налаштування"
+
+#: saphali-customer-reviews.php:247
+msgid "Наименование поля"
+msgstr "Найменування поля"
+
+#: saphali-customer-reviews.php:247
+msgid "только латиница, цифры, _,-"
+msgstr "тільки латиниця, цифри, _, -"
+
+#: saphali-customer-reviews.php:248
+msgid "Заголовок"
+msgstr ""
+
+#: saphali-customer-reviews.php:249
+msgid "Выводить в следующих типах записей"
+msgstr "Виводити в наступних типах записів"
+
+#: saphali-customer-reviews.php:250
+msgid "Тип поля"
+msgstr "Тип поля"
+
+#: saphali-customer-reviews.php:251
+msgid "Для страницы"
+msgstr "Для сторінки"
+
+#: saphali-customer-reviews.php:252
+msgid "Обязательно"
+msgstr "Обов'язково"
+
+#: saphali-customer-reviews.php:253
+msgid "Отображать в комментариях"
+msgstr "Відобразити у коментарях"
+
+#: saphali-customer-reviews.php:254 saphali-customer-reviews.php:294
+#: saphali-customer-reviews.php:329
+msgid "Удалить"
+msgstr "Видалити"
+
+#: saphali-customer-reviews.php:262 saphali-customer-reviews.php:299
+#: saphali-customer-reviews.php:334
+msgid "Выбрать страницу"
+msgstr "Вибрати сторінку"
+
+#: saphali-customer-reviews.php:305
+msgid "Выбрать типы"
+msgstr "Вибрати типи"
+
+#: saphali-customer-reviews.php:340
+msgid "Добавить"
+msgstr "Додати"
+
+#: saphali-customer-reviews.php:347
+msgid "Сохранить"
+msgstr "Зберегти"
+
+#: saphali-customer-reviews.php:584
+msgid "Отобразить отзывы."
+msgstr "Відобразити відгук"
+
+#: saphali-customer-reviews.php:586
+msgid "Saphali отзывы"
+msgstr "Saphali відгуки"
+
+#: saphali-customer-reviews.php:713
+msgid "Читать все отзывы"
+msgstr "Читати усі відгуки"
+
+#: saphali-customer-reviews.php:723 templates/reviews-showall.php:68
+msgid "Оставить отзыв"
+msgstr "Залишити відгук"
+
+#: saphali-customer-reviews.php:892
+msgid "Title:"
+msgstr "Назва:"
+
+#: saphali-customer-reviews.php:895
+msgid "Приоритетные поля:"
+msgstr "Пріоритетні поля:"
+
+#: saphali-customer-reviews.php:902
+msgid "Количество выводимых комментариев:"
+msgstr "Кількість виведених коментарів:"
+
+#: saphali-customer-reviews.php:904
+msgid "Количество символов для обрезки текста комментариев:"
+msgstr "Кількість символів для обрізки тексту коментарів:"
+
+#: saphali-customer-reviews.php:906
+msgid "Расположить имя автора вверху"
+msgstr ""
+
+#: saphali-customer-reviews.php:908
+msgid "Вывести как слайдер"
+msgstr ""
+
+#: saphali-customer-reviews.php:913
+msgid "Использовать анимацию"
+msgstr ""
+
+#: saphali-customer-reviews.php:917
+msgid "Задержка между циклами анимации (прокрутки), миллисекунд"
+msgstr ""
+
+#: saphali-customer-reviews.php:922
+msgid "Вывести панель страниц"
+msgstr "Показати панель сторінок"
+
+#: saphali-customer-reviews.php:926
+msgid "Вывести кнопки для ручного перелистывания"
+msgstr ""
+
+#: saphali-customer-reviews.php:930
+msgid "Высота блока с комментариями, px"
+msgstr "Висота блоку з коментарями, пікс."
+
+#: saphali-customer-reviews.php:935
+msgid "Страница отзывов:"
+msgstr "Сторінка відгуків:"
+
+#: templates/reviews-loop.php:44
+msgid "Your comment is awaiting approval"
+msgstr "Ваш коментар очікує схвалення"
+
+#: templates/reviews-showall.php:29
+msgid "Ответить на отзыв"
+msgstr "Відповісти на відгук"
+
+#: templates/reviews-showall.php:70
+msgid "Оставить свой отзыв"
+msgstr "Залишити свій відгук"
+
+#: templates/reviews-showall.php:74
+msgctxt "noun"
+msgid "Текст отзыва"
+msgstr "Текст відгуку"
+
+#: templates/reviews-showall.php:74
+msgid "Текст Вашего отзыва"
+msgstr "Текст Вашого відгуку"
+
+#: templates/reviews-showall.php:79
+msgid "Name"
+msgstr "Ім'я"
+
+#: templates/reviews-showall.php:80
+msgid "Email"
+msgstr "Email"
+
+#~ msgid "текст отзыва"
+#~ msgstr "текст відгуку"
+
+#~ msgid "Текст отзыва"
+#~ msgstr "Текст відгуку"

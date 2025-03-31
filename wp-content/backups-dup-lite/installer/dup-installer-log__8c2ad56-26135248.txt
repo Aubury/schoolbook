@@ -1,0 +1,1783 @@
+********************************************************************************
+* DUPLICATOR LITE: Install-Log
+* STEP-0 START @ 12:07:18
+* NOTICE: Do NOT post to public sites or forums!!
+********************************************************************************
+PACKAGE INFO________ ORIGINAL SERVER                        |CURRENT SERVER
+OS__________________: Linux                                 |WINNT
+PHP VERSION_________: 7.4.33                                |8.0.30
+********************************************************************************
+CURRENT SERVER INFO
+PHP_________________: 8.0.30 | SAPI: apache2handler
+PHP MEMORY__________: 4294967296 | SUHOSIN: disabled
+ARCHITECTURE________: 64-bit
+SERVER______________: Apache
+DOC ROOT____________: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+REQUEST URL_________: "https://new-schoolbook.local"
+********************************************************************************
+OVERWRITE PARAMS
+ *** FROM PACKAGE
+PARAM SET KEY[blogname]
+********************************************************************************
+MAINTENANCE MODE DISABLE
+INSTALLER INFO
+
+TEMPLATE____________: "base"
+SECURE MODE_________: "none"
+URL PLUGINS_________: https://schoolbook.com.ua/wp-content/plugins
+VALIDATE ON START___: "normal"
+PATH_NEW____________: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+URL_NEW_____________: "https://new-schoolbook.local"
+********************************************************************************
+ARCHIVE INFO
+
+ARCHIVE NAME________: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/20241030_d0b2d0b8d0b4d0b0d0b2d0bdd0b8d18_[HASH]_20250326135248_archive.zip"
+ARCHIVE SIZE________: 2.88GB
+CREATED_____________: 2025-03-26 13:52:48
+WP VERSION__________: 6.6.2
+DUP VERSION_________: 1.5.10.2
+LICENSE_____________: Free version
+DB VERSION__________: 8.0.41
+DB FILE SIZE________: 126.53MB
+DB TABLES___________: 68
+DB ROWS_____________: 323482
+URL HOME____________: https://schoolbook.com.ua
+URL CORE____________: https://schoolbook.com.ua
+URL CONTENT_________: https://schoolbook.com.ua/wp-content
+URL UPLOAD__________: https://schoolbook.com.ua/wp-content/uploads
+URL PLUGINS_________: https://schoolbook.com.ua/wp-content/plugins
+URL MU PLUGINS______: https://schoolbook.com.ua/wp-content/mu-plugins
+URL THEMES__________: https://schoolbook.com.ua/wp-content/themes
+PATH HOME___________: /home/scbook/htdocs/schoolbook.com.ua
+PATH ABS____________: /home/scbook/htdocs/schoolbook.com.ua
+PATH WPCONFIG_______: /home/scbook/htdocs/schoolbook.com.ua
+PATH WPCONTENT______: /home/scbook/htdocs/schoolbook.com.ua/wp-content
+PATH UPLOADS________: /home/scbook/htdocs/schoolbook.com.ua/wp-content/uploads
+PATH PLUGINS________: /home/scbook/htdocs/schoolbook.com.ua/wp-content/plugins
+PATH MUPLUGINS______: /home/scbook/htdocs/schoolbook.com.ua/wp-content/mu-plugins
+PATH THEMES_________: /home/scbook/htdocs/schoolbook.com.ua/wp-content/themes
+
+SUBSITES
+SUBSITE [ID:   1] "schoolbook.com.ua/"
+
+PLUGINS
+PLUGIN [SLUG:advanced-cron-manager/advanced-cron-manager.php   ][ON:true ]  Advanced Cron Manager
+PLUGIN [SLUG:advanced-woo-search/advanced-woo-search.php       ][ON:true ]  Advanced Woo Search
+PLUGIN [SLUG:woo-save-abandoned-carts/cartbounty-abandoned-carts.php][ON:true ]  CartBounty - Save and recover abandoned carts for WooCommerce
+PLUGIN [SLUG:db-falling-snowflakes/bisteinoff-snow.php         ][ON:false]  DB Falling Snowflakes
+PLUGIN [SLUG:duplicator/duplicator.php                         ][ON:true ]  Duplicator
+PLUGIN [SLUG:easy-wp-smtp/easy-wp-smtp.php                     ][ON:true ]  Easy WP SMTP
+PLUGIN [SLUG:file-manager-advanced/file_manager_advanced.php   ][ON:true ]  File Manager Advanced
+PLUGIN [SLUG:google-listings-and-ads/google-listings-and-ads.php][ON:true ]  Google for WooCommerce
+PLUGIN [SLUG:loco-translate/loco.php                           ][ON:true ]  Loco Translate
+PLUGIN [SLUG:mrkv-liqpay-extended/mrkv-liqpay-extended.php     ][ON:true ]  Morkva Liqpay Extended
+PLUGIN [SLUG:polylang/polylang.php                             ][ON:false]  Polylang
+PLUGIN [SLUG:saphali-discount/saphali-discount.php             ][ON:true ]  Saphali - Saphali - Progressive Discounts
+PLUGIN [SLUG:saphali-customer-reviews/saphali-customer-reviews.php][ON:false]  Saphali Customer Reviews
+PLUGIN [SLUG:nova-poshta-ttn/nova-poshta-ttn.php               ][ON:true ]  Shipping for Nova Poshta
+PLUGIN [SLUG:snow-storm/snow-storm.php                         ][ON:false]  Snow Storm
+PLUGIN [SLUG:tranzly/tranzly.php                               ][ON:false]  Tranzly - AI DeepL Translation Plugin
+PLUGIN [SLUG:woo-ukrposhta/morkvaup-plugin.php                 ][ON:true ]  Ukrposhta
+PLUGIN [SLUG:weather-effect/weather-effect.php                 ][ON:true ]  Weather Effect
+PLUGIN [SLUG:woocommerce/woocommerce.php                       ][ON:true ]  WooCommerce
+PLUGIN [SLUG:woo-smart-wishlist/wpc-smart-wishlist.php         ][ON:true ]  WPC Smart Wishlist for WooCommerce
+PLUGIN [SLUG:wp-super-cache/wp-cache.php                       ][ON:false]  WP Super Cache
+PLUGIN [SLUG:advanced-cache.php                                ][ON:false]  advanced-cache.php
+
+********************************************************************************
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\ctrls\ctrl.base.php:227][DELTA:   2.14192]  MESSAGE:END RENDER PAGE
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [sparam_s1] START
+AJAX ACTION [sparam_s1] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+STEP ACTION: "on-validate"
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\ctrls\ctrl.base.php:227][DELTA:   2.13185]  MESSAGE:END RENDER PAGE
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [validate] START
+START TEST "Archive Check" [CLASS: DUPX_Validation_test_archive_check]
+LOG-TIME[DELTA:   0.00007]  MESSAGE:TEST "Archive Check" RESULT: passed
+
+START TEST "Duplicator importer version" [CLASS: DUPX_Validation_test_importer_version]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Duplicator importer version" RESULT: skip
+
+START TEST "Overwrite Install" [CLASS: DUPX_Validation_test_owrinstall]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Overwrite Install" RESULT: skip
+
+START TEST "Recovery Point" [CLASS: DUPX_Validation_test_recovery]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Recovery Point" RESULT: skip
+
+START TEST "Package is Importable" [CLASS: DUPX_Validation_test_importable]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Package is Importable" RESULT: skip
+
+START TEST "REST API test" [CLASS: DUPX_Validation_test_rest_api]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "REST API test" RESULT: skip
+
+START TEST "Manual extraction detected" [CLASS: DUPX_Validation_test_manual_extraction]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Manual extraction detected" RESULT: good
+
+START TEST "Database Only" [CLASS: DUPX_Validation_test_dbonly_iswordpress]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Database Only" RESULT: skip
+
+START TEST "Package Age" [CLASS: DUPX_Validation_test_package_age]
+LOG-TIME[DELTA:   0.00194]  MESSAGE:TEST "Package Age" RESULT: good
+
+START TEST "Package Size" [CLASS: DUPX_Validation_test_package_size]
+LOG-TIME[DELTA:   0.00007]  MESSAGE:TEST "Package Size" RESULT: soft warning
+
+START TEST "Replace PATHs in database" [CLASS: DUPX_Validation_test_replace_paths]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Replace PATHs in database" RESULT: skip
+
+START TEST "Managed hosting supported" [CLASS: DUPX_Validation_test_managed_supported]
+LOG-TIME[DELTA:   0.00010]  MESSAGE:TEST "Managed hosting supported" RESULT: skip
+
+START TEST "Siteground" [CLASS: DUPX_Validation_test_siteground]
+LOG-TIME[DELTA:   0.00007]  MESSAGE:TEST "Siteground" RESULT: skip
+
+START TEST "Addon Sites" [CLASS: DUPX_Validation_test_addon_sites]
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+LOG-TIME[DELTA:   0.03680]  MESSAGE:TEST "Addon Sites" RESULT: good
+
+START TEST "Wordfence" [CLASS: DUPX_Validation_test_wordfence]
+LOG-TIME[DELTA:   0.00043]  MESSAGE:TEST "Wordfence" RESULT: good
+
+START TEST "Table prefix of managed hosting" [CLASS: DUPX_Validation_test_managed_tprefix]
+LOG-TIME[DELTA:   0.00009]  MESSAGE:TEST "Table prefix of managed hosting" RESULT: skip
+
+START TEST "PHP Version Mismatch" [CLASS: DUPX_Validation_test_php_version]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Version Mismatch" RESULT: soft warning
+
+START TEST "PHP Open Base" [CLASS: DUPX_Validation_test_open_basedir]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Open Base" RESULT: good
+
+START TEST "PHP Memory Limit" [CLASS: DUPX_Validation_test_memory_limit]
+LOG-TIME[DELTA:   0.00002]  MESSAGE:TEST "PHP Memory Limit" RESULT: good
+
+START TEST "PHP Extensions" [CLASS: DUPX_Validation_test_extensions]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Extensions" RESULT: good
+
+START TEST "PHP Mysqli" [CLASS: DUPX_Validation_test_mysql_connect]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Mysqli" RESULT: passed
+
+START TEST "PHP Tokenizer" [CLASS: DUPX_Validation_test_tokenizer]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Tokenizer" RESULT: passed
+
+START TEST "PHP Timeout" [CLASS: DUPX_Validation_test_timeout]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Timeout" RESULT: good
+
+START TEST "Disk Space" [CLASS: DUPX_Validation_test_disk_space]
+LOG-TIME[DELTA:   0.02295]  MESSAGE:TEST "Disk Space" RESULT: good
+
+START TEST "Permissions: General" [CLASS: DUPX_Validation_test_iswritable]
+LOG-TIME[DELTA:   0.03739]  MESSAGE:TEST "Permissions: General" RESULT: passed
+
+START TEST "Permissions: Configs Files " [CLASS: DUPX_Validation_test_iswritable_configs]
+LOG-TIME[DELTA:   0.00042]  MESSAGE:TEST "Permissions: Configs Files " RESULT: passed
+
+START TEST "Host Name" [CLASS: DUPX_Validation_test_db_host_name]
+LOG-TIME[DELTA:   0.00006]  MESSAGE:TEST "Host Name" RESULT: passed
+
+START TEST "Host Connection" [CLASS: DUPX_Validation_test_db_connection]
+LOG-TIME[DELTA:   0.01767]  MESSAGE:TEST "Host Connection" RESULT: passed
+
+START TEST "Database Version" [CLASS: DUPX_Validation_test_db_version]
+LOG-TIME[DELTA:   0.00245]  MESSAGE:TEST "Database Version" RESULT: passed
+
+START TEST "Create New Database" [CLASS: DUPX_Validation_test_db_create]
+LOG-TIME[DELTA:   0.00002]  MESSAGE:TEST "Create New Database" RESULT: skip
+
+START TEST "Database Engine Support" [CLASS: DUPX_Validation_test_db_supported_engine]
+LOG-TIME[DELTA:   0.00024]  MESSAGE:TEST "Database Engine Support" RESULT: passed
+
+START TEST "Database GTID Mode" [CLASS: DUPX_Validation_test_db_gtid_mode]
+LOG-TIME[DELTA:   0.00011]  MESSAGE:TEST "Database GTID Mode" RESULT: passed
+
+START TEST "Privileges: User Visibility" [CLASS: DUPX_Validation_test_db_visibility]
+LOG-TIME[DELTA:   0.00030]  MESSAGE:TEST "Privileges: User Visibility" RESULT: failed
+
+START TEST "Manual Table Check" [CLASS: DUPX_Validation_test_db_manual_tabels_count]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Manual Table Check" RESULT: skip
+
+START TEST "Multiple WordPress Installs" [CLASS: DUPX_Validation_test_db_multiple_wp_installs]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Multiple WordPress Installs" RESULT: skip
+
+START TEST "Privileges: User Resources" [CLASS: DUPX_Validation_test_db_user_resources]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Privileges: User Resources" RESULT: skip
+
+START TEST "Privileges: User Table Access" [CLASS: DUPX_Validation_test_db_user_perms]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Privileges: User Table Access" RESULT: skip
+
+START TEST "Privileges: 'Show Variables' Query" [CLASS: DUPX_Validation_test_db_custom_queries]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Privileges: 'Show Variables' Query" RESULT: skip
+
+START TEST "Source Database Triggers" [CLASS: DUPX_Validation_test_db_triggers]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Source Database Triggers" RESULT: skip
+
+START TEST "Character Set and Collation Support" [CLASS: DUPX_Validation_test_db_supported_default_charset]
+LOG-TIME[DELTA:   0.00005]  MESSAGE:TEST "Character Set and Collation Support" RESULT: skip
+
+START TEST "Character Set and  Collation Capability" [CLASS: DUPX_Validation_test_db_supported_charset]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Character Set and  Collation Capability" RESULT: skip
+
+START TEST "Tables Case Sensitivity" [CLASS: DUPX_Validation_test_db_case_sensitive_tables]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Tables Case Sensitivity" RESULT: skip
+
+START TEST "Tables Flagged for Removal or Backup" [CLASS: DUPX_Validation_test_db_affected_tables]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Tables Flagged for Removal or Backup" RESULT: skip
+
+START TEST "Prefix too long" [CLASS: DUPX_Validation_test_db_prefix_too_long]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Prefix too long" RESULT: skip
+
+START TEST "Database cleanup" [CLASS: DUPX_Validation_test_db_cleanup]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Database cleanup" RESULT: skip
+
+AJAX ACTION [validate] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [sparam_s1] START
+AJAX ACTION [sparam_s1] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+STEP ACTION: "on-validate"
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\ctrls\ctrl.base.php:227][DELTA:   2.12597]  MESSAGE:END RENDER PAGE
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [validate] START
+START TEST "Archive Check" [CLASS: DUPX_Validation_test_archive_check]
+LOG-TIME[DELTA:   0.00006]  MESSAGE:TEST "Archive Check" RESULT: passed
+
+START TEST "Duplicator importer version" [CLASS: DUPX_Validation_test_importer_version]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Duplicator importer version" RESULT: skip
+
+START TEST "Overwrite Install" [CLASS: DUPX_Validation_test_owrinstall]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Overwrite Install" RESULT: skip
+
+START TEST "Recovery Point" [CLASS: DUPX_Validation_test_recovery]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Recovery Point" RESULT: skip
+
+START TEST "Package is Importable" [CLASS: DUPX_Validation_test_importable]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Package is Importable" RESULT: skip
+
+START TEST "REST API test" [CLASS: DUPX_Validation_test_rest_api]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "REST API test" RESULT: skip
+
+START TEST "Manual extraction detected" [CLASS: DUPX_Validation_test_manual_extraction]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Manual extraction detected" RESULT: good
+
+START TEST "Database Only" [CLASS: DUPX_Validation_test_dbonly_iswordpress]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Database Only" RESULT: skip
+
+START TEST "Package Age" [CLASS: DUPX_Validation_test_package_age]
+LOG-TIME[DELTA:   0.00002]  MESSAGE:TEST "Package Age" RESULT: good
+
+START TEST "Package Size" [CLASS: DUPX_Validation_test_package_size]
+LOG-TIME[DELTA:   0.00005]  MESSAGE:TEST "Package Size" RESULT: soft warning
+
+START TEST "Replace PATHs in database" [CLASS: DUPX_Validation_test_replace_paths]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Replace PATHs in database" RESULT: skip
+
+START TEST "Managed hosting supported" [CLASS: DUPX_Validation_test_managed_supported]
+LOG-TIME[DELTA:   0.00008]  MESSAGE:TEST "Managed hosting supported" RESULT: skip
+
+START TEST "Siteground" [CLASS: DUPX_Validation_test_siteground]
+LOG-TIME[DELTA:   0.00006]  MESSAGE:TEST "Siteground" RESULT: skip
+
+START TEST "Addon Sites" [CLASS: DUPX_Validation_test_addon_sites]
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+LOG-TIME[DELTA:   0.03480]  MESSAGE:TEST "Addon Sites" RESULT: good
+
+START TEST "Wordfence" [CLASS: DUPX_Validation_test_wordfence]
+LOG-TIME[DELTA:   0.00039]  MESSAGE:TEST "Wordfence" RESULT: good
+
+START TEST "Table prefix of managed hosting" [CLASS: DUPX_Validation_test_managed_tprefix]
+LOG-TIME[DELTA:   0.00010]  MESSAGE:TEST "Table prefix of managed hosting" RESULT: skip
+
+START TEST "PHP Version Mismatch" [CLASS: DUPX_Validation_test_php_version]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Version Mismatch" RESULT: soft warning
+
+START TEST "PHP Open Base" [CLASS: DUPX_Validation_test_open_basedir]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Open Base" RESULT: good
+
+START TEST "PHP Memory Limit" [CLASS: DUPX_Validation_test_memory_limit]
+LOG-TIME[DELTA:   0.00002]  MESSAGE:TEST "PHP Memory Limit" RESULT: good
+
+START TEST "PHP Extensions" [CLASS: DUPX_Validation_test_extensions]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Extensions" RESULT: good
+
+START TEST "PHP Mysqli" [CLASS: DUPX_Validation_test_mysql_connect]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Mysqli" RESULT: passed
+
+START TEST "PHP Tokenizer" [CLASS: DUPX_Validation_test_tokenizer]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Tokenizer" RESULT: passed
+
+START TEST "PHP Timeout" [CLASS: DUPX_Validation_test_timeout]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "PHP Timeout" RESULT: good
+
+START TEST "Disk Space" [CLASS: DUPX_Validation_test_disk_space]
+LOG-TIME[DELTA:   0.02071]  MESSAGE:TEST "Disk Space" RESULT: good
+
+START TEST "Permissions: General" [CLASS: DUPX_Validation_test_iswritable]
+LOG-TIME[DELTA:   0.03752]  MESSAGE:TEST "Permissions: General" RESULT: passed
+
+START TEST "Permissions: Configs Files " [CLASS: DUPX_Validation_test_iswritable_configs]
+LOG-TIME[DELTA:   0.00044]  MESSAGE:TEST "Permissions: Configs Files " RESULT: passed
+
+START TEST "Host Name" [CLASS: DUPX_Validation_test_db_host_name]
+LOG-TIME[DELTA:   0.00006]  MESSAGE:TEST "Host Name" RESULT: passed
+
+START TEST "Host Connection" [CLASS: DUPX_Validation_test_db_connection]
+LOG-TIME[DELTA:   0.00143]  MESSAGE:TEST "Host Connection" RESULT: passed
+
+START TEST "Database Version" [CLASS: DUPX_Validation_test_db_version]
+LOG-TIME[DELTA:   0.00228]  MESSAGE:TEST "Database Version" RESULT: passed
+
+START TEST "Create New Database" [CLASS: DUPX_Validation_test_db_create]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Create New Database" RESULT: skip
+
+START TEST "Database Engine Support" [CLASS: DUPX_Validation_test_db_supported_engine]
+LOG-TIME[DELTA:   0.00015]  MESSAGE:TEST "Database Engine Support" RESULT: passed
+
+START TEST "Database GTID Mode" [CLASS: DUPX_Validation_test_db_gtid_mode]
+LOG-TIME[DELTA:   0.00016]  MESSAGE:TEST "Database GTID Mode" RESULT: passed
+
+START TEST "Privileges: User Visibility" [CLASS: DUPX_Validation_test_db_visibility]
+LOG-TIME[DELTA:   0.00025]  MESSAGE:TEST "Privileges: User Visibility" RESULT: passed
+
+START TEST "Manual Table Check" [CLASS: DUPX_Validation_test_db_manual_tabels_count]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Manual Table Check" RESULT: skip
+
+START TEST "Multiple WordPress Installs" [CLASS: DUPX_Validation_test_db_multiple_wp_installs]
+LOG-TIME[DELTA:   0.00221]  MESSAGE:TEST "Multiple WordPress Installs" RESULT: passed
+
+START TEST "Privileges: User Resources" [CLASS: DUPX_Validation_test_db_user_resources]
+LOG-TIME[DELTA:   0.00020]  MESSAGE:TEST "Privileges: User Resources" RESULT: passed
+
+START TEST "Privileges: User Table Access" [CLASS: DUPX_Validation_test_db_user_perms]
+LOG-TIME[DELTA:   0.11870]  MESSAGE:TEST "Privileges: User Table Access" RESULT: passed
+
+START TEST "Privileges: 'Show Variables' Query" [CLASS: DUPX_Validation_test_db_custom_queries]
+LOG-TIME[DELTA:   0.00099]  MESSAGE:TEST "Privileges: 'Show Variables' Query" RESULT: passed
+
+START TEST "Source Database Triggers" [CLASS: DUPX_Validation_test_db_triggers]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Source Database Triggers" RESULT: passed
+
+START TEST "Character Set and Collation Support" [CLASS: DUPX_Validation_test_db_supported_default_charset]
+LOG-TIME[DELTA:   0.00364]  MESSAGE:TEST "Character Set and Collation Support" RESULT: passed
+
+START TEST "Character Set and  Collation Capability" [CLASS: DUPX_Validation_test_db_supported_charset]
+LOG-TIME[DELTA:   0.00008]  MESSAGE:TEST "Character Set and  Collation Capability" RESULT: passed
+
+START TEST "Tables Case Sensitivity" [CLASS: DUPX_Validation_test_db_case_sensitive_tables]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Tables Case Sensitivity" RESULT: skip
+
+START TEST "Tables Flagged for Removal or Backup" [CLASS: DUPX_Validation_test_db_affected_tables]
+LOG-TIME[DELTA:   0.00111]  MESSAGE:TEST "Tables Flagged for Removal or Backup" RESULT: passed
+
+START TEST "Prefix too long" [CLASS: DUPX_Validation_test_db_prefix_too_long]
+LOG-TIME[DELTA:   0.00009]  MESSAGE:TEST "Prefix too long" RESULT: passed
+
+START TEST "Database cleanup" [CLASS: DUPX_Validation_test_db_cleanup]
+LOG-TIME[DELTA:   0.00001]  MESSAGE:TEST "Database cleanup" RESULT: skip
+
+
+CTRL PARAMS AFTER VALIDATION
+AJAX ACTION [validate] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [proceed_confirm_dialog] START
+AJAX ACTION [proceed_confirm_dialog] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [sparam_s1] START
+AJAX ACTION [sparam_s1] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+INITIALIZE FILTERS
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+********************************************************************************
+* DUPLICATOR LITE: Install-Log
+* STEP-1 START @ 12:08:30
+* NOTICE: Do NOT post to public sites or forums!!
+********************************************************************************
+USER INPUTS
+INSTALL TYPE________: single site
+BLOG NAME___________: "Видавничий дім Школа • Книги для дітей українською мовою"
+HOME URL NEW________: "https://new-schoolbook.local"
+SITE URL NEW________: "https://new-schoolbook.local"
+CONTENT URL NEW_____: "https://new-schoolbook.local/wp-content"
+UPLOAD URL NEW______: "https://new-schoolbook.local/wp-content/uploads"
+PLUGINS URL NEW_____: "https://new-schoolbook.local/wp-content/plugins"
+MUPLUGINS URL NEW___: "https://new-schoolbook.local/wp-content/mu-plugins"
+HOME PATH NEW_______: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+SITE PATH NEW_______: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+CONTENT PATH NEW____: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/wp-content"
+UPLOAD PATH NEW_____: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/wp-content/uploads"
+PLUGINS PATH NEW____: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/wp-content/plugins"
+MUPLUGINS PATH NEW__: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/wp-content/mu-plugins"
+ARCHIVE ACTION______: "donothing"
+SKIP WP FILES_______: "none"
+ARCHIVE ENGINE______: "ziparchivechunking"
+SET DIR PERMS_______: false
+DIR PERMS VALUE_____: 0755
+SET FILE PERMS______: false
+FILE PERMS VALUE____: 0644
+SAFE MODE___________: 0
+LOGGING_____________: 1
+ZIP THROTTLING______: false
+WP CONFIG___________: "modify"
+HTACCESS CONFIG_____: "new"
+OTHER CONFIG________: "new"
+FILE TIME___________: "current"
+********************************************************************************
+
+REMOVE FILTERS
+	DIR : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/dup-installer"
+	FILE: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/20241030_d0b2d0b8d0b4d0b0d0b2d0bdd0b8d18_[HASH]_20250326135248_installer-backup.php"
+	FILE: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/20241030_d0b2d0b8d0b4d0b0d0b2d0bdd0b8d18_[HASH]_20250326135248_archive.zip"
+	FILE: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/installer.php"
+	FILE: "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/dup-installer-bootlog__8c2ad56-26135248.txt"
+EXTRACTION FILTERS
+	DIR : "dup-installer"
+	FILE: "20241030_d0b2d0b8d0b4d0b0d0b2d0bdd0b8d18_[HASH]_20250326135248_installer-backup.php"
+--------------------------------------
+
+
+EXTRACTION: ZIP CHUNKING >>> START
+MAINTENANCE MODE ENABLE
+BEFORE EXTRACION ACTIONS
+
+*** RESET CONFIG FILES IN CURRENT HOSTING >>> START
+
+*** RESET CONFIG FILES IN CURRENT HOSTING >>> END
+MAINTENANCE MODE ENABLE
+
+*** CREATE FOLDER AND PERMISSION PREPARE
+FOLDER PREPARE DONE
+ARCHIVE OFFSET 0
+CHUNK COMPLETE - RUNTIME: 5.0071 sec. - Files processed: 5,975 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 5975
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0073 sec. - Files processed: 10,729 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 10729
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0105 sec. - Files processed: 16,455 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 16455
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0408 sec. - Files processed: 20,315 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 20315
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0180 sec. - Files processed: 22,094 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 22094
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0209 sec. - Files processed: 23,226 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 23226
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0374 sec. - Files processed: 24,201 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 24201
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0446 sec. - Files processed: 24,685 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 24685
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0297 sec. - Files processed: 25,285 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 25285
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0158 sec. - Files processed: 26,480 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 26480
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0473 sec. - Files processed: 27,352 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 27352
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0317 sec. - Files processed: 27,719 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 27719
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0104 sec. - Files processed: 28,755 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 28755
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0124 sec. - Files processed: 31,388 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 31388
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0138 sec. - Files processed: 33,673 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 33673
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0102 sec. - Files processed: 36,216 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 36216
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0084 sec. - Files processed: 38,088 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 38088
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+CHUNK COMPLETE - RUNTIME: 5.0527 sec. - Files processed: 40,389 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [extract] START
+MAINTENANCE MODE ENABLE
+ARCHIVE OFFSET 40389
+--------------------------------------
+PATHS MAPPING : "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+--------------------------------------
+FILE EXTRACTION: done processing last file in list of 41931
+
+EXTRACTION: ZIP CHUNKING >>> DONE
+
+EXTRACTION COMPLETE @ 12:10:14 - RUNTIME: 104.0207 sec. - Files processed: 41,324 of 41,324
+AJAX ACTION [extract] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [dbinstall] START
+ADD PREFIX META MAP ID 0 wp_
+
+
+
+********************************************************************************
+* DUPLICATOR LITE: INSTALL-LOG
+* STEP-2 START @ 12:10:14
+* NOTICE: Do NOT post to public sites or forums!!
+********************************************************************************
+USER INPUTS
+DB ENGINE___________: "chunk"
+VIEW MODE___________: "basic"
+DB ACTION___________: "empty"
+DB HOST_____________: "**OBSCURED**"
+DB NAME_____________: "**OBSCURED**"
+DB PASS_____________: "**OBSCURED**"
+DB PORT_____________: "**OBSCURED**"
+USER MODE___________: "overwrite"
+TABLE PREFIX________: "wp_"
+MYSQL MODE__________: "DEFAULT"
+MYSQL MODE OPTS_____: ""
+CHARSET_____________: "utf8mb4"
+COLLATE_____________: ""
+CUNKING_____________: true
+VIEW CREATION_______: true
+STORED PROCEDURE____: true
+FUNCTIONS___________: true
+REMOVE DEFINER______: false
+SPLIT CREATES_______: true
+--------------------------------------
+TABLES
+--------------------------------------
+TABLE "wp_actionscheduler_actions"______________________[ROWS:   18256] [EXTRACT|REPLACE] [INST NAME: wp_actionscheduler_actions]
+TABLE "wp_actionscheduler_claims"_______________________[ROWS:       1] [EXTRACT|REPLACE] [INST NAME: wp_actionscheduler_claims]
+TABLE "wp_actionscheduler_groups"_______________________[ROWS:       9] [EXTRACT|REPLACE] [INST NAME: wp_actionscheduler_groups]
+TABLE "wp_actionscheduler_logs"_________________________[ROWS:   54751] [EXTRACT|REPLACE] [INST NAME: wp_actionscheduler_logs]
+TABLE "wp_aws_cache"____________________________________[ROWS:      56] [EXTRACT|REPLACE] [INST NAME: wp_aws_cache]
+TABLE "wp_aws_index"____________________________________[ROWS:   12579] [EXTRACT|REPLACE] [INST NAME: wp_aws_index]
+TABLE "wp_cartbounty"___________________________________[ROWS:    3668] [EXTRACT|REPLACE] [INST NAME: wp_cartbounty]
+TABLE "wp_commentmeta"__________________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_commentmeta]
+TABLE "wp_comments"_____________________________________[ROWS:    6708] [EXTRACT|REPLACE] [INST NAME: wp_comments]
+TABLE "wp_duplicator_packages"__________________________[ROWS:       3] [EXTRACT|REPLACE] [INST NAME: wp_duplicator_packages]
+TABLE "wp_easywpsmtp_debug_events"______________________[ROWS:      10] [EXTRACT|REPLACE] [INST NAME: wp_easywpsmtp_debug_events]
+TABLE "wp_easywpsmtp_tasks_meta"________________________[ROWS:       1] [EXTRACT|REPLACE] [INST NAME: wp_easywpsmtp_tasks_meta]
+TABLE "wp_gla_attribute_mapping_rules"__________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_gla_attribute_mapping_rules]
+TABLE "wp_gla_budget_recommendations"___________________[ROWS:    4230] [EXTRACT|REPLACE] [INST NAME: wp_gla_budget_recommendations]
+TABLE "wp_gla_merchant_issues"__________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_gla_merchant_issues]
+TABLE "wp_gla_shipping_rates"___________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_gla_shipping_rates]
+TABLE "wp_gla_shipping_times"___________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_gla_shipping_times]
+TABLE "wp_links"________________________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_links]
+TABLE "wp_nova_poshta_city"_____________________________[ROWS:    9894] [EXTRACT|REPLACE] [INST NAME: wp_nova_poshta_city]
+TABLE "wp_nova_poshta_region"___________________________[ROWS:      25] [EXTRACT|REPLACE] [INST NAME: wp_nova_poshta_region]
+TABLE "wp_nova_poshta_warehouse"________________________[ROWS:   28396] [EXTRACT|REPLACE] [INST NAME: wp_nova_poshta_warehouse]
+TABLE "wp_novaposhta_ttn_invoices"______________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_novaposhta_ttn_invoices]
+TABLE "wp_options"______________________________________[ROWS:     937] [EXTRACT|REPLACE] [INST NAME: wp_options]
+TABLE "wp_postmeta"_____________________________________[ROWS:   21209] [EXTRACT|REPLACE] [INST NAME: wp_postmeta]
+TABLE "wp_posts"________________________________________[ROWS:    2928] [EXTRACT|REPLACE] [INST NAME: wp_posts]
+TABLE "wp_setting_exchange_1c"__________________________[ROWS:      59] [EXTRACT|REPLACE] [INST NAME: wp_setting_exchange_1c]
+TABLE "wp_status_exchange_1c"___________________________[ROWS:       2] [EXTRACT|REPLACE] [INST NAME: wp_status_exchange_1c]
+TABLE "wp_term_relationships"___________________________[ROWS:    3000] [EXTRACT|REPLACE] [INST NAME: wp_term_relationships]
+TABLE "wp_term_taxonomy"________________________________[ROWS:     625] [EXTRACT|REPLACE] [INST NAME: wp_term_taxonomy]
+TABLE "wp_termmeta"_____________________________________[ROWS:     711] [EXTRACT|REPLACE] [INST NAME: wp_termmeta]
+TABLE "wp_terms"________________________________________[ROWS:     625] [EXTRACT|REPLACE] [INST NAME: wp_terms]
+TABLE "wp_uposhta_invoices"_____________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_uposhta_invoices]
+TABLE "wp_usermeta"_____________________________________[ROWS:   41580] [EXTRACT|REPLACE] [INST NAME: wp_usermeta]
+TABLE "wp_users"________________________________________[ROWS:    1287] [EXTRACT|REPLACE] [INST NAME: wp_users]
+TABLE "wp_wc_admin_note_actions"________________________[ROWS:     124] [EXTRACT|REPLACE] [INST NAME: wp_wc_admin_note_actions]
+TABLE "wp_wc_admin_notes"_______________________________[ROWS:      93] [EXTRACT|REPLACE] [INST NAME: wp_wc_admin_notes]
+TABLE "wp_wc_category_lookup"___________________________[ROWS:      38] [EXTRACT|REPLACE] [INST NAME: wp_wc_category_lookup]
+TABLE "wp_wc_customer_lookup"___________________________[ROWS:    2225] [EXTRACT|REPLACE] [INST NAME: wp_wc_customer_lookup]
+TABLE "wp_wc_download_log"______________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_wc_download_log]
+TABLE "wp_wc_order_addresses"___________________________[ROWS:    2948] [EXTRACT|REPLACE] [INST NAME: wp_wc_order_addresses]
+TABLE "wp_wc_order_coupon_lookup"_______________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_wc_order_coupon_lookup]
+TABLE "wp_wc_order_operational_data"____________________[ROWS:    1474] [EXTRACT|REPLACE] [INST NAME: wp_wc_order_operational_data]
+TABLE "wp_wc_order_product_lookup"______________________[ROWS:    4095] [EXTRACT|REPLACE] [INST NAME: wp_wc_order_product_lookup]
+TABLE "wp_wc_order_stats"_______________________________[ROWS:    1474] [EXTRACT|REPLACE] [INST NAME: wp_wc_order_stats]
+TABLE "wp_wc_order_tax_lookup"__________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_wc_order_tax_lookup]
+TABLE "wp_wc_orders"____________________________________[ROWS:    1474] [EXTRACT|REPLACE] [INST NAME: wp_wc_orders]
+TABLE "wp_wc_orders_meta"_______________________________[ROWS:   56302] [EXTRACT|REPLACE] [INST NAME: wp_wc_orders_meta]
+TABLE "wp_wc_product_attributes_lookup"_________________[ROWS:    2083] [EXTRACT|REPLACE] [INST NAME: wp_wc_product_attributes_lookup]
+TABLE "wp_wc_product_download_directories"______________[ROWS:       2] [EXTRACT|REPLACE] [INST NAME: wp_wc_product_download_directories]
+TABLE "wp_wc_product_meta_lookup"_______________________[ROWS:     182] [EXTRACT|REPLACE] [INST NAME: wp_wc_product_meta_lookup]
+TABLE "wp_wc_rate_limits"_______________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_wc_rate_limits]
+TABLE "wp_wc_reserved_stock"____________________________[ROWS:       7] [EXTRACT|REPLACE] [INST NAME: wp_wc_reserved_stock]
+TABLE "wp_wc_tax_rate_classes"__________________________[ROWS:       2] [EXTRACT|REPLACE] [INST NAME: wp_wc_tax_rate_classes]
+TABLE "wp_wc_webhooks"__________________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_wc_webhooks]
+TABLE "wp_woocommerce_api_keys"_________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_api_keys]
+TABLE "wp_woocommerce_attribute_taxonomies"_____________[ROWS:      17] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_attribute_taxonomies]
+TABLE "wp_woocommerce_downloadable_product_permissions"_[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_downloadable_product_permissions]
+TABLE "wp_woocommerce_log"______________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_log]
+TABLE "wp_woocommerce_order_itemmeta"___________________[ROWS:   47942] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_order_itemmeta]
+TABLE "wp_woocommerce_order_items"______________________[ROWS:    5566] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_order_items]
+TABLE "wp_woocommerce_payment_tokenmeta"________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_payment_tokenmeta]
+TABLE "wp_woocommerce_payment_tokens"___________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_payment_tokens]
+TABLE "wp_woocommerce_sessions"_________________________[ROWS:      71] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_sessions]
+TABLE "wp_woocommerce_shipping_zone_locations"__________[ROWS:       1] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_shipping_zone_locations]
+TABLE "wp_woocommerce_shipping_zone_methods"____________[ROWS:       5] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_shipping_zone_methods]
+TABLE "wp_woocommerce_shipping_zones"___________________[ROWS:       1] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_shipping_zones]
+TABLE "wp_woocommerce_tax_rate_locations"_______________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_tax_rate_locations]
+TABLE "wp_woocommerce_tax_rates"________________________[ROWS:       0] [EXTRACT|REPLACE] [INST NAME: wp_woocommerce_tax_rates]
+********************************************************************************
+
+--------------------------------------
+DATABASE-ENVIRONMENT
+--------------------------------------
+MYSQL VERSION:	This Server: 8.2.0 -- Build Server: 8.0.41
+FILE SIZE:	dup-database__[HASH].sql (52.74MB)
+TIMEOUT:	5000
+MAXPACK:	67108864
+SQLMODE-GLOBAL:	ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+SQLMODE-SESSION:NO_AUTO_VALUE_ON_ZERO
+DROP ALL TABLES
+--------------------------------------
+DATABASE RESULTS
+--------------------------------------
+QUERY FIXES
+GLOBAL RULES ADDED: PROC AND VIEWS
+
+QUERY FIXES GLOBAL RULES
+	SEARCH  => /^(\s*(?:\/\*!\d+\s)?\s*(?:CREATE.+)?DEFINER\s*=)([^\*\s]+)(.*)$/m
+	REPLACE => $1`root`@`%`$3
+
+	SEARCH  => /^(\s*CREATE.+(?:PROCEDURE|FUNCTION)[\s\S]*)(BEGIN)([\s\S]*)$/
+	REPLACE => $1SQL SECURITY INVOKER
+$2$3
+
+--------------------------------------
+** DATABASE CHUNK install start
+--------------------------------------
+DATABASE CHUNK SEEK POSITION: 0
+Auto Commit set to false successfully
+NO TABLE TO SKIP
+Auto Commit set to true successfully
+--------------------------------------
+** DATABASE CHUNK install end
+--------------------------------------
+ERRORS FOUND:	0
+DROPPED TABLES:	0
+RENAMED TABLES:	0
+QUERIES RAN:	645
+
+TABLES ROWS IN DATABASE AFTER EXTRACTION
+
+TABLE "wp_actionscheduler_actions"______________________[ROWS: 18254]
+TABLE "wp_actionscheduler_claims"_______________________[ROWS:     1]
+TABLE "wp_actionscheduler_groups"_______________________[ROWS:     9]
+TABLE "wp_actionscheduler_logs"_________________________[ROWS: 54745]
+TABLE "wp_aws_cache"____________________________________[ROWS:    56]
+TABLE "wp_aws_index"____________________________________[ROWS: 12579]
+TABLE "wp_cartbounty"___________________________________[ROWS:  3668]
+TABLE "wp_commentmeta"__________________________________[ROWS:     0]
+TABLE "wp_comments"_____________________________________[ROWS:  6708]
+TABLE "wp_duplicator_packages"__________________________[ROWS:     3]
+TABLE "wp_easywpsmtp_debug_events"______________________[ROWS:    10]
+TABLE "wp_easywpsmtp_tasks_meta"________________________[ROWS:     1]
+TABLE "wp_gla_attribute_mapping_rules"__________________[ROWS:     0]
+TABLE "wp_gla_budget_recommendations"___________________[ROWS:  4230]
+TABLE "wp_gla_merchant_issues"__________________________[ROWS:     0]
+TABLE "wp_gla_shipping_rates"___________________________[ROWS:     0]
+TABLE "wp_gla_shipping_times"___________________________[ROWS:     0]
+TABLE "wp_links"________________________________________[ROWS:     0]
+TABLE "wp_nova_poshta_city"_____________________________[ROWS:  9894]
+TABLE "wp_nova_poshta_region"___________________________[ROWS:    25]
+TABLE "wp_nova_poshta_warehouse"________________________[ROWS: 28396]
+TABLE "wp_novaposhta_ttn_invoices"______________________[ROWS:     0]
+TABLE "wp_options"______________________________________[ROWS:   937]
+TABLE "wp_postmeta"_____________________________________[ROWS: 21209]
+TABLE "wp_posts"________________________________________[ROWS:  2928]
+TABLE "wp_setting_exchange_1c"__________________________[ROWS:    59]
+TABLE "wp_status_exchange_1c"___________________________[ROWS:     2]
+TABLE "wp_term_relationships"___________________________[ROWS:  3000]
+TABLE "wp_term_taxonomy"________________________________[ROWS:   625]
+TABLE "wp_termmeta"_____________________________________[ROWS:   711]
+TABLE "wp_terms"________________________________________[ROWS:   625]
+TABLE "wp_uposhta_invoices"_____________________________[ROWS:     0]
+TABLE "wp_usermeta"_____________________________________[ROWS: 41580]
+TABLE "wp_users"________________________________________[ROWS:  1287]
+TABLE "wp_wc_admin_note_actions"________________________[ROWS:   124]
+TABLE "wp_wc_admin_notes"_______________________________[ROWS:    93]
+TABLE "wp_wc_category_lookup"___________________________[ROWS:    38]
+TABLE "wp_wc_customer_lookup"___________________________[ROWS:  2225]
+TABLE "wp_wc_download_log"______________________________[ROWS:     0]
+TABLE "wp_wc_order_addresses"___________________________[ROWS:  2948]
+TABLE "wp_wc_order_coupon_lookup"_______________________[ROWS:     0]
+TABLE "wp_wc_order_operational_data"____________________[ROWS:  1474]
+TABLE "wp_wc_order_product_lookup"______________________[ROWS:  4095]
+TABLE "wp_wc_order_stats"_______________________________[ROWS:  1474]
+TABLE "wp_wc_order_tax_lookup"__________________________[ROWS:     0]
+TABLE "wp_wc_orders"____________________________________[ROWS:  1474]
+TABLE "wp_wc_orders_meta"_______________________________[ROWS: 56302]
+TABLE "wp_wc_product_attributes_lookup"_________________[ROWS:  2083]
+TABLE "wp_wc_product_download_directories"______________[ROWS:     2]
+TABLE "wp_wc_product_meta_lookup"_______________________[ROWS:   182]
+TABLE "wp_wc_rate_limits"_______________________________[ROWS:     0]
+TABLE "wp_wc_reserved_stock"____________________________[ROWS:     7]
+TABLE "wp_wc_tax_rate_classes"__________________________[ROWS:     2]
+TABLE "wp_wc_webhooks"__________________________________[ROWS:     0]
+TABLE "wp_woocommerce_api_keys"_________________________[ROWS:     0]
+TABLE "wp_woocommerce_attribute_taxonomies"_____________[ROWS:    17]
+TABLE "wp_woocommerce_downloadable_product_permissions"_[ROWS:     0]
+TABLE "wp_woocommerce_log"______________________________[ROWS:     0]
+TABLE "wp_woocommerce_order_itemmeta"___________________[ROWS: 47942]
+TABLE "wp_woocommerce_order_items"______________________[ROWS:  5566]
+TABLE "wp_woocommerce_payment_tokenmeta"________________[ROWS:     0]
+TABLE "wp_woocommerce_payment_tokens"___________________[ROWS:     0]
+TABLE "wp_woocommerce_sessions"_________________________[ROWS:    71]
+TABLE "wp_woocommerce_shipping_zone_locations"__________[ROWS:     1]
+TABLE "wp_woocommerce_shipping_zone_methods"____________[ROWS:     5]
+TABLE "wp_woocommerce_shipping_zones"___________________[ROWS:     1]
+TABLE "wp_woocommerce_tax_rate_locations"_______________[ROWS:     0]
+TABLE "wp_woocommerce_tax_rates"________________________[ROWS:     0]
+
+INSERT DATA RUNTIME: 18.5938 sec.
+STEP-2 COMPLETE @ 12:10:33 - RUNTIME: 18.5940 sec.
+AJAX ACTION [dbinstall] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [webupdate] START
+
+====================================
+SET SEARCH AND REPLACE LIST INSTALL TYPE single site
+====================================
+SEARCH ITEM[T:path |P:12] SEARCH: /home/scbook/htdocs/schoolbook.com.ua REPLACE: C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public [SCOPE: ALL]
+SEARCH ITEM[T:urlnd|P:12] SEARCH: https://schoolbook.com.ua REPLACE: https://new-schoolbook.local [SCOPE: ALL]
+CHUNK LOAD DATA: IS NULL 
+CHUNK ACTION: CURRENT [start][][]
+
+
+********************************************************************************
+DUPLICATOR LITE: INSTALL-LOG
+STEP-3 START @ 12:10:33
+NOTICE: Do NOT post to public sites or forums
+********************************************************************************
+CHARSET SERVER:	"utf8mb4"
+CHARSET CLIENT:	"utf8mb4"
+********************************************************************************
+OPTIONS:
+SKIP PATH REPLACE_____: false
+DISALLOW_FILE_EDIT____: [value = ], [inWpConfig = ]
+DISALLOW_FILE_MODS____: [value = ], [inWpConfig = ]
+AUTOSAVE_INTERVAL_____: [value = 60], [inWpConfig = ]
+WP_POST_REVISIONS_____: [value = 1], [inWpConfig = ]
+FORCE_SSL_ADMIN_______: [value = 1], [inWpConfig = ]
+WP_AUTO_UPDATE_CORE___: [value = false], [inWpConfig = ]
+WP_CACHE______________: [value = ], [inWpConfig = ]
+WPCACHEHOME___________: [value = /], [inWpConfig = ]
+WP_DEBUG______________: [value = 1], [inWpConfig = 1]
+WP_DEBUG_LOG__________: [value = 1], [inWpConfig = 1]
+WP_DEBUG_DISPLAY______: [value = ], [inWpConfig = 1]
+WP_DISABLE_FATAL_ERROR_HANDLER: [value = ], [inWpConfig = ]
+SCRIPT_DEBUG__________: [value = ], [inWpConfig = ]
+CONCATENATE_SCRIPTS___: [value = ], [inWpConfig = ]
+SAVEQUERIES___________: [value = ], [inWpConfig = ]
+ALTERNATE_WP_CRON_____: [value = ], [inWpConfig = ]
+DISABLE_WP_CRON_______: [value = ], [inWpConfig = ]
+WP_CRON_LOCK_TIMEOUT__: [value = 60], [inWpConfig = ]
+COOKIE_DOMAIN_________: [value = ], [inWpConfig = ]
+WP_MEMORY_LIMIT_______: [value = 40M], [inWpConfig = ]
+WP_MAX_MEMORY_LIMIT___: [value = 512M], [inWpConfig = ]
+WP_TEMP_DIR___________: [value = ], [inWpConfig = ]
+********************************************************************************
+
+********************************************************************************
+CHUNK PARAMS:
+maxIteration__________: 0
+timeOut_______________: 5000
+throttling____________: 2
+rowsPerPage___________: 1000
+********************************************************************************
+
+CHUNK ACTION: CURRENT [cleanup_trans][][]
+[PHP ERR][E_WARNING] MSG:foreach() argument must be of type array|object, string given [CODE:2|FILE:C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Deploy\Database\DbCleanup.php|LINE:95]
+CLEAN OPTIONS [wp_options]
+	`option_name` = "duplicator_plugin_data_stats"
+	`option_name` LIKE "\_transient%"
+	`option_name` LIKE "\_site\_transient%"
+DATABASE OPTIONS DELETED [ROWS:   205]
+CHUNK ACTION: CURRENT [cleanup_extra][][]
+CLEANUP EXTRA
+	- SKIP DROP VIEWS
+	- SKIP DROP PROCS
+	- SKIP DROP FUNCS
+CHUNK ACTION: CURRENT [cleanup_packages][][]
+EMPTY PACKAGES TABLE
+CLEAN PACKAGES
+DATABASE PACKAGE DELETED [ROWS:     3]
+CHUNK ACTION: CURRENT [init][][]
+
+EVALUATE TABLE: "wp_actionscheduler_actions"______________________[ROWS: 18254][PG:  19][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][4]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][5]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][6]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][7]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][8]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][9]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][10]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][11]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][12]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][13]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][14]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][15]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][16]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][17]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_actions][18]
+
+EVALUATE TABLE: "wp_actionscheduler_claims"_______________________[ROWS:     1][PG:   1][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_actionscheduler_groups"_______________________[ROWS:     9][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_groups][0]
+
+EVALUATE TABLE: "wp_actionscheduler_logs"_________________________[ROWS: 54745][PG:  55][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][4]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][5]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][6]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][7]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][8]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][9]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][10]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][11]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][12]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][13]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][14]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][15]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][16]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][17]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][18]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][19]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][20]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][21]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][22]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][23]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][24]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][25]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][26]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][27]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][28]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][29]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][30]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][31]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][32]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][33]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][34]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][35]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][36]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][37]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][38]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][39]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][40]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][41]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][42]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][43]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][44]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][45]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][46]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][47]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][48]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][49]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][50]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][51]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][52]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][53]
+	CHUNK ACTION: CURRENT [search_replace][wp_actionscheduler_logs][54]
+
+EVALUATE TABLE: "wp_aws_cache"____________________________________[ROWS:    56][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_cache][0]
+
+EVALUATE TABLE: "wp_aws_index"____________________________________[ROWS: 12579][PG:  13][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][4]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][5]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][6]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][7]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][8]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][9]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][10]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][11]
+	CHUNK ACTION: CURRENT [search_replace][wp_aws_index][12]
+
+EVALUATE TABLE: "wp_cartbounty"___________________________________[ROWS:  3668][PG:   4][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_cartbounty][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_cartbounty][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_cartbounty][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_cartbounty][3]
+
+EVALUATE TABLE: "wp_commentmeta"__________________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_comments"_____________________________________[ROWS:  6708][PG:   7][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_comments][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_comments][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_comments][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_comments][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_comments][4]
+	CHUNK ACTION: CURRENT [search_replace][wp_comments][5]
+	CHUNK ACTION: CURRENT [search_replace][wp_comments][6]
+
+EVALUATE TABLE: "wp_duplicator_packages"__________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_easywpsmtp_debug_events"______________________[ROWS:    10][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_easywpsmtp_debug_events][0]
+
+EVALUATE TABLE: "wp_easywpsmtp_tasks_meta"________________________[ROWS:     1][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_easywpsmtp_tasks_meta][0]
+
+EVALUATE TABLE: "wp_gla_attribute_mapping_rules"__________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_gla_budget_recommendations"___________________[ROWS:  4230][PG:   5][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_gla_budget_recommendations][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_gla_budget_recommendations][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_gla_budget_recommendations][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_gla_budget_recommendations][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_gla_budget_recommendations][4]
+
+EVALUATE TABLE: "wp_gla_merchant_issues"__________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_gla_shipping_rates"___________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_gla_shipping_times"___________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_links"________________________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_nova_poshta_city"_____________________________[ROWS:  9894][PG:  10][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_city][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_city][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_city][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_city][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_city][4]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_city][5]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_city][6]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_city][7]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_city][8]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_city][9]
+
+EVALUATE TABLE: "wp_nova_poshta_region"___________________________[ROWS:    25][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_region][0]
+
+EVALUATE TABLE: "wp_nova_poshta_warehouse"________________________[ROWS: 28396][PG:  29][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][4]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][5]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][6]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][7]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][8]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][9]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][10]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][11]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][12]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][13]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][14]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][15]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][16]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][17]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][18]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][19]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][20]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][21]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][22]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][23]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][24]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][25]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][26]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][27]
+	CHUNK ACTION: CURRENT [search_replace][wp_nova_poshta_warehouse][28]
+
+EVALUATE TABLE: "wp_novaposhta_ttn_invoices"______________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_options"______________________________________[ROWS:   732][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_options][0]
+
+EVALUATE TABLE: "wp_postmeta"_____________________________________[ROWS: 21209][PG:  22][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][4]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][5]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][6]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][7]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][8]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][9]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][10]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][11]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][12]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][13]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][14]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][15]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][16]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][17]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][18]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][19]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][20]
+	CHUNK ACTION: CURRENT [search_replace][wp_postmeta][21]
+
+EVALUATE TABLE: "wp_posts"________________________________________[ROWS:  2928][PG:   3][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_posts][0]
+	
+STEP-3 CHUNK STOP @ 12:10:38 - RUNTIME: 5.1184 sec. 
+
+
+	AJAX ACTION [webupdate] SUCCESS
+	-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [webupdate] START
+CHUNK ACTION: CURRENT [search_replace][wp_posts][1]
+CHUNK ACTION: CURRENT [search_replace][wp_posts][2]
+
+EVALUATE TABLE: "wp_setting_exchange_1c"__________________________[ROWS:    59][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_setting_exchange_1c][0]
+
+EVALUATE TABLE: "wp_status_exchange_1c"___________________________[ROWS:     2][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_status_exchange_1c][0]
+
+EVALUATE TABLE: "wp_term_relationships"___________________________[ROWS:  3000][PG:   3][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_term_taxonomy"________________________________[ROWS:   625][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_term_taxonomy][0]
+
+EVALUATE TABLE: "wp_termmeta"_____________________________________[ROWS:   711][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_termmeta][0]
+
+EVALUATE TABLE: "wp_terms"________________________________________[ROWS:   625][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_terms][0]
+
+EVALUATE TABLE: "wp_uposhta_invoices"_____________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_usermeta"_____________________________________[ROWS: 41580][PG:  42][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][4]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][5]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][6]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][7]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][8]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][9]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][10]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][11]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][12]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][13]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][14]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][15]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][16]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][17]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][18]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][19]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][20]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][21]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][22]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][23]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][24]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][25]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][26]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][27]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][28]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][29]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][30]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][31]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][32]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][33]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][34]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][35]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][36]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][37]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][38]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][39]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][40]
+	CHUNK ACTION: CURRENT [search_replace][wp_usermeta][41]
+
+EVALUATE TABLE: "wp_users"________________________________________[ROWS:  1287][PG:   2][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_users][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_users][1]
+
+EVALUATE TABLE: "wp_wc_admin_note_actions"________________________[ROWS:   124][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_admin_note_actions][0]
+
+EVALUATE TABLE: "wp_wc_admin_notes"_______________________________[ROWS:    93][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_admin_notes][0]
+
+EVALUATE TABLE: "wp_wc_category_lookup"___________________________[ROWS:    38][PG:   1][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_wc_customer_lookup"___________________________[ROWS:  2225][PG:   3][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_customer_lookup][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_customer_lookup][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_customer_lookup][2]
+
+EVALUATE TABLE: "wp_wc_download_log"______________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_wc_order_addresses"___________________________[ROWS:  2948][PG:   3][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_order_addresses][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_order_addresses][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_order_addresses][2]
+
+EVALUATE TABLE: "wp_wc_order_coupon_lookup"_______________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_wc_order_operational_data"____________________[ROWS:  1474][PG:   2][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_order_operational_data][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_order_operational_data][1]
+
+EVALUATE TABLE: "wp_wc_order_product_lookup"______________________[ROWS:  4095][PG:   5][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_wc_order_stats"_______________________________[ROWS:  1474][PG:   2][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_order_stats][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_order_stats][1]
+
+EVALUATE TABLE: "wp_wc_order_tax_lookup"__________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_wc_orders"____________________________________[ROWS:  1474][PG:   2][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_orders][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_orders][1]
+
+EVALUATE TABLE: "wp_wc_orders_meta"_______________________________[ROWS: 56302][PG:  57][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][4]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][5]
+	
+STEP-3 CHUNK STOP @ 12:10:43 - RUNTIME: 5.0702 sec. 
+
+
+	AJAX ACTION [webupdate] SUCCESS
+	-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [webupdate] START
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][6]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][7]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][8]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][9]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][10]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][11]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][12]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][13]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][14]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][15]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][16]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][17]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][18]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][19]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][20]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][21]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][22]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][23]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][24]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][25]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][26]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][27]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][28]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][29]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][30]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][31]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][32]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][33]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][34]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][35]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][36]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][37]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][38]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][39]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][40]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][41]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][42]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][43]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][44]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][45]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][46]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][47]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][48]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][49]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][50]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][51]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][52]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][53]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][54]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][55]
+CHUNK ACTION: CURRENT [search_replace][wp_wc_orders_meta][56]
+
+EVALUATE TABLE: "wp_wc_product_attributes_lookup"_________________[ROWS:  2083][PG:   3][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_product_attributes_lookup][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_product_attributes_lookup][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_product_attributes_lookup][2]
+
+EVALUATE TABLE: "wp_wc_product_download_directories"______________[ROWS:     2][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_product_download_directories][0]
+
+EVALUATE TABLE: "wp_wc_product_meta_lookup"_______________________[ROWS:   182][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_product_meta_lookup][0]
+
+EVALUATE TABLE: "wp_wc_rate_limits"_______________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_wc_reserved_stock"____________________________[ROWS:     7][PG:   1][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_wc_tax_rate_classes"__________________________[ROWS:     2][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_wc_tax_rate_classes][0]
+
+EVALUATE TABLE: "wp_wc_webhooks"__________________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_woocommerce_api_keys"_________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_woocommerce_attribute_taxonomies"_____________[ROWS:    17][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_attribute_taxonomies][0]
+
+EVALUATE TABLE: "wp_woocommerce_downloadable_product_permissions"_[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_woocommerce_log"______________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_woocommerce_order_itemmeta"___________________[ROWS: 47942][PG:  48][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][4]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][5]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][6]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][7]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][8]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][9]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][10]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][11]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][12]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][13]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][14]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][15]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][16]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][17]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][18]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][19]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][20]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][21]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][22]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][23]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][24]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][25]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][26]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][27]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][28]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][29]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][30]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][31]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][32]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][33]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][34]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][35]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][36]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][37]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][38]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][39]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][40]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][41]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][42]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][43]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][44]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][45]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][46]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_itemmeta][47]
+
+EVALUATE TABLE: "wp_woocommerce_order_items"______________________[ROWS:  5566][PG:   6][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_items][0]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_items][1]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_items][2]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_items][3]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_items][4]
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_order_items][5]
+
+EVALUATE TABLE: "wp_woocommerce_payment_tokenmeta"________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_woocommerce_payment_tokens"___________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_woocommerce_sessions"_________________________[ROWS:    71][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_sessions][0]
+
+EVALUATE TABLE: "wp_woocommerce_shipping_zone_locations"__________[ROWS:     1][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_shipping_zone_locations][0]
+
+EVALUATE TABLE: "wp_woocommerce_shipping_zone_methods"____________[ROWS:     5][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_shipping_zone_methods][0]
+
+EVALUATE TABLE: "wp_woocommerce_shipping_zones"___________________[ROWS:     1][PG:   1][SCAN:text columns]
+	--- BASE STRINGS ---
+	SEARCH[path ]  1:"/home/scbook/htdocs/schoolbook.com.ua" ===========> "C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public"
+	SEARCH[urlnd]  2:"https://schoolbook.com.ua" =======================> "https://new-schoolbook.local"
+	CHUNK ACTION: CURRENT [search_replace][wp_woocommerce_shipping_zones][0]
+
+EVALUATE TABLE: "wp_woocommerce_tax_rate_locations"_______________[ROWS:     0][PG:   0][SCAN:no columns  ]
+
+EVALUATE TABLE: "wp_woocommerce_tax_rates"________________________[ROWS:     0][PG:   0][SCAN:no columns  ]
+--------------------------------------
+SCANNED:	Tables:68 	|	 Rows:330319 	|	 Cells:2003765 
+UPDATED:	Tables:11 	|	 Rows:4986 	|	 Cells:4988 
+ERRORS:		0 
+RUNTIME:	15.002200 sec
+CHUNK ACTION: CURRENT [rem_maintenance][][]
+
+====================================
+REMOVE MAINTENANCE MODE
+====================================
+MAINTENANCE MODE DISABLE
+CHUNK ACTION: CURRENT [config_update][][]
+SET CONFIG FILES
+Retained original entry wpconfig target:C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/wp-config.php
+New htaccess file created:C:/OSPanel/home/WORDPRESS/new-schoolbook.local/public/.htaccess
+
+====================================
+CONFIGURATION FILE UPDATES
+====================================
+	UPDATE ABSPATH "dirname(__FILE__) . '/'"
+	UPDATE DB_NAME ""wp-new-schoolbook""
+	UPDATE DB_USER "** OBSCURED **"
+	UPDATE DB_PASSWORD "** OBSCURED **"
+	UPDATE DB_HOST ""mysql-8.2""
+	UPDATE DB_CHARSET "utf8mb4"
+	UPDATE DB_COLLATE ""
+	WP CONFIG UPDATE WP_DEBUG "true"
+	WP CONFIG UPDATE WP_DEBUG_LOG "true"
+	WP CONFIG UPDATE WP_DEBUG_DISPLAY "false"
+	WP CONFIG UPDATE AUTOMATIC_UPDATER_DISABLED "true"
+	
+*** UPDATED WP CONFIG FILE ***
+
+====================================
+HTACCESS UPDATE
+====================================
+
+WEB SERVER CONFIGURATION FILE UPDATED:
+- Preparing .htaccess file with basic setup.
+HTACCESS FILE - Successfully updated the .htaccess file setting.
+
+====================================
+INDEX.PHP UPDATE
+====================================
+INDEX.PHP updated with new blog header "dirname(__FILE__) . '/wp-blog-header.php'"
+
+CHUNK ACTION: CURRENT [gen_update][][]
+
+====================================
+GENERAL UPDATES
+====================================
+
+====================================
+MANAGE PLUGINS
+====================================
+CHUNK ACTION: CURRENT [gen_clean][][]
+
+====================================
+GENERAL CLEANUP
+====================================
+RESET ALL USERS SESSION TOKENS
+MIGRATION INFO SET
+CHUNK ACTION: CURRENT [create_admin][][]
+
+====================================
+RESET USERS PASSWORD
+====================================
+CHUNK ACTION: CURRENT [notice_test][][]
+
+====================================
+CHECK FOR INDEX.HTML
+====================================
+NO INDEX.HTML WAS FOUND
+
+====================================
+NOTICES TEST
+====================================
+No General Notices Found
+
+CHUNK ACTION: CURRENT [cleanup_tmp_files][][]
+
+====================================
+CLEANUP TMP FILES
+====================================
+CHUNK ACTION: CURRENT [set_files_perms][][]
+
+====================================
+SET PARAMS PERMISSION
+====================================
+\n SKIP FOLDER PERMISSION AFTER EXTRACTION
+CHUNK ACTION: CURRENT [final_report][][]
+
+====================================
+FINAL REPORT NOTICES
+====================================
+
+STEP-3 COMPLETE @ 12:10:48 - RUNTIME: 4.7584 sec. 
+
+
+AJAX ACTION [webupdate] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [finalpre] START
+AJAX ACTION [finalpre] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+-------------------------
+AJAX ACTION [finalafter] START
+AJAX ACTION [finalafter] SUCCESS
+-------------------------
+
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\src\Core\Bootstrap.php:71] RESET TIME
+
+====================================
+FINAL REPORT NOTICES LIST
+====================================
+====================================
+LOG-TIME[C:\OSPanel\home\WORDPRESS\new-schoolbook.local\public\dup-installer\ctrls\ctrl.base.php:227][DELTA:   0.10332]  MESSAGE:END RENDER PAGE

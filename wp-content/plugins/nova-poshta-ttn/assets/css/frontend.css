@@ -1,0 +1,142 @@
+.еwoocommerce-shipping-destination{
+  display: none;
+}
+
+/* Custom fields asterisk color on Checkout  */
+.asterisk-color {
+    color: #e2401c;
+}
+
+/* Show shipping method costs on Checkout */
+.mrkvnp-hidden{
+  opacity: 0;
+  animation: ani 0.1s forwards;
+}
+@keyframes ani {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+.woocommerce-input-wrapper .select2-container{
+  width: 100% !important;
+}
+.woocommerce-input-wrapper .select3-container{
+  width: 100% !important;
+}
+.select{
+  background: none;
+    color: #444;
+    padding: 2px;
+    border-radius: 4px;
+}
+  span.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #444;
+}
+/* SelectDB */
+#billing_mrk_nova_poshta_city,
+#billing_mrk_nova_poshta_warehouse,
+#billing_mrk_nova_poshta_poshtomat {
+	background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    height: 27px;
+}
+#cities-list,
+#warehouses-list,
+#poshtomats-list {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	max-height: 165px;
+	margin:0;
+}
+#cities-list li.npcityli,
+#warehouses-list li.npwhli,
+#poshtomats-list li.nppmli {
+	line-height: 1.6;
+	margin-bottom: 3px;
+	padding: 6px;
+}
+#cities-list li:first-child,
+#warehouses-list li:first-child,
+#poshtomats-list li:first-child,
+#cities-list li:last-child,
+#warehouses-list li:last-child,
+#poshtomats-list li:last-child {
+	margin-top: 3px;
+}
+#cities-list li:hover,
+#warehouses-list li:hover,
+#poshtomats-list li:hover {
+	background-color: #5897fb;
+	color: #fff;
+	cursor: pointer;
+	white-space: nowrap;
+}
+#npdatafetch,
+#npdatafetchwh,
+#npdatafetchpm {
+	display: none;
+}
+.border-radius-zero {
+	border-radius: 4px !important;
+}
+
+/* Spinner on Checkout page */
+.statenp-loading {
+    position: relative;
+}
+.statenp-loading:after,
+.statenp-loading:before {
+    content: "";
+}
+.statenp-loading:before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7); /* Колір тла блоку */
+    z-index: 2;
+}
+.statenp-loading:after {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    width: 21px;
+    height: 21px;
+    border: 2px solid red; /* Колір кільця */
+    border-left-color: #fff; /* Колір розриву кільця */
+    border-radius: 21px;
+    -webkit-animation: checkoutnp-loader-animation 0.3s linear infinite;
+    animation: checkoutnp-loader-animation 0.3s linear infinite;
+    z-index: 3;
+}
+@-webkit-keyframes checkoutnp-loader-animation {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+@keyframes checkoutnp-loader-animation {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+/* Autocmoplete scroll on Checkout */
+.ui-autocomplete-loading {
+    background: grey url('ui-anim.basic.16x16.gif') right center no-repeat;
+}
+.ui-autocomplete {
+    max-height: 180px;
+    overflow-y: auto;
+}
+.ui-menu-item {
+    font-size: smaller;
+}

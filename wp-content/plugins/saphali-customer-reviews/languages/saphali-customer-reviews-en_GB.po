@@ -1,0 +1,156 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Project-Id-Version: saphali-customer v1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-04-06 11:16+0200\n"
+"PO-Revision-Date: 2015-02-19 20:27+0800\n"
+"Last-Translator: Saphali <saphali@ukr.net>\n"
+"Language-Team: \n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11) ? 0 : ((n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20)) ? 1 : 2);\n"
+"X-Poedit-KeywordsList: __;_e;_x;_n;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ../\n"
+"X-Textdomain-Support: yes\n"
+"X-Generator: Poedit 1.7.4\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: saphali-customer-reviews.php:150
+msgid "Обязательное поле:"
+msgstr ""
+
+#: saphali-customer-reviews.php:150
+msgid "Обязательные поля:"
+msgstr ""
+
+#: saphali-customer-reviews.php:151
+msgid "Ошибка! <br /> "
+msgstr "Error! <br /> "
+
+#: saphali-customer-reviews.php:198 saphali-customer-reviews.php:561
+msgid "Отзывы"
+msgstr "Reviews"
+
+#: saphali-customer-reviews.php:198 saphali-customer-reviews.php:210
+msgid "Отзывы - Настройка"
+msgstr ""
+
+#: saphali-customer-reviews.php:215
+msgid "Наименование поля"
+msgstr ""
+
+#: saphali-customer-reviews.php:215
+msgid "только латиница, цифры, _,-"
+msgstr ""
+
+#: saphali-customer-reviews.php:216
+msgid "Заголовок"
+msgstr "Title"
+
+#: saphali-customer-reviews.php:217
+msgid "Выводить в следующих типах записей"
+msgstr ""
+
+#: saphali-customer-reviews.php:218
+msgid "Тип поля"
+msgstr ""
+
+#: saphali-customer-reviews.php:219
+msgid "Для страницы"
+msgstr ""
+
+#: saphali-customer-reviews.php:220
+msgid "Обязательно"
+msgstr "Required"
+
+#: saphali-customer-reviews.php:221
+msgid "Отображать в комментариях"
+msgstr ""
+
+#: saphali-customer-reviews.php:222 saphali-customer-reviews.php:262
+#: saphali-customer-reviews.php:297
+msgid "Удалить"
+msgstr ""
+
+#: saphali-customer-reviews.php:230 saphali-customer-reviews.php:267
+#: saphali-customer-reviews.php:302
+msgid "Выбрать страницу"
+msgstr ""
+
+#: saphali-customer-reviews.php:273
+msgid "Выбрать типы"
+msgstr ""
+
+#: saphali-customer-reviews.php:308
+msgid "Добавить"
+msgstr "Add"
+
+#: saphali-customer-reviews.php:315
+msgid "Сохранить"
+msgstr "Save"
+
+#: saphali-customer-reviews.php:548
+msgid "Отобразить отзывы."
+msgstr ""
+
+#: saphali-customer-reviews.php:550
+msgid "Saphali отзывы"
+msgstr ""
+
+#: saphali-customer-reviews.php:654
+msgid "Читать все отзывы"
+msgstr "Read all reviews"
+
+#: saphali-customer-reviews.php:658
+msgid "Оставить отзыв"
+msgstr "Send review"
+
+#: templates/reviews-showall.php:63
+msgid "Оставить свой отзыв"
+msgstr "Write your own review"
+
+#: saphali-customer-reviews.php:729
+msgid "Title:"
+msgstr ""
+
+#: saphali-customer-reviews.php:732
+msgid "Приоритетные поля:"
+msgstr ""
+
+#: saphali-customer-reviews.php:739
+msgid "Количество выводимых комментариев:"
+msgstr ""
+
+#: saphali-customer-reviews.php:741
+msgid "Количество символов для обрезки текста комментариев:"
+msgstr ""
+
+#: saphali-customer-reviews.php:743
+msgid "Страница отзывов:"
+msgstr ""
+
+#: templates/reviews-loop.php:43
+msgid "Your comment is awaiting approval"
+msgstr ""
+
+#: templates/reviews-showall.php:67
+msgctxt "noun"
+msgid "Текст отзыва"
+msgstr "Review text"
+
+#: templates/reviews-showall.php:67
+msgid "Текст Вашего отзыва"
+msgstr "Text of your comment"
+
+#: templates/reviews-showall.php:72
+msgid "Name"
+msgstr ""
+
+#: templates/reviews-showall.php:73
+msgid "Email"
+msgstr ""

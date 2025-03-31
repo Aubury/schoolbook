@@ -1,0 +1,134 @@
+.nav-tabs {
+	float: left;
+	width: 100%;
+	margin: 0px;
+	list-style-type: none;
+	border-bottom: 1px solid #ddd;
+}
+
+.nav-tabs > li {
+	float: left;
+	margin-bottom: -1px;
+}
+
+.nav-tabs > li > a {
+	margin-right: 2px;
+	line-height: 1.5px;
+	padding: 10px;
+	border-bottom: 3px solid gray;
+	border-radius: 4px 4px 0px 0px;
+}
+
+.nav-tabs > li > a:hover {
+	border-color: #eee #eee #ddd;
+
+}
+
+.nav-tabs > li > a:active {
+	background-color: gray;
+}
+
+.nav-tabs > li > a,
+.nav-tabs > li > a:hover,
+.nav-tabs > li > a:focus {
+	color: #555;
+	cursor: default;
+	border-color: white;
+	border-color: 1px solid #ddd;
+	border-bottom-color: transparent;
+}
+
+.tab-content .tab-pane {
+	float: left;
+	width: 100%;
+	display: none;
+}
+
+.tab-content .tab-pane.active {
+	display: block;
+}
+
+/* Invoice Style Options */
+
+.field {
+	clear: both;
+	text-align: right;
+}
+.field label {
+	float: left;
+	padding-right: 10px;
+}
+.invoice_sender {
+	float: left;
+	background-color: #ffffff;
+	padding: 10px;
+}
+
+#invoice_sender {
+	background-color: #e2e2e2;
+	padding: 10px;
+}
+
+.field input {
+	border-radius: 5px;
+}
+
+.field select {
+	border-radius: 5px;
+	size: 20px;
+}
+
+.invoice {
+	display: flex;
+	flex-wrap: wrap;
+}
+.invoice_recipient {
+	float: right;
+	margin-left: 20px;
+	background-color: #ffffff;
+	padding: 10px;
+}
+
+#invoice_recipient {
+	background-color: #e2e2e2;
+	padding: 10px;
+}
+
+.invoice_response {
+	margin: 20px;
+	padding: 10px;
+	border: 1px solid #333333;
+}
+.invoice_response p {
+	color: #333333;
+}
+
+		.field {
+			margin-top: 6px;
+		}
+		.field input {
+			width: 170px;
+		}
+		.field select {
+			width: 170px;
+		}
+		.sender_city {
+			width: 170px;
+		}
+		.invoice_sender {
+			width: 430px;
+		}
+		.invoice_recipient {
+			width: 430px;
+		}
+		form .error {
+  			color: #ff0000;
+		}
+		.nav-tabs a {
+			border-color: gray;
+		}
+
+		#toplevel_page_morkvaup_plugin .wp-menu-image.dashicons-before img{
+    max-width: 20px;
+    margin-top: -6px;
+		}
