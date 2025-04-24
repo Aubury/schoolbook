@@ -2,3 +2,7 @@
 *.log
 *.log
 /wp-content/uploads/wc-logs
+/.idea
+.idea/php.xml
+.idea/public.iml
+/wp-content/uploads/wc-logs

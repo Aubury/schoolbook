@@ -1,5 +1,16 @@
 {
-    "require": {
-        "monolog/monolog": "2.0.*"
+  "name": "vendor_name/public",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "aubur",
+      "email": "email@example.com"
     }
+  ],
+  "require": {
+    "automattic/woocommerce": "^3.1",
+    "ext-curl": "*"
+  }
 }

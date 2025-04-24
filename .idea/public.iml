@@ -2,16 +2,12 @@
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/wp-content/plugins/duplicator/src" isTestSource="false" packagePrefix="Duplicator" />
-      <sourceFolder url="file://$MODULE_DIR$/wp-content/plugins/easy-wp-smtp/src" isTestSource="false" packagePrefix="EasyWPSMTP" />
-      <sourceFolder url="file://$MODULE_DIR$/wp-content/plugins/woocommerce/packages/action-scheduler/classes" isTestSource="false" packagePrefix="Action_Scheduler" />
-      <sourceFolder url="file://$MODULE_DIR$/wp-content/themes/anyweb_theme/inc/carbon-fields/core" isTestSource="false" packagePrefix="Carbon_Fields_Plugin" />
-      <sourceFolder url="file://$MODULE_DIR$/wp-includes" isTestSource="false" packagePrefix="PHPMailer" />
-      <sourceFolder url="file://$MODULE_DIR$/wp-includes/sodium_compat/tests" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/wp-content/plugins/wp-super-cache/vendor/automattic/jetpack-device-detection" />
       <excludeFolder url="file://$MODULE_DIR$/wp-content/plugins/wp-super-cache/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/wp-content/themes/anyweb_theme/inc/carbon-fields/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/wp-content/themes/anyweb_theme/inc/carbon-fields/vendor/htmlburger/carbon-fields" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/automattic/woocommerce" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

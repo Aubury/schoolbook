@@ -447,6 +447,11 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
         # Check data response 
         $success = isset($_POST['data']) && isset($_POST['signature']);
 
+        $data = '';
+        if(isset($_POST['data'])){
+            $data = sanitize_text_field($_POST['data']);
+        }
+
         # If payment success
         if ($success) 
         {
@@ -473,6 +478,8 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
             $amount = $parsed_data->amount;
             $currency = $parsed_data->currency;
             $transaction_id = $parsed_data->transaction_id;
+
+            update_post_meta($order_id, 'payment_status', $status);
 
             file_put_contents(__DIR__.'/log/debug.log', date('d-m-Y H:i:s') . PHP_EOL . ' Status: ' .  print_r($status, 1), FILE_APPEND); 
 
@@ -588,6 +595,10 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
         } 
         else 
         {
+            # Parse JSON data
+            $parsed_data = json_decode(base64_decode($data));
+            update_post_meta($parsed_data->order_id,  'payment_status', $parsed_data->status);
+
             # Stop Wordpress job
             wp_die('IPN Request Failure');
         }
