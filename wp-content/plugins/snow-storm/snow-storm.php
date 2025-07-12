@@ -8,7 +8,7 @@ Description: Display falling snow flakes on the front of your WordPress website 
 Plugin URI: https://tribulant.com
 Author: Tribulant Software
 Author URI: https://tribulant.com
-Version: 1.4.6
+Version: 1.4.7
 */
 
 if (!defined('DS')) { define('DS', DIRECTORY_SEPARATOR); }
@@ -140,7 +140,7 @@ function snow_storm_enqueue_scripts() {
 		$pp = get_option('snowstorm_pp');
 		
 		if (empty($pp) || (!empty($pp) && in_array($post -> ID, $pp))) {
-			wp_enqueue_script('snow-storm', plugin_dir_url(__FILE__) . 'snow-storm.js', false, '1.4.6');
+			wp_enqueue_script('snow-storm', plugin_dir_url(__FILE__) . 'snow-storm.js', false, '1.4.7');
 		}
 	}
 }
@@ -245,19 +245,45 @@ function snowstorm_render_message($message = null, $type = 'success', $dismissib
 }
 
 function snow_storm_admin() {
+	// Check if the user is allowed to manage options.
+	if (!current_user_can('manage_options')) {
+		wp_die(__('You do not have sufficient permissions to access this page.', 'snow-storm'));
+	}
+
+	// Verify nonce to protect against CSRF
 	if (!empty($_POST)) {
-		delete_option('snowstorm_pp');
-		
-		foreach ($_POST as $pkey => $pval) {			
-			update_option('snowstorm_' . $pkey, $pval);
+		// Check if nonce is set and valid.
+		if (!isset($_POST['snow_storm_nonce']) || !wp_verify_nonce($_POST['snow_storm_nonce'], 'snow_storm_save_settings')) {
+			wp_die(__('Security check failed.', 'snow-storm'));
 		}
 		
-		$message = __('Settings have been saved.', "snow-storm");
+		// Delete previous value for pp (if any)
+		delete_option('snowstorm_pp');
+		
+		// Iterate over POST values, sanitize, and update options.
+		foreach ($_POST as $pkey => $pval) {
+			// Skip nonce field
+			if ($pkey == 'snow_storm_nonce') {
+				continue;
+			}
+			
+			// Apply sanitization. If the parameter is an array, sanitize each element.
+			if (is_array($pval)) {
+				$sanitized = array_map('sanitize_text_field', $pval);
+			} else {
+				$sanitized = sanitize_text_field($pval);
+			}
+			
+			update_option('snowstorm_' . $pkey, $sanitized);
+		}
+		
+		$message = __('Settings have been saved.', 'snow-storm');
 		include dirname(__FILE__) . DS . 'views' . DS . 'admin' . DS . 'message.php';
 	}
 	
 	include dirname(__FILE__) . DS . 'views' . DS . 'admin' . DS . 'index.php';
 }
+
 
 $plugin = plugin_basename(__FILE__); 
 define('SNOW_STORM_PLUGIN', $plugin);

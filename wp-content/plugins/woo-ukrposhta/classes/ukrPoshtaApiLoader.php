@@ -23,10 +23,17 @@ class ukrPoshtaApiLoader
 			global $wpdb;
 
 			foreach ($result['data'] as $area) {
-				$wpdb->query("
-					INSERT INTO morkva_ukrposhta_up_areas 
-					VALUES('" . $area['Ref'] . "', '" . esc_attr($area['Description']) . "')
-				");
+				$ref = sanitize_text_field( $area['Ref'] );
+				$description = sanitize_textarea_field( $area['Description'] );
+
+				$wpdb->insert(
+				    $wpdb->prefix . 'ukrposhta_up_areas', 
+				    array( 
+				        'Ref' => $ref,
+				        'Description' => $description
+				    ),
+				    array( '%s', '%s' )
+				);
 			}
 
 			return true;
@@ -43,10 +50,19 @@ class ukrPoshtaApiLoader
 			global $wpdb;
 
 			foreach ($result['data'] as $city) {
-				$wpdb->query("
-					INSERT INTO morkva_ukrposhta_up_cities 
-					VALUES('" . $city['Ref'] ."', '" . esc_attr($city['Description']) ."', '" . $city['Area'] . "')
-				");
+				$ref = sanitize_text_field( $city['Ref'] );
+				$description = sanitize_textarea_field( $city['Description'] );
+				$area = sanitize_text_field( $city['Area'] );
+
+				$wpdb->insert(
+				    $wpdb->prefix . 'ukrposhta_up_cities',  
+				    array( 
+				        'Ref' => $ref,
+				        'Description' => $description,
+				        'Area' => $area
+				    ),
+				    array( '%s', '%s', '%s' ) 
+				);
 			}
 
 			return true;
@@ -60,13 +76,23 @@ class ukrPoshtaApiLoader
 		$result = $this->api->getWarehouses();
 
 		if ($result['success']) {
-      global $wpdb;
+      		global $wpdb;
 
-			foreach ($result['data'] as $warehouse) {
-				$wpdb->query("
-					INSERT INTO morkva_ukrposhta_up_warehouses 
-					VALUES('" . $warehouse['Ref'] ."', '" . esc_attr($warehouse['Description']) ."', '" . $warehouse['CityRef'] . "')
-				");
+			foreach ($result['data'] as $warehouse) 
+			{
+				$ref = sanitize_text_field( $warehouse['Ref'] );
+				$description = sanitize_textarea_field( $warehouse['Description'] );
+				$city_ref = sanitize_text_field( $warehouse['CityRef'] );
+
+				$wpdb->insert(
+				    $wpdb->prefix . 'ukrposhta_up_warehouses',
+				    array( 
+				        'Ref' => $ref,
+				        'Description' => $description,
+				        'CityRef' => $city_ref
+				    ),
+				    array( '%s', '%s', '%s' )
+				);
 			}
 
 			return true;

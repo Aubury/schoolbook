@@ -34,15 +34,15 @@ class Initializer
       return;
     }
 
-    if ($_SERVER['REQUEST_URI'] === '/wc-ukrposhta/activation') {
-      wp_enqueue_style('wc-ukrposhta-css', plugin_dir_url(__DIR__) . 'assets/css/style.min.css');
+    if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] === '/wc-ukrposhta/activation') {
+      wp_enqueue_style('wc-ukrposhta-css', plugin_dir_url(__DIR__) . 'assets/css/style.min.css', array(), filemtime(plugin_dir_path(__DIR__) . 'assets/css/style.min.css'));
       wp_enqueue_script('jquery');
 
       $data['ajax_url'] = admin_url('admin-ajax.php');
 
-      echo View::render('activation', $data);
+      echo esc_html(View::render('activation', esc_html($data)));
       exit;
-    }
+  }
   }
 
   private function checkDBVersion()
@@ -64,30 +64,41 @@ class Initializer
     $wpdb->query("DROP TABLE IF EXISTS morkva_ukrposhta_up_cities");
     $wpdb->query("DROP TABLE IF EXISTS morkva_ukrposhta_up_warehouses");
 
+    // Get the charset and collation for the current WordPress database
     $collate = $wpdb->get_charset_collate();
 
-    $wpdb->query("
-      CREATE TABLE morkva_ukrposhta_up_areas (
-        ref varchar(36) NOT NULL,
-        description varchar(255) NOT NULL
-      ) $collate
-    ");
+    // Prepare and run queries for table creation
+    $wpdb->query(
+        $wpdb->prepare(
+            "CREATE TABLE {$wpdb->prefix}morkva_ukrposhta_up_areas (
+                ref varchar(36) NOT NULL,
+                description varchar(255) NOT NULL
+            ) %s",
+            $collate
+        )
+    );
 
-    $wpdb->query("
-      CREATE TABLE morkva_ukrposhta_up_cities (
-        ref varchar(36) NOT NULL,
-        description varchar(255) NOT NULL,
-        area_ref varchar(36)
-      ) $collate
-    ");
+    $wpdb->query(
+        $wpdb->prepare(
+            "CREATE TABLE {$wpdb->prefix}morkva_ukrposhta_up_cities (
+                ref varchar(36) NOT NULL,
+                description varchar(255) NOT NULL,
+                area_ref varchar(36)
+            ) %s",
+            $collate
+        )
+    );
 
-    $wpdb->query("
-      CREATE TABLE morkva_ukrposhta_up_warehouses (
-        ref varchar(36) NOT NULL,
-        description varchar(255) NOT NULL,
-        city_ref varchar(36)
-      ) $collate
-    ");
+    $wpdb->query(
+        $wpdb->prepare(
+            "CREATE TABLE {$wpdb->prefix}morkva_ukrposhta_up_warehouses (
+                ref varchar(36) NOT NULL,
+                description varchar(255) NOT NULL,
+                city_ref varchar(36)
+            ) %s",
+            $collate
+        )
+    );
 
     update_option('morkva_ukrposhta_db_version', morkva_ukrposhta_DB_VERSION);
   }

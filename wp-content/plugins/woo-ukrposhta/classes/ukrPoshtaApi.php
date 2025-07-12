@@ -52,7 +52,7 @@ class ukrPoshtaApi
 		$result = wp_remote_post('https://api.ukrposhta.ua/v2.0/json/', [
 			'headers' => ['Content-Type' => 'application/json'],
 			'timeout' => 30,
-			'body' => json_encode($data)
+			'body' => wp_json_encode($data)
 		]);
 
     return json_decode($result['body'], true);

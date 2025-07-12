@@ -80,6 +80,17 @@ if ( is_multisite() ) {
 		$debug_events_table = \EasyWPSMTP\Admin\DebugEvents\DebugEvents::get_table_name();
 		$wpdb->query( "DROP TABLE IF EXISTS $debug_events_table;" ); // phpcs:ignore WordPress.DB
 
+		// Delete queue table.
+		$queue_table = \EasyWPSMTP\Queue\Queue::get_table_name();
+		$wpdb->query( "DROP TABLE IF EXISTS $queue_table;" ); // phpcs:ignore WordPress.DB
+
+		// Delete all queue attachments.
+		( new \EasyWPSMTP\Queue\Attachments() )->delete_attachments();
+
+		// Delete Outlook notice dismissals.
+		delete_metadata( 'user', 0, 'easy_wp_smtp_microsoft_basic_auth_deprecation_notice_dismissed', '', true );
+		delete_metadata( 'user', 0, 'easy_wp_smtp_microsoft_basic_auth_deprecation_general_notice_dismissed', '', true );
+
 		/*
 		 * Cleanup Pro plugin data.
 		 */
@@ -118,6 +129,9 @@ if ( is_multisite() ) {
 		$meta_table = \EasyWPSMTP\Tasks\Meta::get_table_name();
 		$wpdb->query( "DROP TABLE IF EXISTS $meta_table;" ); // phpcs:ignore WordPress.DB
 
+		// Delete current sub-site `easy-wp-smtp` uploads folder.
+		\EasyWPSMTP\Uploads::delete_upload_dir();
+
 		// Restore the current network site back to the original one.
 		restore_current_blog();
 	}
@@ -151,6 +165,17 @@ if ( is_multisite() ) {
 	// Delete debug events table.
 	$debug_events_table = \EasyWPSMTP\Admin\DebugEvents\DebugEvents::get_table_name();
 	$wpdb->query( "DROP TABLE IF EXISTS $debug_events_table;" ); // phpcs:ignore WordPress.DB
+
+	// Delete queue table.
+	$queue_table = \EasyWPSMTP\Queue\Queue::get_table_name();
+	$wpdb->query( "DROP TABLE IF EXISTS $queue_table;" ); // phpcs:ignore WordPress.DB
+
+	// Delete all queue attachments.
+	( new \EasyWPSMTP\Queue\Attachments() )->delete_attachments();
+
+	// Delete Outlook notice dismissals.
+	delete_metadata( 'user', 0, 'easy_wp_smtp_microsoft_basic_auth_deprecation_notice_dismissed', '', true );
+	delete_metadata( 'user', 0, 'easy_wp_smtp_microsoft_basic_auth_deprecation_general_notice_dismissed', '', true );
 
 	/*
 	 * Cleanup Pro plugin data.
@@ -189,4 +214,7 @@ if ( is_multisite() ) {
 
 	$meta_table = \EasyWPSMTP\Tasks\Meta::get_table_name();
 	$wpdb->query( "DROP TABLE IF EXISTS $meta_table;" ); // phpcs:ignore WordPress.DB
+
+	// Delete `easy-wp-smtp` uploads folder.
+	\EasyWPSMTP\Uploads::delete_upload_dir();
 }

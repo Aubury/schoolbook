@@ -1,16 +1,39 @@
-<?php if ( ! defined( 'ABSPATH' ) ) exit;
-$settings = $this->get();
-$locales = $this->langs->locales();
-$path = str_replace('\\','/', ABSPATH);
-$url = site_url();
-$type = (isset($_GET['status']) && !empty($_GET['status']) ? intval($_GET['status']) : '' );
-$message = ($type == '2') ? 'Unable to save settings.' : 'Settings updated successfully.';
-$roles = $this->wpUserRoles();
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+$settings  = $this->get();
+$locales   = $this->langs->locales();
+$path      = str_replace('\\','/', ABSPATH);
+$url       = site_url();
+$type      = (isset($_GET['status']) && !empty($_GET['status']) ? intval($_GET['status']) : '' );
+$message   = ($type == '2') ? 'Unable to save settings.' : 'Settings updated successfully.';
+$roles     = $this->wpUserRoles();
 $cm_themes = class_fma_main::cm_themes();
 ?>
 <?php echo class_fma_admin_menus::shortcodeUpdateNotice();?>
 <div class="wrap fma" style="background:#fff; padding: 20px; border:1px solid #ccc;">
-<h3><?php _e('Settings','file-manager-advanced')?> <?php if(!class_exists('file_manager_advanced_shortcode')) { ?><a href="https://advancedfilemanager.com/pricing" class="button button-primary" target="_blank"><?php _e('Buy Shortcode Addon','file-manager-advanced')?></a><?php } ?> <a href="https://advancedfilemanager.com/documentation/" class="button" target="_blank"><?php _e('Documentation','file-manager-advanced')?></a></h3>
+    <h3>
+        <?php _e('Settings','file-manager-advanced'); ?>
+        <?php if(!class_exists('file_manager_advanced_shortcode')) { ?>
+            <a
+                href="https://advancedfilemanager.com/pricing/?utm_source=plugin&utm_medium=settings_screen_top_button&utm_campaign=plugin"
+                class="button button-primary"
+                target="_blank"
+                style="margin-left: 25px;"
+            >
+                <?php _e('Get Advanced File Manager Pro','file-manager-advanced')?>
+            </a>
+        <?php } ?>
+        <a
+            href="https://advancedfilemanager.com/documentation/"
+            class="button"
+            target="_blank"
+            style="margin-left: 25px;"
+        >
+            <?php _e('Documentation','file-manager-advanced'); ?>
+        </a>
+    </h3>
+
 <p style="width:100%; text-align:right;" class="description">
 <span id="thankyou"><?php _e('Thank you for using <a href="https://wordpress.org/plugins/file-manager-advanced/">File Manager Advanced</a>. If happy then ','file-manager-advanced')?>
 <a href="https://wordpress.org/support/plugin/file-manager-advanced/reviews/?filter=5"><?php _e('Rate Us','file-manager-advanced')?> <img src="<?php echo plugins_url( 'images/5stars.png', __FILE__ );?>" style="width:100px; top: 11px; position: relative;"></a></span>
@@ -64,20 +87,62 @@ foreach($roles as $key => $role) {
 <input type="checkbox" value="<?php echo esc_attr($key);?>" name="fma_user_role[]" <?php echo esc_attr($checked); ?> /> <?php echo esc_attr($role['name']);?> <br/>
 <?php } ?>
 </td>
-</tr>
-<tr>
-<th><?php _e('Theme','file-manager-advanced')?></th>
-<td>
-<select name="fma_theme" id="fma_theme">
-	<option value="light" <?php echo(isset($settings['fma_theme']) && $settings['fma_theme'] == 'light') ? 'selected="selected"' : '';?>><?php _e('Light','file-manager-advanced')?></option>
-	<option value="dark" <?php echo(isset($settings['fma_theme']) && $settings['fma_theme'] == 'dark') ? 'selected="selected"' : '';?>><?php _e('Dark','file-manager-advanced')?></option>
-	<option value="grey" <?php echo(isset($settings['fma_theme']) && $settings['fma_theme'] == 'grey') ? 'selected="selected"' : '';?>><?php _e('Grey','file-manager-advanced')?></option>
-	<option value="windows10" <?php echo(isset($settings['fma_theme']) && $settings['fma_theme'] == 'windows10') ? 'selected="selected"' : '';?>><?php _e('Windows 10','file-manager-advanced')?></option>
-    <option value="bootstrap" <?php echo(isset($settings['fma_theme']) && $settings['fma_theme'] == 'bootstrap') ? 'selected="selected"' : '';?>><?php _e('Bootstrap','file-manager-advanced')?></option>
-</select>
-<p class="description"><?php _e('Select file manager advanced theme. Default: Light','file-manager-advanced')?></p>
-</td>
-</tr>
+
+    </tr>
+
+        <tr>
+            <th>
+                <label for="fma_theme">
+                    <?php _e('Theme','file-manager-advanced')?>
+                </label>
+            </th>
+        <td>
+
+            <?php
+                $themes = array(
+                    'light'     => array(
+                        'title' => __( 'Default', 'file-manager-advanced' ),
+                        'pro'   => false,
+                    ),
+                    'mono'      => array(
+                        'title' => __( 'Mono', 'file-manager-advanced' ),
+                        'pro'   => false,
+                    ),
+                    'dark'      => array(
+                        'title' => __( 'Material Dark', 'file-manager-advanced' ),
+                        'pro'   => true,
+                    ),
+                    'm-light'   => array(
+                        'title' => __( 'Material Light', 'file-manager-advanced' ),
+                        'pro'   => true,
+                    ),
+                    'grey'      => array(
+                        'title' => __( 'Material Grey', 'file-manager-advanced' ),
+                        'pro'   => true,
+                    ),
+                    'windows10' => array(
+                        'title' => __( 'Windows 10', 'file-manager-advanced' ),
+                        'pro'   => true,
+                    ),
+                    'bootstrap' => array(
+                        'title' => __( 'Bootstrap', 'file-manager-advanced' ),
+                        'pro'   => true,
+                    ),
+                );
+            ?>
+
+            <select class="file-manager-advanced-select2 fma-theme regular-text" name="fma_theme" id="fma_theme">
+                <?php foreach ( $themes as $value => $theme ) : ?>
+                    <?php $disabled = $theme['pro'] && ! class_fma_main::has_pro() ? 'disabled="disabled"' : ''; ?>
+                    <?php $selected = isset( $settings['fma_theme'] ) && $settings['fma_theme'] === $value ? 'selected="selected"' : ''; ?>
+
+                    <?php printf( '<option value="%s" %s %s>%s</option>', $value, $disabled, $selected, $theme['title'] ); ?>
+                <?php endforeach; ?>
+            </select>
+            <p class="description"><?php _e('Select file manager advanced theme. Default: Light','file-manager-advanced')?></p>
+        </td>
+    </tr>
+
 <tr>
 <th><?php _e('Language','file-manager-advanced')?></th>
 <td>
@@ -170,24 +235,26 @@ foreach($roles as $key => $role) {
 <p>Default: <code><?php _e('all','file-manager-advanced')?></code> <a href="https://advancedfilemanager.com/advanced-file-manager-mime-types/" target="_blank"><?php _e('MIME Types Help', 'file-manager-advanced'); ?></a></p>
 </td>
 </tr>
-<tr>
-<th><?php _e('Code Editor Theme <sup style="color:red;">New</sup>','file-manager-advanced')?></th>
-<td>
-<select name="fma_cm_theme" id="fma_cm_theme">
-	<?php foreach ($cm_themes as $key => $val) :
-	    $selected = "";
-		if(isset($settings['fma_cm_theme'])) {
-			if($key == $settings['fma_cm_theme']) {
-			  $selected = 'selected=selected';
-			}
-		}
-		?>
-	<option value="<?php echo $key; ?>" <?php echo $selected;?>><?php _e($val,'file-manager-advanced')?></option>
-	<?php endforeach;?>
-</select>
-<p class="description"><?php _e('Select code editor theme. Default: default','file-manager-advanced')?></p>
-</td>
-</tr>
+
+    <tr>
+        <th>
+            <label for="fma_cm_theme">
+                <?php _e('Code Editor Theme <sup style="color:red;">New</sup>','file-manager-advanced')?>
+            </label>
+        </th>
+        <td>
+            <select class="file-manager-advanced-select2 regular-text fma-code-editor-theme" name="fma_cm_theme" id="fma_cm_theme">
+                <?php foreach ( $cm_themes as $theme ) : ?>
+                    <?php $selected = isset( $settings['fma_cm_theme'] ) && $settings['fma_cm_theme'] === $theme['title'] ? 'selected="selected"' : ''; ?>
+                    <?php $disabled = $theme['pro'] && ! class_fma_main::has_pro() ? 'disabled="disabled"' : ''; ?>
+
+                    <?php printf( '<option value="%s" %s %s>%s</option>', $theme['title'], $selected, $disabled, $theme['title'] ); ?>
+                <?php endforeach; ?>
+            </select>
+            <p class="description"><?php _e('Select code editor theme. Default: default','file-manager-advanced')?></p>
+        </td>
+    </tr>
+
 </tbody>
 </table>
 <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes"></p>

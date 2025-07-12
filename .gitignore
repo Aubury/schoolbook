@@ -6,3 +6,7 @@
 .idea/php.xml
 .idea/public.iml
 /wp-content/uploads/wc-logs
+/.idea
+/.tmb
+/logs
+/wp-content/plugins/google-listings-and-ads

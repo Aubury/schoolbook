@@ -6,7 +6,7 @@
                 <th colspan=2>
                     <h3 class="formblock_title">Відправник</h3>
                     <input type="hidden" name="up_sender_type" id="up_sender_type" value="
-                        <?php $up_sender_type = esc_attr( get_option( 'up_sender_type' ) ); echo $up_sender_type; ?>">
+                        <?php $up_sender_type = esc_attr( get_option( 'up_sender_type' ) ); echo esc_html($up_sender_type); ?>">
                     <div id="errors"></div>
                 </th>
             </tr>

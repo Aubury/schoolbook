@@ -26,7 +26,7 @@ class ukrPoshtaFrontendInjector
     // Prevent default WooCommerce rate caching
     /*add_filter('woocommerce_shipping_rate_label', function ($label, $rate) {
       if ($rate->get_method_id() === 'ukrposhta_shippping') {
-        $label = __('Укрпошта', 'woo-ukrposhta-pro');
+        $label = __('Укрпошта', 'woo-ukrposhta');
       }
 
       return $label;
@@ -49,8 +49,19 @@ class ukrPoshtaFrontendInjector
       return;
     }
 
-    echo '<link href="https://cdn.jsdelivr.net/npm/select-woo@1.0.1/dist/css/selectWoo.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select-woo@1.0.1/dist/js/selectWoo.min.js"></script>';
+    wp_enqueue_style(
+        'selectwoo-styles', 
+        MORKVA_UKRPOSHTA_PLUGIN_URL . 'assets/css/selectWoo.min.css', 
+        array(), 
+        '1.0.1' 
+    );
+    wp_enqueue_script(
+        'selectwoo-scripts', 
+        MORKVA_UKRPOSHTA_PLUGIN_URL . 'assets/js/selectWoo.min.js', 
+        array('jquery'), 
+        '1.0.1',
+        true 
+    );
 
     ?>
     <style>
@@ -59,7 +70,7 @@ class ukrPoshtaFrontendInjector
       }
 
       .wcus-state-loading:after {
-        border-color: <?= get_option('morkva_ukrposhta_spinner_color', '#dddddd'); ?>;
+        border-color: <?php echo esc_attr(get_option('morkva_ukrposhta_spinner_color', '#dddddd')); ?>;
         border-left-color: #fff;
       }
     </style>
@@ -74,7 +85,7 @@ class ukrPoshtaFrontendInjector
 
     // Add the Select2 CSS file
     wp_enqueue_style( 'selectWoocss',
-        'https://cdn.jsdelivr.net/npm/select-woo@1.0.1/dist/css/selectWoo.min.css',
+        MORKVA_UKRPOSHTA_PLUGIN_URL . 'assets/css/selectWoo.min.css',
         array(), MUP_PLUGIN_VERSION );
 
     wp_enqueue_style(
@@ -83,7 +94,7 @@ class ukrPoshtaFrontendInjector
     );
 
     wp_enqueue_script( 'selectWoojs',
-        'https://cdn.jsdelivr.net/npm/select-woo@1.0.1/dist/js/selectWoo.min.js',
+        MORKVA_UKRPOSHTA_PLUGIN_URL . 'assets/js/selectWoo.min.js',
         array( 'jquery' ), MUP_PLUGIN_VERSION, true );
 
     wp_enqueue_script(
@@ -123,8 +134,8 @@ class ukrPoshtaFrontendInjector
 	  $translates = $this->translator->getTranslates();
 
     ?>
-      <div id="<?= MORKVA_UKRPOSHTA_UP_SHIPPING_NAME; ?>_fields" class="wc-ukrposhta-up-fields">
-        <h3><?= $translates['block_title']; ?></h3>
+      <div id="<?php echo  esc_attr(MORKVA_UKRPOSHTA_UP_SHIPPING_NAME); ?>_fields" class="wc-ukrposhta-up-fields">
+        <h3><?php echo esc_attr($translates['block_title']); ?></h3>
         <div id="nova-poshta-shipping-info">
           <?php
 
@@ -135,8 +146,8 @@ class ukrPoshtaFrontendInjector
             'input_class' => [
               'wc-ukrposhta-select'
             ],
-            'label' => esc_html__('Індекс Відділення', 'woo-ukrposhta-pro'),
-            'placeholder' => esc_html__( 'Введіть поштовий індекс отримувача', 'woo-ukrposhta-pro' ),
+            'label' => esc_html__('Індекс Відділення', 'woo-ukrposhta'),
+            'placeholder' => esc_html__( 'Введіть поштовий індекс отримувача', 'woo-ukrposhta' ),
           ]);
 
           // City
@@ -146,8 +157,8 @@ class ukrPoshtaFrontendInjector
             'input_class' => [
               'wc-ukrposhta-select'
             ],
-            'label' => esc_html__('Населений пункт', 'woo-ukrposhta-pro'),
-            'placeholder' => esc_html__( 'Введіть назву міста отримувача', 'woo-ukrposhta-pro' ),
+            'label' => esc_html__('Населений пункт', 'woo-ukrposhta'),
+            'placeholder' => esc_html__( 'Введіть назву міста отримувача', 'woo-ukrposhta' ),
           ]);
 
           // Middle name
@@ -157,8 +168,8 @@ class ukrPoshtaFrontendInjector
               'input_class' => [
                   'wc-ukrposhta-select'
                   ],
-              'label' => esc_html__('По батькові', 'woo-ukrposhta-pro'),
-              'placeholder' => esc_html__( 'Вкажіть по батькові', 'woo-ukrposhta-pro' ),
+              'label' => esc_html__('По батькові', 'woo-ukrposhta'),
+              'placeholder' => esc_html__( 'Вкажіть по батькові', 'woo-ukrposhta' ),
           ]);
 
           ?>

@@ -57,29 +57,62 @@ class Sender
 
 	public function getAddress()
 	{
-		if ( isset( $_POST['index1'] ) ) {
-	        $address = $this->ukrposhtaApi->modelAdressPost( array( "postcode" => $_POST['index1']  ) );
-	        if ( isset( $address['id'] ) ) {
-	            return $this->addressId = $address['id'];
-	        } else {
-	            $failed = true;
-	            $this->addressMsg .= 'Помилка в поштовому індексі Відправника. ';
-	            $this->addressMsg .= $address['message'] . '. ';
-	        }
-	    } else {
+		if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                if ( isset( $_POST['index1'] ) ) {
+			        $address = $this->ukrposhtaApi->modelAdressPost( array( "postcode" => sanitize_text_field( wp_unslash( $_POST['index1'] ) ) ) );
+			        if ( isset( $address['id'] ) ) {
+			            return $this->addressId = $address['id'];
+			        } else {
+			            $failed = true;
+			            $this->addressMsg .= 'Помилка в поштовому індексі Відправника. ';
+			            $this->addressMsg .= $address['message'] . '. ';
+			        }
+			    } 
+            }
+            else {
+		        $this->addressMsg .= 'Відстуній поштовий індекс Відправника. ';
+		    }
+        }
+        else {
 	        $this->addressMsg .= 'Відстуній поштовий індекс Відправника. ';
 	    }
-
 	}
 
 	public function getType(): string
 	{
-		return ( isset( $_POST['up_sender_type'] ) ) ? \sanitize_text_field( $_POST['up_sender_type'] ) : \sanitize_text_field( \get_option( 'up_sender_type' ) );
+		$up_sender_type = \sanitize_text_field( \get_option( 'up_sender_type' ));
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $up_sender_type = ( isset( $_POST['up_sender_type'] ) ) ? sanitize_text_field( wp_unslash( $_POST['up_sender_type'] ) ) : sanitize_text_field( get_option( 'up_sender_type' ) );
+            }
+        }
+		return $up_sender_type;
 	}
 
 	public function getFirstName() : string
 	{
-		return isset( $_POST['sender_first_name'] ) ? $_POST['sender_first_name'] : \sanitize_text_field( get_option( 'names1' ) );
+		$sender_first_name = \sanitize_text_field( get_option( 'names1' ) );
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $sender_first_name = isset( $_POST['sender_first_name'] ) ? sanitize_text_field( wp_unslash( $_POST['sender_first_name'] ) ) : sanitize_text_field( get_option( 'names1' ) );
+            }
+        }
+		return $sender_first_name;
 	}
 
 	public function getMiddleName() : string
@@ -89,27 +122,82 @@ class Sender
 
 	public function getLastName() : string
 	{
-		return isset( $_POST['sender_last_name'] ) ? $_POST['sender_last_name'] : \sanitize_text_field( \get_option( 'names2' ) );
+		$sender_last_name = \sanitize_text_field( \get_option( 'names2' ) );
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $sender_last_name = isset( $_POST['sender_last_name'] ) ? sanitize_text_field( wp_unslash( $_POST['sender_last_name'] ) ) : sanitize_text_field( get_option( 'names2' ) );
+            }
+        }
+		return $sender_last_name;
 	}
 
 	public function getPhoneNumber()
 	{
-		return isset( $_POST['phone1'] ) ? $_POST['phone1'] : \sanitize_text_field( \get_option( 'phone' ) );
+		$phone = \sanitize_text_field( \get_option( 'phone' ) );
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $phone = isset( $_POST['phone1'] ) ? sanitize_text_field( wp_unslash( $_POST['phone1'] ) ) : sanitize_text_field( get_option( 'phone' ) );
+            }
+        }
+		return $phone;
 	}
 
 	public function getName() : string
 	{
-		return isset( $_POST['up_company_sender_name'] ) ? $_POST['up_company_sender_name'] : \sanitize_text_field( \get_option( 'up_company_name' ) );
+		$up_company_sender_name = \sanitize_text_field( \get_option( 'up_company_name' ) );
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $up_company_sender_name = isset( $_POST['up_company_sender_name'] ) ? sanitize_text_field( wp_unslash( $_POST['up_company_sender_name'] ) ) : sanitize_text_field( get_option( 'up_company_name' ) );
+            }
+        }
+		return $up_company_sender_name;
 	}
 
 	public function getEdrpou()
 	{
-		return isset( $_POST['up_company_sender_edrpou'] ) ? $_POST['up_company_sender_edrpou'] : '';
+		$up_company_sender_edrpou = '';
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $up_company_sender_edrpou = isset( $_POST['up_company_sender_edrpou'] ) ? sanitize_text_field( wp_unslash( $_POST['up_company_sender_edrpou'] ) ) : '';
+            }
+        }
+		return $up_company_sender_edrpou;
 	}
 
 	public function getTin()
 	{
-		return isset( $_POST['up_sep_tin'] ) ? $_POST['up_sep_tin'] : \sanitize_text_field( \get_option( 'up_tin' ) );
+		$up_sep_tin = \sanitize_text_field( \get_option( 'up_tin' ) );
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $up_sep_tin = isset( $_POST['up_sep_tin'] ) ? sanitize_text_field( wp_unslash( $_POST['up_sep_tin'] ) ) : sanitize_text_field( get_option( 'up_tin' ) );
+            }
+        }
+		return $up_sep_tin;
 	}
 
 	public function createClient($addressId)

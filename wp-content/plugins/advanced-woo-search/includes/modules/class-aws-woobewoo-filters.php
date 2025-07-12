@@ -113,7 +113,7 @@ if (!class_exists('AWS_Woobewoo_Filters')) :
                     $filters['on_sale'] = true;
                 }
                 elseif ( strpos( $key, 'pr_stock' ) !== false ) {
-                    $filters['in_status'] = $param === 'instock';
+                    $filters['in_status'] = $param;
                 }
                 elseif ( strpos( $key, 'pr_rating' ) !== false ) {
                     switch ( $param ) {

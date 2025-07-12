@@ -16,6 +16,7 @@ class class_fma_main {
 			 add_action('wp_ajax_fma_review_ajax', array($this, 'fma_review_ajax'));
 			 $this->settings = get_option('fmaoptions');
 			}
+
 			public function fma_menus() {
 				include('class_fma_admin_menus.php');
 				$fma_menus = new class_fma_admin_menus();
@@ -28,7 +29,24 @@ class class_fma_main {
 				    $fma_connector->fma_local_file_system();
 				 }
 			}
-			public function fma_scripts() {
+			public function fma_scripts( $hook ) {
+
+				wp_register_style( 'afm-jquery.select2', FMA_PLUGIN_URL . 'application/assets/css/select2/jquery.select2.min.css', array(), FMA_VERSION, 'all' );
+				wp_register_script( 'afm-jquery.select2', FMA_PLUGIN_URL . 'application/assets/js/select2/jquery.select2.min.js', array( 'jquery' ), FMA_VERSION, true );
+
+				if ( in_array( $hook, array( 'file-manager_page_afmp-adminer', 'file-manager_page_afmp-dropbox', 'toplevel_page_file_manager_advanced_ui', 'file-manager_page_file_manager_advanced_controls' ), true ) ) {
+                  wp_enqueue_style( 'afm-admin', FMA_PLUGIN_URL . 'application/assets/css/afm-styles.css', array( 'afm-jquery.select2' ), FMA_VERSION, 'all' );
+                  wp_enqueue_script( 'afm-admin', FMA_PLUGIN_URL . 'application/assets/js/afm-scripts.js', array( 'afm-jquery.select2' ), FMA_VERSION, true );
+                  wp_localize_script(
+                      'afm-admin',
+                      'afmAdmin',
+                      array(
+                          'assetsURL' => FMA_PLUGIN_URL . 'application/assets/',
+	                      'jsonURL'  => rest_url(),
+                      ),
+                  );
+              }
+
 				$pageNow = isset($_GET['page']) ?  sanitize_text_field(htmlentities($_GET['page'])) : '';
 				if('file_manager_advanced_ui' == $pageNow) {
 
@@ -51,19 +69,18 @@ class class_fma_main {
 				foreach($elfCss as $elCss) {
 					wp_enqueue_style( $elCss, plugins_url('library/css/'.$elCss.'', __FILE__));	
 				}
+
 				wp_enqueue_style( 'fma_theme', plugins_url('library/css/theme.css', __FILE__));
-				if(isset($this->settings['fma_theme']) && $this->settings ['fma_theme'] == 'dark') {
-				  wp_enqueue_style( 'fma_themee', plugins_url('library/themes/dark/css/theme.css', __FILE__));
-				}
-                else if(isset($this->settings['fma_theme']) && $this->settings ['fma_theme'] == 'grey') {
-				  wp_enqueue_style( 'fma_themee', plugins_url('library/themes/grey/css/theme.css', __FILE__));
-				}
-                else if(isset($this->settings['fma_theme']) && $this->settings ['fma_theme'] == 'windows10') {
-				  wp_enqueue_style( 'fma_themee', plugins_url('library/themes/windows10/css/theme.css', __FILE__));
-				}
-                 else if(isset($this->settings['fma_theme']) && $this->settings ['fma_theme'] == 'bootstrap') {
-				  wp_enqueue_style( 'fma_themee', plugins_url('library/themes/bootstrap/css/theme.css', __FILE__));
-				}
+
+                $selected_theme = apply_filters( 'fma__selected_theme', null );
+                if ( ! is_null( $selected_theme ) ) {
+                    $this->settings['fma_theme'] = $selected_theme;
+                }
+
+                if ( isset( $this->settings['fma_theme'] ) && in_array( $this->settings['fma_theme'], array( 'dark', 'grey', 'windows10', 'bootstrap', 'mono', 'm-light' ), true ) ) {
+                    wp_enqueue_style( 'fma_themee', plugins_url( 'library/themes/' . $this->settings['fma_theme'] . '/css/theme.css', __FILE__ ) );
+                }
+
 			    wp_enqueue_style( 'fma_custom', plugins_url('library/css/custom_style_filemanager_advanced.css', __FILE__));
 
 				wp_enqueue_script('afm-init-jquery', plugins_url('library/js/init.js', __FILE__));
@@ -174,15 +191,20 @@ class class_fma_main {
 
 				$display_ui_options = isset($this->settings['display_ui_options']) ? $this->settings['display_ui_options'] : FMA_UI;
 
-				wp_enqueue_script( 'elfinder_script', plugins_url('library/js/elfinder_script.js', __FILE__), array(), FMA_VERSION);
+					$hide_path = false;
+					if ( isset( $this->settings['hide_path'] ) && 1 === absint( $this->settings['hide_path'] ) ) {
+						$hide_path = true;
+					}
 
+				wp_enqueue_script( 'elfinder_script', plugins_url('library/js/elfinder_script.js', __FILE__), array(), FMA_VERSION);
 				wp_localize_script( 'elfinder_script', 'afm_object',
 				array( 
 					'ajaxurl' => admin_url( 'admin-ajax.php' ),
 					'nonce' => $nonce,
 					'locale' => $locale,
 					'ui' => $display_ui_options,
-					'cm_theme' => $cm_theme
+					'cm_theme' => $cm_theme,
+					'hide_path' => $hide_path,
 				)
 	);
 
@@ -195,11 +217,34 @@ class class_fma_main {
 		public static function cm_themes() {
 			$cm_themes_dir = FMA_CM_THEMES_PATH;
 			$cm_themes = [];
-			$cm_themes['default'] = 'default';
-			foreach(glob($cm_themes_dir.'/*.css') as $file) {
+			$cm_themes['default'] = array(
+                'title' => 'default',
+                'pro'   => false,
+            );
+
+            $free_themes = array( '3024-day', '3024-night', 'base16-dark', 'base16-light', 'downtown-light' );
+			foreach( glob( $cm_themes_dir . '/*.css' ) as $file ) {
 				$bn = basename($file, ".css");
-				$cm_themes[$bn] = $bn;
+                $args = array(
+                    'title' => $bn,
+                    'pro'   => true,
+                );
+                if ( in_array( $bn, $free_themes, true ) ) {
+                    $args['pro'] = false;
+                }
+				$cm_themes[ $bn ] = $args;
 			}
+
+            usort(
+                $cm_themes,
+                function( $a, $b ) {
+                    if ( $a['pro'] === $b['pro'] ) {
+                        return 0;
+                    }
+                    return $a['pro'] ? 1 : -1;
+                }
+            );
+
 			return $cm_themes;
 		} 
 		/*
@@ -221,4 +266,9 @@ class class_fma_main {
 				die;
            }
 	     }
+
+         public static function has_pro() {
+             $has_pro = apply_filters( 'fma__has_pro', false );
+            return $has_pro;
+         }
 }

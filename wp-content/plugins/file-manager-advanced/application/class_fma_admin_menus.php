@@ -15,35 +15,164 @@ class class_fma_admin_menus {
              include('class_fma_lang.php');
 			$this->langs = new class_fma_adv_lang();
 	  }
+
 	/**
 	 * Loading Menus
 	 */
 	public function load_menus() {
 		
-		$fmaPer = $this->fmaPer();
-		    
-			/** Authorizing only super admin to manage settings */
-		    $subPer = 'manage_options';
-		    if ( is_multisite() && !is_network_admin() ) {
-			   $subPer = 'manage_network';	
-			   $fmaPer = $this->networkPer();
-		    }
+        $fmaPer = $this->fmaPer();
 
-		 add_menu_page(
-			__( 'File Manager', 'file-manager-advanced' ),
-			__( 'File Manager', 'file-manager-advanced' ),
-			$fmaPer,
-			'file_manager_advanced_ui',
-			array($this, 'file_manager_advanced_ui'),
-			plugins_url( 'assets/icon/fma.png', __FILE__ ),
-			4
-			);
-	add_submenu_page( 'file_manager_advanced_ui', 'Settings', 'Settings', $subPer, 'file_manager_advanced_controls', array(&$this, 'file_manager_advanced_controls'));
-	if(!class_exists('file_manager_advanced_shortcode')) {
-		add_submenu_page( 'file_manager_advanced_ui', 'Shortcodes', 'Shortcodes', $subPer, 'file_manager_advanced_shortcodes', array(&$this, 'file_manager_advanced_shortcodes'));
+        /** Authorizing only super admin to manage settings */
+        $subPer = 'manage_options';
+        if ( is_multisite() && !is_network_admin() ) {
+            $subPer = 'manage_network';
+            $fmaPer = $this->networkPer();
+        }
+
+        add_menu_page(
+            __( 'File Manager', 'file-manager-advanced' ),
+            __( 'File Manager', 'file-manager-advanced' ),
+            $fmaPer,
+            'file_manager_advanced_ui',
+            array($this, 'file_manager_advanced_ui'),
+            plugins_url( 'assets/icon/fma.png', __FILE__ ),
+            4
+        );
+        add_submenu_page( 'file_manager_advanced_ui', 'Settings', 'Settings', $subPer, 'file_manager_advanced_controls', array(&$this, 'file_manager_advanced_controls'));
+        if(!class_exists('file_manager_advanced_shortcode')) {
+		    add_submenu_page( 'file_manager_advanced_ui', 'Shortcodes', 'Shortcodes', $subPer, 'file_manager_advanced_shortcodes', array(&$this, 'file_manager_advanced_shortcodes'));
+	    }
+
+		if ( ! class_exists( 'AFMP\\Modules\\Adminer' ) ) {
+			add_submenu_page( 'file_manager_advanced_ui', 'DB Access', 'DB Access', 'manage_options', 'afmp-adminer', array( $this, 'adminer_menu' ) );
+		}
+
+        if ( ! class_exists( 'AFMP\\Modules\\Dropbox' ) ) {
+            add_submenu_page( 'file_manager_advanced_ui', 'Dropbox Settings', 'Dropbox', 'manage_options', 'afmp-dropbox', array( $this, 'dropbox_menu'  ) );
+        }
 	}
 
+	/**
+	 * Dropbox menu
+	 * @since 6.7.2
+	 */
+    public function dropbox_menu() {
+
+        echo '<style type="text/css">
+            .dropbox__heading {
+                color: #000;
+                font-size: 18px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: normal;
+            }
+            
+            .dropbox__heading-pro-tag {
+                display: inline-block;
+                padding: 2px 8px;
+                background: linear-gradient(270deg, #011D33 0%, #3F6972 100%);
+                border-radius: 4px;
+                color: #fff;
+                font-size: 12px;
+                margin-left: 25px;
+            }
+            
+            .dropbox__wrap {
+                opacity: 0.5;
+                position:relative;
+            }
+            
+            .dropbox__wrap::before {
+                content: "";
+                display: block;
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 1;
+                background: transparent;
+            }
+        </style>
+        <h2 class="dropbox__heading">Dropbox Settings <span class="dropbox__heading-pro-tag">PRO</span></h2>
+
+        <div class="dropbox__wrap">
+            <table class="form-table">
+                <tr>
+                    <th>
+                        <lable for="fma__enable">Enable</lable>
+                    </th>
+                    <td>
+                        <input type="checkbox" id="fma__enable">
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th>
+                        <label for="afm__alias">Alias</label>
+                    </th>
+                    <td>
+                        <input type="text" id="afm__alias" class="regular-text">
+                        <p class="desc">
+                            <strong>Enter a title which will be displayed on File Manager</strong>
+                        </p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th>
+                        <label for="afm__app_key">App Key</label>
+                    </th>
+                    <td>
+                        <input type="text" id="afm__app_key" class="regular-text">
+                        <p class="desc">
+                            <strong>Enter your Dropbox App key, you will get your app key from <a href="#">Dropbox App Console</a></strong>
+                        </p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th>
+                        <label for="afm__app_secret">App Secret</label>
+                    </th>
+                    <td>
+                        <input type="text" id="afm__app_secret" class="regular-text">
+                        <p class="desc">
+                            <strong>Enter your Dropbox App secret, you will get your app secret from <a href="#">Dropbox App Console</a></strong>
+                        </p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th>
+                        <label for="afm__redirect_url">Redirect URL</label>
+                    </th>
+                    <td>
+                        <input type="text" id="afm__redirect_uri" class="regular-text">
+                        
+                        <p class="desc">
+                            <strong>
+                                Copy this URL and paste it in your Dropbox App Console under Redirect URIs
+                            </strong>
+                        </p>
+                    </td>
+                </tr>
+            </table>';
+
+        submit_button();
+
+        echo '</div>';
+    }
+
+	/**
+	 * Adminer menu
+	 * @since 6.7.2
+	 */
+	public function adminer_menu() {
+		require_once FMAFILEPATH . 'templates/adminer.php';
 	}
+
 	/** 
 	 * Fma permissions
 	 */

@@ -46,7 +46,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     }
 
                     if ( $values['type'] === 'textarea' && isset( $values['allow_tags'] ) ) {
-                        $default_settings[$values['id']] = (string) addslashes( wp_kses( stripslashes( html_entity_decode( $values['value'] ) ), AWS_Helpers::get_kses( $values['allow_tags'] ) ) );
+                        $default_settings[$values['id']] = (string) wp_kses( stripslashes( html_entity_decode( $values['value'] ) ), AWS_Helpers::get_kses( $values['allow_tags'] ) );
                         continue;
                     }
 
@@ -105,7 +105,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 $new_value = isset( $_POST[ $values['id'] ] ) ? $_POST[ $values['id'] ] : '';
 
                 if ( $values['type'] === 'textarea' && isset( $values['allow_tags'] ) ) {
-                    $update_settings[ $values['id'] ] = (string) addslashes( wp_kses( stripslashes( html_entity_decode( $new_value ) ), AWS_Helpers::get_kses( $values['allow_tags'] ) ) );
+                    $update_settings[ $values['id'] ] = (string) wp_kses( stripslashes( html_entity_decode( $new_value ) ), AWS_Helpers::get_kses( $values['allow_tags'] ) );
                     continue;
                 }
 
@@ -208,7 +208,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
 
             $options['general'][] = array(
                 "name"       => __( "Search in", "advanced-woo-search" ),
-                "desc"       => __( "Click on status icon to enable or disable search source.", "advanced-woo-search" ),
+                "desc"       => __( "Click on the status icon to enable or disable the search source for products search.", "advanced-woo-search" ),
                 "table_head" => __( 'Search Source', 'advanced-woo-search' ),
                 "id"         => "search_in",
                 "value"      => array(

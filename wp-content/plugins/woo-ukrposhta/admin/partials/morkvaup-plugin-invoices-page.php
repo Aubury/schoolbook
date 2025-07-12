@@ -1,13 +1,28 @@
 <?php
-	global $wp_version;
-	if ( version_compare( $wp_version, '5.6', '<' ) ) { ?>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<?php }
-?>
-<script src="<?php echo MUP_PLUGIN_URL . 'admin/js/script.js'; ?>"></script>
-<link rel="stylesheet" href="<?php echo MUP_PLUGIN_URL . 'admin/css/style.css'; ?>"/>
+	function enqueue_custom_admin_scripts_and_styles_footer() 
+	{
 
-<?php
+	$style_version = filemtime(MORKVA_UKRPOSHTA_PLUGIN_DIR . 'admin/css/style.css'); 
+    $script_version = filemtime(MORKVA_UKRPOSHTA_PLUGIN_DIR . 'admin/js/script.js');
+
+    wp_enqueue_style(
+        'custom-admin-style',
+        MORKVA_UKRPOSHTA_PLUGIN_URL . 'admin/css/style.css', 
+        array(), 
+        $style_version, 
+        'all' 
+    );
+
+   
+    wp_enqueue_script(
+        'custom-admin-script', 
+        MORKVA_UKRPOSHTA_PLUGIN_URL . 'admin/js/script.js', 
+        array(), 
+        $script_version,
+        true
+    );
+}
+add_action('admin_footer', 'enqueue_custom_admin_scripts_and_styles_footer');
 	echo '<br>';
 	require("api.php");
 	require("functions.php");
@@ -22,16 +37,30 @@
 
 	mup_display_nav();
 
-	if(isset($_GET['post'])) {
- 		require __DIR__.'/edit.php';
+	if ( isset( $_GET['_wpnonce'] )) {
+		$nonce = sanitize_text_field(wp_unslash($_GET['_wpnonce']));
+  		$order_data_main = isset($_GET['order']) ? sanitize_text_field(wp_unslash($_GET['order'])) : '';
+		if(wp_verify_nonce( $nonce, 'morkvaup_invoice_action_' . $order_data_main ))
+		{
+			require __DIR__.'/edit.php';
+		}
 	} else {
 		if(isset($_POST['delete'])){
-			$id ='';$id .= $_POST['idd'];$ref = $_POST['ref'];
+			$id = '';
+			if ( isset($_POST['idd']) ) {
+			    $id .= sanitize_text_field(wp_unslash( $_POST['idd'] )); 
+			}
+
+			$ref = '';
+			if ( isset($_POST['ref']) ) {
+			    $ref = sanitize_text_field(wp_unslash( $_POST['ref'] )); 
+			}
+
 			$ukrposhtaApi->RequestDelShipping($ref);
 			global $wpdb;
-			$query = "DELETE FROM `{$wpdb->prefix}{$tdb}`"." WHERE {$wpdb->prefix}{$tdb}.order_invoice='".$id."'";
-			echo '<script>console.log("'.$query.'")</script>';
-			$wpdb->query( $query );
+			$table = "{$wpdb->prefix}{$tdb}";
+			$where = array( 'order_invoice' => $id );
+			$wpdb->delete( $table, $where );
 			the_deletediv($id);
 		}
 
@@ -64,12 +93,44 @@ class Mrk_UP_Myttn_List_Table extends WP_List_Table {
 		$this->tbearer = get_option('production_bearer_status_tracking');
 		$this->ukrposhtaApi = new UkrposhtaApi($this->bearer ,$this->cptoken, $this->tbearer);
 		$this->posts_per_page = intval( get_option( 'posts_per_page' ) );
-		$upinvqty = isset( $_GET['upinvqty'] ) ? sanitize_text_field( $_GET['upinvqty'] ) : '';
-		if ( 'all' == $upinvqty ) {
-			$this->results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}{$this->tdb}" . " ORDER BY id DESC", ARRAY_A  );
-		} else {
-			$this->results = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}{$this->tdb}" . " ORDER BY id DESC LIMIT " . $this->posts_per_page, ARRAY_A  );
-		}	
+
+		$upinvqty = '';
+
+		if (isset($_GET['_wpnonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_GET['_wpnonce']));
+
+            if(wp_verify_nonce($nonce, 'morkvaup_invoices_update_all_nonce'))
+            {
+         		$upinvqty = isset( $_GET['upinvqty'] ) ? sanitize_text_field( wp_unslash($_GET['upinvqty'] )) : '';       
+            }
+        }
+		
+		$cache_key = 'mrkv_up_query_results_' . $this->tdb . '_upinvqty_' . $upinvqty . '_posts_per_page_' . $this->posts_per_page;
+		$results = wp_cache_get($cache_key, 'mrkv_up');
+
+		if (false === $results) {
+		    global $wpdb;
+
+		    if ('all' == $upinvqty) {
+		        $results = $wpdb->get_results("
+		            SELECT * 
+		            FROM {$wpdb->prefix}uposhta_invoices
+		            ORDER BY id DESC
+		        ", ARRAY_A);
+		    } else {
+		        $results = $wpdb->get_results($wpdb->prepare("
+		            SELECT * 
+		            FROM {$wpdb->prefix}uposhta_invoices
+		            ORDER BY id DESC
+		            LIMIT %d
+		        ", $this->posts_per_page), ARRAY_A);
+		    }
+
+		    wp_cache_set($cache_key, $results, 'mrkv_up', 3600);
+		}
+
+		$this->results = $results;	
     }
 
     /**
@@ -86,19 +147,23 @@ class Mrk_UP_Myttn_List_Table extends WP_List_Table {
 
 		$columns = $this->get_columns();
 		$hidden = $this->get_hidden_columns();
-		$sortable = $this->get_sortable_columns();
-
-// check and process any actions such as bulk actions.
-//$this->process_bulk_actions(); // error_log(print_r($this->process_bulk_action(),true));		
+		$sortable = $this->get_sortable_columns();		
 
 		// check if a search was performed.
-		$search_key = isset( $_REQUEST['s'] ) ? wp_unslash( trim( $_REQUEST['s'] ) ) : '';
+		$search_key = '';
 
+		if (isset( $_REQUEST['mrkv_search_nonce_action'] )) {
+	     	// Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_REQUEST['mrkv_search_nonce_action']));
+            if(wp_verify_nonce( $nonce, 'mrkv_search_nonce_field' ))
+            {
+            	if ( isset( $_REQUEST['s'] ) ) {
+			        $search_key = sanitize_text_field( wp_unslash( $_REQUEST['s'] ) );
+			    } 
+            }
+	    }
 
-		$this->_column_headers = array($columns, $hidden, $sortable);
-
-// check and process any actions such as bulk actions.
-// $this->process_bulk_actions(); // error_log(print_r($this->process_bulk_action(),true));		
+		$this->_column_headers = array($columns, $hidden, $sortable);		
 
 		$data = $this->table_data();
 
@@ -129,15 +194,15 @@ class Mrk_UP_Myttn_List_Table extends WP_List_Table {
     function get_columns() {
        return $columns = array(
           'cb' => '<input type="checkbox" />',
-          'id' 				=> __('ID накладної'),
-          'order_invoice' 	=> __('Номер накладної'),
-          'order_id' 		=> __('ID Замовлення'),
-          'shipping_cost'	=> __('Вартість доставки'),
-          'posting_type'	=> __('Тип відправлення'),
-          'delivery_type'	=> __('Тип доставки'),
-          'not_delivery'	=> __('При не врученні'),
-          'destination'		=> __('Напрямок'),
-          'invoice_status'	=> __('Статус'),
+          'id' 				=> __('ID накладної', 'woo-ukrposhta'),
+          'order_invoice' 	=> __('Номер накладної', 'woo-ukrposhta'),
+          'order_id' 		=> __('ID Замовлення', 'woo-ukrposhta'),
+          'shipping_cost'	=> __('Вартість доставки', 'woo-ukrposhta'),
+          'posting_type'	=> __('Тип відправлення', 'woo-ukrposhta'),
+          'delivery_type'	=> __('Тип доставки', 'woo-ukrposhta'),
+          'not_delivery'	=> __('При не врученні', 'woo-ukrposhta'),
+          'destination'		=> __('Напрямок', 'woo-ukrposhta'),
+          'invoice_status'	=> __('Статус', 'woo-ukrposhta'),
        );
     }
 
@@ -195,6 +260,7 @@ class Mrk_UP_Myttn_List_Table extends WP_List_Table {
     	$print_invoice = '';
     	$print_invoice .= '<form target="_blank" action="' . get_site_url() . '/wp-content/plugins/woo-ukrposhta-pro/admin/partials/pdf.php" method="POST"
 					style="  display: inline;">';
+		$print_invoice .= wp_nonce_field( 'generate_invoice_nonce_action', 'generate_invoice_nonce', true, false );
     	$print_invoice .=
 					'<input type="text" name="type" value="' . get_option( 'proptype' ) . '" style="display:none;" />
 					<input class="startcodeup" type="text" name="ttn" value="' . $item['invoice_ref'] . '" hidden />
@@ -231,12 +297,15 @@ class Mrk_UP_Myttn_List_Table extends WP_List_Table {
 
     // Invoice ID
     public function column_id($item){
-        return sprintf( '%1$s',
-        	'<a  title="id накладної в системі укрпошти: ' . $item['invoice_ref'] . '" ' .
-        	'href="admin.php?page=morkvaup_invoices&post=' . $item['order_invoice'] . 
-        	'&order=' . $item['order_id'] . '" ' . 
-        	'class="row-title">' . $item['id'] . '</a>' 
-        );    	
+        return sprintf(
+		    '%1$s',
+		    '<a title="id накладної в системі укрпошти: ' . esc_attr( $item['invoice_ref'] ) . '" ' .
+		    'href="' . esc_url( wp_nonce_url( 
+		        'admin.php?page=morkvaup_invoices&post=' . $item['order_invoice'] . '&order=' . $item['order_id'], 
+		        'morkvaup_invoice_action_' . $item['order_id'] 
+		    ) ) . '" ' .
+		    'class="row-title">' . esc_html( $item['id'] ) . '</a>'
+		);   	
     }    
 
     // Order ID
@@ -342,21 +411,6 @@ public function filter_table_data( $table_data, $search_key ) {
 
 }    
 
-/*public static function delete_records($id)
-{
-	global $wpdb;
-	$wpdb->delete("database_table_name", ['id' => $id], ['%d']);
-}*/	  
-
-/*public static function bulk_print_action( $id )
-{
-	global $wpdb;
-	// $wpdb->delete("database_table_name", ['id' => $id], ['%d']);
-	$res = $wpdb->get_results( "SELECT * FROM {$this->tdb} WHERE id = {$id}" );
-	// error_log($res);
-}	 */  
-
-
 	/**
 	 * Generate the table navigation above or below the table
 	 *
@@ -375,17 +429,17 @@ public function filter_table_data( $table_data, $search_key ) {
 	<div class="tablenav <?php echo esc_attr( $which ); ?>">
 
 		<?php if ( $this->has_items() ) : ?>
-			<form class="bulk_actions_form<?php echo $two; ?>" target="_blank" method="POST" action >
-				<input type="text" name="type" value="<?php echo get_option( 'proptype' ); ?>" style="display: none;" />
+			<form class="bulk_actions_form<?php echo esc_attr($two); ?>" target="_blank" method="POST" action >
+				<input type="text" name="type" value="<?php echo esc_attr(get_option( 'proptype' )); ?>" style="display: none;" />
 				<!-- <input type="text" name="ttn" value="<?php //echo $invoice['invoice_ref']; ?>" style="display: none;" /> -->
-				<input type="text" name="bearer" value="<?php echo get_option('production_bearer_ecom'); ?>" style="display: none;" />
-				<input tyoe="text" name="cp_token" value="<?php echo get_option('production_cp_token'); ?>" style="display: none;" />
+				<input type="text" name="bearer" value="<?php echo esc_attr(get_option('production_bearer_ecom')); ?>" style="display: none;" />
+				<input tyoe="text" name="cp_token" value="<?php echo esc_attr(get_option('production_cp_token')); ?>" style="display: none;" />
 
 				<div class="alignleft actions bulkactions">
 
-					<input type="hidden" name="bulklistup<?php echo $two; ?>" id="bulklistup<?php echo $two; ?>" value="">
-					<input type="hidden" name="bulklistdeleteup<?php echo $two; ?>" id="bulklistdeleteup<?php echo $two; ?>" value="">
-					<input type="hidden" name="bulklistnewup<?php echo $two; ?>" id="bulklistnewup<?php echo $two; ?>" value="">
+					<input type="hidden" name="bulklistup<?php echo esc_attr($two); ?>" id="bulklistup<?php echo esc_attr($two); ?>" value="">
+					<input type="hidden" name="bulklistdeleteup<?php echo esc_attr($two); ?>" id="bulklistdeleteup<?php echo esc_attr($two); ?>" value="">
+					<input type="hidden" name="bulklistnewup<?php echo esc_attr($two); ?>" id="bulklistnewup<?php echo esc_attr($two); ?>" value="">
 					<input type="hidden" name="sendtype" id="sendtype" value="<?php echo esc_attr( get_option('sendtype') ); ?>">
 
 					<?php $this->bulk_actions( $which ); ?>
@@ -414,7 +468,7 @@ public function filter_table_data( $table_data, $search_key ) {
 
 		$this->screen->render_screen_reader_content( 'heading_list' );
 		?>
-<table class="wp-list-table <?php echo implode( ' ', $this->get_table_classes() ); ?>">
+<table class="wp-list-table <?php echo esc_attr(implode( ' ', $this->get_table_classes() )); ?>">
 	<thead>
 	<tr>
 		<?php $this->print_column_headers(); ?>
@@ -424,7 +478,7 @@ public function filter_table_data( $table_data, $search_key ) {
 	<tbody id="the-list"
 		<?php
 		if ( $singular ) {
-			echo " data-wp-lists='list:$singular'";
+			echo esc_attr(" data-wp-lists='list:$singular'");
 		}
 		?>
 		>
@@ -444,9 +498,8 @@ public function filter_table_data( $table_data, $search_key ) {
 
 	public function get_bulk_actions() {
 	  return $actions = array(
-	    'bulk_delete'  	=> __('Delete'),
-	    'bulk_print' 	=> __('Друкувати')
-	    // 'bulk_new_invoice_print' => __('Друкувати новостворені накладні')
+	    'bulk_delete'  	=> __('Delete', 'woo-ukrposhta'),
+	    'bulk_print' 	=> __('Друкувати', 'woo-ukrposhta')
 	  );
 	}
 
@@ -477,22 +530,22 @@ public function filter_table_data( $table_data, $search_key ) {
 		}
 
 
-		echo '<label for="bulk-action-selector-' . esc_attr( $which ) . '" class="screen-reader-text">' . __( 'Select bulk action' ) . '</label>';
-		echo '<select name="action' . $two . '" id="bulk-action-selector-' . esc_attr( $which ) . "\">\n";
-		echo '<option value="-1">' . __( 'Bulk Actions' ) . "</option>\n";
+		echo '<label for="bulk-action-selector-' . esc_attr( $which ) . '" class="screen-reader-text">' . esc_html__( 'Select bulk action', 'woo-ukrposhta' ) . '</label>';
+		echo '<select name="action' . esc_attr($two) . '" id="bulk-action-selector-' . esc_attr( $which ) . "\">\n";
+		echo '<option value="-1">' . esc_html__( 'Bulk Actions', 'woo-ukrposhta' ) . "</option>\n";
 
 
 		foreach ( $this->_actions as $name => $title ) {
 			$class = 'edit' === $name ? ' class="hide-if-no-js"' : '';
 
-			echo "\t" . '<option value="' . $name . '"' . $class . '>' . $title . "</option>\n";
+			echo "\t" . '<option value="' . esc_html($name) . '"' . esc_attr($class) . '>' . esc_html($title) . "</option>\n";
 		}
 
 		echo "</select>\n";
 
 		$bulk_action = $this->current_action();
 
-		submit_button( __( 'Apply' ), 'action', '', false, array( 
+		submit_button( __( 'Apply', 'woo-ukrposhta'	 ), 'action', '', false, array( 
 			'id' => "doaction$two"
 			// 'onclick' => "window.open('" . get_site_url() . "/wp-content/plugins/woo-ukrposhta-pro/admin/partials/" . $bulk_file. "','_blank')" 
 		) );
@@ -508,37 +561,7 @@ public function filter_table_data( $table_data, $search_key ) {
 	public function process_bulk_actions() {  
         global $wpdb;
 
-		$data = $this->table_data(); // error_log(print_r($data,true));
-
-		/*if ( ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'bulk_print' ) || ( isset( $_REQUEST['action2'] ) && $_REQUEST['action2'] === 'bulk_print' ) ) {
-
-			$nonce = wp_unslash( $_REQUEST['_wpnonce'] );*/  // error_log(wp_verify_nonce( $nonce, 'bulk-mrkupinvoices' ));
-			/*
-			 * Note: the nonce field is set by the parent class
-			 * wp_nonce_field( 'bulk-' . $this->_args['plural'] );	 
-			 */
-			/*if ( ! wp_verify_nonce( $nonce, 'bulk-mrkupinvoices' ) ) { // verify the nonce.
-				$this->invalid_nonce_redirect();
-			} else {
-				// $cb_arr = array(); //error_log(print_r($this->results,true));
-				if( ! empty( $_POST['bulklistup'] ) ) {
-					$cb_arr = explode(",", $_POST['bulklistup']); //error_log(print_r($cb_arr,true));
-					foreach ($data as $item) {
-					$html2 = $this->ukrposhtaApi->GetInfo( $item[ 'order_invoice' ] );  //error_log(print_r($html2,true));
-			    		foreach ($cb_arr as $val) {  //error_log(print_r($val,true));		        		
-				        	if ( $val == $html2['barcode'] ) {
-			        			if( $_POST['action'] == 'bulk_print' ) {
-			        				// error_log('Hello! Be back!');
-								}
-				        	}	
-			        	}	        		
-				    }
-				}
-			}
-		}*/
-		if ( ( isset( $_REQUEST['action'] ) && $_REQUEST['action'] === 'bulk_delete' ) || ( isset( $_REQUEST['action2'] ) && $_REQUEST['action2'] === 'bulk_delete' ) ) {
-			// Працює, якщо підключити в методі 'prepare_items()' поточний метод `$this->process_bulk_actions();
-		}
+		$data = $this->table_data();
     }
 
 	function custom_bulk_admin_notices() {
@@ -546,30 +569,14 @@ public function filter_table_data( $table_data, $search_key ) {
     }    
 
     public function extra_tablenav( $which ) {
-    	print '<a href="?page=morkvaup_invoices&upinvqty=all" class="button button-primary vam" onclick="window.location.reload();"> Оновити всі</a>';
+    	$nonce = wp_create_nonce('morkvaup_invoices_update_all_nonce');
+    	$url = admin_url('admin.php?page=morkvaup_invoices&upinvqty=all&_wpnonce=' . $nonce);
+    	print '<a href="' . esc_url($url) . '" class="button button-primary vam" onclick="window.location.reload();"> Оновити всі</a>';
     }
-
-public function getAddrSticker() {
-    // $url = 'https://www.ukrposhta.ua/forms/ecom/0.0.1/shipments/'. $uuid .'/sticker?token=' . $this->token;
-
-    $authorization = "Authorization: Bearer " . $this->bearer;
-
-    $cur = curl_init($url);
-    curl_setopt( $cur, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($cur, CURLOPT_HTTPHEADER, array('Content-Type: application/pdf' , $authorization )); // Inject the token into the header
-    $html = curl_exec( $cur );
-    curl_close ( $cur );
-    // return  json_decode($html, true);
-    /*if ( ! empty( $url ) ) {
-		// header('Location:' . $url);
-		echo '<script>window.open(' . $url . ', "_blank");</script>';
-		// exit;
-	}*/
-	return;
-}    
+   
 
 	public function no_items() {
-	  _e( 'Відправлень Укрпошти для відображення не знайдено.' );
+	  esc_html_e( 'Відправлень Укрпошти для відображення не знайдено.', 'woo-ukrposhta' );
 	}
 
 /**
@@ -603,12 +610,13 @@ public function getAddrSticker() {
 		$this->prepare_items();
 		?>
 		<div class="wrap" id="mrkvup-list-table" style="margin-right:0;">    
-		    <h2><?php _e( 'Мої відправлення Укрпошти '); ?></h2><hr>
+		    <h2><?php esc_html_e( 'Мої відправлення Укрпошти ', 'woo-ukrposhta'); ?></h2><hr>
 		        <div id="mrkv-wp-list-table-demo">			
 		            <div id="mrkv-post-body">		
 						<?php 
 							echo '<form id="posts-filter" method="post">';
-								$this->search_box( __( 'Search' ), 'search_id');
+								wp_nonce_field( 'mrkv_search_nonce_action', 'mrkv_search_nonce_field' );
+								$this->search_box( __( 'Search', 'woo-ukrposhta' ), 'search_id');
 							echo '</form>';
 							$this->display();					
 						?>					
@@ -627,12 +635,14 @@ public function getAddrSticker() {
 <?php } // End of if(isset($_GET['post'])):20 ?>
 
 
-<?php if ( 'morkvaup_invoices' == $_GET['page'] && (null == (isset($_GET['post']) ? $_GET['post'] : '') ) ) : ?>
-		
-	<?php
-	 	$upTtnListTable = new Mrk_UP_Myttn_List_Table();
-		$upTtnListTable->load_invoice_list_table(); 
-	?>	
+<?php 
+if ( isset( $_GET['page'] ) && 'morkvaup_invoices' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) && 
+     ( ! isset( $_GET['post'] ) || empty( sanitize_text_field( wp_unslash( $_GET['post'] ) ) ) ) ) : ?>
+    
+    <?php
+        $upTtnListTable = new Mrk_UP_Myttn_List_Table();
+        $upTtnListTable->load_invoice_list_table(); 
+    ?>
 
 <?php endif; ?>
 

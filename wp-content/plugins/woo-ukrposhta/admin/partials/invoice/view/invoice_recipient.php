@@ -44,7 +44,7 @@
                                     $billing_up_address_surname = $order_data->get_meta('_shipping_up_address_surname');
                                 }
 
-                                echo $billing_up_address_surname; 
+                                echo esc_html($billing_up_address_surname); 
                             }
                           ?>" required />
                 </td>
@@ -63,7 +63,7 @@
                     <label for="phone2">Телефон *</label>
                 </th>
                 <td>
-                <input id="phone2" type="text" value="<?php echo '' . $invoiceOrder->getShippingPhone(); ?>"  name="phone2" required />
+                <input id="phone2" type="text" value="<?php echo '' . esc_html($invoiceOrder->getShippingPhone()); ?>"  name="phone2" required />
                 </td>
             </tr>
         </tbody>

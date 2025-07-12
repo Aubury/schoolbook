@@ -141,46 +141,57 @@ class UkrposhtaApiClass
      */
     private function request($model, $method = 'HTTPGET', $params = NULL, $add = '')
     {
-        /* Get required URL*/
+        /* Get required URL */
         $url = $this->url . 'ecom' . $this->apiVersion . $model . $add;
 
-        echo '<script>console.log("'.$url.'");</script>';
-        /* Convert data to neccessary format*/
-        $post = json_encode($params);
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Authorization: Bearer ' . $this->bearer));
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        //curl_setopt($ch, constant(CURLOPT_ . $method), 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->responseTime);
-        if ($method != 'HTTPGET') curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        /* Convert data to necessary format */
+        $post = wp_json_encode($params);
 
-        $result = curl_exec($ch);
+        // Set the headers for the request
+        $headers = array(
+            'Content-Type'  => 'application/json',
+            'Authorization' => 'Bearer ' . $this->bearer,
+        );
 
-        // Checking request errors
-        if ( !curl_errno($ch)) {
-            $info = curl_getinfo($ch);
+        // Set the arguments for the request
+        $args = array(
+            'method'    => $method, // HTTP method, e.g., GET, POST, PUT, etc.
+            'body'      => $post, // The data to be sent in the request body (only for POST/PUT)
+            'headers'   => $headers, // Set the headers
+            'timeout'   => $this->responseTime, // Set the timeout
+            'sslverify' => false, // Disable SSL verification (set to true in production)
+        );
 
-            if ($info['http_code'] == '401') {
-                $this->httpCode401 = '<br>Error 401: Invalid Credentials Access failure for API. <br>Така помилка виникає у випадку використання некоректного token' . '<br>Request: ' . $info['url'] . ' Time: ' . $info['total_time'];
+        // Send the request using wp_remote_request
+        $response = wp_remote_request($url, $args);
+
+        // Check if there was an error with the request
+        if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            // Handle the error (e.g., log it, show a message)
+        } else {
+            // Retrieve the response code
+            $http_code = wp_remote_retrieve_response_code($response);
+
+            // Retrieve the body of the response
+            $result = wp_remote_retrieve_body($response);
+
+            // Handle the specific error codes
+            if ($http_code == 401) {
+                $this->httpCode401 = '<br>Error 401: Invalid Credentials Access failure for API. <br>Така помилка виникає у випадку використання некоректного token' . '<br>Request: ' . $url . ' Time: ' . $response['response']['total_time'];
             }
 
-            if ($info['http_code'] == '403') {
-                $this->httpCode403 = '<br>Error 403: Invalid Credentials Access failure for API. Введено неправильний bearer.' . '<br>Request: ' . $info['url'] . ' Time: ' . $info['total_time'];
+            if ($http_code == 403) {
+                $this->httpCode403 = '<br>Error 403: Invalid Credentials Access failure for API. Введено неправильний bearer.' . '<br>Request: ' . $url . ' Time: ' . $response['response']['total_time'];
             }
 
-            if ($info['http_code'] == '404') {
-                $this->httpCode404 = '<br>Error 404: Data was not found in the Ukrposhta database. <br>Така помилка може виникати, якщо об’єкт було створено в SandBox або особистому кабінеті, або взагалі не було створено.' . '<br>Request: ' . $info['url'] . ' Time: ' . $info['total_time'];
+            if ($http_code == 404) {
+                $this->httpCode404 = '<br>Error 404: Data was not found in the Ukrposhta database. <br>Така помилка може виникати, якщо об’єкт було створено в SandBox або особистому кабінеті, або взагалі не було створено.' . '<br>Request: ' . $url . ' Time: ' . $response['response']['total_time'];
             }
+
+            // Return the prepared result
+            return $this->prepare($result);
         }
-
-        echo ' <pre>';echo curl_error($ch);echo '</pre> ';
-
-        curl_close($ch);
-        echo '<script>console.log("model:'.$model.'");</script>';
-
-        return $this->prepare($result);
     }
     /**Request for model client, smartbox, print with token
      * @param $model
@@ -193,35 +204,71 @@ class UkrposhtaApiClass
      */
     private function requestToken($model, $method = 'HTTPGET', $params = NULL, $add = '', $file = false)
     {
-        /* Get required URL*/
+        /* Get required URL */
         $url = $this->url . 'ecom' . $this->apiVersion . $model . $add . '?token=' . $this->token;
-        /* Convert data to neccessary format*/
-        $post = json_encode($params);
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Authorization: Bearer ' . $this->bearer));
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        //curl_setopt($ch, constant(CURLOPT_ . $method), 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->responseTime);
-        if ($method != 'HTTPGET') curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-        $result = curl_exec($ch);
-        if (curl_errno($ch) && $this->throwErrors) throw new \Exception(curl_error($ch));
-        curl_close($ch);
 
-        if ($file) {
-          echo '<pre>222 ';
-          print_r($result);
-          echo '</pre>';
+        /* Convert data to necessary format */
+        $post = wp_json_encode($params);
 
-            return $result;
+        // Set the headers for the request
+        $headers = array(
+            'Content-Type'  => 'application/json',
+            'Authorization' => 'Bearer ' . $this->bearer,
+        );
 
-            $downloadPath = "upload/flower10.jpg";
-            $file = fopen($downloadPath, "w+");
-            fputs($file, $result);
-            fclose($file);
+        // Set the arguments for the request
+        $args = array(
+            'method'    => $method, // HTTP method, e.g., GET, POST, PUT, etc.
+            'body'      => $post, // The data to be sent in the request body (only for POST/PUT)
+            'headers'   => $headers, // Set the headers
+            'timeout'   => $this->responseTime, // Set the timeout
+            'sslverify' => false, // Disable SSL verification (set to true in production)
+        );
+
+        // Send the request using wp_remote_request
+        $response = wp_remote_request($url, $args);
+
+        // Check if there was an error with the request
+        if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            // Handle the error (e.g., log it, show a message)
         } else {
-            return $this->prepare($result);
+            // Retrieve the response code
+            $http_code = wp_remote_retrieve_response_code($response);
+
+            // Retrieve the body of the response
+            $result = wp_remote_retrieve_body($response);
+
+            if ($file) {
+                // Handle file download using WP_Filesystem
+                global $wp_filesystem;
+
+                // Initialize the filesystem API
+                if (false === ($creds = request_filesystem_credentials('', '', false, false, null))) {
+                    // Handle credentials failure
+                    return false;
+                }
+
+                if (!WP_Filesystem($creds)) {
+                    // Handle filesystem initialization failure
+                    return false;
+                }
+
+                // Define the path to save the file
+                $upload_dir = wp_upload_dir();
+                $downloadPath = trailingslashit($upload_dir['path']) . 'flower10.jpg';
+
+                // Write the file using WP_Filesystem
+                if ($wp_filesystem->put_contents($downloadPath, $result, FS_CHMOD_FILE)) {
+                    return $result;
+                } else {
+                    // Handle file write failure
+                    return false;
+                }
+            } else {
+                // Process the response
+                return $this->prepare($result);
+            }
         }
     }
     /**Similar function to requestToken, but only for PUT request
@@ -233,29 +280,52 @@ class UkrposhtaApiClass
      */
     private function requestTokenPut($model, $params = NULL, $add = '')
     {
-        /* Get required URL*/
+        /* Get required URL */
         $url = $this->url . 'ecom' . $this->apiVersion . $model . $add . '?token=' . $this->token;
-        /* Convert data to neccessary format*/
-        $post = json_encode($params);
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Authorization: Bearer ' . $this->bearer));
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->responseTime);
-        $result = curl_exec($ch);
-        if (curl_errno($ch) && $this->throwErrors) throw new \Exception(curl_error($ch));
-        curl_close($ch);
-        $ret = $this->prepare($result);
+
+        /* Convert data to necessary format */
+        $post = wp_json_encode($params);
+
+        // Set the headers for the request
+        $headers = array(
+            'Content-Type'  => 'application/json',
+            'Authorization' => 'Bearer ' . $this->bearer,
+        );
+
+        // Set the arguments for the PUT request
+        $args = array(
+            'method'    => 'PUT', // HTTP method for the request
+            'body'      => $post, // The data to be sent in the request body
+            'headers'   => $headers, // Set the headers
+            'timeout'   => $this->responseTime, // Set the timeout
+            'sslverify' => false, // Disable SSL verification (set to true in production)
+        );
+
+        // Send the PUT request using wp_remote_request
+        $response = wp_remote_request($url, $args);
+
+        // Check if there was an error with the request
+        if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            // Handle the error (e.g., log it, show a message)
+        } else {
+            // Retrieve the response code
+            $http_code = wp_remote_retrieve_response_code($response);
+
+            // Retrieve the body of the response
+            $result = wp_remote_retrieve_body($response);
+
+            // Prepare the result
+            $ret = $this->prepare($result);
+
+            // Decode the result JSON
             $rr = json_decode($result);
-            if(!empty($rr->message)){
-              echo '<pre>';
-              echo $rr->message;
-              echo '</pre>';
+            if (!empty($rr->message)) {
+                // Handle any specific message
             }
-        return $ret;
+
+            return $ret;
+        }
     }
     /**Request token for tracking barcode
      * @param $model
@@ -266,64 +336,153 @@ class UkrposhtaApiClass
      */
     private function requestTracking($model, $params = NULL, $add = '')
     {
-        /* Get required URL*/
+        /* Get required URL */
         $url = $this->url . 'status-tracking' . $this->apiVersion . $model . $add;
-        /* Convert data to neccessary format*/
-        $post = json_encode($params);
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Authorization: Bearer ' . $this->bearer, 'Tracking: Bearer ' . $this->tbearer ));
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_HTTPGET, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->responseTime);
-        $result = curl_exec($ch);
-        if (curl_errno($ch) && $this->throwErrors) throw new \Exception(curl_error($ch));
-        curl_close($ch);
 
-        return $this->prepare($result);
+        /* Convert data to necessary format */
+        $post = wp_json_encode($params);
+
+        // Set the headers for the request
+        $headers = array(
+            'Content-Type'  => 'application/json',
+            'Authorization' => 'Bearer ' . $this->bearer,
+            'Tracking'      => 'Bearer ' . $this->tbearer
+        );
+
+        // Set the arguments for the GET request
+        $args = array(
+            'method'    => 'GET', // HTTP method for the request
+            'headers'   => $headers, // Set the headers
+            'timeout'   => $this->responseTime, // Set the timeout
+            'sslverify' => false, // Disable SSL verification (set to true in production)
+        );
+
+        // Send the GET request using wp_remote_get
+        $response = wp_remote_get($url, $args);
+
+        // Check if there was an error with the request
+        if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            // Handle the error (e.g., log it, show a message)
+        } else {
+            // Retrieve the response code
+            $http_code = wp_remote_retrieve_response_code($response);
+
+            // Retrieve the body of the response
+            $result = wp_remote_retrieve_body($response);
+
+            // Return the result after preparing it
+            return $this->prepare($result);
+        }
     }
 
     public function RequestDelShipping($id)
     {
-        $url = $this->url . 'ecom' .$this->apiVersion . 'shipments/'.$id.'?token='.$this->token;
-        //echo $url;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Authorization: Bearer ' . $this->bearer, 'Tracking: Bearer ' . $this->tbearer ));
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-        $result = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        // Construct the URL for the request
+        $url = $this->url . 'ecom' . $this->apiVersion . 'shipments/' . $id . '?token=' . $this->token;
 
-        return $result;
+        // Set the headers for the request
+        $headers = array(
+            'Content-Type'  => 'application/json',
+            'Authorization' => 'Bearer ' . $this->bearer,
+            'Tracking'      => 'Bearer ' . $this->tbearer
+        );
+
+        // Set the arguments for the DELETE request
+        $args = array(
+            'method'    => 'DELETE', // HTTP method for the request
+            'headers'   => $headers, // Set the headers
+            'timeout'   => 15,       // Timeout in seconds
+            'sslverify' => false,    // Disable SSL verification (set to true in production)
+        );
+
+        // Send the DELETE request using wp_remote_request
+        $response = wp_remote_request($url, $args);
+
+        // Check if there was an error with the request
+        if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            // Handle the error (e.g., log it, show a message)
+        } else {
+            // Retrieve the response code
+            $http_code = wp_remote_retrieve_response_code($response);
+
+            // Retrieve the body of the response
+            $result = wp_remote_retrieve_body($response);
+
+            // Return the result
+            return $result;
+        }
     }
 
     public function GetInfo($id)
     {
-        $url = 'https://www.ukrposhta.ua/ecom/0.0.1/shipments/barcode/'.$id.'?token='.$this->token;
+        // Construct the URL for the request
+        $url = 'https://www.ukrposhta.ua/ecom/0.0.1/shipments/barcode/' . $id . '?token=' . $this->token;
 
-        $authorization = "Authorization: Bearer ".$this->bearer;
+        // Authorization header with Bearer token
+        $authorization = "Bearer " . $this->bearer;
 
-        $cur = curl_init($url);
-        curl_setopt( $cur, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($cur, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization )); // Inject the token into the header
-        $html = curl_exec( $cur );
-        curl_close ( $cur );
-        return  json_decode($html, true);
+        // Set the arguments for the GET request
+        $args = array(
+            'method'    => 'GET', // HTTP method for the request
+            'headers'   => array(
+                'Content-Type'  => 'application/json', // Set content type to JSON
+                'Authorization' => $authorization,     // Inject the token into the header
+            ),
+            'timeout'   => 15, // Timeout in seconds for the request
+            'sslverify' => false, // Disable SSL verification (set to true in production)
+        );
+
+        // Send the GET request using wp_remote_get
+        $response = wp_remote_get($url, $args);
+
+        // Check if there was an error with the request
+        if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            // Handle the error (e.g., log it, show a message)
+        } else {
+            // Retrieve the body of the response
+            $html = wp_remote_retrieve_body($response);
+
+            // Decode the JSON response
+            return json_decode($html, true);
+        }
     }
 
     public function GetInfoUuid($uuid)
     {
+        // Construct the URL for the request
         $url = 'https://www.ukrposhta.ua/ecom/0.0.1/shipments/' . $uuid . '?token=' . $this->token;
-        $authorization = "Authorization: Bearer " . $this->bearer;
-        $cur = curl_init($url);
-        curl_setopt( $cur, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($cur, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization )); // Inject the token into the header
-        $html = curl_exec( $cur );
-        curl_close ( $cur );
 
-        return  json_decode($html, true);
+        // Authorization header with Bearer token
+        $authorization = "Bearer " . $this->bearer;
+
+        // Set the arguments for the GET request
+        $args = array(
+            'method'    => 'GET', // HTTP method for the request
+            'headers'   => array(
+                'Content-Type'  => 'application/json', // Set content type to JSON
+                'Authorization' => $authorization,     // Inject the token into the header
+            ),
+            'timeout'   => 15, // Timeout in seconds for the request
+            'sslverify' => false, // Disable SSL verification (set to true in production)
+        );
+
+        // Send the GET request using wp_remote_get
+        $response = wp_remote_get($url, $args);
+
+        // Check if there was an error with the request
+        if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            // Handle the error (e.g., log it, show a message)
+        } else {
+            // Retrieve the body of the response
+            $html = wp_remote_retrieve_body($response);
+
+            // Decode the JSON response
+            return json_decode($html, true);
+        }
     }
     /**Get created address by id
      * @param $id int
@@ -377,32 +536,68 @@ class UkrposhtaApiClass
 
     public function howcosts( $params )
     {
-      $post = json_encode($params);
-      $url = 'https://www.ukrposhta.ua/ecom/0.0.1/international/delivery-price';
-      $authorization = "Authorization: Bearer ".$this->getBearer();
-      $ch = curl_init($url);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-      curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization )); // Inject the token into the header
-      $html = curl_exec( $ch );
-      curl_close ( $ch );
+        // Encode the parameters to JSON format
+        $post = wp_json_encode($params);
 
-      return  json_decode($html, true);
+        // URL to send the request
+        $url = 'https://www.ukrposhta.ua/ecom/0.0.1/international/delivery-price';
+
+        // Authorization header with Bearer token
+        $authorization = "Bearer " . $this->getBearer();
+
+        // Set the arguments for the POST request
+        $args = array(
+            'method'    => 'POST', // HTTP method for the request
+            'body'      => $post,   // JSON-encoded parameters
+            'headers'   => array(
+                'Content-Type'  => 'application/json', // Set content type to JSON
+                'Authorization' => $authorization,     // Inject the token into the header
+            ),
+            'timeout'   => 15, // Timeout in seconds for the request
+            'sslverify' => false, // Disable SSL verification (set to true in production)
+        );
+
+        // Send the POST request using wp_remote_post
+        $response = wp_remote_post($url, $args);
+
+        // Check if there was an error with the request
+        if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            // Handle the error (e.g., log it, show a message)
+        } else {
+            // Retrieve the body of the response
+            $html = wp_remote_retrieve_body($response);
+
+            // Decode the JSON response
+            return json_decode($html, true);
+        }
     }
 
     public function howcostsua( $params )
     {
-      $post = json_encode($params);
-      $url = 'https://www.ukrposhta.ua/ecom/0.0.1/domestic/delivery-price';
-      $authorization = "Authorization: Bearer ".$this->getBearer();
-      $ch = curl_init($url);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-      curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization )); // Inject the token into the header
-      $html = curl_exec( $ch );
-      curl_close ( $ch );
+        $post = wp_json_encode($params);
+        $url = 'https://www.ukrposhta.ua/ecom/0.0.1/domestic/delivery-price';
+        $authorization = "Bearer ".$this->getBearer();
+      
+        $args = array(
+            'method'    => 'POST',
+            'body'      => $post,
+            'headers'   => array(
+                'Content-Type'  => 'application/json',
+                'Authorization' => $authorization,
+            ),
+            'timeout'   => 15, 
+            'sslverify' => false, 
+        );
 
-      return  json_decode($html, true);
+        $response = wp_remote_post($url, $args);
+
+        if (is_wp_error($response)) {
+            return '';
+        } else {
+            $html = wp_remote_retrieve_body($response);
+            return  json_decode($html, true);
+        }
     }
 
     public function modelShipmentsPut($data, $uuid)

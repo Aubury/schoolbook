@@ -464,7 +464,7 @@ function weather_effect_setting_page() {
 		<hr>
 		
 		<div style="text-align: center;">&nbsp;&nbsp;&nbsp;&nbsp;
-			<h1>&nbsp;&nbsp;Upgrade To Weather Effect Premium Just In Half Price <strike>$30</strike> $15</h1><br>
+			<h1>&nbsp;&nbsp;Upgrade To Weather Effect Premium Just In Half Price <strike>$42</strike> $21</h1><br>
 			<a href="https://awplife.com/wordpress-plugins/weather-effect-wordpress-plugin/" target="_blank" class="button button-primary button-hero">Premium Version Details</a>
 			<a href="https://awplife.com/demo/weather-effect/" target="_blank" class="button button-primary button-hero">Check Live Demo</a>
 			<a href="https://awplife.com/demo/weather-effect-premium-admin-demo/" target="_blank" class="button button-primary  button-hero">Try Pro Version</a>

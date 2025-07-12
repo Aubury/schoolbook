@@ -20,7 +20,7 @@
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', "wp-new-schoolbook" );
+define( 'DB_NAME', "wp-books" );
 
 /** Database username */
 define( 'DB_USER', "root" );
@@ -29,7 +29,7 @@ define( 'DB_USER', "root" );
 define( 'DB_PASSWORD', "" );
 
 /** Database hostname */
-define( 'DB_HOST', "mysql-8.2" );
+define( 'DB_HOST', "mysql-8.4" );
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8mb4' );
@@ -92,9 +92,8 @@ define( 'AUTOMATIC_UPDATER_DISABLED', true );
 
 /** Absolute path to the WordPress directory. */
 if ( ! defined( 'ABSPATH' ) ) {
-	define( 'ABSPATH', dirname(__FILE__) . '/' );
+	define( 'ABSPATH', __DIR__ . '/' );
 }
 
 /** Sets up WordPress vars and included files. */
 require_once ABSPATH . 'wp-settings.php';
-

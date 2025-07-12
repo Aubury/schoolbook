@@ -28,28 +28,28 @@ function FunctionDecode($type, $value)
 function the_deletediv($string){
   echo '<div id="messagebox" class="messagebox_show updated" data="20" style="height: 0px;padding: 8px;margin-left: 0; transition: all1s ease;">
 				<div class="sucsess-naklandna">
-					<p>Відправлення '.$string.' успішно видалено</p>
+					<p>Відправлення '.esc_url($string).' успішно видалено</p>
 				</div>
 		</div>';
 }
 
 function the_upformlabel($string){
   echo "<th scope=row>
-    <label>".$string."</label>
+    <label>".esc_url($string)."</label>
     </th>";
 }
 
 function formblock_title($string){
   echo "<tr>
     <th colspan=2>
-      <h3 class=\"formblock_title\">".$string."</h3>
+      <h3 class=\"formblock_title\">".esc_url($string)."</h3>
       <div id=\"errors\"></div>
     </th>
   </tr>";
 }
 
 function logg($string){
-  echo '<script>console.log("'.$string.'");</script>';
+  
 }
 
 function mup_display_nav(){//display nav bar
@@ -68,14 +68,16 @@ function mup_display_nav(){//display nav bar
 
  echo "<nav class=\"newnaw nav-tab-wrapper woo-nav-tab-wrapper\">";
 
- $wrs_page = $_GET['page'];
-
- for($i=0; $i<sizeof($arr_of_pages); $i++){
-   $echoclass = 'nav-tab';
-   if($wrs_page == $arr_of_pages[$i]['slug']){
-     $echoclass = 'nav-tab-active nav-tab';
-   }
-   echo '<a href=admin.php?page='.$arr_of_pages[$i]['slug'].' class="'.$echoclass.'">'.$arr_of_pages[$i]['label'].'</a>';
+ $screen = get_current_screen();
+ if ($screen) {
+    $wrs_page = str_replace('toplevel_page_', '', $screen->id);
+     for($i=0; $i<sizeof($arr_of_pages); $i++){
+       $echoclass = 'nav-tab';
+       if($wrs_page == $arr_of_pages[$i]['slug']){
+         $echoclass = 'nav-tab-active nav-tab';
+       }
+       echo '<a href=admin.php?page='.esc_attr($arr_of_pages[$i]['slug']).' class="'.esc_attr($echoclass).'">'.esc_attr($arr_of_pages[$i]['label']).'</a>';
+     }
  }
 
  echo "</nav>";

@@ -61,6 +61,14 @@ class Loco_fs_File {
 
 
     /**
+     * Test if a path looks absolute
+     */
+    public static function is_abs( $path ){
+        return '' !== $path && ( '/' === $path[0] || preg_match('!^\\\\\\\\|.:\\\\!',$path) );
+    }
+
+
+    /**
      * Call PHP is_readable() but suppress E_WARNING when path is outside open_basedir.
      * @param string $path
      * @return bool
@@ -288,7 +296,7 @@ class Loco_fs_File {
      */
     public function extension(){
         $info = $this->pathinfo();
-        return isset($info['extension']) ? $info['extension'] : '';
+        return $info['extension'] ?? '';
     }
 
 
@@ -661,7 +669,7 @@ class Loco_fs_File {
      * @param string $data file contents
      * @return int number of bytes written to file
      */
-    public function putContents( $data ){
+    public function putContents( string $data ):int {
         $this->getWriteContext()->putContents($data);
         $this->clearStat();
         return $this->size();

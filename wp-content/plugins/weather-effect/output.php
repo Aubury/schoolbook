@@ -363,11 +363,10 @@ if ( $weather_occasion == 'christmas_check' ) {
 				// A. round type Start
 				<?php if ( $master_round == 'true' ) { ?>
 					jQuery(document).ready(function(){
-						jQuery(document).snowfall({
-							round : <?php echo esc_js( $round_type ); ?>, 
-							minSize: <?php echo esc_js( (int) $min_size_round ); ?>, 
-							maxSize:<?php echo esc_js( (int) $max_size_round ); ?>, 
-						}); // add rounded
+						jQuery(document).ready(function(){
+							snowFall.snow(document.body);
+							snowFall.snow(document.body, {round : <?php echo esc_js( $round_type ); ?>, minSize: <?php echo esc_js( (int) $min_size_round ); ?>,  maxSize:<?php echo esc_js( (int) $max_size_round ); ?>});
+						});
 					});
 				<?php } ?> 
 				//round type End
@@ -502,6 +501,11 @@ if ( $weather_occasion == 'christmas_check' ) {
 								maxSize: <?php echo esc_js( (int) $max_size_christmas ); ?>,   // snow cube size
 								flakeCount : <?php echo esc_js( (int) $flake_christmas ); ?>,  // snow cube quantity
 							}); 
+							
+							// Stop snowfall after 20 seconds (20000 milliseconds)
+							setTimeout(function(){
+								jQuery(document).snowfall("clear");
+							}, 30000);
 						});
 					<?php } ?>
 					//Winter Snow End
@@ -512,7 +516,8 @@ if ( $weather_occasion == 'christmas_check' ) {
 								minSize:<?php echo esc_js( (int) $min_size_falling ); ?>, 
 								maxSize:<?php echo esc_js( (int) $max_size_falling ); ?>, 
 								newOn:<?php echo esc_js( (int) $snow_falling_time ); ?>, 
-								flakeColor:'<?php echo esc_js( $snow_falling_color ); ?>'
+								flakeColor:'<?php echo esc_js( $snow_falling_color ); ?>',
+								durationMillis: 30000
 							});
 						});
 					<?php } ?> 

@@ -51,7 +51,16 @@ class ukrPoshtaRest
       global $wpdb;
 
       $ref = $request['ref'];
-      $cities = $wpdb->get_results("SELECT * FROM morkva_ukrposhta_up_cities WHERE area_ref='" . esc_attr($ref) . "' ORDER BY description", ARRAY_A);
+      $cities = $wpdb->get_results(
+          $wpdb->prepare(
+              "SELECT * 
+              FROM morkva_ukrposhta_up_cities 
+              WHERE area_ref = %s 
+              ORDER BY description",
+              esc_attr($ref) 
+          ),
+          ARRAY_A
+      );
 
       return [
         'result' => true,
@@ -73,12 +82,16 @@ class ukrPoshtaRest
 
       $ref = $request['ref'];
 
-      $warehouses = $wpdb->get_results("
-        SELECT * 
-        FROM morkva_ukrposhta_up_warehouses 
-        WHERE city_ref='" . esc_attr($ref) . "' 
-        ORDER BY number ASC
-      ", ARRAY_A);
+      $warehouses = $wpdb->get_results(
+          $wpdb->prepare(
+              "SELECT * 
+              FROM morkva_ukrposhta_up_warehouses 
+              WHERE city_ref = %s 
+              ORDER BY number ASC",
+              esc_attr($ref) 
+          ),
+          ARRAY_A
+      );
 
       return [
         'result' => true,

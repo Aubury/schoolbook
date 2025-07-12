@@ -45,19 +45,19 @@
   public function morkvaupAuthBearer()
 	{
 		$value = esc_attr( get_option( 'production_bearer_ecom' ) );
-		echo '<input type="text" class="regular-text" name="production_bearer_ecom" value="' . $value . '" placeholder="API ключ">';
+		echo '<input type="text" class="regular-text" name="production_bearer_ecom" value="' . esc_html($value) . '" placeholder="API ключ">';
 		echo '';
 	}
   public function morkvaupProdBearer()
   {
     $value = esc_attr( get_option( 'production_bearer_status_tracking' ) );
-    echo '<input type="text" class="regular-text" name="production_bearer_status_tracking" value="' . $value . '" placeholder="API ключ">';
+    echo '<input type="text" class="regular-text" name="production_bearer_status_tracking" value="' . esc_html($value) . '" placeholder="API ключ">';
     echo '';
   }
   public function morkvaupCpToken()
   {
     $value = esc_attr( get_option( 'production_cp_token' ) );
-    echo '<input type="password" class="regular-text" name="production_cp_token" value="' . $value . '" placeholder="API ключ">';
+    echo '<input type="password" class="regular-text" name="production_cp_token" value="' . esc_html($value) . '" placeholder="API ключ">';
     echo '';
   }
   public function morkvaupprinttype()
@@ -72,9 +72,9 @@
     }
     echo '
           <select  class="regular-text" name="proptype">
-            <option '.$values[0].' value="0">100*100 мм</option>
-            <option '.$values[1].' value="1">100*100 мм для друку на форматі А4</option>
-            <option '.$values[2].' value="2">100*100 мм для друку на форматі А5</option>
+            <option '.esc_html($values[0]).' value="0">100*100 мм</option>
+            <option '.esc_html($values[1]).' value="1">100*100 мм для друку на форматі А4</option>
+            <option '.esc_html($values[2]).' value="2">100*100 мм для друку на форматі А5</option>
           </select>';
     echo '<p></p>';
   }
@@ -95,19 +95,26 @@ public function morkvaupzone(){
   $checked = $activate;
   $current = 1;
   $echo = false;
-  echo '<input '. $activate .' type="checkbox" class="regular-text" name="zone_ukrposhta" value="1" ' . checked($checked, $current, $echo) . ' /><p>Якщо вам потрібно налаштувати зони доставки, перейдіть до <a href="admin.php?page=wc-settings&tab=shipping">налаштувань WooСommerce</a>.</p>';
+  echo '<input '. esc_html($activate) .' type="checkbox" class="regular-text" name="zone_ukrposhta" value="1" ' . checked($checked, $current, $echo) . ' /><p>Якщо вам потрібно налаштувати зони доставки, перейдіть до <a href="admin.php?page=wc-settings&tab=shipping">налаштувань WooСommerce</a>.</p>';
 }
 
 public function mrkvup_default_order_weight_cb() {
     $weight = esc_attr( get_option( 'mrkvup_default_order_weight' ) );
-    echo '<input type="text" class="regular-text" name="mrkvup_default_order_weight" value="' . $weight . '" placeholder="Введіть вагу відправлення за замовчуванням">';
+    echo '<input type="text" class="regular-text" name="mrkvup_default_order_weight" value="' . esc_html($weight) . '" placeholder="Введіть вагу відправлення за замовчуванням">';
     echo '<p>Вказане тут значення буде використовуватись для розрахунку вартості всіх відправлень.<br>Вагу треба вказати в грамах.</p>';
 }
 
 public function mrkvup_default_order_length_cb() {
     $length = esc_attr( get_option( 'mrkvup_default_order_length' ) );
-    echo '<input type="text" class="regular-text" name="mrkvup_default_order_length" value="' . $length . '" placeholder="Введіть довжину відправлення за замовчуванням">';
-    echo '<p>Вказане тут значення буде використовуватись для розрахунку вартості всіх відправлень.<br>Довжину треба вказти в сантиметрах.</p>';
+    echo '<input type="text" class="regular-text" name="mrkvup_default_order_length" value="' . esc_html($length) . '" placeholder="Введіть довжину відправлення за замовчуванням">';
+}
+public function mrkvup_default_order_height_cb() {
+    $length = esc_attr( get_option( 'mrkvup_default_order_height' ) );
+    echo '<input type="text" class="regular-text" name="mrkvup_default_order_height" value="' . esc_html($length) . '" placeholder="Введіть довжину відправлення за замовчуванням">';
+}
+public function mrkvup_default_order_width_cb() {
+    $length = esc_attr( get_option( 'mrkvup_default_order_width' ) );
+    echo '<input type="text" class="regular-text" name="mrkvup_default_order_width" value="' . esc_html($length) . '" placeholder="Введіть довжину відправлення за замовчуванням">';
 }
 
   public function morkvaupsenduptype() {
@@ -120,9 +127,9 @@ public function mrkvup_default_order_length_cb() {
           $addSelectedType[$i] = 'selected';
         }
     }
-    echo '<select ' . $packingTypeValue . ' id="senduptype" name="senduptype">';
+    echo '<select ' . esc_html($packingTypeValue) . ' id="senduptype" name="senduptype">';
     for( $i = 0; $i < sizeof( $packingTypesValues ); $i++) {
-        echo '<option '. $addSelectedType[$i] . ' value="' . $packingTypesValues[$i] . '">' . $packingTypeChoice[$i] . '</option>';
+        echo '<option '. esc_html($addSelectedType[$i]) . ' value="' . esc_html($packingTypesValues[$i]) . '">' . esc_html($packingTypeChoice[$i]) . '</option>';
     }
     echo '</select>';
   }
@@ -140,8 +147,8 @@ public function mrkvup_default_order_length_cb() {
     }
     echo '
           <select  class="regular-text" name="sendtype">
-            <option '.$values[0].' value="EXPRESS">EXPRESS</option>
-            <option '.$values[1].' value="STANDARD">STANDARD</option>
+            <option '.esc_html($values[0]).' value="EXPRESS">EXPRESS</option>
+            <option '.esc_html($values[1]).' value="STANDARD">STANDARD</option>
           </select>';
     echo '<p></p>';
   }
@@ -187,9 +194,9 @@ public function mrkvup_default_order_length_cb() {
       }
       echo '
             <select  class="regular-text" name="ukrposhta_calculate_rates_currency">
-              <option '.$values[0].' value="USD">USD</option>
-              <option '.$values[1].' value="EUR">EUR</option>
-              <option '.$values[2].' value="UAH">UAH</option>
+              <option '.esc_html($values[0]).' value="USD">USD</option>
+              <option '.esc_html($values[1]).' value="EUR">EUR</option>
+              <option '.esc_html($values[2]).' value="UAH">UAH</option>
             </select>';
       echo '<p></p>';
     }
@@ -215,24 +222,24 @@ public function mrkvup_default_order_length_cb() {
 
 	public function morkvaupmorkva_ukrposhta_default_price() {
 		$phone = esc_attr( get_option( 'morkva_ukrposhta_default_price' ) );
-		echo '<input type="text" class="regular-text" name="morkva_ukrposhta_default_price" value="' . $phone . '" placeholder="">';
+		echo '<input type="text" class="regular-text" name="morkva_ukrposhta_default_price" value="' . esc_html($phone) . '" placeholder="">';
     echo '<p>Вказане тут значення буде додаватись до ціни замовлення замість розрахунку ціни ("Додавати вартість доставки до суми замовлення?").<br>Ціна вказується у валюті, встановленій <a target="_blank" href="admin.php?page=wc-settings&tab=general"> в налаштуваннях WooСommerce</a>.</p>';
 	}
 
 	public function morkvaupPhone() {
 		$phone = esc_attr( get_option( 'phone' ) );
-		echo '<input type="text" class="regular-text" name="phone" value="' . $phone . '" placeholder="0901234567">';
+		echo '<input type="text" class="regular-text" name="phone" value="' . esc_html($phone) . '" placeholder="0901234567">';
 		echo '<p>Підказка: основний формат 0987654321 (без +38)</p>';
 	}
 
   public function morkvaupEdrpou() {
     $edrpou = esc_attr( get_option( 'edrpou' ) );
-    echo '<input type="text" class="regular-text" name="edrpou" value="' . $edrpou . '" placeholder="Вісім цифр">';
+    echo '<input type="text" class="regular-text" name="edrpou" value="' . esc_html($edrpou) . '" placeholder="Вісім цифр">';
   }
 
   public function morkvaupTin() {
     $up_tin = esc_attr( get_option( 'up_tin' ) );
-    echo '<input type="text" class="regular-text" name="up_tin" value="' . $up_tin . '" placeholder="Десять цифр">';
+    echo '<input type="text" class="regular-text" name="up_tin" value="' . esc_html($up_tin) . '" placeholder="Десять цифр">';
   }
 
   public function morkvaup_sender_type() {
@@ -245,22 +252,22 @@ public function mrkvup_default_order_length_cb() {
           $addSelectedSender[$i] = 'selected';
         }
     }
-    echo '<select ' . $senderValue . ' id="up_sender_type" name="up_sender_type">';
+    echo '<select ' . esc_html($senderValue) . ' id="up_sender_type" name="up_sender_type">';
     echo '<option value="">Ваш вибір...</option>';
     for( $i = 0; $i < sizeof( $senderValues ); $i++) {
-        echo '<option '. $addSelectedSender[$i] . ' value="' . $senderValues[$i] . '">' . $senderTypeChoice[$i] . '</option>';
+        echo '<option '. esc_html($addSelectedSender[$i]) . ' value="' . esc_html($senderValues[$i]) . '">' . esc_html($senderTypeChoice[$i]) . '</option>';
     }
     echo '</select>';
   }
 
   public function morkvaupCompanyName() {
     $up_company_name = esc_attr( get_option( 'up_company_name' ) );
-    echo '<input type="text" class="regular-text" name="up_company_name" value="' . $up_company_name . '" placeholder="Не більше 60 символів">';
+    echo '<input type="text" class="regular-text" name="up_company_name" value="' . esc_html($up_company_name) . '" placeholder="Не більше 60 символів">';
   }
 
 	public function morkvaupNames() {
 		$names = esc_attr( get_option( 'names1' ) );
-		echo '<input type="text" class="regular-text" name="names1" value="' . $names . '" placeholder="Петренко">';
+		echo '<input type="text" class="regular-text" name="names1" value="' . esc_html($names) . '" placeholder="Петренко">';
 	}
 
   public function morkvaupCityLatin() {
@@ -291,16 +298,16 @@ public function mrkvup_default_order_length_cb() {
 
   public function morkvaupNames2() {
     $names = esc_attr( get_option( 'names2' ) );
-    echo '<input type="text" class="regular-text" name="names2" value="' . $names . '" placeholder="Петро">';
+    echo '<input type="text" class="regular-text" name="names2" value="' . esc_html($names) . '" placeholder="Петро">';
   }
   public function morkvaupNames3() {
     $names = esc_attr( get_option( 'names3' ) );
-    echo '<input type="text" class="regular-text" name="names3" value="' . $names . '" placeholder="Петрович">';
+    echo '<input type="text" class="regular-text" name="names3" value="' . esc_html($names) . '" placeholder="Петрович">';
   }
 
 	public function morkvaupFlat() {
 		$flat = esc_attr( get_option( 'flat' ) );
-		echo '<input type="text" class="regular-text" name="flat" value="' . $flat . '" placeholder="номер">';
+		echo '<input type="text" class="regular-text" name="flat" value="' . esc_html($flat) . '" placeholder="номер">';
 	}
 
 	public function morkvaupWarehouseAddress()
@@ -308,7 +315,7 @@ public function mrkvup_default_order_length_cb() {
 		$warehouse = esc_attr( get_option( 'woocommerce_store_postcode' ) );
 
 
-		echo '<input type="text" class="regular-text" name="warehouse" value="' . $warehouse . '" placeholder="Франка 14" readonly>';
+		echo '<input type="text" class="regular-text" name="warehouse" value="' . esc_html($warehouse) . '" placeholder="Франка 14" readonly>';
 		echo '<p>Налаштування цього поля беруться із <a href="admin.php?page=wc-settings&tab=general">налаштувань Woocommerce </a></p>';
 	}
 
@@ -316,7 +323,7 @@ public function mrkvup_default_order_length_cb() {
 	{
 		$invoice_description = get_option('up_invoice_description');
 
-    echo '<textarea  id=td45 name="up_invoice_description" rows="5" cols="54">' . $invoice_description . '</textarea>
+    echo '<textarea  id=td45 name="up_invoice_description" rows="5" cols="54">' . esc_textarea($invoice_description) . '</textarea>
 <span id=sp1 class=shortspan>+ Вартість</span>
 <select class=shortspan id=shortselect>
   <option value="0" disabled selected style="display:none"> + Перелік</option>
@@ -358,10 +365,10 @@ public function mrkvup_default_order_length_cb() {
              $vilues[$i] = 'selected';
          }
      }
-     echo '<select '.$value.' id="morkva_ukrposhta_default_payer" name="morkva_ukrposhta_default_payer">
+     echo '<select '.esc_html($value).' id="morkva_ukrposhta_default_payer" name="morkva_ukrposhta_default_payer">
     <p> </p>';
      for ($i=0; $i<sizeof($values); $i++) {
-         echo '<option '. $vilues[$i] .' value="'.$values[$i].'">'.$volues[$i].'</option>';
+         echo '<option '. esc_html($vilues[$i]) .' value="'.esc_html($values[$i]).'">'.esc_html($volues[$i]).'</option>';
      }
      echo '</select>';
   }
@@ -369,7 +376,7 @@ public function mrkvup_default_order_length_cb() {
   public function morkvaupSenderIBAN()
   {
       $senderIban = esc_attr( get_option( 'mrkvup_sender_iban' ) );
-      echo '<input type="text" class="regular-text" name="mrkvup_sender_iban" value="' . $senderIban . '" placeholder="29 символів">';
+      echo '<input type="text" class="regular-text" name="mrkvup_sender_iban" value="' . esc_html($senderIban) . '" placeholder="29 символів">';
       echo '<span class="tooltip"><span style="color:#53575e;cursor:help;" class="dashicons dashicons-editor-help"></span>
         <span class="tooltip-text">У це поле потрібно внести номер розрахункового рахунку Відправника у міжнародному форматі IBAN</span>';
   }
@@ -397,7 +404,7 @@ public function mrkvup_default_order_length_cb() {
     public function morkvaupParcelItemsAttrHsCode()
     {
         echo '<form><select disabled id="mrkvup_parcelitems_attr_hscode" >';
-        echo '<option value="">' . __( 'Виберіть атрибут товару, що встановлює коди ТН ЗЕД', 'woo-ukrposhta-pro' ) . '</option>';
+        echo '<option value="">' . esc_html( 'Виберіть атрибут товару, що встановлює коди ТН ЗЕД', 'woo-ukrposhta' ) . '</option>';
         echo '</select></form>';
     }
 
@@ -411,9 +418,9 @@ public function mrkvup_default_order_length_cb() {
           $addSelectedType[$i] = 'selected';
         }
     }
-    echo '<select ' . $packingTypeValue . ' id="mrkvup_checkout_fields_position" name="mrkvup_checkout_fields_position">';
+    echo '<select ' . esc_html($packingTypeValue) . ' id="mrkvup_checkout_fields_position" name="mrkvup_checkout_fields_position">';
     for( $i = 0; $i < sizeof( $packingTypesValues ); $i++) {
-        echo '<option '. $addSelectedType[$i] . ' value="' . $packingTypesValues[$i] . '">' . $packingTypeChoice[$i] . '</option>';
+        echo '<option '. esc_attr($addSelectedType[$i]) . ' value="' . esc_html($packingTypesValues[$i]) . '">' . esc_html($packingTypeChoice[$i]) . '</option>';
     }
     echo '</select>';
   }
@@ -429,7 +436,7 @@ public function mrkvup_default_order_length_cb() {
 	{
 		$subject = get_option( 'morkvaup_email_subject' );
 
-		echo '<input type="text" name="morkvaup_email_subject" class="regular-text" value="' . $subject . '" />';
+		echo '<input type="text" name="morkvaup_email_subject" class="regular-text" value="' . esc_html($subject) . '" />';
 	}
 
 

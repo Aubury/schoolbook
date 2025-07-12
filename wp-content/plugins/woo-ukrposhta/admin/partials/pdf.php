@@ -1,48 +1,56 @@
 <?php
-header("Content-type:application/pdf");
-//header("filename=ttn.pdf");//deprecated on some hostings
-if(isset($_POST['download'])){
-    header("Content-disposition: attachment; filename=ttn.pdf");
-}
+require_once dirname(__FILE__, 6) . '/wp-load.php';
+if (isset($_POST['generate_invoice_nonce'])) {
+    $nonce = sanitize_text_field(wp_unslash($_POST['generate_invoice_nonce']));
 
-header("Content-disposition: inline; filename=ttn.pdf");
+    if(wp_verify_nonce( $nonce, 'generate_invoice_nonce_action' ))
+    {
+        header("Content-type:application/pdf");
+        //header("filename=ttn.pdf");//deprecated on some hostings
+        if(isset($_POST['download'])){
+            header("Content-disposition: attachment; filename=ttn.pdf");
+        }
 
-require("api.php");
+        header("Content-disposition: inline; filename=ttn.pdf");
 
-if(isset($_POST['bearer']) && isset($_POST['cp_token'])) {
-  $token = $_POST['bearer'];
-  $cptoken = $_POST['cp_token'];
-  $ttn = $_POST['ttn'];
+        require("api.php");
 
-  $type = $_POST['type'];
-  $size='';
-  if($type=='1'){
-    $size = '&size=SIZE_A4';
-  }
-  else if($type=='2'){
-    $size = '&size=SIZE_A5';
-  }
-  else{
-    $size='';
-  }
+        if ( isset( $_POST['bearer'] ) && isset( $_POST['cp_token'] ) && isset( $_POST['ttn'] ) && isset( $_POST['type'] ) ) {
+            $token = sanitize_text_field( wp_unslash( $_POST['bearer'] ) ); 
+            $cptoken = sanitize_text_field( wp_unslash( $_POST['cp_token'] ) );
+            $ttn = sanitize_text_field( wp_unslash( $_POST['ttn'] ) );
+            $type = sanitize_text_field( wp_unslash( $_POST['type'] ) );
 
-  $url = 'https://www.ukrposhta.ua/ecom/0.0.1/shipments/'.$ttn.'/sticker?token='.$cptoken.$size;
+            $size = ''; 
+            if ( $type == '1' ) {
+                $size = '&size=SIZE_A4';
+            } elseif ( $type == '2' ) {
+                $size = '&size=SIZE_A5';
+            } 
 
-  $formurl = 'https://www.ukrposhta.ua/forms/ecom/0.0.1/';
-  
+            $url = 'https://www.ukrposhta.ua/ecom/0.0.1/shipments/'.$ttn.'/sticker?token='.$cptoken.$size;
+            $formurl = 'https://www.ukrposhta.ua/forms/ecom/0.0.1/';
 
-  $authorization = "Authorization: Bearer ".$token;
+            $authorization = "Bearer " . $token;  // Authorization token
 
-  $cur = curl_init($url);
-  curl_setopt( $cur, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($cur, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization )); // Inject the token into the header
-  $html = curl_exec( $cur );
-  curl_close ( $cur );
-  print_r($html);
+            $args = array(
+                'headers' => array(
+                    'Authorization' => $authorization,
+                    'Content-Type' => 'application/json',
+                ),
+            );
 
-}
+            $response = wp_remote_get( $url, $args );
 
-else{
-//  echo '<script>window.close();</script>';
-  print_r($_POST);
+            if ( is_wp_error( $response ) ) {
+                $error_message = $response->get_error_message();
+                echo esc_html( "Something went wrong: $error_message" );
+            } else {
+                echo wp_remote_retrieve_body( $response );
+            }
+
+        } else {
+            echo esc_html( "Missing required parameters" );
+        }
+    }
 }

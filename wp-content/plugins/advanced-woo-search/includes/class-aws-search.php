@@ -96,10 +96,24 @@ if ( ! class_exists( 'AWS_Search' ) ) :
                 do_action( 'wpml_switch_language', $this->lang );
             }
 
+            if ( $this->lang ) {
+                $current_lang = $this->lang;
+            } else {
+                $current_lang = AWS_Helpers::get_lang();
+            }
+
+            /**
+             * Filter current language code
+             * @since 1.59
+             * @param string $current_lang Lang code
+             */
+            $current_lang = apply_filters( 'aws_search_current_lang', $current_lang );
+
             $cache = AWS()->get_settings( 'cache' );
 
             $s = $keyword ? esc_attr( $keyword ) : ( isset( $_POST['keyword'] ) ? esc_attr( $_POST['keyword'] ) : '' );
             $s = htmlspecialchars_decode( $s );
+            $s = preg_replace('/\s+/', ' ', trim( $s ) );
 
             $this->data['s_nonormalize'] = $s;
 
@@ -164,6 +178,29 @@ if ( ! class_exists( 'AWS_Search' ) ) :
             $this->data['search_words_num'] = $search_words_num;
             $this->data['fuzzy'] = $fuzzy;
             $this->data['is_search_page'] = !! $keyword;
+            $this->data['current_lang'] = $current_lang;
+
+
+            if ( $show_cats === 'true' ) {
+                $tax_to_display[] = 'product_cat';
+            }
+
+            if ( $show_tags === 'true' ) {
+                $tax_to_display[] = 'product_tag';
+            }
+
+            /**
+             * Filters array of custom taxonomies that must be displayed in search results
+             *
+             * @since 1.68
+             *
+             * @param array $taxonomies_archives Array of custom taxonomies
+             * @param string $s Search query
+             */
+            $taxonomies_archives = apply_filters( 'aws_search_results_tax_archives', $tax_to_display, $s );
+
+            $this->data['taxonomies_archives'] = $taxonomies_archives;
+
 
             $search_array = array_unique( explode( ' ', $s ) );
 
@@ -223,24 +260,6 @@ if ( ! class_exists( 'AWS_Search' ) ) :
                 }
 
                 if ( $output === 'all' ) {
-
-                    if ( $show_cats === 'true' ) {
-                        $tax_to_display[] = 'product_cat';
-                    }
-
-                    if ( $show_tags === 'true' ) {
-                        $tax_to_display[] = 'product_tag';
-                    }
-
-                    /**
-                     * Filters array of custom taxonomies that must be displayed in search results
-                     *
-                     * @since 1.68
-                     *
-                     * @param array $taxonomies_archives Array of custom taxonomies
-                     * @param string $s Search query
-                     */
-                    $taxonomies_archives = apply_filters( 'aws_search_results_tax_archives', $tax_to_display, $s );
 
                     if ( $taxonomies_archives && is_array( $taxonomies_archives ) && ! empty( $taxonomies_archives ) ) {
 
@@ -320,8 +339,10 @@ if ( ! class_exists( 'AWS_Search' ) ) :
             $results_num      = $this->data['results_num'];
             $outofstock       = $this->data['outofstock'];
             $search_rule      = $this->data['search_rule'];
+            $current_lang     = $this->data['current_lang'];
 
-            $reindex_version = get_option( 'aws_reindex_version' );
+            $reindex_version = AWS()->option_vars->get_reindex_version();
+            $index_table_version = AWS()->option_vars->get_index_table_version();
 
             $query = array();
 
@@ -404,7 +425,7 @@ if ( ! class_exists( 'AWS_Search' ) ) :
                  */
                 $relevance_params = apply_filters( 'aws_relevance_parameters', $relevance_params, $relevance_scores, $search_term, $this->data );
 
-                $search_term_norm = AWS_Plurals::singularize( $search_term );
+                $search_term_norm = AWS_Helpers::singularize( $search_term );
 
                 if ( $search_term_norm && $search_term_len > 3 && strlen( $search_term_norm ) > 2 ) {
                     $search_term = $search_term_norm;
@@ -463,6 +484,10 @@ if ( ! class_exists( 'AWS_Search' ) ) :
 
             }
 
+            if ( $index_table_version && version_compare( $index_table_version, '3.21', '>=' ) ) {
+                $query['visibility'] = " AND visibility NOT IN ( 0, 3 )";
+            }
+
 
             /**
              * Exclude certain products from search
@@ -476,20 +501,6 @@ if ( ! class_exists( 'AWS_Search' ) ) :
             if ( $exclude_products_filter && is_array( $exclude_products_filter ) && ! empty( $exclude_products_filter ) ) {
                 $query['exclude_products'] = sprintf( ' AND ( id NOT IN ( %s ) )', implode( ',', $exclude_products_filter ) );
             }
-
-
-            if ( $this->lang ) {
-                $current_lang = $this->lang;
-            } else {
-                $current_lang = AWS_Helpers::get_lang();
-            }
-
-            /**
-             * Filter current language code
-             * @since 1.59
-             * @param string $current_lang Lang code
-             */
-            $current_lang = apply_filters( 'aws_search_current_lang', $current_lang );
 
             if ( $current_lang && $reindex_version && version_compare( $reindex_version, '1.20', '>=' ) ) {
                 $query['lang'] = $wpdb->prepare( " AND ( lang LIKE %s OR lang = '' )", '%' . $wpdb->esc_like( $current_lang ) . '%' );
@@ -809,7 +820,15 @@ if ( ! class_exists( 'AWS_Search' ) ) :
             $words = array();
             $excerpt_length = AWS()->get_settings( 'excerpt_length' );
 
-            foreach( $this->data['search_terms'] as $search_in ) {
+            $search_terms = array();
+
+            if ( ! empty( $this->data['search_terms'] ) ) {
+                $search_terms = array_fill_keys( $this->data['search_terms'], 1);
+                $search_terms = AWS_Helpers::get_synonyms( $search_terms );
+                $search_terms = array_keys( $search_terms );
+            }
+
+            foreach( $search_terms as $search_in ) {
 
                 $search_in = preg_quote( $search_in, '/' );
                 $exact_words[] = '\b' . $search_in . '\b';
@@ -892,7 +911,15 @@ if ( ! class_exists( 'AWS_Search' ) ) :
 
             $pattern = array();
 
-            foreach( $this->data['search_terms'] as $search_in ) {
+            $search_terms = array();
+
+            if ( ! empty( $this->data['search_terms'] ) ) {
+                $search_terms = array_fill_keys( $this->data['search_terms'], 1);
+                $search_terms = AWS_Helpers::get_synonyms( $search_terms );
+                $search_terms = array_keys( $search_terms );
+            }
+
+            foreach( $search_terms as $search_in ) {
 
                 $search_in = preg_quote( $search_in, '/' );
 

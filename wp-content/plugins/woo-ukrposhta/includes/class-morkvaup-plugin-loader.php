@@ -500,6 +500,14 @@ class MUP_Plugin_Loader
             ) ,
             array(
                 'option_group' => 'morkvaup_options_group',
+                'option_name' => 'mrkvup_default_order_height' 
+            ) ,
+            array(
+                'option_group' => 'morkvaup_options_group',
+                'option_name' => 'mrkvup_default_order_width' 
+            ) ,
+            array(
+                'option_group' => 'morkvaup_options_group',
                 'option_name' => 'morkva_ukrposhta_default_price'
             ) ,
 
@@ -761,7 +769,7 @@ class MUP_Plugin_Loader
             ) ,
             array(
                 'id' => 'mrkvup_default_order_weight',
-                'title' => __( 'Вага відправлення, г', 'woo-ukrposhta-pro' ),
+                'title' => __( 'Вага відправлення, г', 'woo-ukrposhta' ),
                 'callback' => array(
                     $this->callbacks,
                     'mrkvup_default_order_weight_cb'
@@ -774,7 +782,7 @@ class MUP_Plugin_Loader
             ) ,
             array(
                 'id' => 'mrkvup_default_order_length',
-                'title' => __( 'Довжина відправлення, см', 'woo-ukrposhta-pro' ),
+                'title' => __( 'Довжина відправлення, см (за замовчуванням)', 'woo-ukrposhta' ),
                 'callback' => array(
                     $this->callbacks,
                     'mrkvup_default_order_length_cb'
@@ -783,6 +791,32 @@ class MUP_Plugin_Loader
                 'section' => 'morkvaup_admin_index',
                 'args' => array(
                     'label_for' => 'mrkvup_default_order_length'
+                )
+            ) ,
+            array(
+                'id' => 'mrkvup_default_order_height',
+                'title' => __( 'Висота відправлення, см (за замовчуванням)', 'woo-ukrposhta' ),
+                'callback' => array(
+                    $this->callbacks,
+                    'mrkvup_default_order_height_cb'
+                ) ,
+                'page' => 'morkvaup_plugin',
+                'section' => 'morkvaup_admin_index',
+                'args' => array(
+                    'label_for' => 'mrkvup_default_order_height'
+                )
+            ) ,
+            array(
+                'id' => 'mrkvup_default_order_width',
+                'title' => __( 'Ширина відправлення, см (за замовчуванням)', 'woo-ukrposhta' ),
+                'callback' => array(
+                    $this->callbacks,
+                    'mrkvup_default_order_width_cb'
+                ) ,
+                'page' => 'morkvaup_plugin',
+                'section' => 'morkvaup_admin_index',
+                'args' => array(
+                    'label_for' => 'mrkvup_default_order_width'
                 )
             ) ,
             array(
@@ -820,7 +854,7 @@ class MUP_Plugin_Loader
             ) ,
             array(
                 'id' => 'up_sender_type',
-                'title' => __( 'Відправник представляє', 'woo-ukrposhta-pro' ),
+                'title' => __( 'Відправник представляє', 'woo-ukrposhta' ),
                 'callback' => array( $this->callbacks, 'morkvaup_sender_type' ),
                 'page' => 'morkvaup_plugin',
                 'section' => 'morkvaup_admin_index',
@@ -1088,7 +1122,7 @@ class MUP_Plugin_Loader
             ) ,
             array(
                 'id'        => 'mrkvup_parcelitems_global_hscode',
-                'title'     => __( 'Глобальний код ТН ЗЕД', 'woo-ukrposhta-pro' ) . '<br><b>Лише у pro-версії</b>',
+                'title'     => __( 'Глобальний код ТН ЗЕД', 'woo-ukrposhta' ) . '<br><b>Лише у pro-версії</b>',
                 'callback'  => array(
                     $this->callbacks,
                     'morkvaupParcelItemsGlobalHsCode'
@@ -1102,7 +1136,7 @@ class MUP_Plugin_Loader
             ),
             array(
                 'id' => 'mrkvup_parcelitems_attr_hscode',
-                'title' => __( 'Коди ТН ЗЕД в атрибутах', 'woo-ukrposhta-pro' ) . '<br><b>Лише у pro-версії</b>',
+                'title' => __( 'Коди ТН ЗЕД в атрибутах', 'woo-ukrposhta' ) . '<br><b>Лише у pro-версії</b>',
                 'callback' => array(
                     $this->callbacks,
                     'morkvaupParcelItemsAttrHsCode'
@@ -1171,7 +1205,7 @@ class MUP_Plugin_Loader
      *
      * @since 1.0.0
      */
-    public function add_plugin_meta_box()
+    public function add_plugin_meta_box($post)
     {
         
         if (!isset($_SESSION))
@@ -1179,17 +1213,10 @@ class MUP_Plugin_Loader
             session_start();
         }
 
-        if (isset($_GET["post"]) || isset($_GET["id"]))
-        {
-            $order_id = '';
-            if(isset($_GET["post"])){
-                $order_id = $_GET["post"];    
-            }
-            else{
-                $order_id = $_GET["id"];
-            }
-            
+        $order_id = $post->ID;
 
+        if ($order_id)
+        {
             $order_data0 = wc_get_order($order_id);
             $order_data = $order_data0->get_data();
 
@@ -1218,12 +1245,23 @@ class MUP_Plugin_Loader
                 $_SESSION['order_id'] = $order_id;
             }
 
-            echo "<img src='" . MUP_PLUGIN_URL . "/includes/icon.svg' style='width: 20px;margin-right: 20px;'/>";
-            echo "<a class='button button-primary send' href='admin.php?page=morkvaup_invoice'>По Україні</a> ";
+            echo "<img src='" . esc_url(MUP_PLUGIN_URL) . "/includes/icon.svg' style='width: 20px;margin-right: 20px;'/>";
+            $nonce_url = wp_nonce_url(
+                admin_url('admin.php?page=morkvaup_invoice&order_up_id=' . esc_html($order_id)), // The base URL
+                'mrkv_up_form_action', // The action name
+                'mrkv_up_my_form_nonce' // The nonce key
+            );
+            echo "<a class='button button-primary send' href='" . esc_url($nonce_url) . "'>По Україні</a> ";
             echo "<a class='button button-primary send disebled'>Міжнародне</a>";
-            echo "<script src=" . MUP_PLUGIN_URL . 'admin/js/script.js' . "></script>";
-            echo "<link href=" . MUP_PLUGIN_URL . 'admin/css/style.css' . "/>";
-            $this->invoice_meta_box_info();
+            wp_enqueue_script(
+                'mup-script', 
+                MUP_PLUGIN_URL . 'admin/js/script.js', 
+                array(), 
+                '1.0.1', 
+                true 
+            );
+            echo "<link href=" . esc_url(MUP_PLUGIN_URL) . 'admin/css/style.css' . "/>";
+            $this->invoice_meta_box_info($order_data0);
         }
         else
         {
@@ -1247,7 +1285,7 @@ class MUP_Plugin_Loader
             $screen = 'shop_order';
         }
 
-        add_meta_box('mvup_other_fields', __('Укрпошта', 'woocommerce') , array(
+        add_meta_box('mvup_other_fields', __('Укрпошта', 'woo-ukrposhta') , array(
             $this,
             'add_plugin_meta_box'
         ) , $screen, 'side', 'core');
@@ -1280,14 +1318,20 @@ class MUP_Plugin_Loader
             global $wpdb;
 
             $order_id = $post->ID;
-            $results = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}{$tdb} WHERE order_id = '$order_id'", ARRAY_A);
+            $results = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}uposhta_invoices WHERE order_id = %d",
+                    $order_id
+                ),
+                ARRAY_A
+            );
 
             if ( !empty( $results ) ) {
                 $img = "/logo1.svg";
-                echo '<img height=25 src="' . plugin_dir_url( __FILE__ ) . $img . '" />';
+                echo '<img height=25 src="' . esc_url(plugin_dir_url( __FILE__ ) . $img) . '" />';
             } else {
                 $img = '/logo2.svg';
-                echo '<img height=25 src="' . plugin_dir_url( __FILE__ ) . $img . '" />';
+                echo '<img height=25 src="' . esc_url(plugin_dir_url( __FILE__ ) . $img) . '" />';
             }
         }
 
@@ -1296,12 +1340,17 @@ class MUP_Plugin_Loader
             global $wpdb;
 
             $order_id = $post->ID;
-            $query = "SELECT * FROM {$wpdb->prefix}" . $tdb . " WHERE order_id = '$order_id'";
-            $number_result = $wpdb->get_row($query, ARRAY_A);
+            $number_result = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}uposhta_invoices WHERE order_id = %d",
+                    $order_id
+                ),
+                ARRAY_A
+            );
 
             if ($number_result)
             {
-                echo $number_result["order_invoice"];
+                echo esc_html($number_result["order_invoice"]);
             }
             else
             {
@@ -1325,26 +1374,38 @@ class MUP_Plugin_Loader
         {
             global $wpdb;
 
-            $results = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}{$tdb} WHERE order_id = '$order_id'", ARRAY_A);
+            $results = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}uposhta_invoices WHERE order_id = %d",
+                    $order_id
+                ),
+                ARRAY_A
+            );
 
             if ( !empty( $results ) ) {
                 $img = "/logo1.svg";
-                echo '<img height=25 src="' . plugin_dir_url( __FILE__ ) . $img . '" />';
+                echo '<img height=25 src="' . esc_url(plugin_dir_url( __FILE__ ) . $img) . '" />';
             } else {
                 $img = '/logo2.svg';
-                echo '<img height=25 src="' . plugin_dir_url( __FILE__ ) . $img . '" />';
+                echo '<img height=25 src="' . esc_url(plugin_dir_url( __FILE__ ) . $img) . '" />';
             }
         }
 
         if ($column == 'invoice_number')
         {
             global $wpdb;
-            $query = "SELECT * FROM {$wpdb->prefix}" . $tdb . " WHERE order_id = '$order_id'";
-            $number_result = $wpdb->get_row($query, ARRAY_A);
+            
+            $number_result = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}uposhta_invoices WHERE order_id = %d",
+                    $order_id
+                ),
+                ARRAY_A
+            );
 
             if ($number_result)
             {
-                echo $number_result["order_invoice"];
+                echo esc_html($number_result["order_invoice"]);
             }
             else
             {
@@ -1358,25 +1419,13 @@ class MUP_Plugin_Loader
      *
      * @since 1.1.0
      */
-    public function invoice_meta_box_info()
+    public function invoice_meta_box_info($selected_order)
     {
         $tdb = MUP_TABLEDB;
 
-        if (isset($_GET["post"]))
-        {
-            $order_id = $_GET["post"];
-        }
-        elseif(isset($_GET["id"])){
-            $order_id = $_GET["id"];
-        }
-        else{
-            return;
-        }
-
-
-        $selected_order = wc_get_order($order_id);
-
         $order = $selected_order->get_data();
+
+        $order_id = $selected_order->get_id();
 
         if(class_exists( \Automattic\WooCommerce\Utilities\OrderUtil::class ) && OrderUtil::custom_orders_table_usage_is_enabled())
         {
@@ -1389,7 +1438,7 @@ class MUP_Plugin_Loader
         
         if (empty($meta_ttn)) {
             global $wpdb;
-            $result = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}{$tdb} WHERE order_id = '$order_id'", ARRAY_A);
+            $result = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}uposhta_invoices WHERE order_id = %d", $order_id ), ARRAY_A );
             if (isset($result[0]['order_invoice'])) {
                 $meta_ttn = $result[0]['order_invoice'];
             }
@@ -1398,7 +1447,7 @@ class MUP_Plugin_Loader
 
         if ( ! empty( $meta_ttn ) ) {
             $invoice_number = $meta_ttn;
-            echo '<div style="margin-top:10px;">Номер Відправлення: ' . $meta_ttn . '</div>';
+            echo '<div style="margin-top:10px;">Номер Відправлення: ' . esc_html($meta_ttn) . '</div>';
             // getting ukrposhta credentials
             $bearer = get_option( 'production_bearer_ecom' );
             $cptoken = get_option('production_cp_token');
@@ -1410,19 +1459,30 @@ class MUP_Plugin_Loader
             $invoiceRef = $invoiceType['uuid'];
             if ( $invoiceType['type'] != "INTERNATIONAL" ) {
                 // create button in meta-box 'mvup_other_fields' to print ukrposhta invoice sticker
-                echo '<div></form><form target="_blank" action="' . dirname( plugin_dir_url( __FILE__ ) ) . '/admin/partials/pdf.php' . '" method="POST" />';
-                echo '<input type="text" name="type" value="' . get_option( 'proptype' ) . '" style="display:none;" />
-                        <input class="startcodeup" type="text" name="ttn" value="' . $invoiceRef . '" hidden />
-                        <input type="text" name="bearer" value="' . $bearer . '" hidden />
-                        <input tyoe="text" name="cp_token" value="' . $cptoken . '" hidden />';
-                echo '<a style="margin: 5px;" alert="У новій вкладці відкриється документ для друку" title="Друк адресного ярлика" class="formsubmitup button" />' . ' <img src="' . plugins_url('img/003-barcode.png', __FILE__) . '" style="vertical-align:text-bottom;margin-right:5px;" /> Друк стікера </a></div>';
+                echo '<div></form><form target="_blank" action="' . esc_url(dirname( plugin_dir_url( __FILE__ ) )) . '/admin/partials/pdf.php' . '" method="POST" />';
+                echo '<input type="text" name="type" value="' . esc_html(get_option( 'proptype' )) . '" style="display:none;" />
+                        <input class="startcodeup" type="text" name="ttn" value="' . esc_html($invoiceRef) . '" hidden />
+                        <input type="text" name="bearer" value="' . esc_html($bearer) . '" hidden />
+                        <input tyoe="text" name="cp_token" value="' . esc_html($cptoken) . '" hidden />';
+                        echo wp_kses(
+                        wp_nonce_field( 'generate_invoice_nonce_action', 'generate_invoice_nonce', true, false ),
+                        array(
+                            'input' => array(
+                                'type'  => true,
+                                'name'  => true,
+                                'value' => true,
+                                'id'    => true,
+                            ),
+                        )
+                    );
+                echo '<a style="margin: 5px;" alert="У новій вкладці відкриється документ для друку" title="Друк адресного ярлика" class="formsubmitup button" />' . ' <img src="' . esc_url(plugins_url('img/003-barcode.png', __FILE__)) . '" alt="barcode" style="vertical-align:text-bottom;margin-right:5px;" /> Друк стікера </a></div>';
                 echo '</form><form>';
             }
 
             if ( $invoiceType['type'] == "INTERNATIONAL" ) {
                 // create button in meta-box 'mvup_other_fields' to print international ukrposhta invoice sticker
                 // echo '<input type="button" name="fs1" class="fs1" title="форма митної декларації"  value="cn22" />';
-                echo '<div></form><form target="_blank" action="' . dirname( plugin_dir_url( __FILE__ ) ) . '/admin/partials/pdf.php' . '" method="POST" />';
+                echo '<div></form><form target="_blank" action="' . esc_url(dirname( plugin_dir_url( __FILE__ ) )) . '/admin/partials/pdf.php' . '" method="POST" />';
                 echo '<select style="margin-top:10px;margin-bottom: 10px;" name="fs1">
                     <option value="cp71">Форма бланку супровідної адреси (cp71)</option>
                     <option value="cn22">Форма митної декларації (cn22)</option>
@@ -1431,11 +1491,10 @@ class MUP_Plugin_Loader
                     <option value="forms">Стікер (100мм х 100мм)</option>
                     <option value="tfp3">Форма на пересилання післяплати (tfp3)</option>
                 </select>';
-                echo '<input type="text" name="type" value="' . get_option( 'proptype' ) . '" style="display:none;" />
-                        <input class="startcodeup" type="text" name="ttn" value="' . $invoiceRef . '" hidden />
-                        <input type="text" name="bearer" value="' . $bearer . '" hidden />
-                        <input tyoe="text" name="cp_token" value="' . $cptoken . '" hidden />';
-                echo '<a style="margin: 5px;" alert="У новій вкладці відкриється документ для друку" title="Друк адресного ярлика" class="formsubmitup button" />' . ' <img src="' . plugins_url('img/003-barcode.png', __FILE__) . '" style="vertical-align:text-bottom;margin-right:5px;" /> Друк стікера </a></div>';
+                echo '<input type="text" name="type" value="' . esc_html(get_option( 'proptype' )) . '" style="display:none;" />
+                        <input class="startcodeup" type="text" name="ttn" value="' . esc_html($invoiceRef) . '" hidden />
+                        <input type="text" name="bearer" value="' . esc_html($bearer) . '" hidden />
+                        <input tyoe="text" name="cp_token" value="' . esc_html($cptoken) . '" hidden />';
                 echo '</form><form>';
             }
 

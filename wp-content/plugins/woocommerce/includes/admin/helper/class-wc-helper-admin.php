@@ -27,7 +27,16 @@ class WC_Helper_Admin {
 	 * @return void
 	 */
 	public static function load() {
-		add_filter( 'woocommerce_admin_shared_settings', array( __CLASS__, 'add_marketplace_settings' ) );
+		if ( is_admin() ) {
+			$is_wc_home_or_in_app_marketplace = (
+				isset( $_GET['page'] ) && 'wc-admin' === $_GET['page'] //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			);
+
+			if ( $is_wc_home_or_in_app_marketplace ) {
+				add_filter( 'woocommerce_admin_shared_settings', array( __CLASS__, 'add_marketplace_settings' ) );
+			}
+		}
+
 		add_filter( 'rest_api_init', array( __CLASS__, 'register_rest_routes' ) );
 	}
 
@@ -39,6 +48,11 @@ class WC_Helper_Admin {
 	 * @return mixed $settings
 	 */
 	public static function add_marketplace_settings( $settings ) {
+		if ( ! WC_Helper::is_site_connected() && isset( $_GET['connect'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			wp_safe_redirect( self::get_connection_url() );
+			exit;
+		}
+
 		$auth_user_data  = WC_Helper_Options::get( 'auth_user_data', array() );
 		$auth_user_email = isset( $auth_user_data['email'] ) ? $auth_user_data['email'] : '';
 
@@ -52,6 +66,7 @@ class WC_Helper_Admin {
 		);
 
 		$woo_connect_notice_type = WC_Helper_Updater::get_woo_connect_notice_type();
+		$blog_name               = get_bloginfo( 'name' );
 
 		$settings['wccomHelper'] = array(
 			'isConnected'                => WC_Helper::is_site_connected(),
@@ -59,8 +74,10 @@ class WC_Helper_Admin {
 			'userEmail'                  => $auth_user_email,
 			'userAvatar'                 => get_avatar_url( $auth_user_email, array( 'size' => '48' ) ),
 			'storeCountry'               => wc_get_base_location()['country'],
+			'storeName'                  => $blog_name ? $blog_name : '',
 			'inAppPurchaseURLParams'     => WC_Admin_Addons::get_in_app_purchase_url_params(),
 			'installedProducts'          => $installed_products,
+			'mySubscriptionsTabLoaded'   => WC_Helper_Options::get( 'my_subscriptions_tab_loaded' ),
 			'wooUpdateManagerInstalled'  => WC_Woo_Update_Manager_Plugin::is_plugin_installed(),
 			'wooUpdateManagerActive'     => WC_Woo_Update_Manager_Plugin::is_plugin_active(),
 			'wooUpdateManagerInstallUrl' => WC_Woo_Update_Manager_Plugin::generate_install_url(),
@@ -68,11 +85,15 @@ class WC_Helper_Admin {
 			'wooUpdateCount'             => WC_Helper_Updater::get_updates_count_based_on_site_status(),
 			'woocomConnectNoticeType'    => $woo_connect_notice_type,
 			'dismissNoticeNonce'         => wp_create_nonce( 'dismiss_notice' ),
+			'connected_notice'           => PluginsHelper::get_wccom_connected_notice( $auth_user_email ),
 		);
 
 		if ( WC_Helper::is_site_connected() ) {
 			$settings['wccomHelper']['subscription_expired_notice']  = PluginsHelper::get_expired_subscription_notice( false );
 			$settings['wccomHelper']['subscription_expiring_notice'] = PluginsHelper::get_expiring_subscription_notice( false );
+			$settings['wccomHelper']['subscription_missing_notice']  = PluginsHelper::get_missing_subscription_notice();
+		} else {
+			$settings['wccomHelper']['disconnected_notice'] = PluginsHelper::get_wccom_disconnected_notice();
 		}
 
 		return $settings;
@@ -87,6 +108,8 @@ class WC_Helper_Admin {
 	public static function get_connection_url() {
 		global $current_screen;
 
+		// Default to wc-addons, although this can be changed from the frontend
+		// in the function `connectUrl()` within marketplace functions.tsx.
 		$connect_url_args = array(
 			'page'    => 'wc-addons',
 			'section' => 'helper',
@@ -99,6 +122,14 @@ class WC_Helper_Admin {
 		} else {
 			$connect_url_args['wc-helper-connect'] = 1;
 			$connect_url_args['wc-helper-nonce']   = wp_create_nonce( 'connect' );
+		}
+
+		if ( ! empty( $_GET['utm_source'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$connect_url_args['utm_source'] = wc_clean( wp_unslash( $_GET['utm_source'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		}
+
+		if ( ! empty( $_GET['utm_campaign'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$connect_url_args['utm_campaign'] = wc_clean( wp_unslash( $_GET['utm_campaign'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
 
 		return add_query_arg(

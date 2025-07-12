@@ -16,9 +16,7 @@ class InvoiceModel
         global $wpdb;
         if ( isset( $invoice['uuid'] ) ) {
             $barcode = $invoice['barcode'];
-
-            $table_name = $wpdb->prefix.'uposhta_invoices';
-            $hasRowWithOrderId = $wpdb->get_row( "SELECT * FROM $table_name WHERE order_id = $order_id" );
+            $hasRowWithOrderId = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}uposhta_invoices WHERE order_id = %d", $order_id ) );
             $existId =  \is_object( $hasRowWithOrderId ) ? $hasRowWithOrderId->id : null;
 
             $result_check = $wpdb->replace(
@@ -32,7 +30,7 @@ class InvoiceModel
               array( '%d', '%s', '%s', '%s' )
             );
 
-            $this->isSuccessSaved = $result_check;
+            $this->isSuccessSaved = true;
             $order = wc_get_order( $order_id ); // Get current order object
 
             if(class_exists( \Automattic\WooCommerce\Utilities\OrderUtil::class ) && OrderUtil::custom_orders_table_usage_is_enabled())

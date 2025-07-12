@@ -1,6 +1,8 @@
 <?php
 
 use Duplicator\Controllers\StorageController;
+use Duplicator\Core\Controllers\ControllersManager;
+use Duplicator\Libs\Snap\SnapUtil;
 
 defined('ABSPATH') || defined('DUPXABSPATH') || exit;
 ?>
@@ -16,9 +18,10 @@ defined('ABSPATH') || defined('DUPXABSPATH') || exit;
     $action_response = esc_html__("Storage Settings Saved", 'duplicator');
 
     //SAVE RESULTS
-    if (filter_input(INPUT_POST, 'action', FILTER_UNSAFE_RAW) === 'save') {
+    if ($_POST['action'] === 'save') {
         //Nonce Check
-        if (!wp_verify_nonce(filter_input(INPUT_POST, 'dup_storage_settings_save_nonce_field', FILTER_UNSAFE_RAW), 'dup_settings_save')) {
+        $nonce = SnapUtil::sanitizeTextInput(INPUT_POST, 'dup_storage_settings_save_nonce_field');
+        if (!wp_verify_nonce($nonce, 'dup_settings_save')) {
             die('Invalid token permissions to perform this request.');
         }
 
@@ -56,8 +59,9 @@ defined('ABSPATH') || defined('DUPXABSPATH') || exit;
     <?php
     $storage_position     = DUP_Settings::Get('storage_position');
     $storage_htaccess_off = DUP_Settings::Get('storage_htaccess_off');
+    $actionUrl            = ControllersManager::getMenuLink(ControllersManager::SETTINGS_SUBMENU_SLUG, 'storage');
     ?>
-    <form id="dup-settings-form" action="<?php echo admin_url('admin.php?page=duplicator-settings&tab=storage'); ?>" method="post">
+    <form id="dup-settings-form" action="<?php echo esc_url($actionUrl); ?>" method="post">
         <?php wp_nonce_field('dup_settings_save', 'dup_storage_settings_save_nonce_field', false); ?>
         <input type="hidden" name="action" value="save">
         <input type="hidden" name="page"   value="duplicator-settings">
@@ -90,7 +94,7 @@ defined('ABSPATH') || defined('DUPXABSPATH') || exit;
                     </p>
                     <p class="description">
                         <?php
-                        esc_html_e("The storage location is where all package files are stored to disk. If your host has troubles writing content to the 'Legacy Path' then use "
+                        esc_html_e("The storage location is where all Backup files are stored to disk. If your host has troubles writing content to the 'Legacy Path' then use "
                             . "the 'Contents Path'.  Upon clicking the save button all files are moved to the new location and the previous path is removed.", 'duplicator');
                         ?><br/>
 

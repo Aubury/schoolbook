@@ -32,7 +32,7 @@ class ukrPoshtaAjaxHandler
   {
   	$result = $this->apiLoader->loadAreas();
 
-    echo json_encode([
+    echo wp_json_encode([
       'result' => $result
     ]);
 
@@ -43,7 +43,7 @@ class ukrPoshtaAjaxHandler
   {
   	$result = $this->apiLoader->loadCities();
 
-    echo json_encode([
+    echo wp_json_encode([
       'result' => $result
     ]);
 
@@ -54,7 +54,7 @@ class ukrPoshtaAjaxHandler
   {
   	$result = $this->apiLoader->loadWarehouses();
 
-    echo json_encode([
+    echo wp_json_encode([
       'result' => $result
     ]);
 

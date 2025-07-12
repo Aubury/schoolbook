@@ -3,7 +3,11 @@
 <div class="wrap snow-storm">
 	<h1><?php _e('Snow Storm', 'snow-storm'); ?></h1>
 	<form action="" method="post" id="snow-storm-form">	
+		    <?php wp_nonce_field('snow_storm_save_settings', 'snow_storm_nonce'); ?>
+		
 		<?php
+
+
 
 		wp_nonce_field('closedpostboxes', 'closedpostboxesnonce', false);
 		wp_nonce_field('meta-box-order', 'meta-box-order-nonce', false); 

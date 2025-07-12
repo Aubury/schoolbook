@@ -1,54 +1,54 @@
-<?
+<?php
 
-function get_info($token, $url){
+function get_info($token, $url) {
+    // Set the headers for authorization
+    $args = array(
+        'method'    => 'GET', // HTTP method
+        'headers'   => array(
+            'Content-Type'  => 'application/json', // Set the content type
+            'Authorization' => 'Bearer ' . $token, // Include the token in the authorization header
+        ),
+        'sslverify' => false, // Disable SSL verification (not recommended in production)
+        'timeout'   => 20,    // Set a timeout for the request
+    );
 
-  $ch = curl_init($url);
+    // Execute the HTTP GET request
+    $response = wp_remote_get($url, $args);
 
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    // Check for errors in the request
+    if (is_wp_error($response)) {
+        $error_message = $response->get_error_message();
+        // Handle the error (e.g., log it or return an error message)
+        return 'Error: ' . $error_message;
+    }
 
-  curl_setopt($ch, CURLOPT_HEADER, 0);
+    // Retrieve the response body
+    $result = wp_remote_retrieve_body($response);
 
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    // Decode the JSON response
+    $jd = json_decode($result);
 
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    // Check if the response contains an error with code 1020
+    if (isset($jd->errors->code) && $jd->errors->code == 1020) {
+        autorization(); // Call the authorization function
+        static $retry_count = 0; // Static variable to limit retry attempts
+        $retry_count++;
+        if ($retry_count < 2) { // Retry only once
+            return get_info($token, $url);
+        }
+    }
 
-  curl_setopt($ch, CURLOPT_HEADER, 0);
-
-  curl_setopt( $ch, CURLOPT_CUSTOMREQUEST, 'GET' );
-
-  //curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-
-  curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Authorization: Bearer ' . $token ) );
-
-  $result = curl_exec($ch);
-
-  curl_close($ch);
-
-  $jd = json_decode($result);
-
-  if( (isset($jd->errors->code) )&& ($jd->errors->code == 1020) ){
-      autorization();
-      $i++;
-      if($i<2){
-        $result = get_info($token, $url);
-      }
-  }
-
+    // Return the result
     return $result;
-    //echo '</pre>';
-
-
 }
+
 header("Content-type: application/pdf");
-header("Content-Disposition: inline; filename=filename.pdf");
-@readfile('path\to\filename.pdf');
+header("Content-Disposition: inline; filename=" . $file_name);
 
-
-if(isset($_GET['international'])){
-  echo get_info("1a14715b-4341-3b36-8130-e439b493773e", "https://www.ukrposhta.ua/ecom/0.0.1/international-doc");
-}
-else{
-  echo get_info("1a14715b-4341-3b36-8130-e439b493773e", "https://www.ukrposhta.ua/ecom/0.0.1/doc");
-}
+// Decide which URL to call based on the presence of the 'international' GET parameter
+echo esc_html(get_info(
+    "1a14715b-4341-3b36-8130-e439b493773e",
+    "https://www.ukrposhta.ua/ecom/0.0.1/doc"
+));
 
 ?>

@@ -3,13 +3,13 @@ Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkh
 Donate link: https://paypal.me/awplife
 Tags: snow falling, christmas effect, valentine effect, weather effect, winter effect
 Requires at least: 4.0
-Tested up to: 6.6.2
+Tested up to: 6.7.2
 Requires PHP: 5.0
-Stable tag: 1.5.4
+Stable tag: 1.5.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Weather plugin shows many Seasonal falling effects like Snow Falling, Snow flake Falling Christmas, Winter, Autumn, Spring, Summer, Rain, Halloween, Thanks Giving Day, Valentine and New Year on your website.
+Weather plugin with seasonal effects: snow, rain, autumn leaves, Christmas, Halloween, Valentine, New Year & more to enhance your website.
 
 == Description ==
 
@@ -231,6 +231,20 @@ https://wordpress.org/support/plugin/weather-effect/
 
 == Changelog ==
 
+
+Version 1.5.7
+
+* Testing plugin for wordpress 6.7.2
+
+Version 1.5.6
+
+* Testing plugin for wordpress 6.7.1
+* Fatal error Fixed On multiple site
+
+Version 1.5.5
+
+* Testing plugin for wordpress 6.7.1
+* Bug Fix: Footer Bottom space and scroll bug fixed
 
 Version 1.5.4
 

@@ -79,10 +79,10 @@ class ukrPoshtaShippingMethod extends WC_Shipping_Method
         $this->instance_form_fields = array(
 
             'title' => array(
-                'title' => __( 'Title', 'woocommerce' ),
+                'title' => __( 'Title', 'woo-ukrposhta' ),
                 'type' => 'text',
-                'description' => __( 'This controls the title which the user sees during checkout.', 'woocommerce' ),
-                'default' => __('Укрпошта ', 'woocommerce' ),
+                'description' => __( 'This controls the title which the user sees during checkout.', 'woo-ukrposhta' ),
+                'default' => __('Укрпошта ', 'woo-ukrposhta' ),
                 'desc_tip' => true,
             )
         );

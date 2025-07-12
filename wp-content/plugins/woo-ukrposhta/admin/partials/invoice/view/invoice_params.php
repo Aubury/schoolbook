@@ -57,26 +57,42 @@
                         <td colspan=2>
                             <p>
                                 <?php if ($weight > 0) {
-                                        echo '<span> Вага замовлення: ' . $weight. ' г' . '.<br></span>';
+                                        echo '<span> Вага замовлення: ' . esc_html($weight). ' г' . '.<br></span>';
                                     } else {
                                         echo '<span> Вагу замовлення не пораховано тому що вага товарів відсутня.<br></span>';
                                     }
                                     if ( $invoice_addweight > 0 ) {
-                                        echo '<span> Вага упаковки: ' . $invoice_addweight . ' ' . $invoiceOrder->translateUnitWeightName() . '.<br></span>';
+                                        echo '<span> Вага упаковки: ' . esc_html($invoice_addweight . ' ' . $invoiceOrder->translateUnitWeightName()) . '.<br></span>';
                                     } else {
                                         echo '<span> Вагу упаковки не пораховано тому що дані про вагу упаковки відсутні. </span>';
                                     }
                                 ?>
                             </p>
-                            <p class="light"><?php echo $invoiceOrder->weightMsg; ?></p>
+                            <p class="light"><?php echo esc_html($invoiceOrder->weightMsg); ?></p>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label class="light" for="max_order_lenght">Найбільша сторона, см *</label>
+                            <label class="light" for="max_order_lenght">Довжина, см *</label>
                         </th>
                         <td>
-                            <input type="text" id="max_order_lenght" name="invoice_volume" value="<?php echo $length; ?>" required />
+                            <input type="text" id="max_order_lenght" name="invoice_volume" value="<?php echo esc_html($length); ?>" required />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label class="light" for="max_order_height">Висота, см *</label>
+                        </th>
+                        <td>
+                            <input type="text" id="max_order_height" name="invoice_volume_height" value="<?php echo esc_html($sizes_height); ?>" required />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label class="light" for="max_order_width">Ширина, см *</label>
+                        </th>
+                        <td>
+                            <input type="text" id="max_order_width" name="invoice_volume_width" value="<?php echo esc_html($sizes_width); ?>" required />
                         </td>
                     </tr>
                     <tr>
@@ -106,7 +122,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan=2><p style="font-size:90%"><?php echo $mess1; ?></p></td>
+                        <td colspan=2><p style="font-size:90%"><?php echo esc_html($mess1); ?></p></td>
                     </tr>
                     <tr class="nv-if-international">
                         <th scope="row">
@@ -163,17 +179,17 @@
                             <input type="hidden" name="country_rec" id="country_rec" list="country" value="<?php 
                                 if($order_data->get_billing_country())
                                 {
-                                    echo $order_data->get_billing_country();
+                                    echo esc_html($order_data->get_billing_country());
                                 }
                                 else
                                 {
                                     echo 'UA';
                                 }
                              ?>"  />
-                             <input type="hidden" name="region_data" id="region_data" value="<?php echo $order_data->get_billing_state(); ?>">
-                             <input type="hidden" name="city_data" id="city_data" value="<?php echo $order_data->get_billing_city(); ?>">
-                             <input type="hidden" name="street_data" id="street_data" value="<?php echo $order_data->get_billing_address_1(); ?>">
-                             <input type="hidden" name="apartmentNumber_data" id="apartmentNumber_data" value="<?php echo $order_data->get_billing_address_2(); ?>">
+                             <input type="hidden" name="region_data" id="region_data" value="<?php echo esc_html($order_data->get_billing_state()); ?>">
+                             <input type="hidden" name="city_data" id="city_data" value="<?php echo esc_html($order_data->get_billing_city()); ?>">
+                             <input type="hidden" name="street_data" id="street_data" value="<?php echo esc_html($order_data->get_billing_address_1()); ?>">
+                             <input type="hidden" name="apartmentNumber_data" id="apartmentNumber_data" value="<?php echo esc_html($order_data->get_billing_address_2()); ?>">
                             <input type="submit" value="Створити" name="morkvaup_checkforminputs" class="morkvaup_checkforminputs button button-primary" id="submit"/>
                         </td>
                     </tr>

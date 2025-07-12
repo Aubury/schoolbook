@@ -225,6 +225,8 @@ class DUP_Package
      */
     public function runScanner()
     {
+        global $wpdb;
+
         $timerStart     = DUP_Util::getMicrotime();
         $report         = array();
         $this->ScanFile = "{$this->NameHash}_scan.json";
@@ -273,15 +275,18 @@ class DUP_Package
         $report['ARC']['Status']['CanbeMigratePackage'] = $package_can_be_migrate;
 
         $privileges_to_show_create_proc_func = true;
-        $procedures                          = $GLOBALS['wpdb']->get_col("SHOW PROCEDURE STATUS WHERE `Db` = '" . $GLOBALS['wpdb']->dbname . "'", 1);
+
+        $procQuery  = $wpdb->prepare("SHOW PROCEDURE STATUS WHERE `Db` = %s", $wpdb->dbname);
+        $procedures = $wpdb->get_col($procQuery, 1);
         if (count($procedures)) {
-            $create                              = $GLOBALS['wpdb']->get_row("SHOW CREATE PROCEDURE `" . $procedures[0] . "`", ARRAY_N);
+            $create                              = $wpdb->get_row("SHOW CREATE PROCEDURE `" . $procedures[0] . "`", ARRAY_N);
             $privileges_to_show_create_proc_func = isset($create[2]);
         }
 
-        $functions = $GLOBALS['wpdb']->get_col("SHOW FUNCTION STATUS WHERE `Db` = '" . $GLOBALS['wpdb']->dbname . "'", 1);
+        $funcQuery = $wpdb->prepare("SHOW FUNCTION STATUS WHERE `Db` = %s", $wpdb->dbname);
+        $functions = $wpdb->get_col($funcQuery, 1);
         if (count($functions)) {
-            $create                              = $GLOBALS['wpdb']->get_row("SHOW CREATE FUNCTION `" . $functions[0] . "`", ARRAY_N);
+            $create                              = $wpdb->get_row("SHOW CREATE FUNCTION `" . $functions[0] . "`", ARRAY_N);
             $privileges_to_show_create_proc_func = $privileges_to_show_create_proc_func && isset($create[2]);
         }
 
@@ -347,7 +352,7 @@ class DUP_Package
             $this->Name,
             DUP_Validator::FILTER_VALIDATE_NOT_EMPTY,
             array(  'valkey' => 'Name' ,
-                    'errmsg' => __('Package name can\'t be empty', 'duplicator'),
+                    'errmsg' => __('Backup name can\'t be empty', 'duplicator'),
                 )
         );
 
@@ -512,7 +517,7 @@ class DUP_Package
         global $wpdb;
 
         $tablePrefix = DUP_Util::getTablePrefix();
-        $tblName     = $tablePrefix . 'duplicator_packages';
+        $tblName     = esc_sql($tablePrefix . 'duplicator_packages');
         $getResult   = $wpdb->get_results($wpdb->prepare("SELECT name, hash FROM `{$tblName}` WHERE id = %d", $this->ID), ARRAY_A);
 
         if ($getResult) {
@@ -772,7 +777,7 @@ class DUP_Package
     {
         global $wpdb;
 
-        $table = $wpdb->base_prefix . "duplicator_packages";
+        $table = esc_sql($wpdb->base_prefix . "duplicator_packages");
         $where = self::statusContitionsToWhere($conditions);
 
         $count = $wpdb->get_var("SELECT count(id) FROM `{$table}` " . $where);
@@ -906,7 +911,7 @@ class DUP_Package
 
         if (!strstr($exe_done_txt, 'DUPLICATOR_INSTALLER_EOF') && !$this->BuildProgress->failed) {
             //$this->BuildProgress->failed = true;
-            $error_message = 'ERROR: Installer file not complete.  The end of file marker was not found.  Please try to re-create the package.';
+            $error_message = 'ERROR: Installer file not complete.  The end of file marker was not found.  Please try to re-create the Backup.';
 
             $this->BuildProgress->set_failed($error_message);
             $this->setStatus(DUP_PackageStatus::ERROR);
@@ -937,7 +942,7 @@ class DUP_Package
             if (file_exists($scan_filepath)) {
                 $json = file_get_contents($scan_filepath);
             } else {
-                $error_message = sprintf(__("Can't find Scanfile %s. Please ensure there no non-English characters in the package or schedule name.", 'duplicator'), $scan_filepath);
+                $error_message = sprintf(__("Can't find Scanfile %s. Please ensure there no non-English characters in the Backup or schedule name.", 'duplicator'), $scan_filepath);
 
                 $this->BuildProgress->set_failed($error_message);
                 $this->setStatus(DUP_PackageStatus::ERROR);
@@ -1287,7 +1292,7 @@ class DUP_Package
         if ($this->BuildProgress->failed) {
             DUP_LOG::Trace("build progress failed so setting package to failed");
             $this->setStatus(DUP_PackageStatus::ERROR);
-            $message = "Package creation failed.";
+            $message = "Backup creation failed.";
             DUP_Log::Trace($message);
             return true;
         }
@@ -1515,15 +1520,18 @@ class DUP_Package
         $packageObj = serialize($this);
 
         if (!$packageObj) {
-            DUP_Log::error("Package SetStatus was unable to serialize package object while updating record.");
+            DUP_Log::error("Backup SetStatus was unable to serialize package object while updating record.");
         }
 
         $wpdb->flush();
         $tablePrefix = DUP_Util::getTablePrefix();
-        $table       = $tablePrefix . "duplicator_packages";
-        $sql         = "UPDATE `{$table}` SET  status = {$this->Status},";
-        $sql        .= "package = '" . esc_sql($packageObj) . "'";
-        $sql        .= "WHERE ID = {$this->ID}";
+        $table       = esc_sql($tablePrefix . "duplicator_packages");
+        $sql         = $wpdb->prepare(
+            "UPDATE `{$table}` SET  status = %d, package = %s WHERE ID = %d",
+            $this->Status,
+            $packageObj,
+            $this->ID
+        );
 
         DUP_Log::Trace("UPDATE PACKAGE ID = {$this->ID} STATUS = {$this->Status}");
 
@@ -1587,8 +1595,9 @@ class DUP_Package
         global $wpdb;
 
         $tablePrefix = DUP_Util::getTablePrefix();
-        $table       = $tablePrefix . "duplicator_packages";
-        $qry         = $wpdb->get_row("SELECT ID, hash FROM `{$table}` WHERE hash = '{$hash}'");
+        $table       = esc_sql($tablePrefix . "duplicator_packages");
+        $sql         = $wpdb->prepare("SELECT ID, hash FROM `{$table}` WHERE hash = %s", $hash);
+        $qry         = $wpdb->get_row($sql);
         if (is_null($qry) || strlen($qry->hash) == 0) {
             return 0;
         } else {
@@ -1627,8 +1636,10 @@ class DUP_Package
     {
         global $wpdb;
 
-        $obj = new DUP_Package();
-        $row = $wpdb->get_row($wpdb->prepare("SELECT option_value FROM `{$wpdb->options}` WHERE option_name = %s LIMIT 1", self::OPT_ACTIVE));
+        $obj   = new DUP_Package();
+        $table = esc_sql($wpdb->options);
+        $row   = $wpdb->get_row($wpdb->prepare("SELECT option_value FROM `{$table}` WHERE option_name = %s LIMIT 1", self::OPT_ACTIVE));
+
         if (is_object($row)) {
             $obj = @unserialize($row->option_value);
         }
@@ -1648,10 +1659,10 @@ class DUP_Package
     public static function getByID($id)
     {
         global $wpdb;
-        $obj         = new DUP_Package();
-        $tablePrefix = DUP_Util::getTablePrefix();
-        $sql         = $wpdb->prepare("SELECT * FROM `{$tablePrefix}duplicator_packages` WHERE ID = %d", $id);
-        $row         = $wpdb->get_row($sql);
+        $obj   = new DUP_Package();
+        $table = esc_sql(DUP_Util::getTablePrefix() . 'duplicator_packages');
+        $sql   = $wpdb->prepare("SELECT * FROM `{$table}` WHERE ID   = %d", $id);
+        $row   = $wpdb->get_row($sql);
         if (is_object($row)) {
             $obj = @unserialize($row->package);
             // We was not storing Status in Lite 1.2.52, so it is for backward compatibility

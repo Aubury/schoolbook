@@ -3,8 +3,8 @@ Contributors: contrid
 Donate link: https://tribulant.com
 Tags: Festive, Christmas, Snow Storm, Snow Flakes, Falling Snow, Snow
 Requires at least: 3.0
-Tested up to: 6.6.1
-Stable tag: 1.4.6
+Tested up to: 6.7.2
+Stable tag: 1.4.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,6 +64,9 @@ Go to <strong>Settings > Snow Storm</strong> in your WordPress dashboard where y
 == Changelog ==
 
 See all <a href="https://tribulant.com/docs/wordpress-snow-storm-plugin/7799/#doc3">releases and full changelogs</a> in our docs.
+
+= 1.4.7 =
+* FIX: XSS vulnerability in admin settings page.
 
 = 1.4.6 =
 * ADD: "Dismiss forever" button on the admin area rating notice to dismiss it forever.

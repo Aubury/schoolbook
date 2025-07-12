@@ -3,8 +3,8 @@ Contributors: Mihail Barinov
 Donate link: https://www.paypal.com/donate/?hosted_button_id=FDRDNZE6XAKE8
 Tags: woocommerce, search, product search, woocommerce search, live search
 Requires at least: 4.0
-Tested up to: 6.6
-Stable tag: 3.14
+Tested up to: 6.8
+Stable tag: 3.32
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,6 +53,7 @@ Additional features available only in the PRO plugin version.
 * **Unlimited** amount of search form instances
 * Search for custom taxonomies and attributes **archive pages**
 * Support for **variable products**: show child products, parent product or both in search results.
+* Product **GTIN**, **UPC**, **EAN** or **ISBN** fields search.
 * Product **attributes** search ( including custom attributes)
 * Product **custom taxonomies** search
 * Product **custom fields** search
@@ -173,6 +174,101 @@ Yep. This plugin is always compatible with the latest version of Woocommerce?
 
 [View full changelog](https://advanced-woo-search.com/guide/free-version/?utm_source=wp-repo&utm_medium=listing&utm_campaign=aws-repo)
 
+= 3.32 ( 2025-04-28 ) =
+* Dev - Add awsNoResults js event
+
+= 3.31 ( 2025-04-14 ) =
+* Add - New widget for block editor to show current taxonomy terms results
+* Add - New widget for Elementor to show current taxonomy terms results
+* Add - New integration for Elementor WC Categories widget to show current terms results
+* Add - aws_taxonomy_terms_results shortcode to display taxonomies archive pages results
+* Update - Tested with WC 9.8
+* Fix - Bug with running index multiply times for one product
+* Fix - Integration issue with Divi BodyCommerce plugin mini cart widget
+* Dev - Add aws_tax_search_array and aws_tax_search_relevance_array hooks
+
+= 3.30 ( 2025-03-31 ) =
+* Update - Admin loading icons
+* Update - Relevance score calculation for taxonomies search results
+* Update - PRO admin section
+* Dev - Update aws_relevance_scores filter. Add more array values
+* Dev - Add aws_disable_multilangs_hooks hook
+
+= 3.29 ( 2025-03-17 ) =
+* Update - Integration for Elementor search form widget
+* Fix - aws_search_terms parameters escaping
+* Dev - Add aws_index_scraped_data filter
+
+= 3.28 ( 2025-03-03 ) =
+* Update - Tested with WC 9.7
+* Fix - Bug with additional slashed for text options
+
+= 3.27 ( 2025-02-17 ) =
+* Fix - Highlight synonyms words for search results
+
+= 3.26 ( 2025-02-03 ) =
+* Update - Enable gutenberg search block for navigation section
+* Update - Tested with WC 9.6
+
+= 3.25 ( 2025-01-20 ) =
+* Dev - Add filter for search form shortcode parameters
+
+= 3.24 ( 2024-12-30 ) =
+* Update - Tested with WC 9.5
+* Update - Settings page pro block description
+
+= 3.23 ( 2024-12-16 ) =
+* Add - New shortcodes for similar terms, search terms
+* Fix - Integration with Yoast Premium plugin. Allow additional parameters for permalinks
+* Dev - Update forceNewSearch method to use additional parameters
+
+= 3.22 ( 2024-11-29 ) =
+* Update - Settings page descriptions
+
+= 3.21 ( 2024-11-26 ) =
+* Update - Tested with WC 9.4
+* Update - Improve search speed and update index table structure
+* Update - Structure of cache table
+* Dev - Update conditions for table check
+
+= 3.20 ( 2024-11-11 ) =
+* Update - Integration with YITH WooCommerce Ajax Product Filter plugin
+* Update - Taxonomies search when using Begins search logic
+* Fix - Bug with diacritical characters replacement
+
+= 3.19 ( 2024-10-28 ) =
+* Update - Add different search rules for taxonomies search
+* Update - Styles for search form. Fix min height for input
+* Dev - Add aws_search_custom_top_results filter
+
+= 3.18 ( 2024-10-14 ) =
+* Add - Support for Jet Blocks plugin search widget
+* Update - Support for Italian language
+* Update - Admin page notices about integrations
+* Dev - Update the structure of plugin tables
+
+= 3.17 ( 2024-10-01 ) =
+* Add - Support for Shopical theme
+* Add - Support for WooCommerce Product Table by Barn2 plugin
+* Fix - Index duplicated products when using WPML plugin
+* Fix - Bug with quick edit feature when using WPML plugin
+* Dev - New check for currently active plugins
+
+= 3.16 ( 2024-09-16 ) =
+* Add - Greek to latin characters replace
+* Add - Plurals support for different languages
+* Add - Support for Breakdance plugin
+* Update - Tested with WC 9.3
+* Update - On page stock status and sale filters
+* Fix - Show clear button on first search when ajax is disabled
+
+= 3.15 ( 2024-09-02 ) =
+* Update - Tested with WC 9.2
+* Update - Add new parameters for orderby
+* Update - Settings page text
+* Fix - Filter by attributes for the search page. Fix filtering by slugs with integers inside
+* Dev - Add additional check for product IDs inside search page
+
 = 3.14 ( 2024-08-12 ) =
 * Update - Integration with Oxygen theme
 * Fix - Filtering for search results page when using slugs with numbers inside URL for terms
@@ -291,104 +387,3 @@ Yep. This plugin is always compatible with the latest version of Woocommerce?
 = 2.96 ( 2024-01-08 ) =
 * Update - SQL query for taxonomies search results. Speed up search for multilingual results
 * Update - Woodmart theme support. Fix seamless integration for header
-
-= 2.95 ( 2023-12-25 ) =
-* Add - Support for WooCommerce Show Single Variations by Iconic plugin
-* Update - Tested with WC 8.4
-* Update - Integration with GA4
-* Dev - Add awsAnalytics js event
-
-= 2.94 ( 2023-12-12 ) =
-* Add - Support for WooCommerce Memberships plugin
-* Update - Notices about plugin integrations
-
-= 2.93 ( 2023-11-27 ) =
-* Update - WCFM plugin integration. Fix search form on stores list page sidebar
-* Update - Tested with WC 8.3
-* Fix - Integration with Elessi theme. Fix search form after using shop filters
-* Dev - Add aws_index_started action
-
-= 2.92 ( 2023-11-14 ) =
-* Add - Support for Hestia theme
-
-= 2.91 ( 2023-10-30 ) =
-* Update - Support for Astra theme. Fix broken search form in the header
-
-= 2.90 ( 2023-10-16 ) =
-* Update - Tested with WC 8.2
-* Fix - Pricing filter for default WooCommerce widgets
-
-= 2.89 ( 2023-09-29 ) =
-* Add - Support for Sinatra theme. Enable seamless integration for search form in the header
-* Update - Add taxonomies class names inside search results blocks
-
-= 2.88 ( 2023-09-18 ) =
-* Add - Support for Kapee theme
-* Update - Tested with WC 8.1
-* Fix - Fix label search form styles for mobile devices
-* Dev - Fix php notice with dynamically created child_theme property
-* Dev - Add aws_relevance_parameters filter
-
-= 2.87 ( 2023-09-04 ) =
-* Add - Support for WooCommerce Products Visibility plugin
-* Update - Support for BeRocket WooCommerce AJAX Products Filter plugin. Fix filters when nice URLs is enabled
-* Update - Support for HUSKY plugin. Fix filtering issue for custom taxonomies
-* Fix - Display On backorder product stock status when needed
-* Dev - Update aws_results_html js hook. Add new property - translate
-* Dev - Add aws_search_tax_result_item filter
-
-= 2.86 ( 2023-08-21 ) =
-* Update - Tested with WC 8.0
-* Update - Integration with WCFM plugin. Speed up SQL queries inside the vendor shop page
-* Fix - Attributes filters for search results
-* Fix - Search terms tracking for GA4. Update tracking code
-* Dev - Update aws_reindex_product action. Allow to use array of IDs as parameter
-
-= 2.85 ( 2023-08-07 ) =
-* Update - Special characters scrapping. Replace comma char with space
-* Fix - Bug with search form inside WCFM plugin vendor shop page
-
-= 2.84 ( 2023-07-24 ) =
-* Add - Support for ShopEngine plugin
-* Update - Support for GeneratePress theme
-* Update - Tested with WC 7.9
-* Dev - Add aws_pre_normalize_string filter
-
-
-= 2.83 ( 2023-07-10 ) =
-* Add - Support for WooCommerce Product Bundles plugin
-* Add - Support for Bricks Builder theme
-* Fix - Bug with block editor search module
-* Fix - Bug when searching for products with multiplication sign
-
-= 2.82 ( 2023-06-26 ) =
-* Add - Support for Blocksy theme
-* Update - Tested with WC 7.8
-
-= 2.81 ( 2023-06-12 ) =
-* Fix - FacetWP plugin issue with pagination
-
-= 2.80 ( 2023-05-29 ) =
-* Add - Support for WP Bottom Menu plugin
-
-= 2.79 ( 2023-05-15 ) =
-* Add - Support for WooCommerce custom orders tables
-* Update - Tested with WC 7.7
-* Update - Taxonomies pages search. Fix terms normalization
-* Fix - FacetWP plugin integration issue with pagination
-* Fix - Relevance score calculation for one letter words
-
-= 2.78 ( 2023-04-28 ) =
-* Update - Support for WCFM plugin. Fix search inside vendor shop page
-* Update - Support for Elementor popups
-* Update - Support for Divi theme
-* Update - Support for Google Analytics
-* Fix - Escaping of html entities for admin options
-* Fix - Bug with WPML plugin that indexed child products
-
-= 2.77 ( 2023-04-17 ) =
-* Update - Tested with WC 7.6
-* Update - FacetWP plugin integration
-
-= 2.76 ( 2023-04-03 ) =
-* Add - New option to execute or not shortcodes inside the product content

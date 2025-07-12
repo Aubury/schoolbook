@@ -603,25 +603,54 @@ body.rtl .woosw-list .woosw-share .woosw-share-label, body.rtl .woosw-list .woos
   margin-left: 10px;
 }
 
-.woosw-menu-item .woosw-menu-item-inner {
-  position: relative;
+.woosw-link {
+  a {
+    color: inherit;
+  }
+
+  .woosw-link-inner {
+    position: relative;
+
+    &:after {
+      content: attr(data-count);
+      display: block;
+      background-color: #e94b35;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 400;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      text-align: center;
+      border-radius: 8px;
+      position: absolute;
+      top: -10px;
+      right: -10px;
+    }
+  }
 }
 
-.woosw-menu-item .woosw-menu-item-inner:after {
-  content: attr(data-count);
-  display: block;
-  background-color: #e94b35;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 400;
-  width: 16px;
-  height: 16px;
-  line-height: 16px;
-  text-align: center;
-  border-radius: 8px;
-  position: absolute;
-  top: -10px;
-  right: -10px;
+.woosw-menu-item {
+  .woosw-menu-item-inner {
+    position: relative;
+
+    &:after {
+      content: attr(data-count);
+      display: block;
+      background-color: #e94b35;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 400;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      text-align: center;
+      border-radius: 8px;
+      position: absolute;
+      top: -10px;
+      right: -10px;
+    }
+  }
 }
 
 .woosw-icon {

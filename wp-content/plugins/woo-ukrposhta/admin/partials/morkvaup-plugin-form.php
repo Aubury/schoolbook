@@ -24,7 +24,12 @@ $tbearer = $sender->tbearer;
 $token = $sender->token;
 
 if ( empty( $bearer ) || empty( $token ) ) {
-    wp_redirect('admin.php?page=morkvaup_plugin&credentials=not_found');
+
+    $redirect_url = wp_nonce_url(
+        'admin.php?page=morkvaup_plugin&credentials=not_found',
+        'morkvaup_plugin_credentials_action'
+    );
+    wp_redirect($redirect_url);
 }
 
 $message = ''; // Invoice status messages
@@ -36,6 +41,8 @@ $order_id = $invoiceOrder->order_id;
 $order_data = $invoiceOrder->getOrderData();
 $weight = $invoiceOrder->getWeight(); // TODO
 $length = $invoiceOrder->getLength();
+$sizes_height = $invoiceOrder->getHeight();
+$sizes_width = $invoiceOrder->getWidth();
 
 $ukrposhtaApi = new UkrposhtaApiClass($bearer, $token, $tbearer);
 if ( isset( $_POST['morkvaup_checkforminputs'] ) ) { // Аfter `Створити` button clicked
@@ -51,9 +58,24 @@ if ( isset( $_POST['morkvaup_checkforminputs'] ) ) { // Аfter `Створити
     $recipientClient = $recipient->createClient( $recipientAddrId );
     $message .= $invoiceController->displayRequestNotice( $recipientClient );
 
-    // Create Invoice
-    $invoice = $ukrposhtaApi->modelShipmentsPost( $invoiceController->createInvoiceRequest( $senderClient, $senderAddrId, $recipientClient ) );
-    $message .= $invoiceController->displayRequestNotice( $invoice );
+    if (isset($_POST['mrkv_up_my_form_nonce'])) {
+        // Remove escaping from input data
+        $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+        // Verify the nonce to ensure the request is valid
+        if (wp_verify_nonce($nonce, 'mrkv_up_form_action')) {
+            // Create an invoice
+            $invoice = $ukrposhtaApi->modelShipmentsPost(
+                $invoiceController->createInvoiceRequest($senderClient, $senderAddrId, $recipientClient)
+            );
+
+            // Display a success or error notice
+            $message .= $invoiceController->displayRequestNotice($invoice);
+        } else {
+            // Handle nonce verification failure
+            $message .= 'Nonce verification failed.';
+        }
+    }
 }
 
 // Save info about new invoice in DB

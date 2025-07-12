@@ -86,6 +86,9 @@ AwsHooks.filters = AwsHooks.filters || {};
             searchRequest: function() {
 
                 if ( ! d.ajaxSearch ) {
+                    if ( searchFor !== '' ) {
+                        methods.showResultsBlock();
+                    }
                     return;
                 }
 
@@ -179,6 +182,40 @@ AwsHooks.filters = AwsHooks.filters || {};
                         $.each(response.data.notices, function (i, notice) {
                             html += '<div class="aws_top_text">' + notice + '</div>';
                         });
+                    }
+
+                    if ( typeof response.data.top_results !== 'undefined' ) {
+
+                        $.each(response.data.top_results, function (i, topResults) {
+
+                            var topResultsName = i;
+
+                            if ( ( typeof topResults !== 'undefined' ) && topResults.length > 0 ) {
+
+                                $.each(topResults, function (i, topResult) {
+
+                                    var linkData = ( typeof topResult.link_data !== 'undefined' ) ? topResult.link_data : '';
+
+                                    html += '<li class="aws_result_item aws_result_top_custom_item aws_result_top_custom_item_' + topResultsName + '" style="position:relative;">';
+                                        html += '<div class="aws_result_link">';
+                                            html += '<a class="aws_result_link_top" ' + linkData + ' href="' + topResult.link + '">' + topResult.name + '</a>';
+                                            html += '<span class="aws_result_content">';
+                                                html += '<span class="aws_result_title">';
+                                                    html += topResult.name;
+                                                html += '</span>';
+                                                if ( ( typeof topResult.content !== 'undefined' ) && topResult.content ) {
+                                                    html += '<span class="aws_result_excerpt">' + topResult.content + '</span>';
+                                                }
+                                            html += '</span>';
+                                        html += '</div>';
+                                    html += '</li>';
+
+                                });
+
+                            }
+
+                        });
+
                     }
 
                 }
@@ -285,7 +322,12 @@ AwsHooks.filters = AwsHooks.filters || {};
                 }
 
                 if ( ! resultNum ) {
+
+                    /* from 3.32 */
+                    methods.createAndDispatchEvent( document, 'awsNoResults', { term: searchFor, instance: instance, form: self, data: d } );
+
                     html += '<li class="aws_result_item aws_no_result">' + translate.noresults + '</li>';
+
                 }
 
 
@@ -425,7 +467,7 @@ AwsHooks.filters = AwsHooks.filters || {};
 
             },
 
-            forceNewSearch: function ( term ) {
+            forceNewSearch: function ( term, submit ) {
 
                 if ( term && term !== '' ) {
 
@@ -435,7 +477,7 @@ AwsHooks.filters = AwsHooks.filters || {};
                     window.setTimeout(function(){
                         methods.searchRequest();
                         $searchField.focus();
-                        if ( ! d.ajaxSearch ) {
+                        if ( submit || ! d.ajaxSearch ) {
                             $searchForm.submit();
                         }
                     }, 50);
@@ -659,7 +701,7 @@ AwsHooks.filters = AwsHooks.filters || {};
         });
 
         $searchField.on( 'aws_search_force', function (e, term) {
-            methods.forceNewSearch( term );
+            methods.forceNewSearch( term, false );
         });
 
         $searchForm.on( 'keypress', function(e) {
@@ -741,7 +783,8 @@ AwsHooks.filters = AwsHooks.filters || {};
         $( d.resultBlock ).on( 'click', '[data-aws-term-submit]', function(e) {
             e.preventDefault();
             var term = $(this).data('aws-term-submit');
-            methods.forceNewSearch( term );
+            var submit = $(this).data('aws-term-submit-form') ? true : false;
+            methods.forceNewSearch( term, submit );
         });
 
         $( self ).on( 'click', '.aws-mobile-fixed-close', function(e) {

@@ -27,11 +27,11 @@ class InvoiceOrder
 	public function getOrderId()
 	{
 		if ( isset($_SESSION['order_id'] ) ) {
-			$order_id = $_SESSION['order_id'];
+			$order_id = isset($_SESSION['order_id']) ? intval($_SESSION['order_id']) : 0;
 			return $order_id;
 		}
 		if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-			$referer_url = parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_QUERY );
+			$referer_url = wp_parse_url( esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ), PHP_URL_QUERY );
 			parse_str( $referer_url, $query_url_arr );
 			if ( ! empty( $query_url_arr['post'] ) ) {
 				$_SESSION['order_id'] = $query_url_arr['post'];
@@ -39,6 +39,31 @@ class InvoiceOrder
 				return $order_id;
 			}
 		}
+
+		if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                if ( isset( $_GET['order_up_id'] ) ) {
+				    return sanitize_text_field( wp_unslash( $_GET['order_up_id'] ) );
+				}
+            }
+        }
+
+        if (isset($_GET['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_GET['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                if ( isset( $_GET['order_up_id'] ) ) {
+				    return sanitize_text_field( wp_unslash( $_GET['order_up_id'] ) );
+				}
+            }
+        }
+		
 		return null;
 	}
 
@@ -69,13 +94,23 @@ class InvoiceOrder
 	}
 
 	public function translateUnitWeightName() {
-		return __( get_option( 'woocommerce_weight_unit' ), 'woocommerce' );
+		return get_option( 'woocommerce_weight_unit' );
 	}
 
 	public function getWeight()
 	{
 		$wp_option_weight = $this->getWPOptionWeight();
-		$invoiceCargoMass = isset( $_POST['invoice_cargo_mass'] ) ? \sanitize_text_field( $_POST['invoice_cargo_mass'] ) : 0;
+		$invoiceCargoMass = 0;
+		if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $invoiceCargoMass = isset( $_POST['invoice_cargo_mass'] ) ? \sanitize_text_field( wp_unslash( $_POST['invoice_cargo_mass'] ) ) : 0;
+            }
+        }
+
 		$order_weight = $this->getOrderWeight();
 		$weight = 0;
 		if ( $invoiceCargoMass > 0 ) {
@@ -100,7 +135,19 @@ class InvoiceOrder
 	{
 		$dimension_unit = \get_option( 'woocommerce_dimension_unit' ); // Одиниця виміру розмірів встановлена на сайті (м, см, мм, ...)
 		$wp_option_lenght = $this->getWPOptionLength();
-		$input_length = isset( $_POST['invoice_volume'] ) ? intval( ceil( floatval( \sanitize_text_field( $_POST['invoice_volume'] ) ) ) ) : 0;
+
+		$input_length = 0;
+
+		if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $input_length = isset( $_POST['invoice_volume'] ) ? intval( ceil( floatval( \sanitize_text_field( wp_unslash( $_POST['invoice_volume'] ) ) ) ) ) : 0;
+            }
+        }
+
 		$length_max = $this->getOrderMaxSizeCm( $this->order_data );
 		if ( $input_length > 0 ) {
 		    $length = $input_length;
@@ -120,24 +167,100 @@ class InvoiceOrder
 			?  \sanitize_text_field( esc_attr( get_option( 'mrkvup_default_order_length ') ) ) : 0;
 	}
 
+	public function getHeight()
+	{
+		$dimension_unit = \get_option( 'woocommerce_dimension_unit' ); // Одиниця виміру розмірів встановлена на сайті (м, см, мм, ...)
+		$wp_option_lenght = $this->getWPOptionHeight();
+
+		$input_length = 0;
+
+		if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $input_length = isset( $_POST['invoice_volume_height'] ) ? intval( ceil( floatval( \sanitize_text_field( wp_unslash( $_POST['invoice_volume_height'] ) ) ) ) ) : 0;
+            }
+        }
+
+		$length_max = $this->getOrderMaxSizeCm( $this->order_data );
+		if ( $input_length > 0 ) {
+		    $length = $input_length;
+		} elseif ( $wp_option_lenght > 0 ) {
+		    $length = $wp_option_lenght;
+		} elseif ( \wc_get_dimension( $length_max, 'cm', $dimension_unit ) > 0 ) {
+		    $length = \wc_get_dimension( $length_max, 'cm', $dimension_unit );
+		} else {
+		    $length = 0;
+		}
+		return $length;
+	}
+
+	public function getWPOptionHeight()
+	{
+		return ! empty(get_option( 'mrkvup_default_order_height') )
+			?  \sanitize_text_field( esc_attr( get_option( 'mrkvup_default_order_height ') ) ) : 0;
+	}
+
+	public function getWidth()
+	{
+		$dimension_unit = \get_option( 'woocommerce_dimension_unit' ); // Одиниця виміру розмірів встановлена на сайті (м, см, мм, ...)
+		$wp_option_lenght = $this->getWPOptionWidth();
+
+		$input_length = 0;
+
+		if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $input_length = isset( $_POST['invoice_volume_width'] ) ? intval( ceil( floatval( \sanitize_text_field( wp_unslash( $_POST['invoice_volume_width'] ) ) ) ) ) : 0;
+            }
+        }
+
+		$length_max = $this->getOrderMaxSizeCm( $this->order_data );
+		if ( $input_length > 0 ) {
+		    $length = $input_length;
+		} elseif ( $wp_option_lenght > 0 ) {
+		    $length = $wp_option_lenght;
+		} elseif ( \wc_get_dimension( $length_max, 'cm', $dimension_unit ) > 0 ) {
+		    $length = \wc_get_dimension( $length_max, 'cm', $dimension_unit );
+		} else {
+		    $length = 0;
+		}
+		return $length;
+	}
+
+	public function getWPOptionWidth()
+	{
+		return ! empty(get_option( 'mrkvup_default_order_width') )
+			?  \sanitize_text_field( esc_attr( get_option( 'mrkvup_default_order_width') ) ) : 0;
+	}
+
 	public function getOrderWeight()
 	{
 		if ( ! isset( $this->order_id ) ) return;
 		$order_weight = 0;
 		foreach( $this->order_data->get_items() as $item => $value ) {
+
+			$product_weight = 0;
 	        if ( $value->get_product_id() > 0 ) {
 	            $_product = $value->get_product();
                 if ( ! $_product->is_virtual() ) {
-                    $order_weight += floatval( $_product->get_weight() ) * intval( $value->get_quantity() );
+                    $product_weight = floatval( $_product->get_weight() ) * intval( $value->get_quantity() );
                 }
 				if (  $_product->get_parent_id() ) {
 					if ( $value->get_variation_id() > 0) {
 						$variation_id = $value->get_variation_id();
 						$variation = wc_get_product($variation_id);
-						$order_weight += floatval( $variation->get_weight() ) * intval( $value->get_quantity() );
+						$product_weight = floatval( $variation->get_weight() ) * intval( $value->get_quantity() );
 					}
                 }
 	        }
+
+	        $order_weight += $product_weight;
         }
 		return $order_weight;
 	}
@@ -232,7 +355,18 @@ class InvoiceOrder
 
 	public function getShipmentType() // // 'EXPRESS' or 'STANDART'?
 	{
-		return isset( $_POST['sendtype'] ) ? $_POST['sendtype'] : \sanitize_text_field( get_option( ' sendtype' ) );
+		$sendtype = \sanitize_text_field( get_option( ' sendtype' ) );
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $sendtype = isset( $_POST['sendtype'] ) ? \sanitize_text_field( wp_unslash( $_POST['sendtype'] ) ) : \sanitize_text_field( get_option( 'sendtype' ) );
+            }
+        }
+		return $sendtype;
 	}
 
 	public function isPaidByRecipient()
@@ -240,46 +374,120 @@ class InvoiceOrder
 		$paidByRecipient = false;
 		$paidByRecipient = ( 'mrkvup_recipient' == \sanitize_text_field( get_option( 'morkva_ukrposhta_default_payer' ) ) )
 			? true : false;
-		if ( isset( $_POST['mrkvup_default_payer'] ) ) {
-		    $paidByRecipient = ( 'mrkvup_recipient' == \sanitize_text_field( $_POST['mrkvup_default_payer'] ) ) ? true : false;
-		}
+
+		if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                if ( isset( $_POST['mrkvup_default_payer'] ) ) {
+				    $paidByRecipient = ( 'mrkvup_recipient' == \sanitize_text_field( wp_unslash( $_POST['mrkvup_default_payer'] ) ) ) ? true : false;
+				}
+            }
+        }
+
 		return $paidByRecipient;
 	}
 
 	public function getDescription()
 	{
-		return isset( $_POST['up_invoice_description'] )
-			? \sanitize_textarea_field( $_POST['up_invoice_description'] )
-			: \sanitize_textarea_field( get_option( 'up_invoice_description' ) );
+		$up_invoice_description = \sanitize_textarea_field( get_option( 'up_invoice_description' ));
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $up_invoice_description = isset( $_POST['up_invoice_description'] )
+				    ? sanitize_textarea_field( wp_unslash( $_POST['up_invoice_description'] ) )
+				    : sanitize_textarea_field( get_option( 'up_invoice_description' ) );
+            }
+        }
+		return $up_invoice_description;
 	}
 
 	public function getOnFailReceveType()
 	{
-		return isset( $_POST['onFailReceiveType'] ) ? $_POST['onFailReceiveType'] : 'RETURN';
+		$onFailReceiveType = 'RETURN';
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $onFailReceiveType = isset( $_POST['onFailReceiveType'] ) ? sanitize_text_field( wp_unslash( $_POST['onFailReceiveType'] ) ) : 'RETURN';
+            }
+        }
+		return $onFailReceiveType;
 	}
 
 	public function getPostPay()
 	{
-		return isset( $_POST['invoice_places'] ) ? \sanitize_text_field( $_POST['invoice_places'] ) : 0;
+		$invoice_places = 0;
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $invoice_places = isset( $_POST['invoice_places'] ) ? sanitize_text_field( wp_unslash( $_POST['invoice_places'] ) ) : 0;
+            }
+        }
+		return $invoice_places;
 	}
 
 	public function getDeclaredPrice()
 	{
-		return isset( $_POST['declaredPrice'] ) ? floatval( \sanitize_text_field( $_POST['declaredPrice'] ) ) : 0;
+		$declaredPrice = 0;
+
+        if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action'))
+            {
+                $declaredPrice = isset( $_POST['declaredPrice'] ) ? floatval( sanitize_text_field( wp_unslash( $_POST['declaredPrice'] ) ) ) : 0;
+            }
+        }
+		return $declaredPrice;
 	}
 
 	public function isShowSenderBankAccountOnSticker()
 	{
+		$declared_price = '';
+
+		if (isset($_POST['mrkv_up_my_form_nonce'])) {
+            // Remove escaping from input data
+            $nonce = sanitize_text_field(wp_unslash($_POST['mrkv_up_my_form_nonce']));
+
+            if(wp_verify_nonce($nonce, 'mrkv_up_form_action') && isset($_POST['declaredPrice']))
+            {
+                $declared_price = sanitize_text_field(wp_unslash($_POST['declaredPrice']));
+            }
+            else
+            {
+            	return false;
+            }
+        }
+
 	    $sender = new Sender();
 	    $sender_type = $sender->getType();
 	    $shipment_type = $this->getShipmentType();
-	    if ( ('STANDARD' == $shipment_type || 'EXPRESS' == $shipment_type) &&
-	        ( 'COMPANY' == $sender_type || 'PRIVATE_ENTREPRENEUR' == $sender_type ) &&
-	        $_POST['declaredPrice'] && $this->order_data->get_payment_method() == 'cod' ) {
-	       return $transferPostPayToBankAccount = get_option( 'morkva_ukrposhta_transfer_postpay_to_sender_bank_account' ) ? true : false;
-	   } else {
-	       return $transferPostPayToBankAccount = false;
-	   }
+
+	    if (
+	        ('STANDARD' === $shipment_type || 'EXPRESS' === $shipment_type) &&
+	        ('COMPANY' === $sender_type || 'PRIVATE_ENTREPRENEUR' === $sender_type) &&
+	        $declared_price &&
+	        $this->order_data->get_payment_method() === 'cod'
+	    ) {
+	        return get_option('morkva_ukrposhta_transfer_postpay_to_sender_bank_account') ? true : false;
+	    } else {
+	        return false;
+	    }
 	}
 
 	// Function group for get shipping filds values if billing fields values are empty
@@ -348,7 +556,7 @@ class InvoiceOrder
 
 	public function displayDetailedAddress()
 	{
-		echo $this->getShippingAddress_1() . ' ' . $this->getShippingAddress_2() . ', ' . $this->getShippingPostcode();
+		echo esc_html($this->getShippingAddress_1()) . ' ' . esc_html($this->getShippingAddress_2()) . ', ' . esc_html($this->getShippingPostcode());
 	}
 
 }

@@ -12,7 +12,13 @@
     </div>
 <?php } else { ?>
     <div id="setting-error-settings_updated" class="error settings-error notice">
-    <p style="color:red"><strong><?php _e('This is Pro Feature of Advanced File Manager, Please Buy <a href="https://advancedfilemanager.com/pricing" target="_blank">Advanced File Manager Shortcode</a> Addon to make shortcode work for frontend. <a href="https://advancedfilemanager.com/pricing" target="_blank" class="button button-primary">Buy Now</a>','file-manager-advanced')?></strong></p>
+    <p style="color:red">
+        <strong>
+            <?php
+            _e( 'This is Pro Feature of Advanced File Manager, Please Buy <a href="https://advancedfilemanager.com/pricing/?utm_source=plugin&utm_medium=shortcodes_screen_top_button&utm_campaign=plugin" target="_blank">Advanced File Manager Pro</a> Addon to make shortcode work for frontend. <a href="https://advancedfilemanager.com/pricing/?utm_source=plugin&utm_medium=shortcodes_screen_top_button&utm_campaign=plugin" target="_blank" class="button button-primary">Get AFM Pro</a>', 'file-manager-advanced' );
+            ?>
+        </strong>
+    </p>
     </div>
 <h3><?php _e('Shortcode Addon Demo:', 'file-manager-advanced'); ?></h3>
 <p><?php _e('If you want to check the demo of shortcode addon then click on link given below.', 'file-manager-advanced');?></p>

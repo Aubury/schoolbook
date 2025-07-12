@@ -15,24 +15,58 @@
 use deliveryplugin\Ukrposhta\classes\invoice\InvoiceController;
 
 ?>
-<script src="<?php echo MUP_PLUGIN_URL . 'admin/js/script.js'; ?>"></script>
-<link rel="stylesheet" href="<?php echo MUP_PLUGIN_URL . 'admin/css/style.css'; ?>"/>
 
 <?php
+	function enqueue_custom_admin_scripts_and_styles_footer() 
+	{
+
+	$style_version = filemtime(MORKVA_UKRPOSHTA_PLUGIN_DIR . 'admin/css/style.css'); 
+    $script_version = filemtime(MORKVA_UKRPOSHTA_PLUGIN_DIR . 'admin/js/script.js');
+
+    wp_enqueue_style(
+        'custom-admin-style',
+        MORKVA_UKRPOSHTA_PLUGIN_URL . 'admin/css/style.css', 
+        array(), 
+        $style_version, 
+        'all' 
+    );
+
+   
+    wp_enqueue_script(
+        'custom-admin-script', 
+        MORKVA_UKRPOSHTA_PLUGIN_URL . 'admin/js/script.js', 
+        array(), 
+        $script_version,
+        true
+    );
+}
+add_action('admin_footer', 'enqueue_custom_admin_scripts_and_styles_footer');
+
     $invoiceController = new InvoiceController();
     $invoiceController->displayNav(); ?>
 
 <div class="container">
 	<div class="row">
-		<h1 style="font-size:23px;font-weight:400;line-height:1.3;"><?php echo 'Плагін Woo ' . MUP_PLUGIN_NAME; ?></h1>
+		<h1 style="font-size:23px;font-weight:400;line-height:1.3;"><?php echo esc_html('Плагін Woo ' . MUP_PLUGIN_NAME); ?></h1>
 		<?php settings_errors(); ?>
 		<hr>
 
-	    <?php if ( isset( $_GET['credentials'] ) ) : ?>
-	    	<div class="error">
-				<p><strong>Помилка</strong>: Ключі API укрпошти відсуnні</p>
-			</div>
-	    <?php endif; ?>
+	    <?php 
+	    	if (isset($_GET['_wpnonce'])) {
+	            // Remove escaping from input data
+	            $nonce = sanitize_text_field(wp_unslash($_GET['_wpnonce']));
+
+	            if(wp_verify_nonce($nonce, 'morkvaup_plugin_credentials_action'))
+	            {
+	                if ( isset( $_GET['credentials'] ) ){
+	                	?>
+	                		<div class="error">
+								<p><strong>Помилка</strong>: Ключі API укрпошти відсуnні</p>
+							</div>
+	                	<?php
+	                }
+	            }
+	        } ?>
 
 		<div class="settingsgrid">
 			<div class="w70">

@@ -16,8 +16,8 @@ class OptionsRepository
       'morkva_ukrposhta_up_placeholder_area'       => 'Область',
       'morkva_ukrposhta_up_placeholder_city'       => 'Місто доставки',
       'morkva_ukrposhta_up_placeholder_warehouse'  => 'Індекс відділення',
-      'morkva_ukrposhta_up_address_title'          => esc_html__('Доставка на адресу', 'woo-ukrposhta-pro'),
-      'morkva_ukrposhta_up_address_placeholder'    => esc_html__('Введіть адресу доставки', 'woo-ukrposhta-pro'),
+      'morkva_ukrposhta_up_address_title'          => esc_html__('Доставка на адресу', 'woo-ukrposhta'),
+      'morkva_ukrposhta_up_address_placeholder'    => esc_html__('Введіть адресу доставки', 'woo-ukrposhta'),
       'morkva_ukrposhta_up_block_pos'              => get_option( 'mrkvup_checkout_fields_position' ) ?? 'billing'
     ];
 

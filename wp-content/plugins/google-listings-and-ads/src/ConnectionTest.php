@@ -17,12 +17,18 @@ use Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Connection;
 use Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Merchant;
 use Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Middleware;
 use Automattic\WooCommerce\GoogleListingsAndAds\API\WP\NotificationsService;
+use Automattic\WooCommerce\GoogleListingsAndAds\HelperTraits\GTINMigrationUtilities;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Registerable;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service;
+use Automattic\WooCommerce\GoogleListingsAndAds\Internal\ContainerAwareTrait;
+use Automattic\WooCommerce\GoogleListingsAndAds\Internal\Interfaces\ContainerAwareInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\CleanupProductsJob;
 use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\DeleteAllProducts;
+use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobRepository;
+use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\MigrateGTIN;
 use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\UpdateAllProducts;
 use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\UpdateProducts;
+use Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\AccountService;
 use Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService;
 use Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantStatuses;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\AdsAccountState;
@@ -32,30 +38,17 @@ use Automattic\WooCommerce\GoogleListingsAndAds\Product\BatchProductHelper;
 use Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductRepository;
 use Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductSyncer;
 use Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductSyncerException;
-use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Psr\Container\ContainerInterface;
 use Jetpack_Options;
 use WP_REST_Request as Request;
 
 /**
  * Main class for Connection Test.
  */
-class ConnectionTest implements Service, Registerable {
+class ConnectionTest implements ContainerAwareInterface, Service, Registerable {
 
+	use ContainerAwareTrait;
+	use GTINMigrationUtilities;
 	use PluginHelper;
-
-	/**
-	 * @var ContainerInterface
-	 */
-	protected $container;
-
-	/**
-	 * ConnectionTest constructor.
-	 *
-	 * @param ContainerInterface $container
-	 */
-	public function __construct( ContainerInterface $container ) {
-		$this->container = $container;
-	}
 
 	/**
 	 * Register a service.
@@ -499,6 +492,19 @@ class ConnectionTest implements Service, Registerable {
 										<?php endforeach; ?>
 										)
 									</p>
+									<?php
+										$conversion_action = $options->get( OptionsInterface::ADS_CONVERSION_ACTION );
+										if ( ! empty( $conversion_action ) && is_array( $conversion_action ) ) :
+									?>
+									<p class="description" style="font-style: italic">
+										( Conversion Action --
+										<?php foreach ( $conversion_action as $name => $value ) : ?>
+											<?php echo "{$name} : \"{$value}\""; ?>
+										<?php endforeach; ?>
+										)
+									</p>
+									<?php endif; ?>
+									<br/>
 								<?php endif; ?>
 								<p class="description">
 									Begins/continues a multistep account-setup sequence.
@@ -644,6 +650,21 @@ class ConnectionTest implements Service, Registerable {
 					<input name="page" value="connection-test-admin-page" type="hidden" />
 					<input name="action" value="wcs-cleanup-products" type="hidden" />
 				</form>
+				<form action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" method="GET">
+					<table class="form-table" role="presentation">
+						<tr>
+							<th><label>GTIN Migration:</label></th>
+							<td>
+								<p>
+									<code><?php echo $this->get_gtin_migration_status(); ?></code>
+								</p>
+								<p>
+									<a class="button" href="<?php echo esc_url( wp_nonce_url( add_query_arg( [ 'action' => 'migrate-gtin' ], $url ), 'migrate-gtin' ) ); ?>">Start GTIN Migration</a>
+								</p>
+							</td>
+						</tr>
+					</table>
+				</form>
 			<?php } ?>
 
 			<hr />
@@ -652,7 +673,7 @@ class ConnectionTest implements Service, Registerable {
 				<?php
 				  $options = $this->container->get( OptionsInterface::class );
 				  $wp_api_status = $options->get( OptionsInterface::WPCOM_REST_API_STATUS );
-				  $notification_service = new NotificationsService( $this->container->get( MerchantCenterService::class ) );
+				  $notification_service = new NotificationsService( $this->container->get( MerchantCenterService::class ), $this->container->get( AccountService::class ) );
 				  $notification_service->set_options_object( $options );
 				?>
 				<h2 class="title">Partner API Pull Integration</h2>
@@ -762,7 +783,7 @@ class ConnectionTest implements Service, Registerable {
 								<th><label>Errors:</label></th>
 								<td>
 									<p>
-										<code><?php echo isset( $this->integration_status_response['errors'] ) ? wp_kses_post( json_encode( $this->integration_status_response['errors'] ) ) ?? '' : '-'; ?></code>
+										<code><?php echo isset( $this->integration_status_response['errors'] ) ? wp_kses_post( wp_json_encode( $this->integration_status_response['errors'] ) ) ?? '' : '-'; ?></code>
 									</p>
 								</td>
 							</tr>
@@ -839,6 +860,8 @@ class ConnectionTest implements Service, Registerable {
 			/** @var OptionsInterface $options */
 			$options = $this->container->get( OptionsInterface::class );
 			$this->response .= "\n\n" . 'Saved Connection option = ' . ( $options->get( OptionsInterface::JETPACK_CONNECTED ) ? 'connected' : 'disconnected' );
+
+			$this->response .= "\n\n" . 'Connected plugins: ' . implode( ', ', array_column( $manager->get_connected_plugins(), 'name' ) ) . "\n";
 		}
 
 		if ( 'wcs-test' === $_GET['action'] && check_admin_referer( 'wcs-test' ) ) {
@@ -865,7 +888,7 @@ class ConnectionTest implements Service, Registerable {
 			$mc    = $this->container->get( MerchantCenterService::class );
 			/** @var OptionsInterface $options */
 			$options = $this->container->get( OptionsInterface::class );
-			$service = new NotificationsService( $mc );
+			$service = new NotificationsService( $mc, $this->container->get( AccountService::class ) );
 			$service->set_options_object( $options );
 
 			if ( $service->notify( $topic, $item ) ) {
@@ -892,6 +915,11 @@ class ConnectionTest implements Service, Registerable {
 				$this->response .= $integration_remote_request_response->get_error_message();
 			} else {
 				$this->integration_status_response = json_decode( wp_remote_retrieve_body( $integration_remote_request_response ), true ) ?? [];
+
+				// If the merchant isn't connected to the Google App, it's not necessary to display an error indicating that the partner token isn't associated.
+				if ( ! $this->integration_status_response['is_partner_token_healthy'] && isset( $this->integration_status_response['errors'] ['rest_api_partner_token']['error_code'] ) && $this->integration_status_response['errors'] ['rest_api_partner_token']['error_code'] === 'wpcom_partner_token_not_associated' ) {
+					unset( $this->integration_status_response['errors'] ['rest_api_partner_token'] );
+				}
 
 				if ( json_last_error() || ! isset( $this->integration_status_response['site'] ) ) {
 					$this->response .= wp_remote_retrieve_body( $integration_remote_request_response );
@@ -1211,7 +1239,7 @@ class ConnectionTest implements Service, Registerable {
 				} else {
 					// schedule a job
 					/** @var UpdateProducts $update_job */
-					$update_job = $this->container->get( UpdateProducts::class );
+					$update_job = $this->container->get( JobRepository::class )->get( UpdateProducts::class );
 					$update_job->schedule( [ [ $product->get_id() ] ] );
 					$this->response = 'Successfully scheduled a job to sync the product ' . $product->get_id();
 				}
@@ -1245,7 +1273,7 @@ class ConnectionTest implements Service, Registerable {
 			} else {
 				// schedule a job
 				/** @var UpdateAllProducts $update_job */
-				$update_job = $this->container->get( UpdateAllProducts::class );
+				$update_job = $this->container->get( JobRepository::class )->get( UpdateAllProducts::class );
 				$update_job->schedule();
 				$this->response = 'Successfully scheduled a job to sync all products!';
 			}
@@ -1276,7 +1304,7 @@ class ConnectionTest implements Service, Registerable {
 			} else {
 				// schedule a job
 				/** @var DeleteAllProducts $delete_job */
-				$delete_job = $this->container->get( DeleteAllProducts::class );
+				$delete_job = $this->container->get( JobRepository::class )->get( DeleteAllProducts::class );
 				$delete_job->schedule();
 				$this->response = 'Successfully scheduled a job to delete all synced products!';
 			}
@@ -1310,11 +1338,19 @@ class ConnectionTest implements Service, Registerable {
 			} else {
 				// schedule a job
 				/** @var CleanupProductsJob $delete_job */
-				$delete_job = $this->container->get( CleanupProductsJob::class );
+				$delete_job = $this->container->get( JobRepository::class )->get( CleanupProductsJob::class );
 				$delete_job->schedule();
 				$this->response = 'Successfully scheduled a job to cleanup all products!';
 			}
 		}
+
+		if ( 'migrate-gtin' === $_GET['action'] && check_admin_referer( 'migrate-gtin' ) ) {
+			/** @var MigrateGTIN $job */
+			$job = $this->container->get( JobRepository::class )->get( MigrateGTIN::class );
+			$job->schedule();
+			$this->response = 'Successfully scheduled a job to migrate GTIN';
+		}
+
 
 	}
 

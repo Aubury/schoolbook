@@ -32,7 +32,9 @@ class InvoiceController
 	public function isOrdersReferer()
 	{
 		if ( isset( $_SERVER['HTTP_REFERER'] ) ) {
-			$referer_url = parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_QUERY );
+			$referer_url = isset($_SERVER['HTTP_REFERER']) ? esc_url_raw(wp_unslash($_SERVER['HTTP_REFERER'])) : '';
+			$parsed_url = wp_parse_url($referer_url);
+			$referer_url = isset($parsed_url['query']) ? $parsed_url['query'] : '';
 			parse_str( $referer_url, $query_url_arr );
 			if ( ! empty( $query_url_arr['post'] ) && 'edit' == $query_url_arr['action'] ) {
 				return true;
@@ -85,12 +87,13 @@ class InvoiceController
 	    	"parcels"			=> array( array(
 	    		"weight"			=> $invoiceOrder->getWeight(),
 	    		"length"			=> $invoiceOrder->getLength(),
+	    		"height"			=> $invoiceOrder->getHeight(),
+	    		"width"			    => $invoiceOrder->getWidth(),
 	    		"declaredPrice" 	=> $invoiceOrder->getDeclaredPrice(),
 	    )),
 	    "checkOnDelivery"	=> true,
 	    "transferPostPayToBankAccount" => $invoiceOrder->isShowSenderBankAccountOnSticker()
 	    );
-		error_log('$invoice_arr MorkvaUP');error_log(print_r($invoice_arr,1));
 	    return $invoice_arr;
 	}
 
@@ -109,27 +112,31 @@ class InvoiceController
 		);
 
 		echo "<nav class=\"newnaw nav-tab-wrapper woo-nav-tab-wrapper\">";
-		$tab = $_GET['page'];
-		for( $i=0; $i<sizeof( $tabs ); $i++ ) {
-			$echoclass = 'nav-tab';
-			if ( $tab == $tabs[$i]['slug']) {
-				$echoclass = 'nav-tab-active nav-tab';
+		$screen = get_current_screen();
+
+		if ($screen) {
+			$tab = str_replace('toplevel_page_', '', $screen->id);
+			for( $i=0; $i<sizeof( $tabs ); $i++ ) {
+				$echoclass = 'nav-tab';
+				if ( $tab == $tabs[$i]['slug']) {
+					$echoclass = 'nav-tab-active nav-tab';
+				}
+				echo '<a href=admin.php?page='.esc_html($tabs[$i]['slug']) .' class="'.esc_html($echoclass).'">'.esc_html($tabs[$i]['label']).'</a>';
 			}
-			echo '<a href=admin.php?page='.$tabs[$i]['slug'].' class="'.$echoclass.'">'.$tabs[$i]['label'].'</a>';
 		}
 		echo "</nav>";
 	}
 
 	public function displaySuccessNotice($invoice)
 	{
-		echo '<h3>Відправлення ' . $invoice['barcode'] . ' успішно створене!</h3><p>';
-		echo 'Тип відправлення: ' . $invoice['type'] . '<br>';
-		echo 'Відправник: ' . $invoice['sender']['name'] . '</br>';
-		echo 'Адреса відправлення: '. $invoice['sender']['addresses'][0]['address']['postcode'] . ' ';
-		echo $invoice['sender']['addresses'][0]['address']['detailedInfo'] . '<br>';
-		echo 'Одержувач: ' . $invoice['recipient']['name'] . '</br>';
-		echo 'Адреса отримання: ' . $invoice['recipient']['addresses'][0]['address']['postcode'] . ' ';
-		echo $invoice['recipient']['addresses'][0]['address']['detailedInfo'] . '<br></p>';
+		echo '<h3>Відправлення ' . esc_html($invoice['barcode']) . ' успішно створене!</h3><p>';
+		echo 'Тип відправлення: ' . esc_html($invoice['type']) . '<br>';
+		echo 'Відправник: ' . esc_html($invoice['sender']['name']) . '</br>';
+		echo 'Адреса відправлення: '. esc_html($invoice['sender']['addresses'][0]['address']['postcode']) . ' ';
+		echo esc_html($invoice['sender']['addresses'][0]['address']['detailedInfo']) . '<br>';
+		echo 'Одержувач: ' . esc_html($invoice['recipient']['name']) . '</br>';
+		echo 'Адреса отримання: ' . esc_html($invoice['recipient']['addresses'][0]['address']['postcode']) . ' ';
+		echo esc_html($invoice['recipient']['addresses'][0]['address']['detailedInfo']) . '<br></p>';
 	}
 
 	public function displayWarningNotice()
@@ -137,7 +144,7 @@ class InvoiceController
 		$invoiceOrder = new InvoiceOrder();
 		if ( $this->isInternational ) {
 		} else {
-			echo '<p>Встановлена довжина відправлення за замовчуванням: ' . $invoiceOrder->getWPOptionLength() . ' см.</p>';
+			echo '<p>Встановлена довжина відправлення за замовчуванням: ' . esc_html($invoiceOrder->getWPOptionLength()) . ' см.</p>';
 		}
 	}
 
@@ -163,10 +170,18 @@ class InvoiceController
 			$ref = $invoice['uuid'];
 		    $barcode = $invoice['barcode'];
 		    global $wpdb;
-		    $query = 'INSERT INTO ' . $wpdb->prefix . 'uposhta_invoices (order_id, order_invoice, invoice_ref) VALUES ("'.$order_data->get_id() . '", "' . $barcode . '", "' . $ref . '");';
-		    //echo $query;
+		    $wpdb->insert(
+			    $wpdb->prefix . 'uposhta_invoices', 
+			    array(                            
+			        'order_id'      => $order_data->get_id(),
+			        'order_invoice' => $barcode,
+			        'invoice_ref'   => $ref
+			    ),
+			    array(                            
+			        '%d', '%s', '%s'             
+			    )
+			);
 		    $requested = true;
-		    $wpdb->query( $query );
 		    $order = wc_get_order( $order_data->get_id() );
 
 		    $meta_key = 'ukrposhta_ttn';
@@ -186,7 +201,7 @@ class InvoiceController
 			return $response[] = true; // записати в змінну $requested = в файлі форми
 		}
 		catch( Exception $e ) {
-			echo 'Error writing to database: ',  $e->getMessage(), "\n";
+			echo 'Error writing to database: ',  esc_html($e->getMessage()), "\n";
 			return $response[] = 'Error writing to database: ' . $e->getMassage(); // записати в $message .= у файлі форми
 		}
 	}

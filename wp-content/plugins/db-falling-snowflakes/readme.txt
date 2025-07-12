@@ -3,8 +3,8 @@ Contributors: bisteinoff
 Donate link: https://bisteinoff.com
 Tags: snow, snowflakes, falling snow, snow effect, snow overlay
 Requires at least: 4.6
-Tested up to: 6.5
-Stable tag: 1.6
+Tested up to: 6.7
+Stable tag: 1.8
 License: GPL2
 
 Snow falling animation. Personal customization of snowflakes and their movement. The script runs only during the period of time you want.
@@ -19,7 +19,7 @@ DB Falling Snowflakes is an easy solution to generate snowflakes falling down on
 
 == Installation ==
 
-1. Upload db-tagcloud folder to the `/wp-content/plugins/` directory
+1. Upload the plugin folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Enjoy
 
@@ -28,13 +28,15 @@ DB Falling Snowflakes is an easy solution to generate snowflakes falling down on
 = Which settings are available for me? =
 
 You can make the following settings:
+
 * Month / day when to start showing snow falling effect
 * Month / day when to stop
+* 5 colors: the color of every snowflake would be chosen randomly from these five ones
 * Maximum number of snowflakes
 * Minimum Size
 * Maximum Size
 * Speed
-* 5 colors: the color of every snowflake would be chosen randomly from these five ones
+* Opacity
 
 = Shall I deactivate the plugin when it is not needed? =
 
@@ -46,7 +48,23 @@ The plugin is fully compatible with multisite.
 The settings are individual for every subsite including the period of time.
 You can also activate the plugin only on several of the subsites if you don't need it on all of them.
 
+= Is it possible to customize the parameters for mobile devices? =
+
+You can customize the following settings for mobile devices, tablets and desktops.
+
+* Maximum number of snowflakes
+* Minimum Size
+* Maximum Size
+* Speed
+* Opacity
+
 == Changelog ==
+
+= 1.8 =
+* Design of the Settings Page
+
+= 1.7 =
+* Custom options for mobile devices
 
 = 1.6 =
 * New option: opacity

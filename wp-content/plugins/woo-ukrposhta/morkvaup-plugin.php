@@ -3,14 +3,15 @@
  * Plugin Name: Ukrposhta
  * Plugin URI: https://morkva.co.ua/shop/woo-ukrposhta-pro-lifetime
  * Description:  Генеруйте накладні просто зі сторінки замовлення і зекономте тонну часу на відділенні при відправці.
- * Version: 1.17.7
+ * Version: 1.18.1
  * Author: Morkva
- * Text Domain: woo-ukrposhta-pro
+ * Text Domain: woo-ukrposhta
  * Domain Path: /languages
+ * License: GPL-2.0-or-later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- * Tested up to: 6.6
+ * Tested up to: 6.7
  * WC requires at least: 3.8
- * WC tested up to: 8.8
+ * WC tested up to: 9.4
  */
 
 if (!defined('ABSPATH'))
@@ -23,6 +24,34 @@ add_action( 'before_woocommerce_init', function() {
 		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
 	}
 } );
+
+add_action('init', function() {
+    add_rewrite_rule('^pdf\.pdf$', 'index.php?mrkv_ukrposhta_pdf=1', 'top');
+    add_rewrite_rule('^getapi\.pdf$', 'index.php?mrkv_ukrposhta_getapi=1', 'top');
+    add_rewrite_rule('^pdfbulkprint\.pdf$', 'index.php?mrkv_ukrposhta_pdfbulkprint=1', 'top');
+});
+
+add_action('query_vars', function($vars) {
+    $vars[] = 'mrkv_ukrposhta_pdf';
+    $vars[] = 'mrkv_ukrposhta_getapi';
+    $vars[] = 'mrkv_ukrposhta_pdfbulkprint';
+    return $vars;
+});
+
+add_action('template_redirect', function() {
+    if (get_query_var('mrkv_ukrposhta_pdf')) {
+        include plugin_dir_path(__FILE__) . 'pdf.php';
+        exit;
+    }
+    if (get_query_var('mrkv_ukrposhta_getapi')) {
+        include plugin_dir_path(__FILE__) . 'getapi.php';
+        exit;
+    }
+    if (get_query_var('mrkv_ukrposhta_pdfbulkprint')) {
+        include plugin_dir_path(__FILE__) . 'pdfbulkprint.php';
+        exit;
+    }
+});
 
 include_once 'autoload.php';
 
@@ -49,14 +78,37 @@ if (!function_exists('morkva_ukrposhta'))
 
 }
 
-if (!function_exists('morkva_ukrposhta_import_svg'))
-{
+if (!function_exists('morkva_ukrposhta_import_svg')) {
 
-    function morkva_ukrposhta_import_svg($image)
-    {
-        return file_get_contents(MORKVA_UKRPOSHTA_PLUGIN_DIR . '/image/' . $image);
+    function morkva_ukrposhta_import_svg($image) {
+        // Construct the file path for local file
+        $image_path = MORKVA_UKRPOSHTA_PLUGIN_DIR . '/image/' . $image;
+
+        // Check if the file exists locally (local file check)
+        if (file_exists($image_path)) {
+            // Fetch the local file content using wp_remote_get
+            $response = wp_remote_get($image_path);
+
+            // Check for errors in the request
+            if (is_wp_error($response)) {
+                return $response->get_error_message(); // Return the error message
+            }
+
+            // Return the body of the response, which contains the content
+            return wp_remote_retrieve_body($response);
+        } else {
+            // If the file doesn't exist locally, try to fetch it remotely
+            $response = wp_remote_get($image_path);
+
+            // Check for errors in the request
+            if (is_wp_error($response)) {
+                return $response->get_error_message(); // Return the error message
+            }
+
+            // Return the body of the response
+            return wp_remote_retrieve_body($response);
+        }
     }
-
 }
 
 if (!function_exists('morkva_ukrposhta_get_option'))
@@ -147,7 +199,7 @@ function get_price_shipping($country, $citycost, $addr)
 			$length = intval( ceil( floatval( mrkv_cart_product_max_size( 30 ) ) ) ); // Якщо у товарів немає розмірів, то максимальний розмір товару в кошику 30 см
 		}
 
-        $up_shipping_postcode = isset( $_COOKIE['up_shipping_postcode'] ) ? $_COOKIE['up_shipping_postcode'] : '';
+        $up_shipping_postcode = isset( $_COOKIE['up_shipping_postcode'] ) ? sanitize_text_field(wp_unslash($_COOKIE['up_shipping_postcode'])) : '';
 	    $params = array(
 	        "weight" => $cartWeight,
 	        "length" => $length,
@@ -206,7 +258,7 @@ add_action('woocommerce_admin_order_data_after_shipping_address', function ($ord
     if ($shippingMethod && $shippingMethod->get_method_id() === MORKVA_UKRPOSHTA_UP_SHIPPING_NAME)
     {
 ?>
-    <input type="hidden" name="_shipping_state" value="<?=esc_attr($order->get_shipping_state()); ?>" />
+    <input type="hidden" name="_shipping_state" value="<?php echo esc_attr($order->get_shipping_state()); ?>" />
 <?php
     }
 });
@@ -237,7 +289,7 @@ function activate_morkvaup_plugin()
 
     $table_name = $wpdb->prefix . MUP_TABLEDB;
 
-    if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name)
+    if ($wpdb->get_var("SHOW TABLES LIKE '{$wpdb->prefix}uposhta_invoices'") != $table_name)
     {
         // if table not exists, create this table in DB
         $charset_collate = $wpdb->get_charset_collate();
@@ -251,10 +303,6 @@ function activate_morkvaup_plugin()
      ) $charset_collate;";
         require_once (ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($sql);
-    }
-    else
-    {
-
     }
 
     flush_rewrite_rules();
@@ -299,11 +347,21 @@ add_action( 'wp_ajax_city_autocomplete', 'mrkvup_city_autocomplete' );
 add_action( 'wp_ajax_nopriv_city_autocomplete', 'mrkvup_city_autocomplete' );
 function mrkvup_city_autocomplete() {
 	// Check for nonce security
-	if ( ! wp_verify_nonce( $_POST['mrkvupnonce'], 'mrkvup_ajax_nonce' ) ) {
+	if(isset($_POST['mrkvupnonce']))
+	{
+		$nonce = sanitize_text_field(wp_unslash($_POST['mrkvupnonce']));
+
+		// Check for nonce security
+		if ( ! wp_verify_nonce( $nonce, 'mrkvup_ajax_nonce' ) ) {
+			wp_die('Permission Denied.');
+		}	
+	}
+	else
+	{
 		wp_die('Permission Denied.');
 	}
 	$bearer = get_option('production_bearer_ecom');
-	$mrkvup_city_suggestion = $_POST['term']; // User three-letter input in Checkout
+	$mrkvup_city_suggestion = isset($_POST['term']) ? sanitize_text_field( wp_unslash( $_POST['term'] ) ) : ''; // User three-letter input in Checkout
 	$city_arr = array(); // Found city data
 
 	$cities = wp_remote_get('https://www.ukrposhta.ua/address-classifier-ws/get_city_by_region_id_and_district_id_and_city_ua?region_id=&district_id=&city_ua=' .
@@ -321,7 +379,7 @@ function mrkvup_city_autocomplete() {
 		$city_entries = $city_body->Entries;
 		$cities_arr = $city_entries->Entry;
     } else {
-      echo 'API Укрпошта (cities): ' . $cities['response']['code'] . ' ' . $cities['response']['message'];
+      echo 'API Укрпошта (cities): ' . esc_html($cities['response']['code'] . ' ' . $cities['response']['message']);
       wp_die();
     }
 
@@ -331,7 +389,7 @@ function mrkvup_city_autocomplete() {
 	  	"value" => $v->CITY_ID,
 	  );
 	}
-	echo json_encode( $city_arr );
+	echo wp_json_encode( $city_arr );
 	wp_die();
 }
 
@@ -340,12 +398,22 @@ add_action('wp_ajax_morkva_ukrposhta_load_postcodes', 'mrkvuploadPostcodesFromAp
 add_action('wp_ajax_nopriv_morkva_ukrposhta_load_postcodes', 'mrkvuploadPostcodesFromApiUP' );
 function mrkvuploadPostcodesFromApiUP()
 {
-	// Check for nonce security
-	if ( ! wp_verify_nonce( $_POST['mrkvupnonce'], 'mrkvup_ajax_nonce' ) ) {
+	if(isset($_POST['mrkvupnonce']))
+	{
+		$nonce = sanitize_text_field(wp_unslash($_POST['mrkvupnonce']));
+
+		// Check for nonce security
+		if ( ! wp_verify_nonce( $nonce, 'mrkvup_ajax_nonce' ) ) {
+			wp_die('Permission Denied.');
+		}	
+	}
+	else
+	{
 		wp_die('Permission Denied.');
 	}
+	
 	$bearer = get_option('production_bearer_ecom');
-	$mrkvup_cityid = $_POST['mrkvup_cityid']; // id of chosen in CHeckout city
+	$mrkvup_cityid = isset($_POST['mrkvup_cityid']) ? sanitize_text_field( wp_unslash( $_POST['mrkvup_cityid'] ) ) : ''; // id of chosen in CHeckout city
 
 	$postcodes = wp_remote_get('https://www.ukrposhta.ua/address-classifier-ws/get_postoffices_by_city_id?city_id=' .
 		$mrkvup_cityid, [
@@ -360,8 +428,8 @@ function mrkvuploadPostcodesFromApiUP()
 	if ( 200 == $postcodes['response']['code'] && ! empty($postcodes['body'])) {
       $postcode_body = json_decode($postcodes['body']);
     } else {
-    	$postcode_body = json_encode('{"Entries":{"Entry":[{"POSTINDEX":"Немає відділень","CITY_UA":"","ADDRESS":""}]}}');
-		echo 'API Укрпошта (postcode): ' . $postcodes['response']['code'] . ' ' . $postcodes['response']['message'];
+    	$postcode_body = wp_json_encode('{"Entries":{"Entry":[{"POSTINDEX":"Немає відділень","CITY_UA":"","ADDRESS":""}]}}');
+		echo 'API Укрпошта (postcode): ' . esc_html($postcodes['response']['code'] . ' ' . $postcodes['response']['message']);
 		wp_die();
     }
 
@@ -379,6 +447,6 @@ function mrkvuploadPostcodesFromApiUP()
 	foreach ( $postcodes_arr as $k => $v ) {
 	  $postcode_arr[] = $v->POSTINDEX . ' ' . $v->CITY_UA . ' ' . $v->ADDRESS;
 	}
-	echo json_encode( $postcode_arr );
+	echo wp_json_encode( $postcode_arr );
 	wp_die();
 }

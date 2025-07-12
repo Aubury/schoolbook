@@ -3,6 +3,7 @@
 namespace EasyWPSMTP\Providers\SparkPost;
 
 use EasyWPSMTP\ConnectionInterface;
+use EasyWPSMTP\Helpers\UI;
 use EasyWPSMTP\Providers\OptionsAbstract;
 
 /**
@@ -88,13 +89,21 @@ class Options extends OptionsAbstract {
 					<input type="text" disabled value="****************************************"
 								 id="easy-wp-smtp-setting-<?php echo esc_attr( $this->get_slug() ); ?>-api_key"
 					/>
-					<?php $this->display_const_set_message( 'EasyWPSMTP_SPARKPOST_API_KEY' ); ?>
+					<?php $this->display_const_set_message( 'EASY_WP_SMTP_SPARKPOST_API_KEY' ); ?>
 				<?php else : ?>
-					<input type="password" spellcheck="false"
-								 name="easy-wp-smtp[<?php echo esc_attr( $this->get_slug() ); ?>][api_key]"
-								 value="<?php echo esc_attr( $this->connection_options->get( $this->get_slug(), 'api_key' ) ); ?>"
-								 id="easy-wp-smtp-setting-<?php echo esc_attr( $this->get_slug() ); ?>-api_key"
-					/>
+					<?php
+					$slug  = $this->get_slug();
+					$value = $this->connection_options->get( $slug, 'api_key' );
+
+					UI::hidden_password_field(
+						[
+							'name'       => "easy-wp-smtp[{$slug}][api_key]",
+							'id'         => "easy-wp-smtp-setting-{$slug}-api_key",
+							'value'      => $value,
+							'clear_text' => esc_html__( 'Remove API Key', 'easy-wp-smtp' ),
+						]
+					);
+					?>
 				<?php endif; ?>
 				<p class="desc">
 					<?php
@@ -145,7 +154,7 @@ class Options extends OptionsAbstract {
 
 				<?php
 				if ( $this->connection_options->is_const_defined( $this->get_slug(), 'region' ) ) {
-					$this->display_const_set_message( 'EasyWPSMTP_SPARKPOST_REGION' );
+					$this->display_const_set_message( 'EASY_WP_SMTP_SPARKPOST_REGION' );
 				}
 				?>
 				<p class="desc">

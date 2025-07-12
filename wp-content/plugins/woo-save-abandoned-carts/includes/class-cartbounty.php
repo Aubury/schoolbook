@@ -139,9 +139,8 @@ class CartBounty{
 		$this->loader->add_action( 'cartbounty_remove_empty_carts_hook', $admin, 'delete_empty_carts' );
 		$this->loader->add_action( 'admin_notices', $admin, 'display_notices' );
 		$this->loader->add_action( 'cartbounty_notification_sendout_hook', $admin, 'send_email' );
-		$this->loader->add_filter( 'woocommerce_billing_fields', $admin, 'lift_checkout_fields', 10, 1 );
+		$this->loader->add_filter( 'woocommerce_billing_fields', $admin, 'edit_checkout_fields', 10, 1 );
 		$this->loader->add_action( 'woocommerce_new_order', $admin, 'handle_order', 30 );
-		$this->loader->add_action( 'woocommerce_update_order', $admin, 'handle_order', 30 );
 		$this->loader->add_action( 'woocommerce_checkout_order_processed', $admin, 'handle_order', 30 );
 		$this->loader->add_action( 'profile_update', $admin, 'reset_abandoned_cart' );
 		$this->loader->add_filter( 'admin_body_class', $admin, 'add_cartbounty_body_class' );
@@ -169,7 +168,8 @@ class CartBounty{
 		$this->loader->add_action( 'woocommerce_add_to_cart', $public, 'save_cart', 200 );
 		$this->loader->add_action( 'woocommerce_cart_actions', $public, 'save_cart', 200 );
 		$this->loader->add_action( 'woocommerce_cart_item_removed', $public, 'save_cart', 200 );
-		$this->loader->add_action( 'wp', $public, 'restore_input_data', 10 ); //Restoring previous user input in Checkout form
+		$this->loader->add_action( 'wp', $public, 'restore_classic_checkout_fields', 10 );
+		$this->loader->add_action( 'shutdown', $public, 'restore_block_checkout_fields', 200 );
 		$this->loader->add_action( 'wp_footer', $public, 'display_exit_intent_form' );
 	}
 
@@ -186,6 +186,7 @@ class CartBounty{
 		$this->loader->add_action( 'update_option_cartbounty_automation_settings', $wordpress, 'sanitize_from_field', 50);
 		$this->loader->add_action( 'wp_ajax_email_preview', $wordpress, 'email_preview' );
 		$this->loader->add_action( 'wp_ajax_send_test', $wordpress, 'send_test' );
+		$this->loader->add_filter( 'cartbounty_automation_unsubscribe_url', $wordpress, 'add_click_through_tracking', 10, 2 );
 	}
 
 	/**

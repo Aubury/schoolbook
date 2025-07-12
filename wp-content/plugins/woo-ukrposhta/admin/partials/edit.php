@@ -1,59 +1,77 @@
 <?php
 
-$getinfo = $ukrposhtaApi->GetInfo( $_GET['post'] );
-$type = $getinfo['type'];
-
-if ($type == "INTERNATIONAL"){
-  require __DIR__.'/edit-international.php';
+if(!isset($_GET['post']) || !isset($_GET['order']))
+{
+  return;
 }
-else{
-$uuid = $getinfo['uuid'];
-$checkOnDelivery = $getinfo['checkOnDelivery'];
+if (isset($_GET['_wpnonce'])) {
+  // Remove escaping from input data
+  $nonce = sanitize_text_field(wp_unslash($_GET['_wpnonce']));
+  $order_data_main = sanitize_text_field(wp_unslash($_GET['order']));
 
-$getinfo = $ukrposhtaApi->GetInfo( $_GET['post'] );
-if(isset($_POST['update'])){
-  //
-  $ukrposhtaApi = new UkrposhtaApi($bearer ,$cptoken, $tbearer);
-  logg('created  istance of $ukrposhtaApi');
-  $data = array(
-  "uuid" => $uuid,
-  "checkOnDelivery" => 1,
-  "description" => $_POST['description'],
-  "postpay" => intval($_POST['postpay']),
-  "onFailReceiveType" => $_POST['onFailReceiveType'],
+  if(wp_verify_nonce( $nonce, 'morkvaup_invoice_action_' . $order_data_main ))
+  {
+      $post_data_main = sanitize_text_field(wp_unslash($_GET['post']));
+      $getinfo = $ukrposhtaApi->GetInfo($post_data_main);
+      $type = $getinfo['type'];
 
-  "parcels"=> array( array(
-    "uuid"=>	$getinfo['parcels'][0]['uuid'],
-    "name"=> 'Посилка',
-    "weight"=> $_POST['weight'],
-    "length"=> $_POST['length'],
-    "width"=> $_POST['width'],
-    "height"=> $_POST['height'],
-    "declaredPrice" => $_POST['declaredPrice']),
-  )
- );
- logg('tut0');
-  $ukrposhtaApi->modelShipmentsPut($data, $uuid);
-  $getinfo = $ukrposhtaApi->GetInfo( $_GET['post'] );
-}
+      $uuid = $getinfo['uuid'];
+      $checkOnDelivery = $getinfo['checkOnDelivery'];
 
-?>
+      $getinfo = $ukrposhtaApi->GetInfo($post_data_main);
 
+      if (isset($_POST['update'])) {
+          $ukrposhtaApi = new UkrposhtaApi($bearer, $cptoken, $tbearer);
+          logg('Created instance of $ukrposhtaApi');
 
-<h3>Редагування відправлення <?php echo $_GET['post']; ?> для замовлення <a href=post.php?post=<?php echo $_GET['order']; ?>&action=edit><?php echo $_GET['order']; ?></a></h3>
-<form style="grid-template-columns: 2fr 1fr;" class="form-invoice" action="admin.php?page=morkvaup_invoices&post=<?php echo $_GET['post']; ?>&order=<?php echo $_GET['order']; ?>" method="post">
-  <input type="hidden" name="uuid" value="<?php echo $getinfo['uuid']; ?>">
+          // Safely retrieve POST data with checks
+          $description = isset($_POST['description']) ? sanitize_textarea_field(wp_unslash($_POST['description'])) : '';
+          $postpay = isset($_POST['postpay']) ? intval(wp_unslash($_POST['postpay'])) : 0;
+          $onFailReceiveType = isset($_POST['onFailReceiveType']) ? sanitize_text_field(wp_unslash($_POST['onFailReceiveType'])) : '';
+          $weight = isset($_POST['weight']) ? floatval(wp_unslash($_POST['weight'])) : 0.0;
+          $length = isset($_POST['length']) ? floatval(wp_unslash($_POST['length'])) : 0.0;
+          $width = isset($_POST['width']) ? floatval(wp_unslash($_POST['width'])) : 0.0;
+          $height = isset($_POST['height']) ? floatval(wp_unslash($_POST['height'])) : 0.0;
+          $declaredPrice = isset($_POST['declaredPrice']) ? floatval(wp_unslash($_POST['declaredPrice'])) : 0.0;
+
+          $data = array(
+              "uuid" => $uuid,
+              "checkOnDelivery" => 1,
+              "description" => $description,
+              "postpay" => $postpay,
+              "onFailReceiveType" => $onFailReceiveType,
+              "parcels" => array(
+                  array(
+                      "uuid" => $getinfo['parcels'][0]['uuid'],
+                      "name" => 'Посилка',
+                      "weight" => $weight,
+                      "length" => $length,
+                      "width" => $width,
+                      "height" => $height,
+                      "declaredPrice" => $declaredPrice,
+                  ),
+              ),
+          );
+
+          logg('tut0');
+          $ukrposhtaApi->modelShipmentsPut($data, $uuid);
+          $getinfo = $ukrposhtaApi->GetInfo($post_data_main);
+      }
+      ?>
+        <h3>Редагування відправлення <?php echo esc_html($post_data_main); ?> для замовлення <a href=post.php?post=<?php echo esc_html($order_data_main); ?>&action=edit><?php echo esc_html($order_data_main); ?></a></h3>
+<form style="grid-template-columns: 2fr 1fr;" class="form-invoice" action="admin.php?page=morkvaup_invoices&post=<?php echo esc_html($post_data_main); ?>&order=<?php echo esc_html($order_data_main); ?>" method="post">
+  <input type="hidden" name="uuid" value="<?php echo esc_html($getinfo['uuid']); ?>">
   <div class="tablecontainer" style=display:none>
     <table class="form-table full-width-input">
       <?php formblock_title('Відправник'); ?>
       <tr><td>
-        <input type="text" readonly  name="" value="<?php echo $getinfo['sender']['name']; ?>">
+        <input type="text" readonly  name="" value="<?php echo esc_html($getinfo['sender']['name']); ?>">
       </td></tr>
     </table>
     <table class="form-table full-width-input">
       <?php formblock_title('Отримувач'); ?>
       <tr><td>
-        <input type="text" readonly name="" value="<?php echo $getinfo['recipient']['name']; ?>">
+        <input type="text" readonly name="" value="<?php echo esc_html($getinfo['recipient']['name']); ?>">
       </td></tr>
     </table>
   </div>
@@ -63,7 +81,7 @@ if(isset($_POST['update'])){
     <tr>
       <?php the_upformlabel('Опис'); ?>
      <td>
-       <textarea name="description"><?php echo 	$getinfo['description']; ?></textarea>
+       <textarea name="description"><?php echo  esc_textarea($getinfo['description']); ?></textarea>
      </td>
    </tr>
    <tr>
@@ -89,38 +107,38 @@ if(isset($_POST['update'])){
    <tr>
      <?php the_upformlabel('Оголошена вартість'); ?>
      <td>
-       <input id="invoice_priceid" type="text" name="declaredPrice" value="<?php echo $getinfo['declaredPrice']; ?>" >
+       <input id="invoice_priceid" type="text" name="declaredPrice" value="<?php echo esc_html($getinfo['declaredPrice']); ?>" >
      </td>
    </tr>
    <tr>
      <?php the_upformlabel( 'Вага, ' .  woo_name_weihgt_unit_translate() ); ?>
     <td>
       <?php $weight_in_unit = round ( $getinfo['parcels'][0]['weight'] / woo_setting_weight_unit(), 3 ) ?>
-      <input type="text" name="weight"  id="invoice_cargo_mass" value="<?php echo $weight_in_unit ?>  ">
+      <input type="text" name="weight"  id="invoice_cargo_mass" value="<?php echo esc_html($weight_in_unit); ?>  ">
     </td>
   </tr>
   <tr>
     <?php the_upformlabel('Довжина, см'); ?>
    <td>
-     <input type="text" name="length"  id="length" value="<?php echo $getinfo['parcels'][0]['length']; ?> ">
+     <input type="text" name="length"  id="length" value="<?php echo esc_html($getinfo['parcels'][0]['length']); ?> ">
    </td>
  </tr>
  <tr>
    <?php the_upformlabel('Ширина, см'); ?>
   <td>
-    <input type="text" name="width"  id="width" value="<?php echo $getinfo['parcels'][0]['width']; ?> ">
+    <input type="text" name="width"  id="width" value="<?php echo esc_html($getinfo['parcels'][0]['width']); ?> ">
   </td>
 </tr>
 <tr>
   <?php the_upformlabel('Висота, см'); ?>
  <td>
-   <input type="text" name="height"  id="height" value="<?php echo $getinfo['parcels'][0]['height']; ?>">
+   <input type="text" name="height"  id="height" value="<?php echo esc_html($getinfo['parcels'][0]['height']); ?>">
  </td>
 </tr>
  <tr>
    <?php the_upformlabel('Післяплата, грн'); ?>
   <td style="padding-bottom: 0;">
-    <input type="text" id="invoice_placesi" name="postpay" value="<?php echo $getinfo['postPayUah']; ?>" >
+    <input type="text" id="invoice_placesi" name="postpay" value="<?php echo esc_html($getinfo['postPayUah']); ?>" >
   </td>
   </tr>
 
@@ -130,7 +148,7 @@ if(isset($_POST['update'])){
     </td>
    </tr>
     </table>
-
+    <?php wp_nonce_field('mrkv_up_form_action', 'mrkv_up_my_form_nonce'); ?>
 
 
 
@@ -141,11 +159,10 @@ if(isset($_POST['update'])){
 </form>
 
 
-<?php
-
-echo '<pre>';
-// print_r($getinfo);
-echo '</pre>';
-
+      <?php
+  }
 }
- ?>
+
+?>
+
+

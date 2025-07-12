@@ -1,6 +1,5 @@
 <?php
 
-phpinfo();
 
 require_once 'wp-load.php';
 require __DIR__ . '/vendor/autoload.php';
@@ -15,8 +14,8 @@ use Automattic\WooCommerce\HttpClient\HttpClientException;
 $url = home_url();
 $login = 'scbook';
 $password = 'bgm5naOZM(yGv6HU#d';
-$key = 'ck_740f2455bb10ddbaaa66deb7acf66000bbaa306b';
-$secret = 'cs_acd3f9214481e54579edf56fe84016efac403aa3';
+$key = 'ck_f7bb8f437939f444c8af23c232c44bde714f4219';
+$secret = 'cs_130880bd084a4a92cf08e9250c91f2eb6d9d9b8c';
 
 $woocommerce = new Client(
     $url,
@@ -44,39 +43,95 @@ $data = file_get_contents('php://input'); // Получаем данные
 $order = json_decode($data, true); // Преобразуем JSON в массив
 
 function creatFileAllOrders ($order) {
+    
     $_update = [];
-    $_update['NomerZakaza']    = $order['id'];
-    $_update['KlientID']       = $order['customer_id'];
-    $_update['email']          = $order['billing']['email'];
-    $_update['phone']          = $order['billing']['phone'];
-    $_update['first_name']     = $order['billing']['first_name'];
-    $_update['last_name']      = $order['billing']['last_name'];
-    $_update['SummaZakaza']    = $order['total'];
-    $_update['Valuta']         = $order['currency'];
-    $_update['date_created']   = $order['date_created'];
-    $_update['payment_method'] = $order['payment_method'];
-    $_update['status']         = $order['status'];
+    $_update['NomerZakaza']         = $order['id'];
+    $_update['KlientID']            = $order['customer_id'];
+    $_update['email']               = $order['billing']['email'];
+    $_update['phone']               = $order['billing']['phone'];
+    $_update['first_name']          = $order['billing']['first_name'];
+    $_update['last_name']           = $order['billing']['last_name'];
+    $_update['SummaZakaza']         = $order['total'];
+    $_update['Valuta']              = $order['currency'];
+    $_update['date_created']        = $order['date_created'];
+    $_update['payment_method']      = $order['payment_method'];
+    $_update['prepayment_amount']   = $order['prepayment_amount'];
+    $_update['prepayment_status']   = $order['prepayment_status'];
+    
+    switch ( $order['status'] ) {
+        case 'pending': $_update['status'] = 'Очікування оплати';
+                        break;
 
-    foreach ( $order['meta_data'] as $meta ) {
-        if ( $meta->key === 'payment_status' ) {
+        case 'processing': $_update['status'] = 'В обробці';
+                           break;
 
-            switch ( $meta->value ) {
-                case 'error'        : $_update['payment_status'] = 'Невдала оплата. Дані невірні';
-                    break;
-                case 'failure'      : $_update['payment_status'] = 'Невдала оплата';
-                    break;
-                case 'reversed'     : $_update['payment_status'] = 'Оплата повернута';
-                    break;
-                case 'subscribed'   : $_update['payment_status'] = 'Підписка успішно оформлена';
-                    break;
-                case 'unsubscribed' : $_update['payment_status'] = 'Підписку успішно деактивовано';
-                    break;
-                case 'success'      : $_update['payment_status'] = 'Успішна оплата';
-                    break;
-            }
+        case 'completed': $_update['status'] = 'Виконано';
+                           break;
 
-        }
+        case 'cancelled': $_update['status'] = 'Скасовано';
+                          break;
+
+        case 'refunded': $_update['status'] = 'Повернено кошти';
+                         break;
+
+        case 'failed': $_update['status'] = 'Не вдалося';
+                        break;
+
+        case 'on-hold' : $_update['status'] = 'На утриманні';
     }
+
+      /**
+     * error - Failed payment. Data is incorrect
+     * failure - Failed payment
+     * reversed - Payment refunded
+     * subscribed - Subscribed successfully framed
+     * success - Successful payment
+     * unsubscribed - Subscribed successfully deactivated
+     */
+
+        switch (  $order['payment_status'] ) {
+        case 'error'        : $_update['payment_status'] = 'Невдала оплата. Дані невірні';
+            break;
+        case 'failure'      : $_update['payment_status'] = 'Невдала оплата';
+            break;
+        case 'reversed'     : $_update['payment_status'] = 'Оплата повернута';
+            break;
+        case 'subscribed'   : $_update['payment_status'] = 'Підписка успішно оформлена';
+            break;
+        case 'unsubscribed' : $_update['payment_status'] = 'Підписку успішно деактивовано';
+            break;
+        case 'success'      : $_update['payment_status'] = 'Успішна оплата';
+            break;
+        case 'cash_wait'      : $_update['payment_status'] = 'Очікується оплата готівкою';
+            break;
+
+        case 'invoice_wait'      : $_update['payment_status'] = 'Інвойс створений успішно, очікується оплата';
+            break;
+
+        case 'prepared'      : $_update['payment_status'] = 'Платіж створений, очікується його завершення відправником';
+            break;
+
+        case 'processing'      : $_update['payment_status'] = 'Платіж обробляється';
+            break;
+
+        case 'wait_accept'      : $_update['payment_status'] = 'Кошти з клієнта списані, але магазин ще не пройшов перевірку. Якщо магазин не пройде активацію протягом 60 днів, платежі будуть автоматично скасовані';
+            break;
+
+        case 'wait_secure'      : $_update['payment_status'] = 'Платіж на перевірці';
+            break;
+
+        case 'try_again'      : $_update['payment_status'] = 'Оплата неуспішна. Клієнт може повторити спробу ще раз';
+            break;
+            
+        case 'cancelled'      : $_update['payment_status'] = 'Скасування платежу';
+                 break;    
+
+        default: $_update['payment_status'] = $order['payment_status'];
+    }
+    
+    $_update['payment_detail'] = $order['payment_detail'];
+    
+    $full_order = wc_get_order($order['id']);
 
     $_update['shipping']       = [
         'shipping_method' => $order['shipping_lines']['0']['method_title'],
@@ -84,6 +139,7 @@ function creatFileAllOrders ($order) {
         'postcode'  => $order['billing']['postcode'] ?? $order['shipping']['postcode'],
         'address_1' => $order['billing']['address_1'] ?? $order['shipping']['address_1'],
         'address_2' => $order['billing']['address_2'] ?? $order['shipping']['address_2'],
+        'flat'      => $full_order->get_meta('mrkv_ua_shipping_nova-poshta_address_flat') ?? $full_order->get_meta('mrkv_ua_shipping_ukr-poshta_address_flat')
 
     ];
 
