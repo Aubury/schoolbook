@@ -10,3 +10,6 @@
 /.tmb
 /logs
 /wp-content/plugins/google-listings-and-ads
+public_html/cron-log.txt
+public_html/directory_state.json
+public_html/directory_state.json

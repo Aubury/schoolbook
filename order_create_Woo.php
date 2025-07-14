@@ -130,8 +130,10 @@ function creatFileAllOrders ($order) {
     }
     
     $_update['payment_detail'] = $order['payment_detail'];
-    
-    $full_order = wc_get_order($order['id']);
+
+    $data_order = wc_get_order($order['id']);
+    $nova_poshta_address_flat = $data_order->get_meta('mrkv_ua_shipping_nova-poshta_address_flat');
+    $ukr_poshta_address_flat = $data_order->get_meta('mrkv_ua_shipping_ukr-poshta_address_flat');
 
     $_update['shipping']       = [
         'shipping_method' => $order['shipping_lines']['0']['method_title'],
@@ -139,7 +141,11 @@ function creatFileAllOrders ($order) {
         'postcode'  => $order['billing']['postcode'] ?? $order['shipping']['postcode'],
         'address_1' => $order['billing']['address_1'] ?? $order['shipping']['address_1'],
         'address_2' => $order['billing']['address_2'] ?? $order['shipping']['address_2'],
-        'flat'      => $full_order->get_meta('mrkv_ua_shipping_nova-poshta_address_flat') ?? $full_order->get_meta('mrkv_ua_shipping_ukr-poshta_address_flat')
+        'ukr-poshta_address_flat' => $order['mrkv_ua_shipping_ukr-poshta_address_flat'],
+        'nova-poshta_address_fla' => $order['mrkv_ua_shipping_nova-poshta_address_flat'],
+        'ukr_poshta_address_flat' => $ukr_poshta_address_flat,
+        'nova_poshta_address_flat' => $nova_poshta_address_flat,
+        'flat'      => $nova_poshta_address_flat ?? $ukr_poshta_address_flat
 
     ];
 
