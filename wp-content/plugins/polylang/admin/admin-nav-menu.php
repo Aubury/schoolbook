@@ -101,7 +101,7 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 		}
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		wp_enqueue_script( 'pll_nav_menu', plugins_url( "/js/build/nav-menu{$suffix}.js", POLYLANG_ROOT_FILE ), array(), POLYLANG_VERSION );
+		wp_enqueue_script( 'pll_nav_menu', plugins_url( '/js/build/nav-menu' . $suffix . '.js', POLYLANG_ROOT_FILE ), array( 'jquery' ), POLYLANG_VERSION );
 
 		$data = array(
 			'strings' => PLL_Switcher::get_switcher_options( 'menu', 'string' ), // The strings for the options
@@ -164,33 +164,29 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	}
 
 	/**
-	 * Assigns menu languages and translations based on (temporary) locations.
+	 * Assign menu languages and translations based on ( temporary ) locations
 	 *
 	 * @since 1.8
 	 *
-	 * @param array $locations Nav menu locations.
+	 * @param array $locations nav menu locations
 	 * @return array
 	 */
 	public function update_nav_menu_locations( $locations ) {
-		// Extract language and menu from locations.
-		$nav_menus = $this->options->get( 'nav_menus' );
-
+		// Extract language and menu from locations
 		foreach ( $locations as $loc => $menu ) {
 			$infos = $this->explode_location( $loc );
-			$nav_menus[ $this->theme ][ $infos['location'] ][ $infos['lang'] ] = $menu;
-
-			if ( $this->options->get( 'default_lang' ) !== $infos['lang'] ) {
-				unset( $locations[ $loc ] ); // Remove temporary locations before database update.
+			$this->options['nav_menus'][ $this->theme ][ $infos['location'] ][ $infos['lang'] ] = $menu;
+			if ( $this->options['default_lang'] != $infos['lang'] ) {
+				unset( $locations[ $loc ] ); // Remove temporary locations before database update
 			}
 		}
 
-		$this->options->set( 'nav_menus', $nav_menus );
-
+		update_option( 'polylang', $this->options );
 		return $locations;
 	}
 
 	/**
-	 * Assigns menu languages and translations based on (temporary) locations.
+	 * Assign menu languages and translations based on ( temporary ) locations.
 	 *
 	 * @since 1.1
 	 *
@@ -203,20 +199,14 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 			// Manage Locations tab in Appearance -> Menus
 			if ( isset( $_GET['action'] ) && 'locations' === $_GET['action'] ) { // phpcs:ignore WordPress.Security.NonceVerification
 				check_admin_referer( 'save-menu-locations' );
-
-				$nav_menus = $this->options->get( 'nav_menus' );
-				$nav_menus[ $this->theme ] = array();
-				$this->options->set( 'nav_menus', $nav_menus );
+				$this->options['nav_menus'][ $this->theme ] = array();
 			}
 
 			// Edit Menus tab in Appearance -> Menus
 			// Add the test of $_POST['update-nav-menu-nonce'] to avoid conflict with Vantage theme
 			elseif ( isset( $_POST['action'], $_POST['update-nav-menu-nonce'] ) && 'update' === $_POST['action'] ) {
 				check_admin_referer( 'update-nav_menu', 'update-nav-menu-nonce' );
-
-				$nav_menus = $this->options->get( 'nav_menus' );
-				$nav_menus[ $this->theme ] = array();
-				$this->options->set( 'nav_menus', $nav_menus );
+				$this->options['nav_menus'][ $this->theme ] = array();
 			}
 
 			// Customizer
@@ -273,22 +263,18 @@ class PLL_Admin_Nav_Menu extends PLL_Nav_Menu {
 	 * @return void
 	 */
 	public function delete_nav_menu( $term_id ) {
-		$nav_menus = $this->options->get( 'nav_menus' );
-
-		if ( empty( $nav_menus ) ) {
-			return;
-		}
-
-		foreach ( $nav_menus as $theme => $locations ) {
-			foreach ( $locations as $loc => $languages ) {
-				foreach ( $languages as $lang => $menu_id ) {
-					if ( $menu_id === $term_id ) {
-						unset( $nav_menus[ $theme ][ $loc ][ $lang ] );
+		if ( isset( $this->options['nav_menus'] ) ) {
+			foreach ( $this->options['nav_menus'] as $theme => $locations ) {
+				foreach ( $locations as $loc => $languages ) {
+					foreach ( $languages as $lang => $menu_id ) {
+						if ( $menu_id === $term_id ) {
+							unset( $this->options['nav_menus'][ $theme ][ $loc ][ $lang ] );
+						}
 					}
 				}
 			}
-		}
 
-		$this->options->set( 'nav_menus', $nav_menus );
+			update_option( 'polylang', $this->options );
+		}
 	}
 }

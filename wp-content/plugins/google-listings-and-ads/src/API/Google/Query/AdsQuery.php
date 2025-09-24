@@ -5,10 +5,11 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Query;
 
 use Automattic\WooCommerce\GoogleListingsAndAds\Exception\InvalidProperty;
 use Automattic\WooCommerce\GoogleListingsAndAds\Google\Ads\GoogleAdsClient;
-use Google\Ads\GoogleAds\V18\Services\GoogleAdsRow;
-use Google\Ads\GoogleAds\V18\Services\SearchGoogleAdsRequest;
-use Google\Ads\GoogleAds\V18\Services\SearchSettings;
+use Google\Ads\GoogleAds\V16\Services\GoogleAdsRow;
+use Google\Ads\GoogleAds\V16\Services\SearchGoogleAdsRequest;
 use Google\ApiCore\ApiException;
+use Google\ApiCore\PagedListResponse;
+
 
 defined( 'ABSPATH' ) || exit;
 
@@ -35,9 +36,6 @@ abstract class AdsQuery extends Query {
 
 	/**
 	 * Arguments to add to the search query.
-	 *
-	 * Note: While we allow pageSize to be set, we do not pass it to the API.
-	 * pageSize has been deprecated in the API since V17 and is fixed to 10000 rows.
 	 *
 	 * @var array
 	 */
@@ -93,19 +91,12 @@ abstract class AdsQuery extends Query {
 		}
 
 		$request = new SearchGoogleAdsRequest();
+		// Allow us to get the total number of results for pagination.
+		$request->setReturnTotalResultsCount( true );
 
-		if ( ! empty( $this->search_args['pageToken'] ) ) {
-			$request->setPageToken( $this->search_args['pageToken'] );
+		if ( ! empty( $this->search_args['pageSize'] ) ) {
+			$request->setPageSize( $this->search_args['pageSize'] );
 		}
-
-		// Allow us to get the total number of results.
-		$request->setSearchSettings(
-			new SearchSettings(
-				[
-					'return_total_results_count' => true,
-				]
-			)
-		);
 
 		$request->setQuery( $this->build_query() );
 		$request->setCustomerId( $this->id );

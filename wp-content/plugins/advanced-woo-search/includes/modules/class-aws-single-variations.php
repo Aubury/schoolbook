@@ -61,13 +61,11 @@ if ( ! class_exists( 'AWS_Single_Variations' ) ) :
 
                     $new_visibility = $terms;
 
-                    if ( $new_visibility && ! AWS()->option_vars->is_index_table_not_exists() ) {
+                    if ( $new_visibility && ! AWS_Helpers::is_table_not_exist() ) {
 
                         global $wpdb;
 
                         $table_name = $wpdb->prefix . AWS_INDEX_TABLE_NAME;
-
-                        $new_visibility = AWS()->table_updates->get_visibility_code( $new_visibility );
 
                         $wpdb->update( $table_name, array( 'visibility' => $new_visibility ), array( 'id' => $id ) );
 

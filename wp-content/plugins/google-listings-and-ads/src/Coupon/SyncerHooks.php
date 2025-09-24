@@ -13,7 +13,6 @@ use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\UpdateCoupon;
 use Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService;
 use Automattic\WooCommerce\GoogleListingsAndAds\PluginHelper;
 use Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WC;
-use Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WP;
 use Automattic\WooCommerce\GoogleListingsAndAds\Value\NotificationStatus;
 use WC_Coupon;
 defined( 'ABSPATH' ) || exit();
@@ -56,9 +55,21 @@ class SyncerHooks implements Service, Registerable {
 	protected $coupon_helper;
 
 	/**
-	 * @var JobRepository
+	 *
+	 * @var UpdateCoupon
 	 */
-	protected $job_repository;
+	protected $update_coupon_job;
+
+	/**
+	 *
+	 * @var DeleteCoupon
+	 */
+	protected $delete_coupon_job;
+
+	/**
+	 * @var CouponNotificationJob
+	 */
+	protected $coupon_notification_job;
 
 	/**
 	 *
@@ -71,18 +82,12 @@ class SyncerHooks implements Service, Registerable {
 	 */
 	protected $notifications_service;
 
+
 	/**
 	 *
 	 * @var WC
 	 */
 	protected $wc;
-
-	/**
-	 * WP Proxy
-	 *
-	 * @var WP
-	 */
-	protected WP $wp;
 
 	/**
 	 * SyncerHooks constructor.
@@ -92,22 +97,21 @@ class SyncerHooks implements Service, Registerable {
 	 * @param MerchantCenterService $merchant_center
 	 * @param NotificationsService  $notifications_service
 	 * @param WC                    $wc
-	 * @param WP                    $wp
 	 */
 	public function __construct(
 		CouponHelper $coupon_helper,
 		JobRepository $job_repository,
 		MerchantCenterService $merchant_center,
 		NotificationsService $notifications_service,
-		WC $wc,
-		WP $wp
+		WC $wc
 	) {
-		$this->coupon_helper         = $coupon_helper;
-		$this->job_repository        = $job_repository;
-		$this->merchant_center       = $merchant_center;
-		$this->notifications_service = $notifications_service;
-		$this->wc                    = $wc;
-		$this->wp                    = $wp;
+		$this->update_coupon_job       = $job_repository->get( UpdateCoupon::class );
+		$this->delete_coupon_job       = $job_repository->get( DeleteCoupon::class );
+		$this->coupon_notification_job = $job_repository->get( CouponNotificationJob::class );
+		$this->coupon_helper           = $coupon_helper;
+		$this->merchant_center         = $merchant_center;
+		$this->notifications_service   = $notifications_service;
+		$this->wc                      = $wc;
 	}
 
 	/**
@@ -134,9 +138,6 @@ class SyncerHooks implements Service, Registerable {
 
 		// when a coupon is restored from trash, schedule a update job.
 		add_action( 'untrashed_post', [ $this, 'update_by_id' ], 90 );
-
-		// Update coupons when object terms get updated.
-		add_action( 'set_object_terms', [ $this, 'maybe_update_by_id_when_terms_updated' ], 90, 6 );
 	}
 
 	/**
@@ -149,20 +150,6 @@ class SyncerHooks implements Service, Registerable {
 		if ( $coupon instanceof WC_Coupon ) {
 			$this->handle_update_coupon( $coupon );
 		}
-	}
-
-	/**
-	 * Update a coupon by the ID when the terms get updated.
-	 *
-	 * @param int    $object_id  The object ID.
-	 * @param array  $terms      An array of object term IDs or slugs.
-	 * @param array  $tt_ids     An array of term taxonomy IDs.
-	 * @param string $taxonomy   The taxonomy slug.
-	 * @param bool   $append     Whether to append new terms to the old terms.
-	 * @param array  $old_tt_ids Old array of term taxonomy IDs.
-	 */
-	public function maybe_update_by_id_when_terms_updated( int $object_id, array $terms, array $tt_ids, string $taxonomy, bool $append, array $old_tt_ids ) {
-		$this->handle_update_coupon_when_product_brands_updated( $taxonomy, $tt_ids, $old_tt_ids );
 	}
 
 	/**
@@ -201,7 +188,7 @@ class SyncerHooks implements Service, Registerable {
 		// Schedule an update job if product sync is enabled.
 		if ( $this->coupon_helper->is_sync_ready( $coupon ) ) {
 			$this->coupon_helper->mark_as_pending( $coupon );
-			$this->job_repository->get( UpdateCoupon::class )->schedule(
+			$this->update_coupon_job->schedule(
 				[
 					[ $coupon_id ],
 				]
@@ -213,7 +200,7 @@ class SyncerHooks implements Service, Registerable {
 				$this->get_coupon_to_delete( $coupon ),
 				$this->coupon_helper->get_synced_google_ids( $coupon )
 			);
-			$this->job_repository->get( DeleteCoupon::class )->schedule(
+			$this->delete_coupon_job->schedule(
 				[
 					$coupon_to_delete,
 				]
@@ -288,7 +275,7 @@ class SyncerHooks implements Service, Registerable {
 		$coupon_to_delete = $this->delete_requests_map[ $coupon_id ];
 		if ( ! empty( $coupon_to_delete->get_synced_google_ids() ) &&
 				! $this->is_already_scheduled_to_delete( $coupon_id ) ) {
-			$this->job_repository->get( DeleteCoupon::class )->schedule(
+			$this->delete_coupon_job->schedule(
 				[
 					$coupon_to_delete,
 				]
@@ -308,7 +295,7 @@ class SyncerHooks implements Service, Registerable {
 
 		if ( $coupon instanceof WC_Coupon && $this->coupon_helper->should_trigger_delete_notification( $coupon ) ) {
 			$this->coupon_helper->set_notification_status( $coupon, NotificationStatus::NOTIFICATION_PENDING_DELETE );
-			$this->job_repository->get( CouponNotificationJob::class )->schedule(
+			$this->coupon_notification_job->schedule(
 				[
 					'item_id' => $coupon->get_id(),
 					'topic'   => NotificationsService::TOPIC_COUPON_DELETED,
@@ -400,7 +387,7 @@ class SyncerHooks implements Service, Registerable {
 	protected function handle_update_coupon_notification( WC_Coupon $coupon ) {
 		if ( $this->coupon_helper->should_trigger_create_notification( $coupon ) ) {
 			$this->coupon_helper->set_notification_status( $coupon, NotificationStatus::NOTIFICATION_PENDING_CREATE );
-			$this->job_repository->get( CouponNotificationJob::class )->schedule(
+			$this->coupon_notification_job->schedule(
 				[
 					'item_id' => $coupon->get_id(),
 					'topic'   => NotificationsService::TOPIC_COUPON_CREATED,
@@ -408,7 +395,7 @@ class SyncerHooks implements Service, Registerable {
 			);
 		} elseif ( $this->coupon_helper->should_trigger_update_notification( $coupon ) ) {
 			$this->coupon_helper->set_notification_status( $coupon, NotificationStatus::NOTIFICATION_PENDING_UPDATE );
-			$this->job_repository->get( CouponNotificationJob::class )->schedule(
+			$this->coupon_notification_job->schedule(
 				[
 					'item_id' => $coupon->get_id(),
 					'topic'   => NotificationsService::TOPIC_COUPON_UPDATED,
@@ -416,70 +403,12 @@ class SyncerHooks implements Service, Registerable {
 			);
 		} elseif ( $this->coupon_helper->should_trigger_delete_notification( $coupon ) ) {
 			$this->coupon_helper->set_notification_status( $coupon, NotificationStatus::NOTIFICATION_PENDING_DELETE );
-			$this->job_repository->get( CouponNotificationJob::class )->schedule(
+			$this->coupon_notification_job->schedule(
 				[
 					'item_id' => $coupon->get_id(),
 					'topic'   => NotificationsService::TOPIC_COUPON_DELETED,
 				]
 			);
-		}
-	}
-
-	/**
-	 * If product to brands relationship is updated, update the coupons that are related to the brands.
-	 *
-	 * @param string $taxonomy   The taxonomy slug.
-	 * @param array  $tt_ids     An array of term taxonomy IDs.
-	 * @param array  $old_tt_ids Old array of term taxonomy IDs.
-	 */
-	protected function handle_update_coupon_when_product_brands_updated( string $taxonomy, array $tt_ids, array $old_tt_ids ) {
-		if ( 'product_brand' !== $taxonomy ) {
-			return;
-		}
-
-		// Convert term taxonomy IDs to integers.
-		$tt_ids     = array_map( 'intval', $tt_ids );
-		$old_tt_ids = array_map( 'intval', $old_tt_ids );
-
-		// Find the difference between the new and old term taxonomy IDs.
-		$diff1 = array_diff( $tt_ids, $old_tt_ids );
-		$diff2 = array_diff( $old_tt_ids, $tt_ids );
-		$diff  = array_merge( $diff1, $diff2 );
-
-		if ( empty( $diff ) ) {
-			return;
-		}
-
-		// Serialize the diff to use in the meta query.
-		// This is needed because the meta value is serialized.
-		$serialized_diff = maybe_serialize( $diff );
-
-		$args = [
-			'post_type'  => 'shop_coupon',
-			'meta_query' => [
-				'relation' => 'OR',
-				[
-					'key'     => 'product_brands',
-					'value'   => $serialized_diff,
-					'compare' => 'LIKE',
-				],
-				[
-					'key'     => 'exclude_product_brands',
-					'value'   => $serialized_diff,
-					'compare' => 'LIKE',
-				],
-			],
-		];
-
-		// Get coupon posts based on the above query args.
-		$posts = $this->wp->get_posts( $args );
-
-		if ( empty( $posts ) ) {
-			return;
-		}
-
-		foreach ( $posts as $post ) {
-			$this->update_by_id( $post->ID );
 		}
 	}
 }

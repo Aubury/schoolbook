@@ -53,14 +53,10 @@ function wp_super_cache_override_on_flag() {
 	}
 
 	if ( 1 === (int) get_option( 'wp_super_cache_disabled' ) ) {
-		$cache_enabled       = false;
+		$cache_enabled = false;
 		$super_cache_enabled = false;
-		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
-			define( 'DONOTCACHEPAGE', 1 );
-		}
-		if ( ! defined( 'SUBMITDISABLED' ) ) {
-			define( 'SUBMITDISABLED', 'disabled style="color: #aaa" ' );
-		}
+		define( 'DONOTCACHEPAGE', 1 );
+		define( 'SUBMITDISABLED', 'disabled style="color: #aaa" ' );
 		if ( is_admin() ) {
 			add_action( 'admin_notices', 'wp_super_cache_multisite_notice' );
 		}

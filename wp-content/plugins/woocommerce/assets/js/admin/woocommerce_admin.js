@@ -17,20 +17,22 @@
 					.attr( 'href', woocommerce_admin.urls.add_product );
 			}
 			if ( woocommerce_admin.urls.export_products ) {
-				const exportLink = document.createElement('a');
-				exportLink.href = woocommerce_admin.urls.export_products;
-				exportLink.className = 'page-title-action';
-				exportLink.textContent = woocommerce_admin.strings.export_products;
-
-				$title_action.after(exportLink);
+				$title_action.after(
+					'<a href="' +
+						woocommerce_admin.urls.export_products +
+						'" class="page-title-action">' +
+						woocommerce_admin.strings.export_products +
+						'</a>'
+				);
 			}
 			if ( woocommerce_admin.urls.import_products ) {
-				const importLink = document.createElement('a');
-				importLink.href = woocommerce_admin.urls.import_products;
-				importLink.className = 'page-title-action';
-				importLink.textContent = woocommerce_admin.strings.import_products;
-
-				$title_action.after(importLink);
+				$title_action.after(
+					'<a href="' +
+						woocommerce_admin.urls.import_products +
+						'" class="page-title-action">' +
+						woocommerce_admin.strings.import_products +
+						'</a>'
+				);
 			}
 		} else {
 			$title_action.hide();
@@ -290,49 +292,13 @@
 							'i18n_sale_less_than_regular_error',
 						] );
 					} else {
-						$( document.body ).triggerHandler(
-							'wc_remove_error_tip',
-							[ $( this ), 'i18n_sale_less_than_regular_error' ]
-						);
-					}
-				}
-			)
-
-			.on(
-				'keyup',
-				'input[type=text][name*=_global_unique_id]',
-				function () {
-					var global_unique_id = $( this ).val();
-
-					if ( /[^0-9\-]/.test( global_unique_id ) ) {
-						$( document.body ).triggerHandler( 'wc_add_error_tip', [
+						$(
+							document.body
+						).triggerHandler( 'wc_remove_error_tip', [
 							$( this ),
-							'i18n_global_unique_id_error',
+							'i18n_sale_less_than_regular_error',
 						] );
-					} else {
-						$( document.body ).triggerHandler(
-							'wc_remove_error_tip',
-							[ $( this ), 'i18n_global_unique_id_error' ]
-						);
 					}
-				}
-			)
-
-			.on(
-				'change',
-				'input[type=text][name*=_global_unique_id]',
-				function () {
-					var global_unique_id = $( this ).val();
-					$( this ).val(
-						global_unique_id
-							.replace( /[^0-9\-]/g, '' )
-							.replace( /^-+|-+$/g, '' )
-					);
-
-					$( document.body ).triggerHandler(
-						'wc_remove_error_tip',
-						[ $( this ), 'i18n_global_unique_id_error' ]
-					);
 				}
 			)
 

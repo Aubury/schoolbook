@@ -1,8 +1,6 @@
 <?php
 namespace Automattic\WooCommerce\Blocks\BlockTypes;
 
-use Automattic\WooCommerce\Enums\ProductStatus;
-
 /**
  * RelatedProducts class.
  */
@@ -43,6 +41,7 @@ class RelatedProducts extends AbstractBlock {
 			10,
 			2
 		);
+
 	}
 
 	/**
@@ -80,7 +79,7 @@ class RelatedProducts extends AbstractBlock {
 				'query_loop_block_query_vars',
 				array( $this, 'build_query' ),
 				10,
-				2
+				1
 			);
 		}
 
@@ -91,12 +90,11 @@ class RelatedProducts extends AbstractBlock {
 	 * Return a custom query based on attributes, filters and global WP_Query.
 	 *
 	 * @param WP_Query $query The WordPress Query.
-	 * @param WP_Block $block The block being rendered.
 	 * @return array
 	 */
-	public function build_query( $query, $block = null ) {
+	public function build_query( $query ) {
 		$parsed_block = $this->parsed_block;
-		if ( ! $this->is_related_products_block( $parsed_block, $block ) ) {
+		if ( ! $this->is_related_products_block( $parsed_block ) ) {
 			return $query;
 		}
 
@@ -108,7 +106,7 @@ class RelatedProducts extends AbstractBlock {
 		return array(
 			'post_type'      => 'product',
 			'post__in'       => $related_products_ids,
-			'post_status'    => ProductStatus::PUBLISH,
+			'post_status'    => 'publish',
 			'posts_per_page' => $query['posts_per_page'],
 		);
 	}
@@ -138,14 +136,12 @@ class RelatedProducts extends AbstractBlock {
 	/**
 	 * Determines whether the block is a related products block.
 	 *
-	 * @param array $parsed_block The parsed block.
-	 * @param array $rendered_block The rendered block.
+	 * @param array $block The block.
 	 *
 	 * @return bool Whether the block is a related products block.
 	 */
-	private function is_related_products_block( $parsed_block, $rendered_block = null ) {
-		$is_product_collection_block = $rendered_block->context['query']['isProductCollectionBlock'] ?? false;
-		if ( ProductQuery::is_woocommerce_variation( $parsed_block ) && isset( $parsed_block['attrs']['namespace'] ) && 'woocommerce/related-products' === $parsed_block['attrs']['namespace'] && ! $is_product_collection_block ) {
+	private function is_related_products_block( $block ) {
+		if ( ProductQuery::is_woocommerce_variation( $block ) && isset( $block['attrs']['namespace'] ) && 'woocommerce/related-products' === $block['attrs']['namespace'] ) {
 			return true;
 		}
 

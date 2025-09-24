@@ -3,7 +3,7 @@
 Plugin Name: Weather Effect
 Plugin URI: https://awplife.com/
 Description: This is Weather Effect Widget.
-Version: 1.5.7
+Version: 1.5.9
 Author: A WP Life
 Author URI: https://awplife.com/
 License: GPLv2 or later

@@ -1,0 +1,584 @@
+# Translation of Plugins - Shipping for Nova Poshta - Stable (latest release) in Ukrainian
+# This file is distributed under the same license as the Plugins - Shipping for Nova Poshta - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-10-20 09:04:10+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: uk_UA\n"
+"Project-Id-Version: Plugins - Shipping for Nova Poshta - Stable (latest release)\n"
+
+#: classes/WC_NovaPoshta_Shipping_Method.php:109
+msgid "Якщо обрано, то поштомати будуть виключені з переліку"
+msgstr "Якщо обрано, то поштомати будуть виключені з переліку"
+
+#: classes/WC_NovaPoshta_Shipping_Method.php:108
+msgid "Показувати лише відділення"
+msgstr "Показувати лише відділення"
+
+#: includes/class-morkvanp-plugin-loader.php:1041
+msgid "Вимкнути По батькові"
+msgstr "Вимкнути По батькові"
+
+#: classes/CheckoutAddress.php:67
+msgid "Квартира"
+msgstr "Квартира"
+
+#: classes/CheckoutAddress.php:66
+msgid "Номер будинку"
+msgstr "Номер будинку"
+
+#: classes/CheckoutAddress.php:65
+msgid "Вулиця"
+msgstr "Вулиця"
+
+#: classes/Checkout.php:746
+msgid "Оберіть місто"
+msgstr "Оберіть місто"
+
+#: classes/Checkout.php:745
+msgid "Оберіть область"
+msgstr "Оберіть область"
+
+#: classes/Checkout.php:743
+msgid "Місто"
+msgstr "Місто"
+
+#: classes/Checkout.php:742
+msgid "Область"
+msgstr "Область"
+
+#: classes/CheckoutAddress.php:604
+msgid "<b>Поле Область</b> - обов'язкове поле."
+msgstr "<b>Поле Область</b> - обов'язкове поле."
+
+#: includes/class-morkvanp-plugin-loader.php:1639
+msgid "НП ТТН"
+msgstr "НП ТТН"
+
+#: includes/class-morkvanp-plugin-loader.php:1323
+msgid "Нова Пошта"
+msgstr "Нова Пошта"
+
+#: includes/class-morkvanp-plugin-loader.php:1294
+msgid "Додати"
+msgstr "Додати"
+
+#: includes/class-morkvanp-plugin-loader.php:1292
+msgid "Додати вручну створену накладну"
+msgstr "Додати вручну створену накладну"
+
+#: includes/class-morkvanp-plugin-loader.php:1288
+msgid "Створити накладну"
+msgstr "Створити накладну"
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:73
+#: classes/WC_NovaPoshta_Shipping_Method.php:76
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:74
+msgid "If checked, shipping price will be add for delivery."
+msgstr "If checked, shipping price will be add for delivery."
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:72
+#: classes/WC_NovaPoshta_Shipping_Method.php:75
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:73
+msgid "Enable Price for Delivery."
+msgstr "Enable Price for Delivery."
+
+#: public/partials/morkvanp-plugin-invoices-page.php:373
+msgid "Оновити зараз"
+msgstr "Оновити зараз"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:371
+msgid "Останнє оновлення статусів:"
+msgstr "Останнє оновлення статусів:"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:365
+msgid "Всі"
+msgstr "Всі"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:361
+msgid "Виконано"
+msgstr "Виконано"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:357
+msgid "У відділенні"
+msgstr "У відділенні"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:353
+msgid "Очікує прибуття на пошту"
+msgstr "Очікує прибуття на пошту"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:350
+msgid "Статистика відправлень"
+msgstr "Статистика відправлень"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:303
+msgid "Кількість накладних на сторінці: "
+msgstr "Кількість накладних на сторінці: "
+
+#: includes/class-morkvanp-plugin-loader.php:1440
+#: public/partials/morkvanp-plugin-invoices-page.php:210
+msgid "Видалити накладну"
+msgstr "Видалити накладну"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:201
+msgid "Відправити накладну на e-mail"
+msgstr "Відправити накладну на e-mail"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:191
+msgid "Надрукувати накладну"
+msgstr "Надрукувати накладну"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:125
+msgid "Видалити накладні"
+msgstr "Видалити накладні"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:107
+msgid "Відправити накладні на e-mail"
+msgstr "Відправити накладні на e-mail"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:89
+msgid "Надрукувати накладні"
+msgstr "Надрукувати накладні"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:73
+#: public/partials/morkvanp-plugin-invoices-page.php:186
+msgid "Надрукувати стікер"
+msgstr "Надрукувати стікер"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:62
+msgid "Групові дії:"
+msgstr "Групові дії:"
+
+#: public/partials/morkvanp-plugin-invoices-page.php:61
+msgid "Мої накладні"
+msgstr "Мої накладні"
+
+#: public/partials/invoice/view/invoice_recipient.php:142
+msgid "Квартира / офіс"
+msgstr "Квартира / офіс"
+
+#: public/partials/invoice/view/invoice_recipient.php:139
+msgid "Будинок"
+msgstr "Будинок"
+
+#: public/partials/invoice/view/invoice_recipient.php:132
+msgid "Вулиця / проспект / мікрорайон"
+msgstr "Вулиця / проспект / мікрорайон"
+
+#: public/partials/invoice/view/invoice_recipient.php:101
+#: public/partials/invoice/view/invoice_recipient.php:113
+msgid "Населений пункт"
+msgstr "Населений пункт"
+
+#: public/partials/invoice/view/invoice_recipient.php:92
+msgid "Адреса"
+msgstr "Адреса"
+
+#: public/partials/invoice/view/invoice_recipient.php:90
+msgid "Номер поштомату"
+msgstr "Номер поштомату"
+
+#: public/partials/invoice/view/invoice_recipient.php:86
+msgid "Номер відділення"
+msgstr "Номер відділення"
+
+#: public/partials/invoice/view/invoice_recipient.php:19
+msgid "Ім'я"
+msgstr "Ім'я"
+
+#: public/partials/invoice/view/invoice_recipient.php:10
+msgid "Прізвище"
+msgstr "Прізвище"
+
+#: public/partials/invoice/view/invoice_params.php:199
+msgid "Грошовий переказ "
+msgstr "Грошовий переказ "
+
+#: public/partials/invoice/view/invoice_params.php:196
+msgid "4. Додаткові послуги"
+msgstr "4. Додаткові послуги"
+
+#: public/partials/invoice/view/invoice_params.php:109
+msgid "Об'ємна вага:"
+msgstr "Об'ємна вага:"
+
+#: public/partials/invoice/view/invoice_params.php:85
+msgid "Розміри:"
+msgstr "Розміри:"
+
+#: public/partials/invoice/view/invoice_params.php:52
+msgid "Вага:"
+msgstr "Вага:"
+
+#: public/partials/invoice/view/invoice_params.php:37
+msgid "Опис відправлення:"
+msgstr "Опис відправлення:"
+
+#: includes/class-morkvanp-plugin-loader.php:1054
+msgid ""
+"Контроль оплати<br>\n"
+"                    <small style=\"font-weight:bold;color:#dc3232;\">Лише у Про-версії</small>"
+msgstr ""
+"Контроль оплати<br>\n"
+"                    <small style=\"font-weight:bold;color:#dc3232;\">Лише у Про-версії</small>"
+
+#: includes/class-morkvanp-plugin-loader.php:1007
+msgid ""
+"Розраховувати вартість доставки з параметрів товарів у замовленні<br>\n"
+"                    <small style=\"font-weight:bold;color:#dc3232;\">Лише у Про-версії</small>"
+msgstr ""
+"Розраховувати вартість доставки з параметрів товарів у замовленні<br>\n"
+"                    <small style=\"font-weight:bold;color:#dc3232;\">Лише у Про-версії</small>"
+
+#: includes/class-morkvanp-plugin-loader.php:995
+msgid "Об'ємна вага відправлення:"
+msgstr "Об'ємна вага відправлення:"
+
+#: includes/class-morkvanp-plugin-loader.php:950
+msgid "Розміри відправлення, см:"
+msgstr "Розміри відправлення, см:"
+
+#: includes/class-morkvanp-plugin-loader.php:939
+msgid "Вага відправлення, кг:"
+msgstr "Вага відправлення, кг:"
+
+#: includes/class-morkvanp-plugin-loader.php:927
+msgid ""
+"Опис відправлення: <br>\n"
+"                    <small style=\"font-weight:bold;color:#dc3232;\">Лише у Про-версії</small>"
+msgstr ""
+"Опис відправлення: <br>\n"
+"                    <small style=\"font-weight:bold;color:#dc3232;\">Лише у Про-версії</small>"
+
+#: includes/class-morkvanp-plugin-loader.php:919
+msgid "Якщо товар має декілька категорій на сайті"
+msgstr "Якщо товар має декілька категорій на сайті"
+
+#: includes/class-morkvanp-plugin-loader.php:913
+msgid ""
+"Платник за функцію післяплати: <br>\n"
+"                    <small style=\"font-weight:bold;color:#dc3232;\">Лише у Про-версії</small>"
+msgstr ""
+"Платник за функцію післяплати: <br>\n"
+"                    <small style=\"font-weight:bold;color:#dc3232;\">Лише у Про-версії</small>"
+
+#: includes/class-morkvanp-plugin-loader.php:902
+#: public/partials/invoice/view/invoice_params.php:29
+msgid "Тип оплати Відправника:"
+msgstr "Тип оплати Відправника:"
+
+#: includes/class-morkvanp-plugin-loader.php:891
+#: public/partials/invoice/view/invoice_params.php:21
+msgid "Платник доставки:"
+msgstr "Платник доставки:"
+
+#: includes/class-morkvanp-plugin-loader.php:880
+#: public/partials/invoice/view/invoice_params.php:13
+msgid "Тип відправлення:"
+msgstr "Тип відправлення:"
+
+#: includes/class-morkvanp-plugin-loader.php:867
+msgid "Відправка з адреси:"
+msgstr "Відправка з адреси:"
+
+#: includes/class-morkvanp-plugin-loader.php:845
+msgid "Відправка з Відділення:"
+msgstr "Відправка з Відділення:"
+
+#: includes/class-morkvanp-plugin-loader.php:787
+msgid ""
+"Оновлювати бази відділень/поштоматів вручну<br>\n"
+"                    <small style=\"font-weight:normal;\">Це може зайняти до 30 сек.</small>"
+msgstr ""
+"Оновлювати бази відділень/поштоматів вручну<br>\n"
+"                    <small style=\"font-weight:normal;\">Це може зайняти до 30 сек.</small>"
+
+#: includes/class-morkvanp-plugin-loader.php:775
+msgid ""
+"Оновлювати бази відділень/поштоматів автоматично<br>\n"
+"                    <small style=\"font-weight:bold;color:#dc3232;\">Лише у Про-версії</small>"
+msgstr ""
+"Оновлювати бази відділень/поштоматів автоматично<br>\n"
+"                    <small style=\"font-weight:bold;color:#dc3232;\">Лише у Про-версії</small>"
+
+#: includes/class-morkvanp-plugin-loader.php:764
+msgid "Колір спінера на сторінці Checkout"
+msgstr "Колір спінера на сторінці Checkout"
+
+#: includes/class-morkvanp-plugin-loader.php:752
+msgid ""
+"Індивідуальне налаштування тексту для сторінки чекаут<br>\n"
+"                    <small style=\"font-weight:normal;color: #9b9b9b;\">Очікується згодом</small>"
+msgstr ""
+"Індивідуальне налаштування тексту для сторінки чекаут<br>\n"
+"                    <small style=\"font-weight:normal;color: #9b9b9b;\">Очікується згодом</small>"
+
+#: includes/class-morkvanp-plugin-loader.php:740
+msgid ""
+"Визначати мову автоматично<br>\n"
+"                    <small style=\"font-weight:normal;color: #9b9b9b;\">Очікується згодом</small>"
+msgstr ""
+"Визначати мову автоматично<br>\n"
+"                    <small style=\"font-weight:normal;color: #9b9b9b;\">Очікується згодом</small>"
+
+#: includes/class-morkvanp-plugin-loader.php:717
+msgid "API ключ"
+msgstr "API ключ"
+
+#: includes/class-morkvanp-plugin-loader.php:682
+msgid "Автоматизація"
+msgstr "Автоматизація"
+
+#: includes/class-morkvanp-plugin-loader.php:672
+msgid "Значення за замовчуванням"
+msgstr "Значення за замовчуванням"
+
+#: includes/class-morkvanp-plugin-loader.php:662
+msgid "Відправник"
+msgstr "Відправник"
+
+#: includes/class-morkvanp-plugin-loader.php:652
+msgid "Базові налаштування"
+msgstr "Базові налаштування"
+
+#: includes/class-morkvanp-plugin-callbacks.php:145
+msgid "Зробіть свій вибір"
+msgstr "Зробіть свій вибір"
+
+#: classes/WC_NovaPoshta_Shipping_Method.php:19
+msgid "Nova Poshta Warehouse"
+msgstr "Відділення Нова Пошта"
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:21
+msgid "Nova Poshta Address"
+msgstr "Нова Пошта, на адресу"
+
+#: classes/invoice/InvoiceModel.php:626
+msgid "Накладна створена успішно"
+msgstr "Накладна створена успішно"
+
+#: classes/invoice/InvoiceModel.php:608
+msgid "Увага! Помилки при створенні."
+msgstr "Увага! Помилки при створенні."
+
+#: classes/CheckoutAddress.php:606
+msgid "<b>Поле Місто</b> - обов'язкове поле."
+msgstr "<b>Поле Місто</b> - обов'язкове поле."
+
+#: classes/CheckoutAddress.php:612
+msgid "<b>Поле Номер будинку</b> - обов'язкове поле."
+msgstr "<b>Поле Номер будинку</b> - обов'язкове поле."
+
+#: classes/CheckoutAddress.php:610
+msgid "<b>Поле Вулиця</b> - обов'язкове поле."
+msgstr "<b>Поле Вулиця</b> - обов'язкове поле."
+
+#: classes/CheckoutAddress.php:608
+msgid "<b>Поле По батькові</b> - обов'язкове поле."
+msgstr "<b>Поле По батькові</b> - обов'язкове поле."
+
+#: classes/CheckoutAddress.php:68 classes/CheckoutAddress.php:131
+#: classes/CheckoutAddress.php:148 classes/CheckoutAddress.php:171
+#: classes/CheckoutAddress.php:188 classes/CheckoutAddress.php:357
+#: classes/CheckoutAddress.php:366 classes/CheckoutAddress.php:377
+#: classes/CheckoutAddress.php:386
+#: includes/class-morkvanp-plugin-loader.php:1030
+#: public/partials/invoice/view/invoice_recipient.php:28
+msgid "По батькові"
+msgstr "По батькові"
+
+#: classes/CheckoutAddress.php:62
+msgid "Middle name"
+msgstr "По-батькові"
+
+#: classes/CheckoutAddress.php:61
+msgid "Flat"
+msgstr "Плоский"
+
+#: classes/CheckoutAddress.php:60
+msgid "House number"
+msgstr "Номер будинку"
+
+#: classes/CheckoutAddress.php:76
+msgid "Введіть перші три літери.."
+msgstr "Введіть перші три літери.."
+
+#: classes/CheckoutAddress.php:59
+msgid "Street"
+msgstr "Вулиця"
+
+#: includes/NovattnPoshta.php:359
+msgid "Settings"
+msgstr "Налаштування"
+
+#: includes/NovattnPoshta.php:359
+msgid "View Plugin Settings"
+msgstr "Налаштування плагіна"
+
+#: classes/Checkout.php:783 includes/NovattnPoshta.php:249
+msgid "Choose an option"
+msgstr "Виберіть варіант"
+
+#: includes/NovattnPoshta.php:247
+msgid "(оплата за доставку відбувається на відділенні нової пошти)"
+msgstr "(оплата за доставку відбувається на відділенні нової пошти)"
+
+#: includes/NovattnPoshta.php:246
+msgid "Розрахунок вартості доставки"
+msgstr "Розрахунок вартості доставки"
+
+#: includes/class-morkvanp-plugin-loader.php:1295
+msgid "Накладна"
+msgstr "Накладна"
+
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:21
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:67
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:70
+msgid "Nova Poshta Poshtomat"
+msgstr "Нова Пошта, поштомат"
+
+#: classes/WC_NovaPoshta_Shipping_Method.php:105
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:102
+msgid "Введіть текст, який замінить назву способу доставки при досягненні мінімальної суми замовлення<br>Наприклад: \"БЕЗКОШТОВНО на відділення Нової Пошти\"."
+msgstr "Введіть текст, який замінить назву способу доставки при досягненні мінімальної суми замовлення<br>Наприклад: \"БЕЗКОШТОВНО на відділення Нової Пошти\"."
+
+#: classes/WC_NovaPoshta_Shipping_Method.php:68
+#: classes/WC_NovaPoshta_Shipping_Method.php:71
+msgid "Nova Poshta"
+msgstr "Нова Пошта"
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:109
+#: classes/WC_NovaPoshta_Shipping_Method.php:119
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:109
+msgid " "
+msgstr " "
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:108
+#: classes/WC_NovaPoshta_Shipping_Method.php:118
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:108
+msgid "Решта налаштувань доступні за <a href=\"admin.php?page=morkvanp_plugin\">посиланям</a>."
+msgstr "Решта налаштувань доступні за <a href=\"admin.php?page=morkvanp_plugin\">посиланям</a>."
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:102
+msgid "Введіть текст, який замінить назву способу доставки при досягненні мінімальної суми замовлення<br>Наприклад: \"БЕЗКОШТОВНА адресна доставка Нової Пошти\"."
+msgstr "Введіть текст, який замінить назву способу доставки при досягненні мінімальної суми замовлення<br>Наприклад: \"БЕЗКОШТОВНА адресна доставка Нової Пошти\"."
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:99
+#: classes/WC_NovaPoshta_Shipping_Method.php:102
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:99
+msgid "Текст при безкоштовній доставці"
+msgstr "Текст при безкоштовній доставці"
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:96
+#: classes/WC_NovaPoshta_Shipping_Method.php:99
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:96
+msgid "Введіть суму, при досягненні якої, доставка для покупця буде безкоштовною"
+msgstr "Введіть суму, при досягненні якої, доставка для покупця буде безкоштовною"
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:93
+#: classes/WC_NovaPoshta_Shipping_Method.php:96
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:93
+msgid "Мінімальна сума для безкоштовної доставки"
+msgstr "Мінімальна сума для безкоштовної доставки"
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:88
+#: classes/WC_NovaPoshta_Shipping_Method.php:91
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:89
+msgid "Delivery Fixed price."
+msgstr "Фіксована вартість доставки."
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:86
+#: classes/WC_NovaPoshta_Shipping_Method.php:89
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:87
+msgid "Fixed price"
+msgstr "Фіксована вартість"
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:80
+#: classes/WC_NovaPoshta_Shipping_Method.php:83
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:81
+msgid "If checked, fixed price will be set for delivery."
+msgstr "Якщо вибрати, буде встановлено фіксовану вартість за доставку."
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:79
+#: classes/WC_NovaPoshta_Shipping_Method.php:82
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:80
+msgid "Set Fixed Price for Delivery."
+msgstr "Встановити фіксовану вартість доставки"
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:67
+#: classes/WC_NovaPoshta_Shipping_Method.php:70
+#: classes/WC_NovaPoshta_Shipping_Method_Poshtomat.php:69
+msgid "This controls the title which the user sees during checkout."
+msgstr "Заголовок, котрий бачить користувач у процесі оформлення замовлення."
+
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:65
+#: classes/WC_NovaPoshtaAddress_Shipping_Method.php:68
+msgid "Адресна доставка Нова пошта "
+msgstr "Адресна доставка Нова пошта "
+
+#: classes/Checkout.php:804 classes/Checkout.php:826
+msgid "Choose warehouse"
+msgstr "Обрати відділення"
+
+#: classes/Checkout.php:797 classes/Checkout.php:819
+msgid "Nova Poshta Warehouse (#)"
+msgstr "№ Відділення Нова Пошта"
+
+#: classes/Checkout.php:739 classes/Checkout.php:794 classes/Checkout.php:815
+msgid "Choose city"
+msgstr "Обрати місто"
+
+#: classes/Checkout.php:736 classes/Checkout.php:787 classes/Checkout.php:808
+msgid "City"
+msgstr "Місто"
+
+#: classes/Checkout.php:735
+msgid "Region"
+msgstr "Регіон"
+
+#: classes/Checkout.php:721
+#: public/partials/invoice/view/invoice_recipient.php:89
+msgid "Поштомат"
+msgstr "Поштомат"
+
+#: classes/Checkout.php:719
+#: public/partials/invoice/view/invoice_recipient.php:85
+msgid "Відділення"
+msgstr "Відділення"
+
+#: classes/Checkout.php:726
+msgid "Phone"
+msgstr "Телефон"
+
+#: classes/base/OptionsHelper.php:21 classes/base/OptionsHelper.php:57
+#: classes/Checkout.php:738
+msgid "Choose region"
+msgstr "Обрати область"
+
+#: classes/base/Options.php:66
+msgid "Thank you :)"
+msgstr "Дякуємо)"
+
+#. Author of the plugin
+#: nova-poshta-ttn.php
+msgid "MORKVA"
+msgstr "MORKVA"
+
+#. Description of the plugin
+#: nova-poshta-ttn.php
+msgid "Плагін 2-в-1: спосіб доставки Нова Пошта та генерація накладних Нова Пошта."
+msgstr "Плагін 2-в-1: спосіб доставки Нова Пошта та генерація накладних Нова Пошта."
+
+#. Plugin URI of the plugin
+#: nova-poshta-ttn.php
+msgid "https://morkva.co.ua/shop/nova-poshta-ttn-pro-lifetime"
+msgstr "https://morkva.co.ua/shop/nova-poshta-ttn-pro-lifetime"
+
+#. Plugin Name of the plugin
+#: nova-poshta-ttn.php
+msgid "Shipping for Nova Poshta"
+msgstr "Shipping for Nova Poshta"

@@ -106,9 +106,9 @@ abstract class DataSourcePoller {
 	public function get_specs_from_data_sources() {
 		$locale      = get_user_locale();
 		$specs_group = get_transient( $this->args['transient_name'] ) ?? array();
-		$specs       = isset( $specs_group[ $locale ] ) ? $specs_group[ $locale ] : null;
+		$specs       = isset( $specs_group[ $locale ] ) ? $specs_group[ $locale ] : array();
 
-		if ( ! is_array( $specs ) ) {
+		if ( ! is_array( $specs ) || empty( $specs ) ) {
 			$this->read_specs_from_data_sources();
 			$specs_group = get_transient( $this->args['transient_name'] );
 			$specs       = isset( $specs_group[ $locale ] ) ? $specs_group[ $locale ] : array();
@@ -123,29 +123,6 @@ abstract class DataSourcePoller {
 		 * @since 8.8.0
 		 */
 		$specs = apply_filters( self::FILTER_NAME_SPECS, $specs, $this->id );
-		return false !== $specs ? $specs : array();
-	}
-
-	/**
-	 * Gets specs from cache if it exists.
-	 *
-	 * @return array list of specs.
-	 */
-	public function get_cached_specs() {
-		$locale      = get_user_locale();
-		$specs_group = get_transient( $this->args['transient_name'] ) ?? array();
-		$specs       = isset( $specs_group[ $locale ] ) ? $specs_group[ $locale ] : null;
-
-		/**
-		 * Filter specs.
-		 *
-		 * @param array      $specs List of specs.
-		 * @param string     $this->id Spec identifier.
-		 *
-		 * @since 8.8.0
-		 */
-		$specs = apply_filters( self::FILTER_NAME_SPECS, $specs, $this->id );
-
 		return false !== $specs ? $specs : array();
 	}
 

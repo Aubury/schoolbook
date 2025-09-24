@@ -9,7 +9,6 @@ use Automattic\WooCommerce\GoogleListingsAndAds\Internal\Interfaces\FirstInstall
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareTrait;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsInterface;
-use Automattic\WooCommerce\GoogleListingsAndAds\PluginHelper;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -22,13 +21,11 @@ class InstallTimestamp implements Conditional, FirstInstallInterface, OptionsAwa
 
 	use AdminConditional;
 	use OptionsAwareTrait;
-	use PluginHelper;
 
 	/**
 	 * Logic to run when the plugin is first installed.
 	 */
 	public function first_install(): void {
 		$this->options->add( OptionsInterface::INSTALL_TIMESTAMP, time() );
-		$this->options->add( OptionsInterface::INSTALL_VERSION, $this->get_version() );
 	}
 }

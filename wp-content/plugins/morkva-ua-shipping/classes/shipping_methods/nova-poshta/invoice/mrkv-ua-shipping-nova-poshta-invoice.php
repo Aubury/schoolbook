@@ -209,6 +209,8 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 				"methodProperties" => $args,
 			);
 
+			$invoice_arg = apply_filters( 'mrkv_ua_shipping_arg_invoice_data', $invoice_arg, $this->order, $key_ship );
+
 			# Send request
 	        $obj = $this->shipping_api->send_post_request( $invoice_arg );
 
@@ -358,7 +360,16 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 
 		private function get_invoice_date_time()
 		{
-	        return wp_date('d.m.Y');
+			$datetime = new DateTime('now', wp_timezone());
+			$current_hour = (int) $datetime->format('H');
+
+			if ( $current_hour >= 22 ) {
+			    $datetime->modify('+1 day');
+			}
+
+			$delivery_date = $datetime->format('d.m.Y');
+
+	        return $delivery_date;
 		}
 
 		private function get_service_sender_type()
@@ -452,6 +463,7 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 	            if ( 'oz' == $weight_unit ) $weight_coef = 0.02834;
 
 				$weight = $weight_coef * $weight;
+				$weight = number_format($weight, 2);
 
 				return max($default_weight, $weight);
 			}

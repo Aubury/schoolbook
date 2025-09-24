@@ -15,7 +15,7 @@ final class PayPal extends AbstractPaymentMethodType {
 	 *
 	 * @var string
 	 */
-	protected $name = WC_Gateway_Paypal::ID;
+	protected $name = 'paypal';
 
 	/**
 	 * An instance of the Asset Api

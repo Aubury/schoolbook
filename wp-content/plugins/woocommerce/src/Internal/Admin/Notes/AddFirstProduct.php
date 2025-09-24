@@ -11,7 +11,6 @@ defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\Notes\Note;
 use Automattic\WooCommerce\Admin\Notes\NoteTraits;
-use Automattic\WooCommerce\Enums\ProductStatus;
 
 /**
  * Add_First_Product.
@@ -42,7 +41,7 @@ class AddFirstProduct {
 			array(
 				'limit'  => 1,
 				'return' => 'ids',
-				'status' => array( ProductStatus::PUBLISH ),
+				'status' => array( 'publish' ),
 			)
 		);
 		$products = $query->get_products();

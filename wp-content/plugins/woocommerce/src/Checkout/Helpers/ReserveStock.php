@@ -5,7 +5,6 @@
 
 namespace Automattic\WooCommerce\Checkout\Helpers;
 
-use Automattic\WooCommerce\Enums\OrderInternalStatus;
 use Automattic\WooCommerce\Utilities\OrderUtil;
 
 defined( 'ABSPATH' ) || exit;
@@ -89,7 +88,7 @@ final class ReserveStock {
 		try {
 			$items = array_filter(
 				$order->get_items(),
-				function ( $item ) {
+				function( $item ) {
 					return $item->is_type( 'line_item' ) && $item->get_product() instanceof \WC_Product && $item->get_quantity() > 0;
 				}
 			);
@@ -246,10 +245,10 @@ final class ReserveStock {
 		global $wpdb;
 
 		$join         = "$wpdb->posts posts ON stock_table.`order_id` = posts.ID";
-		$where_status = "posts.post_status IN ( 'wc-checkout-draft', '" . OrderInternalStatus::PENDING . "' )";
+		$where_status = "posts.post_status IN ( 'wc-checkout-draft', 'wc-pending' )";
 		if ( OrderUtil::custom_orders_table_usage_is_enabled() ) {
 			$join         = "{$wpdb->prefix}wc_orders orders ON stock_table.`order_id` = orders.id";
-			$where_status = "orders.status IN ( 'wc-checkout-draft', '" . OrderInternalStatus::PENDING . "' )";
+			$where_status = "orders.status IN ( 'wc-checkout-draft', 'wc-pending' )";
 		}
 
 		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared

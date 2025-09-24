@@ -96,8 +96,7 @@ final class GoogleListingsAndAdsPlugin implements Plugin {
 		add_action(
 			'init',
 			function () {
-				// Register the job initializer only if it is available, see JobInitializer::is_needed.
-				// Note: ActionScheduler must be loaded after the init hook, so we can't load JobInitializer like a regular Service.
+				// register the job initializer only if it is available. see JobInitializer::is_needed.
 				if ( $this->container->has( JobInitializer::class ) ) {
 					$this->container->get( JobInitializer::class )->register();
 				}

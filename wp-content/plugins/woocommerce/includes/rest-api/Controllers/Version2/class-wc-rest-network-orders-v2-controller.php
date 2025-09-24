@@ -8,8 +8,6 @@
  * @since    3.4.0
  */
 
-use Automattic\WooCommerce\Enums\OrderInternalStatus;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -167,8 +165,8 @@ class WC_REST_Network_Orders_V2_Controller extends WC_REST_Orders_V2_Controller 
 	 */
 	public function network_orders_filter_args( $args ) {
 		$args['post_status'] = array(
-			OrderInternalStatus::ON_HOLD,
-			OrderInternalStatus::PROCESSING,
+			'wc-on-hold',
+			'wc-processing',
 		);
 
 		return $args;

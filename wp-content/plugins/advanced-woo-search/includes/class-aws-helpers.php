@@ -43,7 +43,11 @@ if ( ! class_exists( 'AWS_Helpers' ) ) :
          */
         static public function is_table_not_exist() {
 
-            return AWS()->option_vars->is_index_table_not_exists();
+            global $wpdb;
+
+            $table_name = $wpdb->prefix . AWS_INDEX_TABLE_NAME;
+
+            return ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) != $table_name );
 
         }
 
@@ -58,7 +62,7 @@ if ( ! class_exists( 'AWS_Helpers' ) ) :
 
             $indexed_products = 0;
 
-            if ( ! AWS()->option_vars->is_index_table_not_exists() ) {
+            if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) === $table_name ) {
 
                 $sql = "SELECT COUNT(*) FROM {$table_name} GROUP BY ID;";
 
@@ -81,7 +85,7 @@ if ( ! class_exists( 'AWS_Helpers' ) ) :
 
             $return = false;
 
-            if ( ! AWS()->option_vars->is_index_table_not_exists() ) {
+            if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) === $table_name ) {
 
                 $columns = $wpdb->get_row("
                     SELECT * FROM {$table_name} LIMIT 0, 1
@@ -110,7 +114,7 @@ if ( ! class_exists( 'AWS_Helpers' ) ) :
 
             $return = false;
 
-            if ( ! AWS()->option_vars->is_index_table_not_exists() ) {
+            if ( $wpdb->get_var( "SHOW TABLES LIKE '{$table_name}'" ) === $table_name ) {
 
                 $columns = $wpdb->get_row("
                     SELECT * FROM {$table_name} LIMIT 0, 1
@@ -201,7 +205,7 @@ if ( ! class_exists( 'AWS_Helpers' ) ) :
                             $str_new_array[$str_item_term] = $str_item_num;
                         }
 
-                        $new_array_key = AWS_Helpers::singularize( $str_item_term );
+                        $new_array_key = AWS_Plurals::singularize( $str_item_term );
 
                         if ( $new_array_key && strlen( $str_item_term ) > 3 && strlen( $new_array_key ) > 2 ) {
                             if ( ! isset( $str_new_array[$new_array_key] ) ) {
@@ -570,14 +574,14 @@ if ( ! class_exists( 'AWS_Helpers' ) ) :
             // Line feeds, carriage returns, tabs
             $string = preg_replace( '/[\x00-\x1F\x80-\x9F]/u', '', $string );
 
+            // Diacritical marks
+            $string = strtr( $string, AWS_Helpers::get_diacritic_chars() );
+
             if ( function_exists( 'mb_strtolower' ) ) {
                 $string = mb_strtolower( $string );
             } else {
                 $string = strtolower( $string );
             }
-
-            // Diacritical marks
-            $string = strtr( $string, AWS_Helpers::get_diacritic_chars() );
 
             /**
              * Filters normalized string
@@ -627,10 +631,8 @@ if ( ! class_exists( 'AWS_Helpers' ) ) :
          */
         static public function singularize( $search_term ) {
 
-            $lang = apply_filters( 'aws_current_scrapping_lang', 'en' );
-
             $search_term_len = strlen( $search_term );
-            $search_term_norm = AWS_Plurals::singularize( $search_term, $lang );
+            $search_term_norm = AWS_Plurals::singularize( $search_term );
 
             if ( $search_term_norm && $search_term_len > 3 && strlen( $search_term_norm ) > 2 ) {
                 $search_term = $search_term_norm;
@@ -923,29 +925,6 @@ if ( ! class_exists( 'AWS_Helpers' ) ) :
         }
 
         /*
-         * Generate link for search results page term search
-         *
-         * @return string Search URL
-         */
-        static public function get_search_term_url( $s, $atts = array() ) {
-
-            $search_url = AWS_Helpers::get_search_url();
-            $current_lang = AWS_Helpers::get_lang();
-
-            $params = shortcode_atts( array(
-                's' => urlencode( sanitize_text_field( $s ) ),
-                'post_type' => 'product',
-                'type_aws' => 'true',
-                'lang' => $current_lang,
-            ), $atts );
-
-            $search_url = add_query_arg( $params, $search_url );
-
-            return $search_url;
-
-        }
-
-        /*
          * Get string with current product terms names
          *
          * @return string List of terms names
@@ -1049,35 +1028,6 @@ if ( ! class_exists( 'AWS_Helpers' ) ) :
          */
         static public function kses_textarea_allowed_tags() {
             return array( 'a', 'br', 'em', 'strong', 'b', 'code', 'blockquote', 'p', 'i' );
-        }
-
-        /**
-         * Check if terms really exists and get their term_id value
-         * @param array $terms Taxonomy terms array
-         * @param string $taxonomy Taxonomy name
-         * @return array $new_terms_arr
-         */
-        static public function check_terms( $terms, $taxonomy ) {
-
-            $new_terms_arr = array();
-            foreach ( $terms as $term_name ) {
-
-                $term_check = term_exists( $term_name, $taxonomy );
-                if ( $term_check && isset( $term_check['term_id'] ) ) {
-                    $new_terms_arr[] = $term_check['term_id'];
-                }
-
-                if ( ! $term_check && strpos( $taxonomy, 'pa_' ) !== 0 ) {
-                    $term_check = term_exists( $term_name, 'pa_' . $taxonomy );
-                    if ( $term_check && isset( $term_check['term_id'] ) ) {
-                        $new_terms_arr[] = $term_check['term_id'];
-                    }
-                }
-
-            }
-
-            return $new_terms_arr;
-
         }
 
         /**
@@ -1201,9 +1151,7 @@ if ( ! class_exists( 'AWS_Helpers' ) ) :
                 'content' => 100,
                 'id'      => 300,
                 'sku'     => 300,
-                'other'   => 35,
-                'tax_name'  => 350,
-                'tax_desc'  => 100,
+                'other'   => 35
             );
 
             /**
@@ -1267,13 +1215,10 @@ if ( ! class_exists( 'AWS_Helpers' ) ) :
 
             $results_data = array();
             $notices = array();
-            $custom_top_results = array();
 
             $results_data['top_text'] = apply_filters( 'aws_search_top_text', '', $results, $s_data );
 
             $results_data['notices'] = apply_filters( 'aws_search_notices', $notices, $results, $s_data );
-
-            $results_data['top_results'] = apply_filters( 'aws_search_custom_top_results', $custom_top_results, $results, $s_data );
 
             $results_data = apply_filters( 'aws_search_custom_results_data', $results_data, $results, $s_data );
 

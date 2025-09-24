@@ -4,16 +4,12 @@
  */
 
 .cartbounty_get_pro a{
-	color: #008000;
-	font-weight: 700;
-}
-
-.cartbounty_get_pro a:hover{
-	color: #08a208;
+	color: #46b450;
+	font-weight: 600;
 }
 
 .cartbounty-notification{
-	border-left-color: #008000;
+	border-left-color: #46b450;
 	display: flex;
 }
 

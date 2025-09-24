@@ -8,7 +8,6 @@ use Automattic\WooCommerce\GoogleListingsAndAds\Admin\Input\FormException;
 use Automattic\WooCommerce\GoogleListingsAndAds\Admin\Input\InputInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Admin\Input\Select;
 use Automattic\WooCommerce\GoogleListingsAndAds\Admin\Input\SelectWithTextInput;
-use Automattic\WooCommerce\GoogleListingsAndAds\Admin\Product\Attributes\Input\GTINInput;
 use Automattic\WooCommerce\GoogleListingsAndAds\Exception\InvalidValue;
 use Automattic\WooCommerce\GoogleListingsAndAds\Exception\ValidateInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Product\Attributes\AttributeInterface;
@@ -133,13 +132,6 @@ class AttributesForm extends Form {
 				$new_input->set_label( $input->get_label() )
 					->set_description( $input->get_description() );
 
-				// When GTIN uses the SelectWithTextInput field, copy the readonly/hidden attributes from the GTINInput field.
-				if ( $input->name === 'gtin' ) {
-					$gtin_input = new GTINInput();
-					$new_input->set_hidden( $gtin_input->is_hidden() );
-					$new_input->set_readonly( $gtin_input->is_readonly() );
-				}
-
 				return self::init_input( $new_input, $attribute );
 			}
 
@@ -174,13 +166,10 @@ class AttributesForm extends Form {
 		$this->validate_interface( $input_type, InputInterface::class );
 
 		$attribute_input = self::init_input( new $input_type(), new $attribute_type() );
+		$this->add( $attribute_input );
 
-		if ( ! $attribute_input->is_hidden() ) {
-			$this->add( $attribute_input );
-
-			$attribute_id                           = call_user_func( [ $attribute_type, 'get_id' ] );
-			$this->attribute_types[ $attribute_id ] = $attribute_type;
-		}
+		$attribute_id                           = call_user_func( [ $attribute_type, 'get_id' ] );
+		$this->attribute_types[ $attribute_id ] = $attribute_type;
 
 		return $this;
 	}

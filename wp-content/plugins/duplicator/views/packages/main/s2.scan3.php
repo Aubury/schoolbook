@@ -2,7 +2,6 @@
 
 use Duplicator\Core\Controllers\ControllersManager;
 use Duplicator\Utils\LinkManager;
-use Duplicator\Utils\Upsell;
 
 defined('ABSPATH') || defined('DUPXABSPATH') || exit;
     /*IDE Helper*/
@@ -141,7 +140,7 @@ TOTAL SIZE -->
                             '%1$s and %2$s are <a> tags',
                             'duplicator'
                         ),
-                        '<a href="' . esc_url(Upsell::getCampaignUrl(array('utm_medium' => 'package-build-scan', 'utm_content' => 'Multi Threaded Get Pro')))  . '" target="_blank">',
+                        '<a href="' . esc_url(LinkManager::getCampaignUrl(array('utm_medium' => 'package-build-scan', 'utm_content' => 'Multi Threaded Get Pro')))  . '" target="_blank">',
                         '</a>'
                     );
                     ?>
@@ -600,7 +599,7 @@ DATABASE -->
             printf(__("- Switch to the %s which requires a capable hosting provider (VPS recommended).", 'duplicator'), $lnk);
             echo '<br/><br/>';
 
-            $lnk = '<a href="' . esc_url(Upsell::getCampaignUrl('package-build-scan', 'Backup to big Get Pro')) . '" target="_blank">' . esc_html__('Duplicator Pro', 'duplicator') . '</a>';
+            $lnk = '<a href="' . esc_url(LinkManager::getCampaignUrl('package-build-scan', 'Backup to big Get Pro')) . '" target="_blank">' . esc_html__('Duplicator Pro', 'duplicator') . '</a>';
             printf(__("- Consider upgrading to %s for unlimited large site support.", 'duplicator'), $lnk);
 
             echo '</div>';
@@ -695,7 +694,7 @@ DATABASE -->
     <?php
         echo '<div class="dup-pro-support">&nbsp;';
         esc_html_e('Migrate large, multi-gig sites with', 'duplicator');
-        echo '&nbsp;<i><a href="' .  esc_url(Upsell::getCampaignUrl('package-build-scan', 'Multi Gig Backup Get Pro')) . '" target="_blank">' . esc_html__('Duplicator Pro', 'duplicator') . '!</a></i>';
+        echo '&nbsp;<i><a href="' .  esc_url(LinkManager::getCampaignUrl('package-build-scan', 'Multi Gig Backup Get Pro')) . '" target="_blank">' . esc_html__('Duplicator Pro', 'duplicator') . '!</a></i>';
         echo '</div>';
     ?>
 </div>

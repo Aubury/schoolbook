@@ -9,6 +9,8 @@ use Automattic\WooCommerce\GoogleListingsAndAds\Assets\AdminScriptWithBuiltDepen
 use Automattic\WooCommerce\GoogleListingsAndAds\Assets\AdminStyleAsset;
 use Automattic\WooCommerce\GoogleListingsAndAds\Assets\Asset;
 use Automattic\WooCommerce\GoogleListingsAndAds\Assets\AssetsHandlerInterface;
+use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\AdminConditional;
+use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Conditional;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Registerable;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\ViewFactory;
@@ -27,10 +29,11 @@ use Automattic\WooCommerce\Admin\PageController;
  *
  * @package Automattic\WooCommerce\GoogleListingsAndAds\Pages
  */
-class Admin implements OptionsAwareInterface, Registerable, Service {
+class Admin implements Service, Registerable, Conditional, OptionsAwareInterface {
 
-	use OptionsAwareTrait;
+	use AdminConditional;
 	use PluginHelper;
+	use OptionsAwareTrait;
 
 	/**
 	 * @var AssetsHandlerInterface

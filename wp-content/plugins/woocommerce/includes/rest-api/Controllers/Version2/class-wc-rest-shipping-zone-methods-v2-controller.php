@@ -147,11 +147,7 @@ class WC_REST_Shipping_Zone_Methods_V2_Controller extends WC_REST_Shipping_Zones
 			$data[] = $method;
 		}
 
-		$total    = count( $data );
-		$response = rest_ensure_response( $data );
-		$response->header( 'X-WP-Total', $total );
-		$response->header( 'X-WP-TotalPages', $total ? 1 : 0 );
-		return $response;
+		return rest_ensure_response( $data );
 	}
 
 	/**

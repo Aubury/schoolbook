@@ -179,7 +179,6 @@ class Bootstrap
         \Requests::register_autoloader();
 
         require_once(DUPX_INIT . '/classes/config/class.conf.wp.php');
-        require_once(DUPX_INIT . '/classes/utilities/class.u.exceptions.php');
         require_once(DUPX_INIT . '/classes/utilities/class.u.php');
         require_once(DUPX_INIT . '/classes/utilities/class.u.notices.manager.php');
         require_once(DUPX_INIT . '/classes/utilities/template/class.u.template.manager.php');

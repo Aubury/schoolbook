@@ -10,11 +10,6 @@
  * @since    3.0.0
  */
 
-use Automattic\WooCommerce\Enums\ProductStatus;
-use Automattic\WooCommerce\Enums\ProductStockStatus;
-use Automattic\WooCommerce\Enums\ProductTaxStatus;
-use Automattic\WooCommerce\Enums\ProductType;
-use Automattic\WooCommerce\Enums\CatalogVisibility;
 use Automattic\WooCommerce\Utilities\I18nUtil;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -348,7 +343,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 	protected function get_default_attributes( $product ) {
 		$default = array();
 
-		if ( $product->is_type( ProductType::VARIABLE ) ) {
+		if ( $product->is_type( 'variable' ) ) {
 			foreach ( array_filter( (array) $product->get_default_attributes(), 'strlen' ) as $key => $value ) {
 				if ( 0 === strpos( $key, 'pa_' ) ) {
 					$default[] = array(
@@ -395,7 +390,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 	protected function get_attributes( $product ) {
 		$attributes = array();
 
-		if ( $product->is_type( ProductType::VARIATION ) ) {
+		if ( $product->is_type( 'variation' ) ) {
 			// Variation attributes.
 			foreach ( $product->get_variation_attributes() as $attribute_name => $attribute ) {
 				$name = str_replace( 'attribute_', '', $attribute_name );
@@ -494,8 +489,8 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 			'download_limit'        => $product->get_download_limit(),
 			'download_expiry'       => $product->get_download_expiry(),
 			'download_type'         => 'standard',
-			'external_url'       => $product->is_type( ProductType::EXTERNAL ) ? $product->get_product_url() : '',
-			'button_text'        => $product->is_type( ProductType::EXTERNAL ) ? $product->get_button_text() : '',
+			'external_url'          => $product->is_type( 'external' ) ? $product->get_product_url() : '',
+			'button_text'           => $product->is_type( 'external' ) ? $product->get_button_text() : '',
 			'tax_status'            => $product->get_tax_status(),
 			'tax_class'             => $product->get_tax_class(),
 			'manage_stock'          => $product->managing_stock(),
@@ -606,12 +601,12 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 		$data    = $this->get_product_data( $product );
 
 		// Add variations to variable products.
-		if ( $product->is_type( ProductType::VARIABLE ) && $product->has_child() ) {
+		if ( $product->is_type( 'variable' ) && $product->has_child() ) {
 			$data['variations'] = $this->get_variation_data( $product );
 		}
 
 		// Add grouped products data.
-		if ( $product->is_type( ProductType::GROUPED ) && $product->has_child() ) {
+		if ( $product->is_type( 'grouped' ) && $product->has_child() ) {
 			$data['grouped_products'] = $product->get_children();
 		}
 
@@ -704,7 +699,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 
 		// Post status.
 		if ( isset( $request['status'] ) ) {
-			$product->set_status( get_post_status_object( $request['status'] ) ? $request['status'] : ProductStatus::DRAFT );
+			$product->set_status( get_post_status_object( $request['status'] ) ? $request['status'] : 'draft' );
 		}
 
 		// Post slug.
@@ -1187,7 +1182,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 		}
 
 		// Sales and prices.
-		if ( in_array( $product->get_type(), array( ProductType::VARIABLE, ProductType::GROUPED ), true ) ) {
+		if ( in_array( $product->get_type(), array( 'variable', 'grouped' ), true ) ) {
 			$product->set_regular_price( '' );
 			$product->set_sale_price( '' );
 			$product->set_date_on_sale_to( '' );
@@ -1225,7 +1220,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 
 		// Stock status.
 		if ( isset( $request['in_stock'] ) ) {
-			$stock_status = true === $request['in_stock'] ? ProductStockStatus::IN_STOCK : ProductStockStatus::OUT_OF_STOCK;
+			$stock_status = true === $request['in_stock'] ? 'instock' : 'outofstock';
 		} else {
 			$stock_status = $product->get_stock_status();
 		}
@@ -1242,19 +1237,19 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 				$product->set_backorders( $request['backorders'] );
 			}
 
-			if ( $product->is_type( ProductType::GROUPED ) ) {
+			if ( $product->is_type( 'grouped' ) ) {
 				$product->set_manage_stock( 'no' );
 				$product->set_backorders( 'no' );
 				$product->set_stock_quantity( '' );
 				$product->set_stock_status( $stock_status );
-			} elseif ( $product->is_type( ProductType::EXTERNAL ) ) {
+			} elseif ( $product->is_type( 'external' ) ) {
 				$product->set_manage_stock( 'no' );
 				$product->set_backorders( 'no' );
 				$product->set_stock_quantity( '' );
-				$product->set_stock_status( ProductStockStatus::IN_STOCK );
+				$product->set_stock_status( 'instock' );
 			} elseif ( $product->get_manage_stock() ) {
 				// Stock status is always determined by children so sync later.
-				if ( ! $product->is_type( ProductType::VARIABLE ) ) {
+				if ( ! $product->is_type( 'variable' ) ) {
 					$product->set_stock_status( $stock_status );
 				}
 
@@ -1272,7 +1267,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 				$product->set_stock_quantity( '' );
 				$product->set_stock_status( $stock_status );
 			}
-		} elseif ( ! $product->is_type( ProductType::VARIABLE ) ) {
+		} elseif ( ! $product->is_type( 'variable' ) ) {
 			$product->set_stock_status( $stock_status );
 		}
 
@@ -1343,7 +1338,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 		}
 
 		// Product url and button text for external products.
-		if ( $product->is_type( ProductType::EXTERNAL ) ) {
+		if ( $product->is_type( 'external' ) ) {
 			if ( isset( $request['external_url'] ) ) {
 				$product->set_product_url( $request['external_url'] );
 			}
@@ -1354,7 +1349,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 		}
 
 		// Save default attributes for variable products.
-		if ( $product->is_type( ProductType::VARIABLE ) ) {
+		if ( $product->is_type( 'variable' ) ) {
 			$product = $this->save_default_attributes( $product, $request );
 		}
 
@@ -1377,7 +1372,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 			if ( ! $variation->get_slug() ) {
 				/* translators: 1: variation id 2: product name */
 				$variation->set_name( sprintf( __( 'Variation #%1$s of %2$s', 'woocommerce' ), $variation->get_id(), $product->get_name() ) );
-				$variation->set_status( isset( $data['visible'] ) && false === $data['visible'] ? ProductStatus::PRIVATE : ProductStatus::PUBLISH );
+				$variation->set_status( isset( $data['visible'] ) && false === $data['visible'] ? 'private' : 'publish' );
 			}
 
 			// Parent ID.
@@ -1388,7 +1383,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 
 			// Status.
 			if ( isset( $data['visible'] ) ) {
-				$variation->set_status( false === $data['visible'] ? ProductStatus::PRIVATE : ProductStatus::PUBLISH );
+				$variation->set_status( false === $data['visible'] ? 'private' : 'publish' );
 			}
 
 			// SKU.
@@ -1444,7 +1439,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 			}
 
 			if ( isset( $data['in_stock'] ) ) {
-				$variation->set_stock_status( true === $data['in_stock'] ? ProductStockStatus::IN_STOCK : ProductStockStatus::OUT_OF_STOCK );
+				$variation->set_stock_status( true === $data['in_stock'] ? 'instock' : 'outofstock' );
 			}
 
 			if ( isset( $data['backorders'] ) ) {
@@ -1578,7 +1573,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 		$product->save();
 
 		// Save variations.
-		if ( $product->is_type( ProductType::VARIABLE ) ) {
+		if ( $product->is_type( 'variable' ) ) {
 			if ( isset( $request['variations'] ) && is_array( $request['variations'] ) ) {
 				$this->save_variations_data( $product, $request );
 			}
@@ -1668,7 +1663,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 
 		// If we're forcing, then delete permanently.
 		if ( $force ) {
-			if ( $product->is_type( ProductType::VARIABLE ) ) {
+			if ( $product->is_type( 'variable' ) ) {
 				foreach ( $product->get_children() as $child_id ) {
 					$child = wc_get_product( $child_id );
 					if ( ! empty( $child ) ) {
@@ -1696,7 +1691,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 			}
 
 			// Otherwise, only trash if we haven't already.
-			if ( ProductStatus::TRASH === $post->post_status ) {
+			if ( 'trash' === $post->post_status ) {
 				/* translators: %s: post type */
 				return new WP_Error( 'woocommerce_rest_already_trashed', sprintf( __( 'The %s has already been deleted.', 'woocommerce' ), $this->post_type ), array( 'status' => 410 ) );
 			}
@@ -1704,7 +1699,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 			// (Note that internally this falls through to `wp_delete_post` if
 			// the trash is disabled.)
 			$product->delete();
-			$result = ProductStatus::TRASH === $product->get_status();
+			$result = 'trash' === $product->get_status();
 		}
 
 		if ( ! $result ) {
@@ -1780,15 +1775,15 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 				'type' => array(
 					'description' => __( 'Product type.', 'woocommerce' ),
 					'type'        => 'string',
-					'default'     => ProductType::SIMPLE,
+					'default'     => 'simple',
 					'enum'        => array_keys( wc_get_product_types() ),
 					'context'     => array( 'view', 'edit' ),
 				),
 				'status' => array(
 					'description' => __( 'Product status (post status).', 'woocommerce' ),
 					'type'        => 'string',
-					'default'     => ProductStatus::PUBLISH,
-					'enum'        => array_merge( array_keys( get_post_statuses() ), array( ProductStatus::FUTURE ) ),
+					'default'     => 'publish',
+					'enum'        => array_merge( array_keys( get_post_statuses() ), array( 'future' ) ),
 					'context'     => array( 'view', 'edit' ),
 				),
 				'featured' => array(
@@ -1800,8 +1795,8 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 				'catalog_visibility' => array(
 					'description' => __( 'Catalog visibility.', 'woocommerce' ),
 					'type'        => 'string',
-					'default'     => CatalogVisibility::VISIBLE,
-					'enum'        => array( CatalogVisibility::VISIBLE, CatalogVisibility::CATALOG, CatalogVisibility::SEARCH, CatalogVisibility::HIDDEN ),
+					'default'     => 'visible',
+					'enum'        => array( 'visible', 'catalog', 'search', 'hidden' ),
 					'context'     => array( 'view', 'edit' ),
 				),
 				'description' => array(
@@ -1939,8 +1934,8 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 				'tax_status' => array(
 					'description' => __( 'Tax status.', 'woocommerce' ),
 					'type'        => 'string',
-					'default'     => ProductTaxStatus::TAXABLE,
-					'enum'        => array( ProductTaxStatus::TAXABLE, ProductTaxStatus::SHIPPING, ProductTaxStatus::NONE ),
+					'default'     => 'taxable',
+					'enum'        => array( 'taxable', 'shipping', 'none' ),
 					'context'     => array( 'view', 'edit' ),
 				),
 				'tax_class' => array(
@@ -2398,8 +2393,8 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 							'tax_status' => array(
 								'description' => __( 'Tax status.', 'woocommerce' ),
 								'type'        => 'string',
-								'default'     => ProductTaxStatus::TAXABLE,
-								'enum'        => array( ProductTaxStatus::TAXABLE, ProductTaxStatus::SHIPPING, ProductTaxStatus::NONE ),
+								'default'     => 'taxable',
+								'enum'        => array( 'taxable', 'shipping', 'none' ),
 								'context'     => array( 'view', 'edit' ),
 							),
 							'tax_class' => array(
@@ -2595,7 +2590,7 @@ class WC_REST_Products_V1_Controller extends WC_REST_Posts_Controller {
 			'default'           => 'any',
 			'description'       => __( 'Limit result set to products assigned a specific status.', 'woocommerce' ),
 			'type'              => 'string',
-			'enum'              => array_merge( array( 'any', ProductStatus::FUTURE ), array_keys( get_post_statuses() ) ),
+			'enum'              => array_merge( array( 'any', 'future' ), array_keys( get_post_statuses() ) ),
 			'sanitize_callback' => 'sanitize_key',
 			'validate_callback' => 'rest_validate_request_arg',
 		);

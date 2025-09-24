@@ -51,14 +51,10 @@
 		$( '.colorpick' )
 			.iris( {
 				change: function ( event, ui ) {
-					const $this = $( this );
-					$this
+					$( this )
 						.parent()
 						.find( '.colorpickpreview' )
 						.css( { backgroundColor: ui.color.toString() } );
-					setTimeout( function () {
-						$this.trigger( 'change' );
-					} );
 				},
 				hide: true,
 				border: true,
@@ -89,33 +85,22 @@
 				}
 			} );
 
-		$( '.iris-square-value' ).on( 'click', function ( event ) {
-			event.preventDefault();
-		} );
-
-		$( '.colorpickpreview' ).on( 'click', function ( event ) {
-			event.stopPropagation();
-			$( this ).next( '.colorpick' ).click();
-		} );
-
 		$( 'body' ).on( 'click', function () {
 			$( '.iris-picker' ).hide();
 		} );
 
 		// Edit prompt
-		function editPrompt () {
+		$( function () {
 			var changed = false;
-			let $prevent_change_elements = $( '.wp-list-table .check-column, .wc-settings-prevent-change-event' );
+			let $check_column = $( '.wp-list-table .check-column' );
 
-			$( 'input, textarea, select, checkbox' ).on( 'change input', function (
+			$( 'input, textarea, select, checkbox' ).on( 'change', function (
 				event
 			) {
-				// Prevent change event on specific elements, that don't change the form. E.g.:
-				// - WP List Table checkboxes that only (un)select rows
-				// - Changing email type in email preview
+				// Toggling WP List Table checkboxes should not trigger navigation warnings.
 				if (
-					$prevent_change_elements.length &&
-					$prevent_change_elements.has( event.target ).length
+					$check_column.length &&
+					$check_column.has( event.target )
 				) {
 					return;
 				}
@@ -125,14 +110,6 @@
 						return params.i18n_nav_warning;
 					};
 					changed = true;
-					$( '.woocommerce-save-button' ).removeAttr( 'disabled' );
-				}
-			} );
-
-			$( '.iris-picker' ).on( 'click', function () {
-				if ( ! changed ) {
-					changed = true;
-					$( '.woocommerce-save-button' ).removeAttr( 'disabled' );
 				}
 			} );
 
@@ -142,34 +119,7 @@
 					window.onbeforeunload = '';
 				}
 			);
-		}
-
-		$( editPrompt );
-
-		const nodeListContainsFormElements = ( nodes ) => {
-			if ( ! nodes.length	) {
-				return false;
-			}
-			return Array.from( nodes ).some( ( element ) => {
-				return $( element ).find( 'input, textarea, select, checkbox' ).length;
-			} );
-		}
-
-		const form = document.querySelector( '#mainform' );
-		const observer = new MutationObserver( ( mutationsList ) => {
-			for ( const mutation of mutationsList ) {
-				if ( mutation.type === 'childList' ) {
-					if ( nodeListContainsFormElements( mutation.addedNodes ) ) {
-						editPrompt();
-						$( '.woocommerce-save-button' ).removeAttr( 'disabled' );
-					} else if ( nodeListContainsFormElements( mutation.removedNodes ) ) {
-						$( '.woocommerce-save-button' ).removeAttr( 'disabled' );
-					}
-				}
-			}
 		} );
-
-		observer.observe( form, { childList: true, subtree: true } );
 
 		// Sorting
 		$( 'table.wc_gateways tbody, table.wc_shipping tbody' ).sortable( {
@@ -190,7 +140,7 @@
 			},
 			stop: function ( event, ui ) {
 				ui.item.removeAttr( 'style' );
-				ui.item.trigger( 'updateMoveButtons', { isInitialLoad: false } );
+				ui.item.trigger( 'updateMoveButtons' );
 			},
 		} );
 
@@ -242,12 +192,12 @@
 				}
 
 				moveBtn.trigger( 'focus' ); // Re-focus after the container was moved.
-				moveBtn.closest( 'table' ).trigger( 'updateMoveButtons', { isInitialLoad: false } );
+				moveBtn.closest( 'table' ).trigger( 'updateMoveButtons' );
 			} );
 
 		$( '.wc-item-reorder-nav' )
 			.closest( 'table' )
-			.on( 'updateMoveButtons', function ( event, data ) {
+			.on( 'updateMoveButtons', function () {
 				var table = $( this ),
 					lastRow = $( this ).find( 'tbody tr:last' ),
 					firstRow = $( this ).find( 'tbody tr:first' );
@@ -264,14 +214,11 @@
 					.find( '.wc-item-reorder-nav .wc-move-down' )
 					.addClass( 'wc-move-disabled' )
 					.attr( { tabindex: '-1', 'aria-hidden': 'true' } );
-				if ( ! data.isInitialLoad ) {
-					$( '.woocommerce-save-button' ).removeAttr( 'disabled' );
-				}
 			} );
 
 		$( '.wc-item-reorder-nav' )
 			.closest( 'table' )
-			.trigger( 'updateMoveButtons', { isInitialLoad: true } );
+			.trigger( 'updateMoveButtons' );
 
 		$( '.submit button' ).on( 'click', function () {
 			if (

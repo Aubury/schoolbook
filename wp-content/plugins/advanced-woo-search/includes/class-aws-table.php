@@ -19,7 +19,7 @@ if ( ! class_exists( 'AWS_Table' ) ) :
         /**
          * @var AWS_Table Data
          */
-        private $data = array();
+        private $data;
 
         /**
          * Constructor
@@ -110,7 +110,7 @@ if ( ! class_exists( 'AWS_Table' ) ) :
 
                 $this->create_table();
 
-                if ( AWS()->option_vars->is_cache_table_not_exists() ) {
+                if ( AWS()->cache->is_cache_table_not_exist() ) {
                     AWS()->cache->create_cache_table();
                 }
 
@@ -302,24 +302,28 @@ if ( ! class_exists( 'AWS_Table' ) ) :
             global $wpdb;
 
             $charset_collate = $wpdb->get_charset_collate();
+            $terms_key = '';
+
+            $search_rule = AWS()->get_settings( 'search_rule' );
+            if ( $search_rule === 'begins' ) {
+                $terms_key = 'KEY term (term),';
+            }
 
             $sql = "CREATE TABLE {$this->table_name} (
-                      k BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
                       id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
                       term VARCHAR(50) NOT NULL DEFAULT 0,
                       term_source VARCHAR(50) NOT NULL DEFAULT 0,
-                      type TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
-                      count SMALLINT UNSIGNED NOT NULL DEFAULT 0,
-                      in_stock TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
-                      on_sale TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+                      type VARCHAR(50) NOT NULL DEFAULT 0,
+                      count BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+                      in_stock INT(11) NOT NULL DEFAULT 0,
+                      on_sale INT(11) NOT NULL DEFAULT 0,
                       term_id BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
-                      visibility TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
+                      visibility VARCHAR(20) NOT NULL DEFAULT 0,
                       lang VARCHAR(20) NOT NULL DEFAULT 0,
-                      PRIMARY KEY (k),
                       KEY id (id),
-                      KEY term (term),
+                      {$terms_key}
                       KEY term_id (term_id),
-                      UNIQUE KEY source_term (id,type,in_stock,on_sale,visibility,lang,term_source,term,count)
+                      UNIQUE KEY source_term (id,term,term_source,lang)
                 ) $charset_collate;";
 
             /**
@@ -340,8 +344,6 @@ if ( ! class_exists( 'AWS_Table' ) ) :
                 }
 
             }
-
-            update_option( 'aws_index_table_version', AWS_VERSION );
 
             do_action( 'aws_create_index_table' );
 
@@ -399,8 +401,6 @@ if ( ! class_exists( 'AWS_Table' ) ) :
 
             global $wpdb;
 
-            $rows = AWS()->table_updates->get_table_rows();
-
             /**
              * Filters product data array before it will be added to index table.
              *
@@ -411,9 +411,6 @@ if ( ! class_exists( 'AWS_Table' ) ) :
              * @param null ( since 1.82 )
              */
             $data = apply_filters( 'aws_indexed_data', $data, $data['id'], null );
-
-            $product_type = AWS()->table_updates->get_product_type_code( 'product' );
-            $data['visibility'] = AWS()->table_updates->get_visibility_code( $data['visibility'] );
 
             $values = array();
 
@@ -438,8 +435,8 @@ if ( ! class_exists( 'AWS_Table' ) ) :
                             }
 
                             $value = $wpdb->prepare(
-                                $rows,
-                                $data['id'], $term, $source, $product_type, $count, $data['in_stock'], $data['on_sale'], $term_id, $data['visibility'], $data['lang']
+                                "(%d, %s, %s, %s, %d, %d, %d, %d, %s, %s)",
+                                $data['id'], $term, $source, 'product', $count, $data['in_stock'], $data['on_sale'], $term_id, $data['visibility'], $data['lang']
                             );
 
                             $values[] = $value;
@@ -593,7 +590,7 @@ if ( ! class_exists( 'AWS_Table' ) ) :
             global $wp_current_filter, $wpdb;
             if ( ! in_array( 'save_post', $wp_current_filter ) || in_array( 'woocommerce_process_shop_order_meta', $wp_current_filter ) ) {
                 $sync = AWS()->get_settings( 'autoupdates' );
-                if ( AWS()->option_vars->is_index_table_not_exists() ) {
+                if ( AWS_Helpers::is_table_not_exist() ) {
                     $this->create_table();
                 }
                 if ( $sync !== 'false' ) {
@@ -641,15 +638,11 @@ if ( ! class_exists( 'AWS_Table' ) ) :
              */
             $sync = $force ? 'true' : apply_filters( 'aws_sync_index_table', $sync, $product_id );
 
-            if ( AWS()->option_vars->is_index_table_not_exists() ) {
+            if ( AWS_Helpers::is_table_not_exist() ) {
                 $this->create_table();
             }
 
             if ( $sync === 'false' ) {
-                return;
-            }
-
-            if ( isset( $this->data['product_to_index'] ) && array_search( $product_id, $this->data['product_to_index'] ) !== false ) {
                 return;
             }
 
@@ -671,8 +664,6 @@ if ( ! class_exists( 'AWS_Table' ) ) :
             }
 
             do_action('aws_cache_clear');
-
-            $this->data['product_to_index'][] = $product_id;
 
         }
 

@@ -15,7 +15,7 @@ abstract class MerchantReportQuery extends MerchantQuery {
 	use ReportQueryTrait;
 
 	/**
-	 * MerchantReportQuery constructor.
+	 * Query constructor.
 	 *
 	 * @param array $args Query arguments.
 	 */

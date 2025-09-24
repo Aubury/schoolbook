@@ -2,7 +2,6 @@
 namespace Automattic\WooCommerce\Blocks\Payments\Integrations;
 
 use Automattic\WooCommerce\Blocks\Assets\Api;
-use WC_Gateway_BACS;
 
 /**
  * Bank Transfer (BACS) payment method integration
@@ -15,7 +14,7 @@ final class BankTransfer extends AbstractPaymentMethodType {
 	 *
 	 * @var string
 	 */
-	protected $name = WC_Gateway_BACS::ID;
+	protected $name = 'bacs';
 
 	/**
 	 * An instance of the Asset Api

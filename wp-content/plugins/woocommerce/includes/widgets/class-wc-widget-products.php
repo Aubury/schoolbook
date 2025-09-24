@@ -8,8 +8,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-use Automattic\WooCommerce\Enums\ProductStockStatus;
-
 /**
  * Widget products.
  */
@@ -134,7 +132,7 @@ class WC_Widget_Products extends WC_Widget {
 				array(
 					'taxonomy' => 'product_visibility',
 					'field'    => 'term_taxonomy_id',
-					'terms'    => $product_visibility_term_ids[ ProductStockStatus::OUT_OF_STOCK ],
+					'terms'    => $product_visibility_term_ids['outofstock'],
 					'operator' => 'NOT IN',
 				),
 			); // WPCS: slow query ok.

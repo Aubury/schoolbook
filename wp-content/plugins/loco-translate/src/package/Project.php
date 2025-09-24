@@ -128,7 +128,7 @@ class Loco_package_Project {
     /**
      * Split project ID into domain and slug.
      * null and "" are meaningfully different. "" means deliberately empty slug, whereas null means default
-     * @param string $id <domain>[.<slug>]
+     * @param string <domain>[.<slug>]
      * @return string[] [ <domain>, <slug> ]
      */
     public static function splitId( $id ){

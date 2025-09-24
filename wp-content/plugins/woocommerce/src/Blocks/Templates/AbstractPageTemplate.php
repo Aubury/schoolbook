@@ -14,6 +14,7 @@ abstract class AbstractPageTemplate extends AbstractTemplate {
 	 */
 	public function init() {
 		add_filter( 'page_template_hierarchy', array( $this, 'page_template_hierarchy' ), 1 );
+		add_filter( 'pre_get_document_title', array( $this, 'page_template_title' ) );
 	}
 
 	/**
@@ -47,10 +48,7 @@ abstract class AbstractPageTemplate extends AbstractTemplate {
 	}
 
 	/**
-	 * Forces the page title to match the template title when this template is active.
-	 *
-	 * Only applies when hooked into `pre_get_document_title`. Most templates used for pages will not require this because
-	 * the page title should be used instead.
+	 * Filter the page title when the template is active.
 	 *
 	 * @param string $title Page title.
 	 * @return string

@@ -1,7 +1,5 @@
 <?php
 
-use Automattic\WooCommerce\Enums\ProductType;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -98,7 +96,7 @@ class WC_Report_Stock extends WP_List_Table {
 				echo esc_html( $product->get_name() );
 
 				// Get variation data.
-				if ( $product->is_type( ProductType::VARIATION ) ) {
+				if ( $product->is_type( 'variation' ) ) {
 					echo '<div class="description">' . wp_kses_post( wc_get_formatted_variation( $product, true ) ) . '</div>';
 				}
 				break;
@@ -130,7 +128,7 @@ class WC_Report_Stock extends WP_List_Table {
 				?><p>
 					<?php
 					$actions   = array();
-					$action_id = $product->is_type( ProductType::VARIATION ) ? $item->parent : $item->id;
+					$action_id = $product->is_type( 'variation' ) ? $item->parent : $item->id;
 
 					$actions['edit'] = array(
 						'url'    => admin_url( 'post.php?post=' . $action_id . '&action=edit' ),

@@ -17,6 +17,7 @@ class UpgradeFunctions
 {
     const LAST_VERSION_EMAIL_SUMMARY_WRONG_KEY = '1.5.6.1';
     const FIRST_VERSION_NEW_STORAGE_POSITION   = '1.3.35';
+    const FIRST_VERSION_FOLDER_MIGRATION       = '1.5.14';
 
     /**
     * This function is executed when the plugin is activated and
@@ -27,10 +28,11 @@ class UpgradeFunctions
     *
     * @return void
     */
-    public static function performUpgrade($currentVersion, $newVersion)
+    public static function performUpgrade($currentVersion, $newVersion): void
     {
         self::updateStoragePostition($currentVersion);
         self::emailSummaryOptKeyUpdate($currentVersion);
+        self::migrateStorageFolders($currentVersion, $newVersion);
     }
 
     /**
@@ -40,7 +42,7 @@ class UpgradeFunctions
      *
      * @return void
      */
-    private static function emailSummaryOptKeyUpdate($currentVersion)
+    private static function emailSummaryOptKeyUpdate($currentVersion): void
     {
         if ($currentVersion == false || version_compare($currentVersion, self::LAST_VERSION_EMAIL_SUMMARY_WRONG_KEY, '>')) {
             return;
@@ -59,12 +61,36 @@ class UpgradeFunctions
      *
      * @return void
      */
-    private static function updateStoragePostition($currentVersion)
+    private static function updateStoragePostition($currentVersion): void
     {
         //PRE 1.3.35
         //Do not update to new wp-content storage till after
         if ($currentVersion !== false && version_compare($currentVersion, self::FIRST_VERSION_NEW_STORAGE_POSITION, '<')) {
             DUP_Settings::Set('storage_position', DUP_Settings::STORAGE_POSITION_LEGACY);
         }
+    }
+
+    /**
+     * Migrate storage folders from legacy to new location
+     *
+     * @param false|string $currentVersion current Duplicator version, false if first install
+     *
+     * @return void
+     */
+    private static function migrateStorageFolders($currentVersion): void
+    {
+        // Skip on fresh installs or if already past migration version
+        if ($currentVersion === false || version_compare($currentVersion, self::FIRST_VERSION_FOLDER_MIGRATION, '>=')) {
+            return;
+        }
+
+        // If storage position is already set to new, do not migrate
+        if (DUP_Settings::Get('storage_position') === DUP_Settings::STORAGE_POSITION_WP_CONTENT) {
+            return;
+        }
+
+        // Force using wp-content storage position
+        DUP_Settings::setStoragePosition(DUP_Settings::STORAGE_POSITION_WP_CONTENT);
+        DUP_Settings::Save();
     }
 }

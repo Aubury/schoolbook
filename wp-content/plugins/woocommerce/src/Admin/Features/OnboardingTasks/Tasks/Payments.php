@@ -4,7 +4,7 @@ namespace Automattic\WooCommerce\Admin\Features\OnboardingTasks\Tasks;
 
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\Task;
-use Automattic\WooCommerce\Utilities\FeaturesUtil;
+use Automattic\WooCommerce\Internal\Admin\WcPayWelcomePage;
 
 /**
  * Payments Task
@@ -76,14 +76,8 @@ class Payments extends Task {
 	 * @return bool
 	 */
 	public function can_view() {
-		// If the React-based Payments settings page is enabled, the task is always visible.
-		if ( FeaturesUtil::feature_is_enabled( 'reactify-classic-payments-settings' ) ) {
-			return true;
-		}
-
-		// The task is visible if WooPayments is not supported in the current store location country.
-		// Otherwise, the WooPayments task will be shown.
-		return Features::is_enabled( 'payment-gateway-suggestions' ) && ! WooCommercePayments::is_supported();
+		$woocommerce_payments = $this->task_list->get_task( 'woocommerce-payments' );
+		return Features::is_enabled( 'payment-gateway-suggestions' ) && ! $woocommerce_payments->can_view();
 	}
 
 	/**
@@ -96,7 +90,7 @@ class Payments extends Task {
 		$enabled_gateways = array_filter(
 			$gateways,
 			function( $gateway ) {
-				return 'yes' === $gateway->enabled;
+				return 'yes' === $gateway->enabled && 'woocommerce_payments' !== $gateway->id;
 			}
 		);
 
@@ -104,19 +98,28 @@ class Payments extends Task {
 	}
 
 	/**
-	 * The task action URL.
-	 *
-	 * Empty string means the task linking will be handled by the JS logic.
+	 * Action URL.
 	 *
 	 * @return string
 	 */
 	public function get_action_url() {
-		// If the React-based Payments settings page is enabled, we want the task to link to the Payments Settings page.
-		if ( FeaturesUtil::feature_is_enabled( 'reactify-classic-payments-settings' ) ) {
-			return admin_url( 'admin.php?page=wc-settings&tab=checkout' );
+		// Check if the WooPayments plugin is active and the store is supported.
+		if ( WooCommercePayments::is_supported() && WooCommercePayments::is_wcpay_active() ) {
+			// If WooPayments is connected, point to the WooPayments overview page.
+			if ( WooCommercePayments::is_connected() ) {
+				return add_query_arg( 'from', 'WCADMIN_PAYMENT_TASK', admin_url( 'admin.php?page=wc-admin&path=/payments/overview' ) );
+			}
+
+			// Point to the WooPayments Connect page.
+			return add_query_arg( 'from', 'WCADMIN_PAYMENT_TASK', admin_url( 'admin.php?page=wc-admin&path=/payments/connect' ) );
 		}
 
-		// Otherwise, we want the task behavior to remain unchanged (link to the Payments task page).
-		return '';
+		// Check if there is an active WooPayments incentive via the welcome page.
+		if ( WcPayWelcomePage::instance()->must_be_visible() ) {
+			// Point to the WooPayments welcome page.
+			return add_query_arg( 'from', 'WCADMIN_PAYMENT_TASK', admin_url( 'admin.php?page=wc-admin&path=/wc-pay-welcome-page' ) );
+		}
+
+		return admin_url( 'admin.php?page=wc-admin&task=payments' );
 	}
 }

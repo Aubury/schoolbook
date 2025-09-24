@@ -31,7 +31,7 @@ class PolicyComplianceCheckController extends BaseController {
 	protected $policy_compliance_check;
 
 	/**
-	 * PolicyComplianceCheckController constructor.
+	 * BaseController constructor.
 	 *
 	 * @param RESTServer            $server
 	 * @param PolicyComplianceCheck $policy_compliance_check

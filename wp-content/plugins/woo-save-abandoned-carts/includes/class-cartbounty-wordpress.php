@@ -93,7 +93,7 @@ class CartBounty_WordPress{
 			$status = sprintf( '<span class="status active">%s</span>', esc_html__( 'Active', 'woo-save-abandoned-carts' ) );
 		}
 
-		return $status;
+		echo $status;
 	}
 
 	/**
@@ -107,11 +107,6 @@ class CartBounty_WordPress{
 
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$time = $admin->get_time_intervals();
-		$email_consent_query = '';
-
-		if( $admin->get_consent_settings( 'email' ) ){
-			$email_consent_query = 'AND email_consent = 1';
-		}
 
 		//Retrieving all abandoned carts that are eligible for email recovery
 		//Excluding finished automations, unsubscried carts
@@ -125,8 +120,7 @@ class CartBounty_WordPress{
 				wp_unsubscribed != 1 AND
 				wp_complete != 1 AND
 				time < %s AND
-				time > %s
-				$email_consent_query",
+				time > %s",
 				$admin->get_cart_type('abandoned'),
 				$time['cart_abandoned'],
 				$time['maximum_sync_period']
@@ -418,8 +412,7 @@ class CartBounty_WordPress{
 
 		if(isset($cart)){ //If we have a cart
 			if(!empty($cart)){
-				$step_nr = 0;
-				$unsubscribe_link = apply_filters( 'cartbounty_automation_unsubscribe_url', $this->get_unsubscribe_url( $cart->email, $cart->session_id, $cart->id ), $step_nr );
+				$unsubscribe_link = $this->get_unsubscribe_url( $cart->email, $cart->session_id, $cart->id );
 				$recovery_link = $admin->create_cart_url( $cart->email, $cart->session_id, $cart->id );
 			}
 		}
@@ -470,9 +463,8 @@ class CartBounty_WordPress{
      *
      * @since    7.0
      * @param    integer    $cart_id   			Cart ID
-     * @param    integer    $step_nr            Automation step number
      */
-	public function unsubscribe_user( $cart_id, $step_nr ){
+	public function unsubscribe_user( $cart_id ){
 		global $wpdb;
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$wpdb->query(
@@ -484,41 +476,6 @@ class CartBounty_WordPress{
 				$cart_id
 			)
 		);
-
-		$this->save_unsubscribe_step( $cart_id, $step_nr );
-	}
-
-	/**
-     * Save information about the step at which user unsubscribed
-     *
-     * @since    8.4
-     * @param    integer    $cart_id   			Cart ID
-     * @param    integer    $step_nr            Automation step number
-     */
-	public function save_unsubscribe_step( $cart_id, $step_nr = false ){
-		global $wpdb;
-		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME_EMAILS;
-
-		if( $cart_table ){
-			
-			$wpdb->update(
-				$cart_table,
-				array( 
-					'unsubscribed' => 1
-				),
-				array( 
-					'cart' => $cart_id,
-					'step' => $step_nr
-				),
-				array( 
-					'%d'
-				),
-				array( 
-					'%d',
-					'%d'
-				)
-			);
-		}
 	}
 
 	/**
@@ -638,6 +595,25 @@ class CartBounty_WordPress{
 	}
 
 	/**
+	* Return email preview modal container
+	*
+	* @since    7.0
+	* @return   HTML
+	*/
+	public function output_modal_container(){
+		$output = '';
+		$output .= '<div class="cartbounty-modal" id="cartbounty-modal" aria-hidden="true">';
+			$output .= '<div class="cartbounty-modal-overlay" tabindex="-1" data-micromodal-close>';
+				$output .= '<div class="cartbounty-modal-content-container" role="dialog" aria-modal="true">';
+					$output .= '<button type="button" class="cartbounty-close-modal" aria-label="'. esc_html__("Close", 'woo-save-abandoned-carts') .'" data-micromodal-close></button>';
+					$output .= '<div class="cartbounty-modal-content" id="cartbounty-modal-content"></div>';
+				$output .= '</div>';
+			$output .= '</div>';
+		$output .= '</div>';
+		return $output;
+	}
+
+	/**
 	 * Return abandoned carts waiting in the given automation step queue.
 	 *
 	 * @since    7.0
@@ -649,11 +625,6 @@ class CartBounty_WordPress{
 		$cart_table = $wpdb->prefix . CARTBOUNTY_TABLE_NAME;
 		$time = $admin->get_time_intervals();
 		$count = 0;
-		$consent_query = '';
-
-		if( $admin->get_consent_settings( 'email' ) ){
-			$consent_query = 'AND email_consent = 1';
-		}
 		
 		$carts = $wpdb->get_results(
 			$wpdb->prepare(
@@ -666,8 +637,7 @@ class CartBounty_WordPress{
 				wp_complete != 1 AND
 				wp_steps_completed = %d AND
 				time < %s AND
-				time > %s
-				$consent_query",
+				time > %s",
 				$admin->get_cart_type('abandoned'),
 				0,
 				$time['cart_abandoned'],
@@ -691,26 +661,11 @@ class CartBounty_WordPress{
      */
 	public function get_stats(){
 		$count = 0;
-		$sent_emails = get_option( 'cartbounty_automation_sends' );
-		
-		if( $sent_emails > 0 ){
+		$sent_emails = get_option('cartbounty_automation_sends');
+		if($sent_emails > 0){
 			$count = $sent_emails;
 		}
-
 		return $count;
-	}
-
-	/**
-	* Add tracking URL to existing recovery link
-	*
-	* @since    8.4
-	* @return   string
-	* @param    string    $url					Link
-	* @param    integer   $step_nr				Automation step number
-	*/
-	public function add_click_through_tracking( $url, $step_nr ){
-		$url = $url . '&step=' . $step_nr;
-		return $url;
 	}
 
 	/**
@@ -842,9 +797,7 @@ class CartBounty_WordPress{
 		$sql = "CREATE TABLE $email_table (
 			id BIGINT(20) NOT NULL AUTO_INCREMENT,
 			cart BIGINT(20) NOT NULL,
-			step INT(3) DEFAULT 0,
 			time DATETIME DEFAULT '0000-00-00 00:00:00',
-			unsubscribed TINYINT(1) DEFAULT 0,
 			PRIMARY KEY (id)
 		) $charset_collate;";
 

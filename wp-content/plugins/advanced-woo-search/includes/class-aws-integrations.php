@@ -27,11 +27,6 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
         private $child_theme = '';
 
         /**
-         * @var AWS_Integrations Active plugins arrray
-         */
-        public $active_plugins = array();
-
-        /**
          * @var AWS_Integrations The single instance of the class
          */
         protected static $_instance = null;
@@ -65,15 +60,6 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
                     $this->current_theme = $theme->parent()->get( 'Name' );
                 }
             }
-
-            $active_plugins = get_option( 'active_plugins', array() );
-
-            if ( is_multisite() ) {
-                $network_active_plugins = get_site_option( 'active_sitewide_plugins', array() );
-                $active_plugins = array_merge( $active_plugins, array_keys( $network_active_plugins ) );
-            }
-
-            $this->active_plugins = $active_plugins;
 
             $this->includes();
 
@@ -335,11 +321,6 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
                 add_action( 'aws_search_page_filters', array( $this,  'wps_aws_search_page_filters' ), 1 );
             }
 
-            // Yoast Premium
-            if ( in_array( 'wordpress-seo-premium/wp-seo-premium.php', $this->active_plugins ) ) {
-                add_filter( 'Yoast\WP\SEO\allowlist_permalink_vars', array( $this, 'yoast_allowlist_permalink_vars' ) );
-            }
-
         }
         
         /**
@@ -438,11 +419,6 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
                 include_once( AWS_DIR . '/includes/modules/class-aws-barn2-protected-categories.php' );
             }
 
-            // WooCommerce Product Table plugin by Barn2
-            if ( class_exists( 'Barn2\Plugin\WC_Product_Table\Product_Table' ) ) {
-                include_once( AWS_DIR . '/includes/modules/class-aws-barn2-product-table.php' );
-            }
-
             // WC Marketplace - https://wc-marketplace.com/
             if ( defined( 'WCMp_PLUGIN_VERSION' ) || defined( 'MVX_PLUGIN_VERSION' ) ) {
                 include_once( AWS_DIR . '/includes/modules/class-aws-multivendorx.php' );
@@ -538,16 +514,6 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
             //  EAN for WooCommerce by WPFactory
             if ( class_exists( 'Alg_WC_EAN' ) ) {
                 include_once( AWS_DIR . '/includes/modules/class-aws-alg-wc-ean.php' );
-            }
-
-            // Breakdance builder
-            if ( defined( 'BREAKDANCE_PLUGIN_URL' ) ) {
-                include_once( AWS_DIR . '/includes/modules/class-aws-breakdance.php' );
-            }
-
-            // Crocoblock plugins
-            if ( in_array( 'jet-blocks/jet-blocks.php', $this->active_plugins ) || in_array( 'jet-elements/jet-elements.php', $this->active_plugins ) || in_array( 'jet-woo-builder/jet-woo-builder.php', $this->active_plugins ) ) {
-                include_once( AWS_DIR . '/includes/modules/class-aws-crocoblock.php' );
             }
 
         }
@@ -2015,10 +1981,6 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
                 $selectors[] = '.si-header-widgets .si-search-form';
             }
 
-            if ( 'Shopical' === $this->current_theme ) {
-                $selectors[] = '.search .search-form-wrapper';
-            }
-
             // WCFM - WooCommerce Multivendor Marketplace
             if ( class_exists( 'WCFMmp' ) ) {
                 $selectors[] = '#wcfmmp-store .woocommerce-product-search';
@@ -2455,17 +2417,6 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
 
             return $filters;
 
-        }
-
-        /*
-         * Yoast: Allow some permalink vars
-         */
-        public function yoast_allowlist_permalink_vars( $allowed_extravars ) {
-            $allowed_extravars[] = 'post_type';
-            $allowed_extravars[] = 'type_aws';
-            $allowed_extravars[] = 'aws_id';
-            $allowed_extravars[] = 'aws_filter';
-            return $allowed_extravars;
         }
 
     }

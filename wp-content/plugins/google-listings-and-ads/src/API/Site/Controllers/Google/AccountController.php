@@ -38,7 +38,7 @@ class AccountController extends BaseController {
 	];
 
 	/**
-	 * AccountController constructor.
+	 * BaseController constructor.
 	 *
 	 * @param RESTServer $server
 	 * @param Connection $connection

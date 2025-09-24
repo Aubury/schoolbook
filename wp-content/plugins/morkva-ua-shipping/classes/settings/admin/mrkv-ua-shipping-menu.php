@@ -38,16 +38,19 @@ if (!class_exists('MRKV_UA_SHIPPING_MENU'))
 				# Add submenu page
 	        	add_submenu_page($this->slug, $shipping['name'], $shipping['name'], 'manage_options', 'mrkv_ua_shipping_' . $slug, array($this, 'mrkv_ua_shipping_method_page_content'));
 
-	        	foreach($shipping['pages'] as $page_slug => $page_name)
+	        	if(isset($shipping['pages']))
 	        	{
-	        		# Add submenu page
-	        		add_submenu_page('mrkv_ua_shipping_' . $slug, $page_name, $page_name, 'manage_options', 'mrkv_ua_shipping_' . $slug . '_' . $page_slug, array($this, 'mrkv_ua_shipping_method_page_info_content'));
+	        		foreach($shipping['pages'] as $page_slug => $page_name)
+		        	{
+		        		# Add submenu page
+		        		add_submenu_page('mrkv_ua_shipping_' . $slug, $page_name, $page_name, 'manage_options', 'mrkv_ua_shipping_' . $slug . '_' . $page_slug, array($this, 'mrkv_ua_shipping_method_page_info_content'));
 
-	        		if($page_slug == 'invoices')
-	        		{
-	        			# Add submenu page
-	        			add_submenu_page('woocommerce', $page_name . ' ' . $shipping['name'], $page_name  . ' ' . $shipping['name'], 'manage_options', 'admin.php?page=' . 'mrkv_ua_shipping_' . $slug . '_' . $page_slug);
-	        		}
+		        		if($page_slug == 'invoices')
+		        		{
+		        			# Add submenu page
+		        			add_submenu_page('woocommerce', $page_name . ' ' . $shipping['name'], $page_name  . ' ' . $shipping['name'], 'manage_options', 'admin.php?page=' . 'mrkv_ua_shipping_' . $slug . '_' . $page_slug);
+		        		}
+		        	}
 	        	}
 			}
 

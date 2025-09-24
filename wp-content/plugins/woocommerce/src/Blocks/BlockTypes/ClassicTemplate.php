@@ -29,7 +29,7 @@ class ClassicTemplate extends AbstractDynamicBlock {
 	 *
 	 * @var string
 	 */
-	protected $api_version = '3';
+	protected $api_version = '2';
 
 	/**
 	 * Initialize this block.

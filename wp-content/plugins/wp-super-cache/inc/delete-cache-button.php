@@ -132,7 +132,7 @@ function wpsc_admin_bar_delete_cache() {
 		} else {
 			wp_safe_redirect( esc_url_raw( home_url( $req_path ) ) );
 		}
-		exit( 0 );
+		exit;
 	} else {
 		die( "Oops. Problem with nonce. Please delete cached page from settings page." );
 	}

@@ -10,8 +10,6 @@ use WpOrg\Requests\Requests;
 
 /**
  * Class Connection
- *
- * @internal
  */
 class Connection {
 	const TEXT_COMPLETION_API_URL = 'https://public-api.wordpress.com/wpcom/v2/text-completion';

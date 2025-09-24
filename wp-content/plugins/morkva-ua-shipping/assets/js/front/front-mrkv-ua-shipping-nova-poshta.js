@@ -220,6 +220,7 @@ jQuery(window).on('load', function()
 		                action: 'mrkv_ua_ship_nova_poshta_warehouse',
 		                ref: current_option.ref,
 		                warehouse_type: mrkv_ua_ship_helper.nova_warehouse_type,
+		                source_query: 'front',
 		                nonce: mrkv_ua_ship_helper.nonce,
 		            },
 		            beforeSend: function() {
@@ -292,6 +293,7 @@ jQuery(window).on('load', function()
 		                	warehouse_type: mrkv_ua_ship_helper.nova_warehouse_type,
 		                	search_by: 'yes',
 		                	name: params.term,
+		                	source_query: 'front',
 		                	nonce: mrkv_ua_ship_helper.nonce,
 					    }
 
@@ -345,6 +347,7 @@ jQuery(window).on('load', function()
 	                action: 'mrkv_ua_ship_nova_poshta_warehouse',
 	                ref: mrkv_ua_ship_warehouse,
 	                warehouse_type: mrkv_ua_ship_helper.nova_warehouse_type,
+	                source_query: 'front',
 	                nonce: mrkv_ua_ship_helper.nonce,
 	            },
 	            beforeSend: function() {
@@ -437,6 +440,7 @@ jQuery(window).on('load', function()
 	                action: 'mrkv_ua_ship_nova_poshta_warehouse',
 	                ref: current_option.ref,
 	                warehouse_type: mrkv_ua_ship_helper.nova_poshtamat_type,
+	                source_query: 'front',
 	                nonce: mrkv_ua_ship_helper.nonce,
 	            },
 	            beforeSend: function() {
@@ -502,6 +506,7 @@ jQuery(window).on('load', function()
 	                action: 'mrkv_ua_ship_nova_poshta_warehouse',
 	                ref: mrkv_ua_ship_poshtamat,
 	                warehouse_type: mrkv_ua_ship_helper.nova_poshtamat_type,
+	                source_query: 'front',
 	                nonce: mrkv_ua_ship_helper.nonce,
 	            },
 	            beforeSend: function() {

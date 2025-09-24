@@ -29,6 +29,7 @@ use Duplicator\Ajax\ServicesDashboard;
 use Duplicator\Ajax\ServicesEducation;
 use Duplicator\Ajax\ServicesExtraPlugins;
 use Duplicator\Ajax\ServicesTools;
+use Duplicator\Controllers\AboutUsController;
 use Duplicator\Controllers\EmailSummaryPreviewPageController;
 use Duplicator\Controllers\WelcomeController;
 use Duplicator\Core\Controllers\ControllersManager;
@@ -39,8 +40,7 @@ use Duplicator\Core\Notifications\Review;
 use Duplicator\Core\Views\TplMng;
 use Duplicator\Utils\CronUtils;
 use Duplicator\Utils\ExtraPlugins\CrossPromotion;
-use Duplicator\Utils\ExtraPlugins\ExtraPluginsMng;
-use Duplicator\Utils\Upsell;
+use Duplicator\Utils\LinkManager;
 use Duplicator\Views\DashboardWidget;
 use Duplicator\Views\EducationElements;
 use Duplicator\Utils\UsageStatistics\StatsBootstrap;
@@ -59,7 +59,7 @@ class Bootstrap
         if (is_admin()) {
             add_action('plugins_loaded', array(__CLASS__, 'update'));
             add_action('plugins_loaded', array(__CLASS__, 'wpfrontIntegrate'));
-            add_action('plugins_loaded', array(__CLASS__, 'loadTextdomain'));
+            add_action('init', array(__CLASS__, 'loadTextdomain'));
 
             /* ========================================================
             * ACTIVATE/DEACTIVE/UPDATE HOOKS
@@ -96,6 +96,7 @@ class Bootstrap
             }
 
             add_action('admin_init', array(__CLASS__, 'adminInit'));
+            add_action('in_admin_footer', array(__CLASS__, 'pluginFooter' ));
             add_action('admin_footer', array(__CLASS__, 'adjustProMenuItemClass'));
             add_action('admin_enqueue_scripts', array(__CLASS__, 'adminEqueueScripts'));
 
@@ -318,7 +319,10 @@ class Bootstrap
                 'callback'               => function () {
                     include(DUPLICATOR_PLUGIN_PATH . 'views/tools/controller.php');
                 },
-                'enqueue_style_callback' => array(__CLASS__, 'mocksStyles')
+                'enqueue_style_callback' => function () {
+                    AboutUsController::enqueues();
+                    self::mocksStyles();
+                }
             ),
             array(
                 'parent_slug'            => 'duplicator',
@@ -344,7 +348,7 @@ class Bootstrap
                 'page_title'  => $proTitle,
                 'menu_title'  => $proTitle,
                 'capability'  => 'manage_options',
-                'menu_slug'   => Upsell::getCampaignUrl('admin-menu', 'Upgrade to Pro'),
+                'menu_slug'   => LinkManager::getCampaignUrl('admin-menu', 'Upgrade to Pro'),
                 'callback'    => null,
             )
         );
@@ -460,6 +464,19 @@ class Bootstrap
     }
 
     /**
+     * Add the plugin footer
+     *
+     * @return void
+     */
+    public static function pluginFooter()
+    {
+        if (!ControllersManager::isDuplicatorPage()) {
+            return;
+        }
+        TplMng::getInstance()->render('parts/plugin-footer');
+    }
+
+    /**
      * Loads all required javascript libs/source for DupPro
      *
      * @return void
@@ -522,7 +539,7 @@ class Bootstrap
               array_unshift($links, $settings_link);
              */
             $upgrade_link = '<a style="color: #1da867;" class="dup-plugins-list-pro-upgrade" href="' .
-                esc_url(Upsell::getCampaignUrl('plugin-actions-link')) . '" target="_blank">' .
+                esc_url(LinkManager::getCampaignUrl('plugin-actions-link')) . '" target="_blank">' .
                 '<strong style="display: inline;">' .
                 esc_html__("Upgrade to Pro", 'duplicator') .
                 '</strong></a>';

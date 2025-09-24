@@ -3,9 +3,6 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Model\Languages;
-use WP_Syntex\Polylang\Options\Options;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -20,26 +17,11 @@ defined( 'ABSPATH' ) || exit;
  * }
  */
 abstract class PLL_Translatable_Object {
-	/**
-	 * Model for the languages.
-	 *
-	 * @var Languages
-	 */
-	protected $languages;
 
 	/**
-	 * Polylang's options.
-	 *
-	 * @var Options
+	 * @var PLL_Model
 	 */
-	protected $options;
-
-	/**
-	 * Internal non persistent cache object.
-	 *
-	 * @var PLL_Cache<mixed>
-	 */
-	protected $cache;
+	public $model;
 
 	/**
 	 * List of taxonomies to cache.
@@ -94,28 +76,16 @@ abstract class PLL_Translatable_Object {
 	 *
 	 * @since 3.4
 	 *
-	 * @param PLL_Model $model Instance of `PLL_Model`.
+	 * @param PLL_Model $model Instance of `PLL_Model`, passed by reference.
 	 */
-	public function __construct( PLL_Model $model ) {
-		$this->languages      = $model->languages;
-		$this->options        = $model->options;
-		$this->cache          = $model->cache;
+	public function __construct( PLL_Model &$model ) {
+		$this->model          = $model;
 		$this->tax_to_cache[] = $this->tax_language;
 
 		/*
 		 * Register our taxonomy as soon as possible.
+		 * This is early registration, not ready for rewrite rules as $wp_rewrite will be setup later.
 		 */
-		$this->register_language_taxonomy();
-	}
-
-	/**
-	 * Registers the language taxonomy.
-	 *
-	 * @since 3.7
-	 *
-	 * @return void
-	 */
-	protected function register_language_taxonomy(): void {
 		register_taxonomy(
 			$this->tax_language,
 			(array) $this->object_type,
@@ -186,7 +156,7 @@ abstract class PLL_Translatable_Object {
 		$old_lang = $this->get_language( $id );
 		$old_lang = $old_lang ? $old_lang->get_tax_prop( $this->tax_language, 'term_id' ) : 0;
 
-		$lang = $this->languages->get( $lang );
+		$lang = $this->model->get_language( $lang );
 		$lang = $lang ? $lang->get_tax_prop( $this->tax_language, 'term_id' ) : 0;
 
 		if ( $old_lang === $lang ) {
@@ -224,7 +194,7 @@ abstract class PLL_Translatable_Object {
 			return false;
 		}
 
-		return $this->languages->get( $lang->term_id );
+		return $this->model->get_language( $lang->term_id );
 	}
 
 	/**
@@ -256,6 +226,8 @@ abstract class PLL_Translatable_Object {
 	 * @return WP_Term|false The term associated to the object in the requested taxonomy if it exists, `false` otherwise.
 	 */
 	public function get_object_term( $id, $taxonomy ) {
+		global $wp_version;
+
 		$id = $this->sanitize_int_id( $id );
 
 		if ( empty( $id ) ) {
@@ -282,11 +254,17 @@ abstract class PLL_Translatable_Object {
 			}
 		}
 
+		// Stores it the way WP expects it. Set an empty cache if no term was found in the taxonomy.
+		$store_only_term_ids = version_compare( $wp_version, '6.0', '>=' );
+
 		foreach ( $this->tax_to_cache as $tax ) {
 			if ( empty( $terms[ $tax ] ) ) {
 				$to_cache = array();
-			} else {
+			} elseif ( $store_only_term_ids ) {
 				$to_cache = array( $terms[ $tax ]->term_id );
+			} else {
+				// Backward compatibility with WP < 6.0.
+				$to_cache = array( $terms[ $tax ] );
 			}
 
 			wp_cache_add( $id, $to_cache, "{$tax}_relationships" );
@@ -344,7 +322,7 @@ abstract class PLL_Translatable_Object {
 		$languages_tt_ids = array();
 
 		foreach ( $languages as $language ) {
-			$language = $this->languages->get( $language );
+			$language = $this->model->get_language( $language );
 
 			if ( ! empty( $language ) ) {
 				$languages_tt_ids[] = absint( $language->get_tax_prop( $this->tax_language, 'term_taxonomy_id' ) );
@@ -373,7 +351,7 @@ abstract class PLL_Translatable_Object {
 	public function get_objects_with_no_lang( $limit, array $args = array() ) {
 		$language_ids = array();
 
-		foreach ( $this->languages->get_list() as $language ) {
+		foreach ( $this->model->get_languages_list() as $language ) {
 			$language_ids[] = $language->get_tax_prop( $this->get_tax_language(), 'term_taxonomy_id' );
 		}
 
@@ -383,30 +361,24 @@ abstract class PLL_Translatable_Object {
 			return array();
 		}
 
-		$object_ids = $this->query_objects_with_no_lang( $language_ids, $limit, $args );
+		$sql        = $this->get_objects_with_no_lang_sql( $language_ids, $limit, $args );
+		$object_ids = $this->query_objects_with_no_lang( $sql );
 
 		return array_values( $this->sanitize_int_ids_list( $object_ids ) );
 	}
 
 	/**
-	 * Returns object IDs without language.
+	 * Returns object IDs without language given a specific SQL query.
 	 * Can be overridden by child classes in case queried object doesn't use
 	 * `wp_cache_set_last_changed()` or another cache system.
 	 *
 	 * @since 3.4
-	 * @since 3.7 Changed all parameters.
 	 *
-	 * @param int[] $language_ids List of language `term_taxonomy_id`.
-	 * @param int   $limit        Max number of objects to return. `-1` to return all of them.
-	 * @param array $args         The object args.
+	 * @param string $sql A prepared SQL query for object IDs with no language.
 	 * @return string[] An array of numeric object IDs.
-	 *
-	 * @phpstan-param array<positive-int> $language_ids
-	 * @phpstan-param -1|positive-int $limit
-	 * @phpstan-param array<empty> $args
 	 */
-	protected function query_objects_with_no_lang( array $language_ids, $limit, array $args = array() ) {
-		$key          = md5( maybe_serialize( $language_ids ) . maybe_serialize( $args ) . $limit );
+	protected function query_objects_with_no_lang( $sql ) {
+		$key          = md5( $sql );
 		$last_changed = wp_cache_get_last_changed( $this->cache_type );
 		$cache_key    = "{$this->cache_type}_no_lang:{$key}:{$last_changed}";
 		$object_ids   = wp_cache_get( $cache_key, $this->cache_type );
@@ -415,7 +387,7 @@ abstract class PLL_Translatable_Object {
 			return $object_ids;
 		}
 
-		$object_ids = $this->get_raw_objects_with_no_lang( $language_ids, $limit, $args );
+		$object_ids = $GLOBALS['wpdb']->get_col( $sql ); // PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
 		wp_cache_set( $cache_key, $object_ids, $this->cache_type );
 
 		return $object_ids;
@@ -423,7 +395,7 @@ abstract class PLL_Translatable_Object {
 
 	/**
 	 * Sanitizes an ID as positive integer.
-	 * Kind of similar to `absint()`, but rejects negative integers instead of making them positive.
+	 * Kind of similar to `absint()`, but rejects negetive integers instead of making them positive.
 	 *
 	 * @since 3.2
 	 *
@@ -458,40 +430,30 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Fetches the IDs of the objects without language.
+	 * Returns SQL query that fetches the IDs of the objects without language.
 	 *
-	 * @since 3.7
+	 * @since 3.4
 	 *
 	 * @param int[] $language_ids List of language `term_taxonomy_id`.
 	 * @param int   $limit        Max number of objects to return. `-1` to return all of them.
 	 * @param array $args         The object args.
-	 * @return string[]
+	 * @return string
 	 *
 	 * @phpstan-param array<positive-int> $language_ids
 	 * @phpstan-param -1|positive-int $limit
 	 * @phpstan-param array<empty> $args
 	 */
-	protected function get_raw_objects_with_no_lang( array $language_ids, $limit, array $args = array() ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		global $wpdb;
-
+	protected function get_objects_with_no_lang_sql( array $language_ids, $limit, array $args = array() ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		$db = $this->get_db_infos();
 
-		return $wpdb->get_col(
-			$wpdb->prepare(
-				sprintf(
-					"SELECT %%i FROM %%i
-					WHERE %%i NOT IN (
-						SELECT object_id FROM {$wpdb->term_relationships} WHERE term_taxonomy_id IN (%s)
-					)
-					LIMIT %%d",
-					implode( ',', array_fill( 0, count( $language_ids ), '%d' ) )
-				),
-				array_merge(
-					array( $db['id_column'], $db['table'], $db['id_column'] ),
-					$language_ids,
-					array( $limit >= 1 ? $limit : 4294967295 )
-				)
+		return sprintf(
+			"SELECT {$db['table']}.{$db['id_column']} FROM {$db['table']}
+			WHERE {$db['table']}.{$db['id_column']} NOT IN (
+				SELECT object_id FROM {$GLOBALS['wpdb']->term_relationships} WHERE term_taxonomy_id IN (%s)
 			)
+			%s",
+			PLL_Db_Tools::prepare_values_list( $language_ids ),
+			$limit >= 1 ? sprintf( 'LIMIT %d', $limit ) : ''
 		);
 	}
 
@@ -538,24 +500,11 @@ abstract class PLL_Translatable_Object {
 	}
 
 	/**
-	 * Returns the description to use for the "language properties" in the REST API.
-	 *
-	 * @since 3.7
-	 * @see WP_Syntex\Polylang\REST\V2\Languages::get_item_schema()
-	 *
-	 * @return string
-	 */
-	public function get_rest_description(): string {
-		/* translators: %s is the name of a database table. */
-		return sprintf( __( 'Language taxonomy properties for table %s.', 'polylang' ), $this->get_db_infos()['table'] );
-	}
-
-	/**
 	 * Returns database-related information that can be used in some of this class methods.
 	 * These are specific to the table containing the objects.
 	 *
 	 * @see PLL_Translatable_Object::join_clause()
-	 * @see PLL_Translatable_Object::get_raw_objects_with_no_lang()
+	 * @see PLL_Translatable_Object::get_objects_with_no_lang_sql()
 	 *
 	 * @since 3.4.3
 	 *

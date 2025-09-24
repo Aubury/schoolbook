@@ -9,17 +9,12 @@
 		"storeOnly": {
 			"type": "boolean",
 			"default": false
-		},
-		"comingSoonPatternId": {
-			"type": "string",
-			"default": ""
 		}
 	},
 	"supports": {
 		"color": {
-			"background": true,
+			"background": false,
 			"text": true
-		},
-		"inserter": false
+		}
 	}
 }

@@ -5,13 +5,15 @@
  * @package Polylang
  *
  * @since 2.7
- *
- * @var Options $options Polylang's options.
  */
 
-use WP_Syntex\Polylang\Options\Options;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Don't access directly.
+}
 
-defined( 'ABSPATH' ) || exit;
+$default_options = PLL_Install::get_default_options();
+$options = wp_parse_args( get_option( 'polylang' ), $default_options );
+$media_support = $options['media_support'];
 
 $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' : '' ) . '.png';
 
@@ -33,7 +35,7 @@ $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' :
 					id="pll-wizard-service-media"
 					type="checkbox"
 					name="media_support"
-					value="yes" <?php checked( $options['media_support'] ); ?>
+					value="yes" <?php checked( $media_support ); ?>
 				/>
 				<label for="pll-wizard-service-media" />
 			</span>
@@ -52,7 +54,7 @@ $help_screenshot = '/modules/wizard/images/media-screen' . ( is_rtl() ? '-rtl' :
 					<span class="dashicons dashicons-visibility"></span><?php esc_html_e( 'Help', 'polylang' ); ?>
 				</label>
 				<span id="screenshot">
-					<img src="<?php echo esc_url( plugins_url( $help_screenshot, POLYLANG_FILE ) ); ?>" />
+					<img src="<?php echo esc_url_raw( esc_url( plugins_url( $help_screenshot, POLYLANG_FILE ) ) ); ?>" />
 				</span>
 			</p>
 		</div>

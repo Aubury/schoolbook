@@ -1,7 +1,7 @@
 <?php
 
 use Duplicator\Core\Views\TplMng;
-use Duplicator\Utils\Upsell;
+use Duplicator\Utils\LinkManager;
 
 defined("ABSPATH") || exit;
 
@@ -211,7 +211,7 @@ defined("ABSPATH") || exit;
         'title'        => __('Overwrite a WordPress site with Drag and Drop Import!', 'duplicator'),
         'warning-text' => __('Drag and Drop Import is not available in Duplicator Lite!', 'duplicator'),
         'content-tpl'  => 'mocks/import/content-popup',
-        'upsell-url'   => Upsell::getCampaignUrl('blurred-mocks', 'Import')
+        'upsell-url'   => LinkManager::getCampaignUrl('blurred-mocks', 'Import')
     ),
     true
 ); ?>

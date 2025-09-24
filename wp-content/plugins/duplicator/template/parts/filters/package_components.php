@@ -9,7 +9,6 @@
 
 use Duplicator\Utils\LinkManager;
 use Duplicator\Libs\Snap\SnapIO;
-use Duplicator\Utils\Upsell;
 
 defined("ABSPATH") or die("");
 
@@ -24,17 +23,14 @@ defined("ABSPATH") or die("");
 $archiveFilterPaths       = trim($tplData['package']->Archive->FilterDirs . ";" . $tplData['package']->Archive->FilterFiles, ";");
 $archiveFilterPaths       = str_replace(';', ";\n", $archiveFilterPaths);
 $archiveFilterExtensions  = $tplData['package']->Archive->FilterExts;
-$packageComponentsTooltip = wp_kses(
-    __("Backup components allow you to include/exclude differents part of your WordPress installation in the Backup.</br></br>" .
+$packageComponentsTooltip = __(
+    "Backup components allow you to include/exclude differents part of your WordPress installation in the Backup.</br></br>" .
     "<b>Database</b>: Include the database in the Backup.</br>" .
     "<b>Plugins</b>: Include the plugins in the Backup. With the 'active only' option enabled, only active plugins will be included in the Backup.</br>" .
     "<b>Themes</b>: Include the themes in the Backup. With the 'active only' option enabled, only active themes will be included in the Backup.</br>" .
     "<b>Media</b>: Include the 'uploads' folder.</br>" .
-    "<b>Other</b>: Include non-WordPress files and folders in the root directory.</br>", 'duplicator'),
-    array(
-        'br' => array(),
-        'b'  => array(),
-    )
+    "<b>Other</b>: Include non-WordPress files and folders in the root directory.</br>",
+    'duplicator'
 );
 $pathFiltersTooltip       = __("File filters allow you to exclude files and folders from the Backup. To enable path and extension filters check the " .
     "checkbox. Enter the full path of the files and folders you want to exclude from the Backup as a semicolon (;) seperated list.", "duplicator");
@@ -48,8 +44,8 @@ $extensionFilterTooltip   = __("File extension filters allow you to exclude file
             <span id="component-section-title">
                 <?php _e('Components', 'duplicator'); ?>
                 <i class="fas fa-question-circle fa-sm" 
-                    data-tooltip-title="<?php _e('Backup Components (Pro feature)', 'duplicator'); ?>" 
-                    data-tooltip="<?php echo $packageComponentsTooltip;?>" 
+                    data-tooltip-title="<?php esc_attr_e('Backup Components (Pro feature)', 'duplicator'); ?>" 
+                    data-tooltip="<?php echo esc_attr($packageComponentsTooltip);?>" 
                     aria-expanded="false"></i>
             </span>
         </div>
@@ -135,8 +131,8 @@ $extensionFilterTooltip   = __("File extension filters allow you to exclude file
                                name="filter-on"
                                type="checkbox" <?php checked($tplData['package']->Archive->FilterOn); ?>> <?php esc_html_e('Enable', 'duplicator') ?></label>)
                     <i class="fas fa-question-circle fa-sm" 
-                        data-tooltip-title="<?php _e('Path Filters', 'duplicator'); ?>" 
-                        data-tooltip="<?php echo $pathFiltersTooltip;?>" 
+                        data-tooltip-title="<?php esc_attr_e('Path Filters', 'duplicator'); ?>" 
+                        data-tooltip="<?php echo esc_attr($pathFiltersTooltip);?>" 
                         aria-expanded="false"></i>
                 </span>
                 <div class="filter-links">
@@ -160,8 +156,8 @@ $extensionFilterTooltip   = __("File extension filters allow you to exclude file
             <span>
                 <?php _e('File Extensions', 'duplicator'); ?>
                 <i class="fas fa-question-circle fa-sm" 
-                    data-tooltip-title="<?php _e('File Extensions', 'duplicator'); ?>" 
-                    data-tooltip="<?php echo $extensionFilterTooltip;?>" 
+                    data-tooltip-title="<?php esc_attr_e('File Extensions', 'duplicator'); ?>" 
+                    data-tooltip="<?php echo esc_attr($extensionFilterTooltip);?>" 
                     aria-expanded="false"></i>
             </span>
                 <div class="filter-links">
@@ -239,7 +235,7 @@ $extensionFilterTooltip   = __("File extension filters allow you to exclude file
                 '%1$s and %2$s represents the opening and closing HTML tags for an anchor or link.',
                 'duplicator'
             ),
-            '<a href="' . Upsell::getCampaignUrl('package-components-lite', 'upgrade to Pro') . '" target="_blank">',
+            '<a href="' . LinkManager::getCampaignUrl('package-components-lite', 'upgrade to Pro') . '" target="_blank">',
             '</a>'
         );
         ?>

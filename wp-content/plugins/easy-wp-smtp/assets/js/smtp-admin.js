@@ -232,23 +232,6 @@ EasyWPSMTP.Admin.Settings = EasyWPSMTP.Admin.Settings || ( function( document, w
 					} );
 			} );
 
-			// Microsoft SMTP deprecation notice dismiss.
-			$( '.microsoft_basic_auth_deprecation_notice' ).on( 'click', '.notice-dismiss', function() {
-				var $button = $( this );
-				$.ajax( {
-					url: ajaxurl,
-					dataType: 'json',
-					type: 'POST',
-					data: {
-						action: 'easy_wp_smtp_microsoft_basic_auth_deprecation_notice_dismiss',
-						nonce: easy_wp_smtp.nonce,
-					},
-					beforeSend: function() {
-						$button.prop( 'disabled', true );
-					},
-				} );
-			} );
-
 			// Show/hide debug output.
 			$( '.easy-wp-smtp-test-email-debug .easy-wp-smtp-error-log-toggle' ).on( 'click', function( e ) {
 				e.preventDefault();
@@ -338,16 +321,10 @@ EasyWPSMTP.Admin.Settings = EasyWPSMTP.Admin.Settings || ( function( document, w
 				$field.focus();
 				$button.remove();
 			} );
-
-			$( '#easy-wp-smtp-setting-rate_limit-lite' ).on( 'click', function( e ) {
-				e.preventDefault();
-
-				app.education.rateLimitUpgrade();
-			} );
 		},
 
 		education: {
-			upgradeModal: function( title, content, upgradeUrlUtmContent ) {
+			upgradeMailer: function( $input ) {
 
 				$.alert( {
 					backgroundDismiss: true,
@@ -355,9 +332,9 @@ EasyWPSMTP.Admin.Settings = EasyWPSMTP.Admin.Settings || ( function( document, w
 					animationBounce: 1,
 					type: 'blue',
 					closeIcon: true,
-					title: title,
+					title: easy_wp_smtp.education.upgrade_title.replace( /%name%/g, $input.data('title') ),
 					icon: '"></i>' + easy_wp_smtp.education.upgrade_icon_lock + '<i class="',
-					content: content,
+					content: easy_wp_smtp.education.upgrade_content.replace( /%name%/g, $input.data('title') ) + easy_wp_smtp.education.upgrade_bonus,
 					boxWidth: '550px',
 					onOpenBefore: function() {
 						this.$btnc.after( '<div class="easy-wp-smtp-already-purchased">' + easy_wp_smtp.education.upgrade_doc + '</div>' );
@@ -370,32 +347,14 @@ EasyWPSMTP.Admin.Settings = EasyWPSMTP.Admin.Settings || ( function( document, w
 							keys: [ 'enter' ],
 							action: function() {
 								var appendChar = /(\?)/.test( easy_wp_smtp.education.upgrade_url ) ? '&' : '?',
-									upgradeURL = easy_wp_smtp.education.upgrade_url + appendChar + 'utm_content=' + encodeURIComponent( upgradeUrlUtmContent );
+									upgradeURL = easy_wp_smtp.education.upgrade_url + appendChar + 'utm_content=' + encodeURIComponent( $input.val() );
 
 								window.open( upgradeURL, '_blank' );
 							}
 						}
 					}
 				} );
-			},
-
-			upgradeMailer: function( $input ) {
-
-				this.upgradeModal(
-					easy_wp_smtp.education.upgrade_title.replace( /%name%/g, $input.data( 'title' ) ),
-					easy_wp_smtp.education.upgrade_content.replace( /%name%/g, $input.data( 'title' ) ) + easy_wp_smtp.education.upgrade_bonus,
-					$input.val()
-				);
-			},
-
-			rateLimitUpgrade: function() {
-
-				this.upgradeModal(
-					easy_wp_smtp.education.rate_limit.upgrade_title,
-					easy_wp_smtp.education.rate_limit.upgrade_content + easy_wp_smtp.education.upgrade_bonus,
-					'rate-limit-setting'
-				);
-			},
+			}
 		},
 
 		/**
@@ -450,7 +409,7 @@ EasyWPSMTP.Admin.Settings = EasyWPSMTP.Admin.Settings || ( function( document, w
 			} );
 
 			// Set settings changed attribute, if any input was changed.
-			$( ':input:not( #easy-wp-smtp-setting-license-key, .easy-wp-smtp-not-form-input, #easy-wp-smtp-setting-outlook-one_click_setup_enabled )', $settingPages ).on( 'change', function() {
+			$( ':input:not( #easy-wp-smtp-setting-license-key, .easy-wp-smtp-not-form-input )', $settingPages ).on( 'change', function() {
 				app.pluginSettingsChanged = true;
 			} );
 

@@ -1,7 +1,6 @@
 <?php
 namespace Automattic\WooCommerce\Blocks\Templates;
 
-use Automattic\WooCommerce\Blocks\Templates\ArchiveProductTemplatesCompatibility;
 use Automattic\WooCommerce\Blocks\Utils\BlockTemplateUtils;
 
 /**
@@ -17,6 +16,13 @@ class ProductSearchResultsTemplate extends AbstractTemplate {
 	 * @var string
 	 */
 	const SLUG = 'product-search-results';
+
+	/**
+	 * The template used as a fallback if that one is customized.
+	 *
+	 * @var string
+	 */
+	public $fallback_template = ProductCatalogTemplate::SLUG;
 
 	/**
 	 * Initialization method.
@@ -49,9 +55,6 @@ class ProductSearchResultsTemplate extends AbstractTemplate {
 	 */
 	public function render_block_template() {
 		if ( ! is_embed() && is_post_type_archive( 'product' ) && is_search() ) {
-			$compatibility_layer = new ArchiveProductTemplatesCompatibility();
-			$compatibility_layer->init();
-
 			$templates = get_block_templates( array( 'slug__in' => array( self::SLUG ) ) );
 
 			if ( isset( $templates[0] ) && BlockTemplateUtils::template_has_legacy_template_block( $templates[0] ) ) {

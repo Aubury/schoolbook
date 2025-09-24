@@ -1,0 +1,18 @@
+RewriteEngine On
+RewriteBase /
+
+# Перенаправляем ВСЕ запросы к exchange_1C_Woocommerce.php на HTTP
+RewriteRule ^exchange_1C_Woocommerce.php$ http://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization},L]
+# This file was updated by Duplicator on 2024-10-30 12:13:26.
+# See the original_files_ folder for the original source_site_htaccess file.
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+# END WordPress

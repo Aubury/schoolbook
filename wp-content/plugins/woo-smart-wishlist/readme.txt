@@ -2,9 +2,10 @@
 Contributors: wpclever
 Donate link: https://wpclever.net
 Tags: woocommerce, wpc, wishlist, wait-list
-Tested up to: 6.7
-Version: 4.9.9
-Stable tag: 4.9.9
+Requires at least: 4.0
+Tested up to: 6.6
+Version: 4.9.0
+Stable tag: 4.9.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -98,40 +99,8 @@ Example:
 
 == Changelog ==
 
-= 4.9.9 =
-* Updated: Optimized the code
-* Updated: Compatible with WP 6.7 & Woo 9.7
-
-= 4.9.8 =
-* Updated: Optimized the code
-
-= 4.9.7 =
-* Fixed: Minor JS issue on the frontend
-* Updated: Compatible with WP 6.7 & Woo 9.5
-
-= 4.9.6 =
-* Fixed: Error on displaying price change
-
-= 4.9.5 =
-* Updated: Optimized the code
-* Updated: Compatible with WP 6.7 & Woo 9.4
-
-= 4.9.4 =
-* Updated: Optimized the code
-
-= 4.9.3 =
-* Added: Option to open wishlist popup menu on My Account
-* Fixed: Counter when having suggested products
-
-= 4.9.2 =
-* Added: Shortcode [woosw_link]
-
-= 4.9.1 =
-* Updated: Optimized the code
-* Updated: Compatible with WP 6.6 & Woo 9.3
-
 = 4.9.0 =
-* Updated: Use WC_AJAX for frontend
+* Updated: Using WC_AJAX for frontend
 
 = 4.8.9 =
 * Added: Filter hook 'woosw_get_ids' and 'woosw_get_items'

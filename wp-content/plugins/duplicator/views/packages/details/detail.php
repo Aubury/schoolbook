@@ -1,8 +1,7 @@
 <?php
 
-use Duplicator\Utils\LinkManager;
 use Duplicator\Libs\Snap\SnapJson;
-use Duplicator\Utils\Upsell;
+use Duplicator\Utils\LinkManager;
 
 defined('ABSPATH') || defined('DUPXABSPATH') || exit;
 $view_state     = DUP_UI_ViewState::getArray();
@@ -31,6 +30,7 @@ $archive_build_mode      = ($package->Archive->Format === 'ZIP') ? 'ZipArchive (
 $dup_install_secure_on   = isset($package->Installer->OptsSecureOn) ? $package->Installer->OptsSecureOn : 0;
 $dup_install_secure_pass = isset($package->Installer->OptsSecurePass) ? DUP_Util::installerUnscramble($package->Installer->OptsSecurePass) : '';
 $installerNameMode       = DUP_Settings::Get('installer_name_mode');
+$storage_position        = DUP_Settings::Get('storage_position');
 
 $currentStoreURLPath = DUP_Settings::getSsdirUrl();
 $installerSecureName = $package->getInstDownloadName(true);
@@ -274,7 +274,7 @@ DIALOG: QUICK PATH -->
 STORAGE -->
 <div class="dup-box">
 <div class="dup-box-title">
-    <i class="fas fa-server fa-sm"></i>
+    <i class="fas fa-hdd fa-sm"></i>
     <?php esc_html_e('Storage', 'duplicator') ?>
     <div class="dup-box-arrow"></div>
 </div>
@@ -327,7 +327,7 @@ STORAGE -->
                                 '<i class="fas fa-network-wired fa-fw"></i>&nbsp;' . 'FTP/SFTP'
                             ); ?>
                             <a 
-                                href="<?php echo esc_url(Upsell::getCampaignUrl('details-storage')); ?>"
+                                href="<?php echo esc_url(LinkManager::getCampaignUrl('details-storage')); ?>"
                                 target="_blank"
                                 class="link-style">
                                 <?php esc_html_e('Duplicator Pro', 'duplicator');?>

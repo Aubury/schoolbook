@@ -4,10 +4,10 @@ Plugin Name: Loco Translate
 Plugin URI: https://wordpress.org/plugins/loco-translate/
 Description: Translate themes and plugins directly in WordPress
 Author: Tim Whitlock
-Version: 2.7.2
-Requires at least: 6.6
-Requires PHP: 7.2.24
-Tested up to: 6.7.2
+Version: 2.6.11
+Requires at least: 5.2
+Requires PHP: 5.6.20
+Tested up to: 6.6.0
 Author URI: https://localise.biz/wordpress/plugin
 Text Domain: loco-translate
 Domain Path: /languages/
@@ -21,17 +21,19 @@ if( ! function_exists('is_admin') ){
 
 /**
  * Get absolute path to Loco primary plugin file
+ * @return string
  */
-function loco_plugin_file(): string {
+function loco_plugin_file(){
     return __FILE__;
 }
 
 
 /**
  * Get version of this plugin
+ * @return string
  */
-function loco_plugin_version(): string {
-    return '2.7.2';
+function loco_plugin_version(){
+    return '2.6.11';
 }
 
 
@@ -39,7 +41,7 @@ function loco_plugin_version(): string {
  * Get Loco plugin handle, used by WordPress to identify plugin as a relative path
  * @return string probably "loco-translate/loco.php"
  */
-function loco_plugin_self(): string {
+function loco_plugin_self(){
     static $handle;
     isset($handle) or $handle = plugin_basename(__FILE__);
     return $handle;
@@ -48,34 +50,38 @@ function loco_plugin_self(): string {
 
 /**
  * Get absolute path to plugin root directory
+ * @return string __DIR__
  */
-function loco_plugin_root(): string {
+function loco_plugin_root(){
     return __DIR__;
 }
 
 
 /**
  * Check whether currently running in debug mode
+ * @return bool
  */
-function loco_debugging(): bool {
+function loco_debugging(){
     return apply_filters('loco_debug', WP_DEBUG );
 }
 
 
 /**
  * Whether currently processing an Ajax request
+ * @return bool
  */
-function loco_doing_ajax(): bool {
+function loco_doing_ajax(){
     return defined('DOING_AJAX') && DOING_AJAX;
 }
 
 
+/**
+ * Evaluate a constant by name
+ * @param string $name
+ * @return mixed
+ */
 if( ! function_exists('loco_constant') ) {
-    /**
-     * Evaluate a constant by name
-     * @return mixed
-     */
-    function loco_constant( string $name ) {
+    function loco_constant( $name ) {
         return defined($name) ? constant($name) : null;
     }
 }
@@ -83,17 +89,16 @@ if( ! function_exists('loco_constant') ) {
 
 /**
  * Runtime inclusion of any file under plugin root
- *
  * @param string $relpath PHP file path relative to __DIR__
  * @return mixed return value from included file
  */
-function loco_include( string $relpath ){
+function loco_include( $relpath ){
     $path = loco_plugin_root().'/'.$relpath;
     if( ! file_exists($path) ){
         $message = 'File not found: '.$path;
         // debug specifics to error log in case full call stack not visible
         if( 'cli' !== PHP_SAPI ) {
-            error_log( sprintf( '[Loco.debug] Failed on loco_include(%s). !file_exists(%s)', var_export($relpath,true), var_export($path,true) ) );
+            error_log( sprintf( '[Loco.debug] Failed on loco_include(%s). !file_exists(%s)', var_export($relpath,true), var_export($path,true) ), 0 );
         }
         // handle circular file inclusion error if error class not found
         if( loco_class_exists('Loco_error_Exception') ){
@@ -109,19 +114,21 @@ function loco_include( string $relpath ){
 
 /**
  * Require dependant library once only
-
  * @param string $path PHP file path relative to ./lib
+ * @return void
  */
-function loco_require_lib( string $path ):void {
+function loco_require_lib( $path ){
     require_once loco_plugin_root().'/lib/'.$path;
 }
 
 
 /**
  * Check PHP extension required by Loco and load polyfill if needed
+ * @param string $name
+ * @return bool
  */
-function loco_check_extension( string $name ): bool {
-    static $cache = [];
+function loco_check_extension( $name ) {
+    static $cache = array();
     if( ! array_key_exists($name,$cache) ) {
         if( extension_loaded($name) ){
             $cache[$name] = true;
@@ -142,8 +149,10 @@ function loco_check_extension( string $name ): bool {
  * e.g. class "Loco_foo_Bar" will be found in "src/foo/Bar.php"
  * 
  * @internal 
+ * @param string $name
+ * @return void
  */
-function loco_autoload( string $name ):void {
+function loco_autoload( $name ){
     if( 'Loco_' === substr($name,0,5) ){
         loco_include( 'src/'.strtr( substr($name,5), '_', '/' ).'.php' );
     }
@@ -152,12 +161,14 @@ function loco_autoload( string $name ):void {
 
 /**
  * class_exists wrapper that fails silently.
+ * @param string $class Class name
+ * @return bool
  */
-function loco_class_exists( string $class ): bool {
+function loco_class_exists( $class ){
     try {
-        return class_exists($class);
+        return class_exists($class,true);
     }
-    catch( Throwable $e ){
+    catch( Exception $e ){
         return false;
     }
 }
@@ -173,7 +184,7 @@ try {
     }
 
     // text domain loading helper for custom file locations. Set constant empty to disable
-    if( LOCO_LANG_DIR ){
+    if ( LOCO_LANG_DIR ) {
         new Loco_hooks_LoadHelper;
     }
 
@@ -188,6 +199,10 @@ try {
     }
 
 }
+catch( Exception $e ){
+    trigger_error(sprintf('[Loco.fatal] %s in %s:%u',$e->getMessage(), $e->getFile(), $e->getLine() ) );
+}
+/** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
 catch( Throwable $e ){
     trigger_error(sprintf('[Loco.fatal] %s in %s:%u',$e->getMessage(), $e->getFile(), $e->getLine() ) );
 }

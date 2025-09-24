@@ -90,7 +90,7 @@ if (!class_exists('MRKV_UA_SHIPPING_OPTION_FILEDS'))
 	    	# Get all fields
 	    	$label_content = $label ? '<label for="' . $id . '">' . $label . '</label>' : '';
 	    	$description_content = $description ? '<p class="mrkv-ua-ship-description">' . $description . '</p>' : '';
-	    	$value_content = $value ? $value : '';
+	    	$value_content = $value || $value == '0' ? $value : '';
 	    	$options_content = $placeholder ? '<option value="">' . $placeholder . '</option>' : '';
 
 	    	if(is_array($options))

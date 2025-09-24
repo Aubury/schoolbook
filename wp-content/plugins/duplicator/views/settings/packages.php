@@ -2,7 +2,6 @@
 
 use Duplicator\Core\Controllers\ControllersManager;
 use Duplicator\Utils\LinkManager;
-use Duplicator\Utils\Upsell;
 use Duplicator\Libs\Snap\SnapIO;
 use Duplicator\Libs\Snap\SnapUtil;
 
@@ -299,7 +298,7 @@ $actionUrl              = ControllersManager::getMenuLink(ControllersManager::SE
                                         '%1$s and %2$s represents the opening and closing HTML tags for an anchor or link',
                                         'duplicator'
                                     ),
-                                    '<a href="' . esc_url(Upsell::getCampaignUrl('package_settings_daf', 'Duplicator Pro')) . '" target="_blank">',
+                                    '<a href="' . esc_url(LinkManager::getCampaignUrl('package_settings_daf', 'Duplicator Pro')) . '" target="_blank">',
                                     '</a>'
                                 );
                                 ?>

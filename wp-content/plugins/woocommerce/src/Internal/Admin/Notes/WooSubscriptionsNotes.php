@@ -19,10 +19,19 @@ use Automattic\WooCommerce\Admin\PageController;
 class WooSubscriptionsNotes {
 	const LAST_REFRESH_OPTION_KEY = 'woocommerce_admin-wc-helper-last-refresh';
 	const NOTE_NAME               = 'wc-admin-wc-helper-connection';
-	const CONNECTION_NOTE_NAME    = 'wc-admin-wc-helper-connection'; // deprecated.
+	const CONNECTION_NOTE_NAME    = 'wc-admin-wc-helper-connection';
 	const SUBSCRIPTION_NOTE_NAME  = 'wc-admin-wc-helper-subscription';
 	const NOTIFY_WHEN_DAYS_LEFT   = 60;
-	const BUMP_THRESHOLDS         = array( 60, 45, 20, 7, 1 ); // days.
+
+	/**
+	 * We want to bubble up expiration notices when they cross certain age
+	 * thresholds. PHP 5.2 doesn't support constant arrays, so we do this.
+	 *
+	 * @return array
+	 */
+	private function get_bump_thresholds() {
+		return array( 60, 45, 20, 7, 1 ); // days.
+	}
 
 	/**
 	 * Hook all the things.
@@ -54,6 +63,7 @@ class WooSubscriptionsNotes {
 		// The site just disconnected.
 		if ( ! empty( $old_token ) && empty( $new_token ) ) {
 			$this->remove_notes();
+			$this->add_no_connection_note();
 			return;
 		}
 
@@ -114,6 +124,7 @@ class WooSubscriptionsNotes {
 			}
 
 			$this->remove_notes();
+			$this->add_no_connection_note();
 		}
 	}
 
@@ -173,6 +184,34 @@ class WooSubscriptionsNotes {
 	public function remove_notes() {
 		Notes::delete_notes_with_name( self::CONNECTION_NOTE_NAME );
 		Notes::delete_notes_with_name( self::SUBSCRIPTION_NOTE_NAME );
+	}
+
+	/**
+	 * Adds a note prompting to connect to WooCommerce.com.
+	 */
+	public function add_no_connection_note() {
+		$note = self::get_note();
+		$note->save();
+	}
+
+	/**
+	 * Get the WooCommerce.com connection note
+	 */
+	public static function get_note() {
+		$note = new Note();
+		$note->set_title( __( 'Connect to WooCommerce.com', 'woocommerce' ) );
+		$note->set_content( __( 'Connect to get important product notifications and updates.', 'woocommerce' ) );
+		$note->set_content_data( (object) array() );
+		$note->set_type( Note::E_WC_ADMIN_NOTE_INFORMATIONAL );
+		$note->set_name( self::CONNECTION_NOTE_NAME );
+		$note->set_source( 'woocommerce-admin' );
+		$note->add_action(
+			'connect',
+			__( 'Connect', 'woocommerce' ),
+			'?page=wc-addons&section=helper',
+			Note::E_WC_ADMIN_NOTE_UNACTIONED
+		);
+		return $note;
 	}
 
 	/**
@@ -265,21 +304,27 @@ class WooSubscriptionsNotes {
 
 		$note = $this->find_note_for_product_id( $product_id );
 
-		// Note: There is no reason this property should not exist. This is just defensive programming.
-		if ( $note && property_exists( $note->get_content_data(), 'days_until_expiration' ) ) {
-			$note_days_until_expiration = intval( $note->get_content_data()->days_until_expiration );
-			if ( $days_until_expiration === $note_days_until_expiration ) {
-				// Note is already up to date. Bail.
-				return;
-			}
+		if ( $note ) {
+			$content_data = $note->get_content_data();
+			if ( property_exists( $content_data, 'days_until_expiration' ) ) {
+				// Note: There is no reason this property should not exist. This is just defensive programming.
+				$note_days_until_expiration = intval( $content_data->days_until_expiration );
+				if ( $days_until_expiration === $note_days_until_expiration ) {
+					// Note is already up to date. Bail.
+					return;
+				}
 
-			// If we have a note and we are at or have crossed a threshold, we should delete
-			// the old note and create a new one, thereby "bumping" the note to the top of the inbox.
-			foreach ( (array) self::BUMP_THRESHOLDS as $bump_threshold ) {
-				if ( ( $note_days_until_expiration > $bump_threshold ) && ( $days_until_expiration <= $bump_threshold ) ) {
-					$note->delete();
-					$note = false;
-					break;
+				// If we have a note and we are at or have crossed a threshold, we should delete
+				// the old note and create a new one, thereby "bumping" the note to the top of the inbox.
+				$bump_thresholds    = $this->get_bump_thresholds();
+				$crossing_threshold = false;
+
+				foreach ( (array) $bump_thresholds as $bump_threshold ) {
+					if ( ( $note_days_until_expiration > $bump_threshold ) && ( $days_until_expiration <= $bump_threshold ) ) {
+						$note->delete();
+						$note = false;
+						continue;
+					}
 				}
 			}
 		}
@@ -411,7 +456,8 @@ class WooSubscriptionsNotes {
 			}
 
 			// If the subscription is not expiring by the first threshold, clean up and exit.
-			$first_threshold = DAY_IN_SECONDS * self::BUMP_THRESHOLDS[0];
+			$bump_thresholds = $this->get_bump_thresholds();
+			$first_threshold = DAY_IN_SECONDS * $bump_thresholds[0];
 			$expires         = intval( $subscription['expires'] );
 			$time_now_gmt    = current_time( 'timestamp', 0 );
 			if ( $expires > $time_now_gmt + $first_threshold ) {

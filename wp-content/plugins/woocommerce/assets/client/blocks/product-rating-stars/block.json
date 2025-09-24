@@ -1,5 +1,6 @@
 {
 	"name": "woocommerce/product-rating-stars",
+	"version": "1.0.0",
 	"title": "Product Rating Stars",
 	"description": "Display the average rating of a product with stars",
 	"category": "woocommerce-product-elements",
@@ -25,21 +26,13 @@
 			"default": false
 		}
 	},
-	"usesContext": [
-		"query",
-		"queryId",
-		"postId"
-	],
-	"keywords": [
-		"WooCommerce"
-	],
+	"usesContext": [ "query", "queryId", "postId" ],
+	"keywords": [ "WooCommerce" ],
 	"supports": {
 		"align": true
 	},
-	"ancestor": [
-		"woocommerce/single-product"
-	],
+	"ancestor": [ "woocommerce/single-product" ],
 	"textdomain": "woocommerce",
-	"apiVersion": 3,
+	"apiVersion": 2,
 	"$schema": "https://schemas.wp.org/trunk/block.json"
 }

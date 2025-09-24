@@ -19,7 +19,7 @@ use WP_Post;
 trait OrderAttributionMeta {
 
 	/**
-	 * The default fields and their sourcebuster accessors,
+	 * The default fields and their sourcebuster accesors,
 	 * to show in the source data metabox.
 	 *
 	 * @var string[]

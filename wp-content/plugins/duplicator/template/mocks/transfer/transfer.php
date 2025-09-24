@@ -1,7 +1,7 @@
 <?php
 
 use Duplicator\Core\Views\TplMng;
-use Duplicator\Utils\Upsell;
+use Duplicator\Utils\LinkManager;
 
 defined("ABSPATH") || exit;
 
@@ -230,7 +230,7 @@ defined("ABSPATH") || exit;
     'title'        => __('Manually transfer backups to remote storages!', 'duplicator'),
     'warning-text' => __('Remote storages are not available in Duplicator Lite!', 'duplicator'),
     'content-tpl'  => 'mocks/transfer/content-popup',
-    'upsell-url'   => Upsell::getCampaignUrl('blurred-mocks', 'Details Transfer')
+    'upsell-url'   => LinkManager::getCampaignUrl('blurred-mocks', 'Details Transfer')
     ),
     true
 ); ?>

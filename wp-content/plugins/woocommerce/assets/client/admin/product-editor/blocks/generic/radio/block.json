@@ -1,15 +1,11 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
-    "apiVersion": 3,
+    "apiVersion": 2,
     "name": "woocommerce/product-radio-field",
     "title": "Product radio control",
     "category": "woocommerce",
     "description": "The product radio.",
-    "keywords": [
-        "products",
-        "radio",
-        "input"
-    ],
+    "keywords": ["products", "radio", "input"],
     "textdomain": "default",
     "attributes": {
         "title": {
@@ -27,7 +23,7 @@
                 "type": "object"
             },
             "default": [],
-            "role": "content"
+            "__experimentalRole": "content"
         },
         "disabled": {
             "type": "boolean",
@@ -43,7 +39,5 @@
         "lock": false,
         "__experimentalToolbar": false
     },
-    "usesContext": [
-        "postType"
-    ]
+    "usesContext": ["postType"]
 }

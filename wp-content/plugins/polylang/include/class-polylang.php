@@ -3,9 +3,6 @@
  * @package Polylang
  */
 
-use WP_Syntex\Polylang\Options\Options;
-use WP_Syntex\Polylang\Options\Registry as Options_Registry;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Don't access directly
 }
@@ -112,7 +109,7 @@ class Polylang {
 		// And also test rest_route query string parameter is not empty for plain permalinks.
 		$query_string = array();
 		wp_parse_str( (string) wp_parse_url( pll_get_requested_url(), PHP_URL_QUERY ), $query_string );
-		$rest_route = isset( $query_string['rest_route'] ) && is_string( $query_string['rest_route'] ) ? trim( $query_string['rest_route'], '/' ) : false;
+		$rest_route = isset( $query_string['rest_route'] ) ? trim( $query_string['rest_route'], '/' ) : false;
 
 		return 0 === strpos( $req_uri, rest_get_url_prefix() . '/' ) || ! empty( $rest_route );
 	}
@@ -168,22 +165,19 @@ class Polylang {
 	 */
 	public function init() {
 		self::define_constants();
-
-		// Plugin options.
-		add_action( 'pll_init_options_for_blog', array( Options_Registry::class, 'register' ) );
-		$options = new Options();
+		$options = get_option( 'polylang' );
 
 		// Plugin upgrade
-		if ( ! empty( $options['version'] ) ) {
-			if ( version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
-				$upgrade = new PLL_Upgrade( $options );
-				if ( ! $upgrade->upgrade() ) { // If the version is too old
-					return;
-				}
+		if ( $options && version_compare( $options['version'], POLYLANG_VERSION, '<' ) ) {
+			$upgrade = new PLL_Upgrade( $options );
+			if ( ! $upgrade->upgrade() ) { // If the version is too old
+				return;
 			}
-		} else {
-			// In some edge cases, it's possible that no options were found in the database.
-			$options['version'] = POLYLANG_VERSION;
+		}
+
+		// In some edge cases, it's possible that no options were found in the database. Load default options as we need some.
+		if ( ! $options ) {
+			$options = PLL_Install::get_default_options();
 		}
 
 		/**

@@ -9,7 +9,7 @@ Author URI: http://saphali.com/en/
 Text Domain: saphali-discount
 Domain Path: /languages
 WC requires at least: 1.6.6
-WC tested up to: 5.6
+WC tested up to: 9.8
 */
 
 /*
@@ -70,7 +70,15 @@ class saphali_dicount {
 		var $settingss;
 		var $get_is_no_empty_cart_club;
 		var $schedule_fixed_total_shop;
+		public $is_hpos_enabled;
 	function __construct() {
+		if(! defined('WOOCOMMERCE_VERSION') ) return; 
+		if ( function_exists( 'wc_get_container' ) && class_exists( Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class ) ) {
+			$this->is_hpos_enabled = wc_get_container()->get( Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled();
+		} else {
+			$this->is_hpos_enabled = false;
+			// Старая версия WooCommerce, HPOS точно не поддерживается
+		}
 		$this->edit_disc = false;
 		$this->return_info_adm_disc = true;
 		$this->mask = 0;
@@ -131,6 +139,83 @@ class saphali_dicount {
 		add_filter( 'woocommerce_billing_fields',  array($this,'saphali_custom_billing_fields'), 10, 1 );
 		add_action( 'manage_users_custom_column',  array($this,'_woocommerce_user_column_values'), 10, 3 );
 		add_filter( 'manage_users_columns',  array($this,'_woocommerce_user_columns'), 11, 1 );
+		add_action('admin_enqueue_scripts', array($this, 'scripts') );
+		add_action('wp_ajax_saphali_search_users_by_email', array($this, 'search_users_by_email') );
+		add_action('wp_ajax_saphali_search_cart_club', array($this, 'search_cart_club') );
+	}
+	function search_cart_club() {
+		if (!current_user_can('manage_woocommerce')) wp_send_json_error('Access denied');
+	
+		$query = isset($_GET['q']) ? sanitize_text_field($_GET['q']) : '';
+	
+		$users = get_users([
+			'meta_query' => [
+				[
+					'key'     => 'billing_cart_club',
+					'value'   => $query,
+					'compare' => 'LIKE'
+				]
+			],
+			'fields' => ['ID'],
+			'number' => 20
+		]);
+	
+		$results = [];
+	
+		foreach ($users as $user) {
+			$club = get_user_meta($user->ID, 'billing_cart_club', true);
+			$email = get_userdata($user->ID)->user_email;
+			$name = trim(get_user_meta($user->ID, 'billing_first_name', true) . ' ' . get_user_meta($user->ID, 'billing_last_name', true));
+			if ($club) {
+				$results[] = [
+					'id'   => $club,
+					'text' => $club . ' (' . $email . ($name ? ' - ' . $name : '') . ')'
+				];
+			}
+		}
+	
+		wp_send_json($results);
+	}
+	function search_users_by_email() {
+		if (!current_user_can('manage_woocommerce')) wp_send_json_error('Access denied');
+	
+		$query = isset($_GET['q']) ? sanitize_text_field($_GET['q']) : '';
+	
+		$args = [
+			'search'         => "*$query*",
+			'search_columns' => ['user_email', 'user_login'],
+			'orderby'        => 'user_email',
+			'number'         => 20,
+			'fields'         => ['ID', 'user_email', 'user_login'],
+		];
+	
+		$users = get_users($args);
+		$results = [];
+	
+		foreach ($users as $user) {
+			$results[] = [
+				'id'   => $user->user_email,
+				'text' => $user->user_email . ' (' . $user->user_login . ')'
+			];
+		}
+	
+		wp_send_json($results);
+	}
+	function scripts($hook) {
+		global $post;
+		// var_dump($post->post_type);exit;
+		if ( !(isset($post->post_type) &&  $post->post_type === "shop_coupon" ) ) return;
+		// if (strpos($hook, 'post.php') === false && strpos($hook, 'post-new.php') === false) return;
+		// exit;
+		wp_enqueue_script('select2');
+		wp_enqueue_style('select2');
+		wp_enqueue_script(
+			'saphali-select2-ajax',
+			plugins_url('/js/admin-select2.js', __FILE__),
+			['select2'], // зависимости
+			'1.0',
+			true
+		);
 	}
 	public function WOOMULTI_CURRENCY( $price, $currency_code = false ) {
 		/*Check currency*/
@@ -254,82 +339,132 @@ class saphali_dicount {
 		switch ( $column_name ) :
 			case "woocommerce_order_sum" :
 			$discount = array();
-			$gross = $wpdb->get_var( "
-				SELECT SUM( meta.meta_value ) AS total
-				FROM {$wpdb->posts} AS posts
-				LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
-				LEFT JOIN {$wpdb->postmeta} AS ms1 ON (posts.ID = ms1.post_id)
-				WHERE 	meta.meta_key 		= '_order_total'
-				AND 	posts.post_type 	= 'shop_order'
-				AND 	ms1.meta_key 	= '_customer_user'
-				AND 	 posts.post_status  IN ('" . implode( "','", apply_filters( 'woocommerce_reports_order_statuses', array( 'wc-completed', 'wc-processing' ) ) ) . "')
-				AND 	ms1.meta_value 			= $user_id $where
-			"  );
-			$gross_ship = $wpdb->get_var( "
-				SELECT SUM( meta.meta_value ) AS total
-				FROM {$wpdb->posts} AS posts
-				LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
-				LEFT JOIN {$wpdb->postmeta} AS ms1 ON (posts.ID = ms1.post_id)
-				WHERE 	meta.meta_key 		= '_order_shipping'
-				AND 	posts.post_type 	= 'shop_order'
-				AND 	ms1.meta_key 	= '_customer_user'
-				AND 	 posts.post_status  IN ('" . implode( "','", apply_filters( 'woocommerce_reports_order_statuses', array( 'wc-completed', 'wc-processing' ) ) ) . "')
-				AND 	ms1.meta_value 			= $user_id $where
-			"  );
-			$gross = $gross -  $gross_ship;
-			$_gross = $wpdb->get_var( "
-				SELECT SUM( meta.meta_value ) AS total
-				FROM {$wpdb->posts} AS posts
-				LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
-				LEFT JOIN {$wpdb->postmeta} AS ms1 ON (posts.ID = ms1.post_id)
-				WHERE 	meta.meta_key 		= '_order_total_base_currency'
-				AND 	posts.post_type 	= 'shop_order'
-				AND 	ms1.meta_key 	= '_customer_user'
-				AND 	 posts.post_status  IN ('" . implode( "','", apply_filters( 'woocommerce_reports_order_statuses', array( 'wc-completed', 'wc-processing' ) ) ) . "')
-				AND 	ms1.meta_value 			= $user_id $where
-			"  );
-			if ($_gross > 0) {
-				$_gross_ship = $wpdb->get_var( "
+			if ($this->is_hpos_enabled) {
+				// Статусы заказов
+				$statuses = apply_filters('woocommerce_reports_order_statuses', ['wc-completed', 'wc-processing']);
+				$status_placeholder = implode("','", array_map('esc_sql', $statuses));
+				// HPOS включен (таблица wc_orders)
+				// Общая сумма заказов
+				$gross_total = $wpdb->get_var($wpdb->prepare(
+					"SELECT SUM(total_amount) FROM {$wpdb->prefix}wc_orders
+					 WHERE customer_id = %d AND status IN ('$status_placeholder') $where",
+					$user_id
+				));
+			
+				// Сумма доставки
+				$gross_shipping = $wpdb->get_var($wpdb->prepare(
+					"SELECT SUM(meta_value) FROM {$wpdb->prefix}wc_orders_meta AS meta
+					 INNER JOIN {$wpdb->prefix}wc_orders AS orders ON meta.order_id = orders.id
+					 WHERE meta.meta_key = '_order_shipping'
+					   AND orders.customer_id = %d
+					   AND orders.status IN ('$status_placeholder') $where",
+					$user_id
+				));
+			
+				$gross = $gross_total - $gross_shipping;
+			
+				// Общая сумма в базовой валюте
+				$_gross = $wpdb->get_var($wpdb->prepare(
+					"SELECT SUM(meta_value) FROM {$wpdb->prefix}wc_orders_meta AS meta
+					 INNER JOIN {$wpdb->prefix}wc_orders AS orders ON meta.order_id = orders.id
+					 WHERE meta.meta_key = '_order_total_base_currency'
+					   AND orders.customer_id = %d
+					   AND orders.status IN ('$status_placeholder') $where",
+					$user_id
+				));
+			
+				if ($_gross > 0) {
+					// Сумма доставки в базовой валюте
+					$_gross_ship = $wpdb->get_var($wpdb->prepare(
+						"SELECT SUM(meta_value) FROM {$wpdb->prefix}wc_orders_meta AS meta
+						 INNER JOIN {$wpdb->prefix}wc_orders AS orders ON meta.order_id = orders.id
+						 WHERE meta.meta_key = '_order_shipping_base_currency'
+						   AND orders.customer_id = %d
+						   AND orders.status IN ('$status_placeholder') $where",
+						$user_id
+					));
+			
+					$gross = $_gross - $_gross_ship;
+				}
+			
+			} else {
+				$gross = $wpdb->get_var( "
 					SELECT SUM( meta.meta_value ) AS total
 					FROM {$wpdb->posts} AS posts
 					LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
 					LEFT JOIN {$wpdb->postmeta} AS ms1 ON (posts.ID = ms1.post_id)
-					WHERE 	meta.meta_key 		= '_order_shipping_base_currency'
+					WHERE 	meta.meta_key 		= '_order_total'
 					AND 	posts.post_type 	= 'shop_order'
 					AND 	ms1.meta_key 	= '_customer_user'
 					AND 	 posts.post_status  IN ('" . implode( "','", apply_filters( 'woocommerce_reports_order_statuses', array( 'wc-completed', 'wc-processing' ) ) ) . "')
 					AND 	ms1.meta_value 			= $user_id $where
-				" ); 
-				$gross = $_gross -  $_gross_ship;
+				"  );
+				$gross_ship = $wpdb->get_var( "
+					SELECT SUM( meta.meta_value ) AS total
+					FROM {$wpdb->posts} AS posts
+					LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
+					LEFT JOIN {$wpdb->postmeta} AS ms1 ON (posts.ID = ms1.post_id)
+					WHERE 	meta.meta_key 		= '_order_shipping'
+					AND 	posts.post_type 	= 'shop_order'
+					AND 	ms1.meta_key 	= '_customer_user'
+					AND 	 posts.post_status  IN ('" . implode( "','", apply_filters( 'woocommerce_reports_order_statuses', array( 'wc-completed', 'wc-processing' ) ) ) . "')
+					AND 	ms1.meta_value 			= $user_id $where
+				"  );
+				$gross = $gross -  $gross_ship;
+				$_gross = $wpdb->get_var( "
+					SELECT SUM( meta.meta_value ) AS total
+					FROM {$wpdb->posts} AS posts
+					LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
+					LEFT JOIN {$wpdb->postmeta} AS ms1 ON (posts.ID = ms1.post_id)
+					WHERE 	meta.meta_key 		= '_order_total_base_currency'
+					AND 	posts.post_type 	= 'shop_order'
+					AND 	ms1.meta_key 	= '_customer_user'
+					AND 	 posts.post_status  IN ('" . implode( "','", apply_filters( 'woocommerce_reports_order_statuses', array( 'wc-completed', 'wc-processing' ) ) ) . "')
+					AND 	ms1.meta_value 			= $user_id $where
+				"  );
+				if ($_gross > 0) {
+					$_gross_ship = $wpdb->get_var( "
+						SELECT SUM( meta.meta_value ) AS total
+						FROM {$wpdb->posts} AS posts
+						LEFT JOIN {$wpdb->postmeta} AS meta ON posts.ID = meta.post_id
+						LEFT JOIN {$wpdb->postmeta} AS ms1 ON (posts.ID = ms1.post_id)
+						WHERE 	meta.meta_key 		= '_order_shipping_base_currency'
+						AND 	posts.post_type 	= 'shop_order'
+						AND 	ms1.meta_key 	= '_customer_user'
+						AND 	 posts.post_status  IN ('" . implode( "','", apply_filters( 'woocommerce_reports_order_statuses', array( 'wc-completed', 'wc-processing' ) ) ) . "')
+						AND 	ms1.meta_value 			= $user_id $where
+					" ); 
+					$gross = $_gross -  $_gross_ship;
+				}
 			}
-				$value = $gross ?  $this->wc_price($gross) : '&mdash;';
-				$coupons = get_posts(array('post_type' => 'shop_coupon', 'post_status' => 'publish', 'meta_key' => 'discount_type', 'meta_value' => 'fixed_total_shop', 'posts_per_page' => 1));
-					foreach($coupons as $_coupon) {
-						$variant_discount[] = get_post_meta( $_coupon->ID, 'variant_discount', true );
-						if(is_array($variant_discount))
-						foreach($variant_discount as $key => $_variant_discount) {
-							foreach($_variant_discount['min'] as $_key => $_discount) {
-								if( $gross >= $_discount && $gross <= $variant_discount[$key]['max'][$_key] ) {
-									$discount[$key] = $variant_discount[$key]['discount'][$_key];
-								} 
-							}
-						}
+			$value = $gross ?  $this->wc_price($gross) : '&mdash;';
+			$coupons = get_posts(array('post_type' => 'shop_coupon', 'post_status' => 'publish', 'meta_key' => 'discount_type', 'meta_value' => 'fixed_total_shop', 'posts_per_page' => 1));
+			foreach($coupons as $_coupon) {
+				$variant_discount[] = get_post_meta( $_coupon->ID, 'variant_discount', true );
+				if(is_array($variant_discount))
+				foreach($variant_discount as $key => $_variant_discount) {
+					foreach($_variant_discount['min'] as $_key => $_discount) {
+						if( $gross >= $_discount && $gross <= $variant_discount[$key]['max'][$_key] ) {
+							$discount[$key] = $variant_discount[$key]['discount'][$_key];
+						} 
 					}
-					if($discount) {
-					foreach($variant_discount[0]["discount"] as $num_key => $d_value ) {
-						if( $d_value == $discount[0] ) {
-							$numb_ind = $num_key; break;
-						}
+				}
+			}
+			if($discount) {
+				foreach($variant_discount[0]["discount"] as $num_key => $d_value ) {
+					if( $d_value == $discount[0] ) {
+						$numb_ind = $num_key; break;
 					}
-					$_k = 0;
-					if( isset($variant_discount[$_k]["discount"][$numb_ind+1]) ) {
-							$sum = $this->wc_price( $variant_discount[$_k]["min"][$numb_ind+1] - $gross );
-							$next = ( isset($variant_discount[$_k]["discount"][$numb_ind+1]) ) ? $variant_discount[$_k]["discount"][$numb_ind+1] : '';
-							$value = sprintf(__( '<span style="color:red">%s</span>. &sum; %s.').__('<br /> %s → +%s.', 'saphali-discount' ), $discount[$_k], $this->wc_price($gross), $next, $sum );
-					} else {
-						$value = sprintf(__( '<span style="color:red">%s</span>. &sum; %s.'), $discount[$_k], $this->wc_price($gross) );
-					}
-					}
+				}
+				$_k = 0;
+				if( isset($variant_discount[$_k]["discount"][$numb_ind+1]) ) {
+						$sum = $this->wc_price( $variant_discount[$_k]["min"][$numb_ind+1] - $gross );
+						$next = ( isset($variant_discount[$_k]["discount"][$numb_ind+1]) ) ? $variant_discount[$_k]["discount"][$numb_ind+1] : '';
+						$value = sprintf(__( '<span style="color:red">%s</span>. &sum; %s.').__('<br /> %s → +%s.', 'saphali-discount' ), $discount[$_k], $this->wc_price($gross), $next, $sum );
+				} else {
+					$value = sprintf(__( '<span style="color:red">%s</span>. &sum; %s.'), $discount[$_k], $this->wc_price($gross) );
+				}
+			}
 			break;
 		endswitch;
 		if($this->schedule_fixed_total_shop > 0 && $this->return_info_adm_disc) { $value = sprintf( __('За последние %d дн.. ', 'saphali-discount' ) . '<br />', $this->schedule_fixed_total_shop) . $value; $this->return_info_adm_disc = false; }
@@ -2344,19 +2479,26 @@ class saphali_dicount {
 							if(in_array( $user_email, $customer_email ))
 							{
 								$add_coupon = true;
-								if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) )
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-completed', 'wc-processing' ), 'posts_per_page' => -1,   
-									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								));
-								else
+								if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+									if ($this->is_hpos_enabled) {
+										$orders = wc_get_orders(array(
+											'customer_id' => $current_user->ID,
+											'status'      => array( 'wc-completed', 'wc-processing' ),
+											'limit'       => -1, // Все заказы
+										));
+									} else 
+									$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-completed', 'wc-processing' ), 'posts_per_page' => -1,   
+										
+									'meta_query' => array(
+										'relation' => 'AND',
+										array(
+										'key' => '_customer_user',
+										'value' => $current_user->ID,
+										'compare' => '=',
+										)
+									)
+									));	
+								} else
 								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
 									'tax_query' => array(
 									   array(
@@ -2375,39 +2517,72 @@ class saphali_dicount {
 								   )
 								));
 							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
-								while ( $orders->have_posts() ) {
-									$orders->the_post();
-									$_order = $orders->post;
-									
-									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
-									$rate_def = $this->compatibility_currency($order_currency);
-									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
-									} else {
-										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+							
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
 										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
 										}
+							
+										$_order_total += $price_order;
 									}
+								}
+							} else {
+								if( $orders->have_posts() ) {
+									while ( $orders->have_posts() ) {
+										$orders->the_post();
+										$_order = $orders->post;
 										
-									
-									//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
-									$_order_total = $_order_total + $price_order;							
+										$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
+										$rate_def = $this->compatibility_currency($order_currency);
+										if( $rate_def != 1 ) {
+											$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+											$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
+										} else {
+											if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											} else {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
+											}
+										}
+											
+										
+										//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
+										$_order_total = $_order_total + $price_order;							
+									}
 								}
 							}
+							
+
 							$total = $_order_total - $_order_shipping;
 								break;
 							}
 						} else {
 							if(!empty($user_email))
-							if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) )
-							$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-completed', 'wc-processing'), 'posts_per_page' => -1, 
+							if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+								if ($this->is_hpos_enabled) {
+									$orders = wc_get_orders(array(
+										'customer_id' => $current_user->ID,
+										'status'      => array( 'wc-completed', 'wc-processing' ),
+										'limit'       => -1, // Все заказы
+									));
+								} else $orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-completed', 'wc-processing'), 'posts_per_page' => -1, 
 									
 								   'meta_query' => array(
 									   'relation' => 'AND',
@@ -2418,7 +2593,7 @@ class saphali_dicount {
 									   )
 								   )
 							));
-							else
+							} else
 							$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1, 
 									'tax_query' => array(
 									   array(
@@ -2437,32 +2612,58 @@ class saphali_dicount {
 								   )
 							));
 							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
-								while ( $orders->have_posts() ) {
-									$orders->the_post();
-									$_order = $orders->post;
-									
-									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
-									$rate_def = $this->compatibility_currency($order_currency);
-									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
-									} else {
-										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+							
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
 										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
 										}
+							
+										$_order_total += $price_order;
 									}
+								}
+							} else {
+								if( $orders->have_posts() ) {
+									while ( $orders->have_posts() ) {
+										$orders->the_post();
+										$_order = $orders->post;
 										
-									
-									//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
-									$_order_total = $_order_total + $price_order;							
+										$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
+										$rate_def = $this->compatibility_currency($order_currency);
+										if( $rate_def != 1 ) {
+											$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+											$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
+										} else {
+											if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											} else {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
+											}
+										}
+											
+										
+										//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
+										$_order_total = $_order_total + $price_order;							
+									}
 								}
 							}
+							
 							$total = $_order_total - $_order_shipping;
 						}
 					}
@@ -2478,19 +2679,25 @@ class saphali_dicount {
 								if(in_array( $user_p, $customer_cart_club ))
 								{
 									$add_coupon = true;
-									if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) ) 
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
+									if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+										if ($this->is_hpos_enabled) {
+											$orders = wc_get_orders(array(
+												'customer_id' => $current_user->ID,
+												'status'      => array( 'wc-completed', 'wc-processing' ),
+												'limit'       => -1, // Все заказы
+											));
+										} else $orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
 									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								));
-								else
+										'meta_query' => array(
+											'relation' => 'AND',
+											array(
+											'key' => '_customer_user',
+											'value' => $current_user->ID,
+											'compare' => '=',
+											)
+										)
+										));
+									} else
 								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
 									'tax_query' => array(
 									   array(
@@ -2509,32 +2716,58 @@ class saphali_dicount {
 								   )
 								));
 							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
-								while ( $orders->have_posts() ) {
-									$orders->the_post();
-									$_order = $orders->post;
-									
-									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
-									$rate_def = $this->compatibility_currency($order_currency);
-									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
-									} else {
-										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+							
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
 										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
 										}
+							
+										$_order_total += $price_order;
 									}
+								}
+							} else {
+								if( $orders->have_posts() ) {
+									while ( $orders->have_posts() ) {
+										$orders->the_post();
+										$_order = $orders->post;
 										
-									
-									//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
-									$_order_total = $_order_total + $price_order;							
+										$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
+										$rate_def = $this->compatibility_currency($order_currency);
+										if( $rate_def != 1 ) {
+											$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+											$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
+										} else {
+											if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											} else {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
+											}
+										}
+											
+										
+										//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
+										$_order_total = $_order_total + $price_order;							
+									}
 								}
 							}
+							
 							$total = $_order_total - $_order_shipping;
 									break;
 								}
@@ -2543,19 +2776,26 @@ class saphali_dicount {
 									if( strpos( $phone, str_replace('+', '', $user_p) ) !== false && mb_strlen($user_p, 'utf-8') > 7) {
 										$add_coupon = true;
 										$b = 1; 
-										if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) ) 
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
-									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								));
-								else
+										if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+											if ($this->is_hpos_enabled) {
+												$orders = wc_get_orders(array(
+													'customer_id' => $current_user->ID,
+													'status'      => array( 'wc-completed', 'wc-processing' ),
+													'limit'       => -1, // Все заказы
+												));
+											} else 
+											$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
+												
+											'meta_query' => array(
+												'relation' => 'AND',
+												array(
+												'key' => '_customer_user',
+												'value' => $current_user->ID,
+												'compare' => '=',
+												)
+											)
+											));			
+										} else
 								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
 									'tax_query' => array(
 									   array(
@@ -2574,32 +2814,58 @@ class saphali_dicount {
 								   )
 								));
 							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
-								while ( $orders->have_posts() ) {
-									$orders->the_post();
-									$_order = $orders->post;
-									
-									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
-									$rate_def = $this->compatibility_currency($order_currency);
-									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
-									} else {
-										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+							
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
 										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
 										}
+							
+										$_order_total += $price_order;
 									}
-										
-									
-									//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
-									$_order_total = $_order_total + $price_order;							
 								}
+							} else {
+								if( $orders->have_posts() ) {
+									while ( $orders->have_posts() ) {
+										$orders->the_post();
+										$_order = $orders->post;
+										
+										$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
+										$rate_def = $this->compatibility_currency($order_currency);
+										if( $rate_def != 1 ) {
+											$amount = get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+											$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
+										} else {
+											if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											} else {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
+											}
+										}
+											
+										
+										//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
+										$_order_total = $_order_total + $price_order;							
+									}
+								}	
 							}
+							
 							$total = $_order_total - $_order_shipping;
 										break;
 									}
@@ -3373,449 +3639,641 @@ class saphali_dicount {
 	}
 	
 	function cart_apry_discount() {
-	global $woocommerce;
-	add_filter( 'posts_where', array($this, 'filter_where') );
-	add_action( 'parse_query', array( $this, 'parse_query' ), 5 );
-	$action_ac = (isset($_POST['action']) && $_POST['action'] == '_woocommerce_update_order_review');
-	if($action_ac) {
-		if ( !version_compare( WOOCOMMERCE_VERSION, '2.1.0', '<' ) && !isset($woocommerce->session->d_phone) ) $woocommerce->session->set_customer_session_cookie( true );
-		if ( version_compare( WOOCOMMERCE_VERSION, '2.1.0', '<' ) ) $woocommerce->nocache();
-		$coupons = get_posts(array('post_type' => 'shop_coupon', 'post_status' => 'publish', 'meta_key' => 'discount_type', 'meta_value' => 'fixed_total_shop', 'posts_per_page' => -1));
-		foreach($coupons as $_coupon) {
-			$customer_cart_club = get_post_meta( $_coupon->ID, 'customer_cart_club', true );
-		}
-		$add_coupon = false;
-		if( true ) {
-					if(isset($_POST['post_data'])) {
-						parse_str ($_POST['post_data'], $post_data);
-						if(isset($post_data["billing_cart_club"])) {
-							$post_data["billing_cart_club"] = str_replace( array('(',')',' ', '-'), '', $post_data["billing_cart_club"] ) ;
-							$check_ps[] = $post_data["billing_cart_club"];
-							if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
-								$_SESSION['d_phone'] = $post_data["billing_cart_club"];
-							} else {
-								$woocommerce->session->d_phone = $post_data["billing_cart_club"];
-							}
-						}
-					}
-					$check_ps = array_unique($check_ps);
-					if(is_array($check_ps)) {
-						foreach($check_ps as $user_p) {
-							if(!empty($customer_cart_club)) {
-								if(!empty($user_p))
-								if(in_array( $user_p, $customer_cart_club ))
-								{
-									$add_coupon = true;
-									if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) ) {
-									$arg = array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
-									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_billing_cart_club',
-									   'value' => $user_p,
-									   'compare' => 'LIKE',
-									   )
-								   )
-								);
-								$orders = new WP_Query($arg);
-								} else {
-								$arg = array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
-									'tax_query' => array(
-									   array(
-											'taxonomy' => 'shop_order_status',
-											'field' => 'slug',
-											'terms' => array( 'completed', 'processing' )
-										)
-								   ),
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_billing_cart_club',
-									   'value' => $user_p,
-									   'compare' => 'LIKE',
-									   )
-								   )
-								);
-								$orders = new WP_Query($arg); 
-							}
-							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
-								while ( $orders->have_posts() ) {
-									$orders->the_post();
-									$_order = $orders->post;
-									
-									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
-									$rate_def = $this->compatibility_currency($order_currency);
-									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
-									} else {
-										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
-										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
-										}
-									}
-										
-									
-									//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
-									$_order_total = $_order_total + $price_order;							
-								}
-							}
-							$total = $_order_total - $_order_shipping;
-							
-									break;
-								}
-							} else {
-
-							}
-						}
-					}
-				}
-				if(isset($total) && $total) {
-					die( json_encode(array( 'result' => true, 'phone' => $post_data["billing_cart_club"], 's' => $total)) );
-				} else die(json_encode(array( 'result' => false, 'phone' => $post_data["billing_cart_club"] )));
-	}
-	 if( ( is_cart() || is_checkout() || (isset($_POST['action']) && ($_POST['action'] == 'woocommerce_update_order_review' || $action_ac ) ) ) && empty($_POST['coupon_code'])) {
-		if ( version_compare( WOOCOMMERCE_VERSION, '2.1.0', '<' ) ) $woocommerce->nocache();
-		$coupons = get_posts(array('post_type' => 'shop_coupon', 'post_status' => 'publish', 'meta_key' => 'discount_type', 'meta_value' => 'fixed_total_shop', 'posts_per_page' => -1));
-		$current_user = wp_get_current_user();
-		$check_emails = array();
-		$check_emails[] = $current_user->user_email;
-		$check_emails[] = get_user_meta($current_user->ID, 'billing_email', true);
-		$check_emails = array_unique($check_emails);
-		foreach($coupons as $_coupon) {
-			
-			$customer_email = get_post_meta( $_coupon->ID, 'customer_email', true );
-			$customer_cart_club = get_post_meta( $_coupon->ID, 'customer_cart_club', true );
-					
-			if ( is_array( $customer_email ) && 0 < count( $customer_email ) && ! $this->is_coupon_emails_allowed( $check_emails, $customer_email ) ) {
-
-			} else {
-			$coupon_code[] = $_coupon->post_title;
-			$variant_discount[] = get_post_meta( $_coupon->ID, 'variant_discount', true );
+		global $woocommerce;
+		add_filter( 'posts_where', array($this, 'filter_where') );
+		add_action( 'parse_query', array( $this, 'parse_query' ), 5 );
+		$action_ac = (isset($_POST['action']) && $_POST['action'] == '_woocommerce_update_order_review');
+		if($action_ac) {
+			if ( !version_compare( WOOCOMMERCE_VERSION, '2.1.0', '<' ) && !isset($woocommerce->session->d_phone) ) $woocommerce->session->set_customer_session_cookie( true );
+			if ( version_compare( WOOCOMMERCE_VERSION, '2.1.0', '<' ) ) $woocommerce->nocache();
+			$coupons = get_posts(array('post_type' => 'shop_coupon', 'post_status' => 'publish', 'meta_key' => 'discount_type', 'meta_value' => 'fixed_total_shop', 'posts_per_page' => -1));
+			foreach($coupons as $_coupon) {
+				$customer_cart_club = get_post_meta( $_coupon->ID, 'customer_cart_club', true );
 			}
-				
-		}
-
-		if(!empty($coupon_code)) {
-			//fix wpml
-			$coupon_code = array_unique($coupon_code);
 			$add_coupon = false;
-			if ( is_user_logged_in() ) {
-				
-				$add_coupon = true;
-				if(!empty($customer_email)) {
-					$add_coupon = false;
-				} elseif(!empty($customer_cart_club)) {
-					$add_coupon = false;
-				}
-				
-				if(is_array($check_emails)) {
-					foreach($check_emails as $user_email) {
-						if(!empty($customer_email)) {
-							if(!empty($user_email))
-							if(in_array( $user_email, $customer_email ))
-							{
-								$add_coupon = true;
-								if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) )
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-completed', 'wc-processing' ), 'posts_per_page' => -1,   
-									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								));
-								else
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
-									'tax_query' => array(
-									   array(
-											'taxonomy' => 'shop_order_status',
-											'field' => 'slug',
-											'terms' => array( 'completed', 'processing' )
-										)
-								   ),
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								));
-							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
-								while ( $orders->have_posts() ) {
-									$orders->the_post();
-									$_order = $orders->post;
-									
-									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
-									$rate_def = $this->compatibility_currency($order_currency);
-									if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
-									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
-									} else {
-										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
-										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
-										}
-									}
-										
-									
-									//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
-									$_order_total = $_order_total + $price_order;							
+			if( true ) {
+						if(isset($_POST['post_data'])) {
+							parse_str ($_POST['post_data'], $post_data);
+							if(isset($post_data["billing_cart_club"])) {
+								$post_data["billing_cart_club"] = str_replace( array('(',')',' ', '-'), '', $post_data["billing_cart_club"] ) ;
+								$check_ps[] = $post_data["billing_cart_club"];
+								if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
+									$_SESSION['d_phone'] = $post_data["billing_cart_club"];
+								} else {
+									$woocommerce->session->d_phone = $post_data["billing_cart_club"];
 								}
 							}
-							$total = $_order_total - $_order_shipping;
-								break;
-							}
-							
-						} else {
-							if(!empty($user_email))
-							if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) )
-							$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-completed', 'wc-processing'), 'posts_per_page' => -1, 
-									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-							));
-							else
-							$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1, 
-									'tax_query' => array(
-									   array(
-											'taxonomy' => 'shop_order_status',
-											'field' => 'slug',
-											'terms' => array( 'completed', 'processing' )
-										)
-								   ),
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-							));
-							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( is_object($orders) && method_exists($orders, 'have_posts') && $orders->have_posts() ) {
-								while ( $orders->have_posts() ) {
-									$orders->the_post();
-									$_order = $orders->post;
-									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
-									$rate_def = $this->compatibility_currency($order_currency);
-									if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
-									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
-									} else {
-										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
-										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
-										}
-									}
-										
-									
-									//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
-									$_order_total = $_order_total + $price_order;							
-								}
-							}
-							$total = $_order_total - $_order_shipping;
-							
 						}
-					}
-				}
-				if(!$add_coupon) {
-					$check_ps[] = get_user_meta($current_user->ID, 'billing_cart_club', true);
-					if(isset($_POST['post_data'])) {
-						 parse_str ($_POST['post_data'], $post_data);
-						 if(isset($post_data["billing_cart_club"])) {
-							$post_data["billing_cart_club"] = str_replace( array('(',')',' ', '-'), '', $post_data["billing_cart_club"] ) ;
-							$check_ps[] = $post_data["billing_cart_club"];
-							if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
-								$_SESSION['d_phone'] = $post_data["billing_cart_club"];
-							} else {
-								$woocommerce->session->d_phone = $post_data["billing_cart_club"];
-							}
-						 }
-					 }
-					$check_ps = array_unique($check_ps);
-					
-					if(is_array($check_ps)) {
-						foreach($check_ps as $user_p) {
-							if(!empty($customer_cart_club)) {
-								if(!empty($user_p))
-								if(in_array( $user_p, $customer_cart_club ))
-								{
-									$add_coupon = true;
-									if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) ) 
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
-									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								));
-								else
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
-									'tax_query' => array(
-									   array(
-											'taxonomy' => 'shop_order_status',
-											'field' => 'slug',
-											'terms' => array( 'completed', 'processing' )
-										)
-								   ),
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								));
-							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
-								while ( $orders->have_posts() ) {
-									$orders->the_post();
-									$_order = $orders->post;
-									
-									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
-									$rate_def = $this->compatibility_currency($order_currency);
-									if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
-									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
-									} else {
-										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
-										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
-										}
-									}
-										
-									
-									//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
-									$_order_total = $_order_total + $price_order;							
-								}
-							}
-							$total = $_order_total - $_order_shipping;
-									break;
-								}
-								$b = 0;
-								foreach($customer_cart_club as $phone) {
-									if( strpos( $phone, str_replace('+', '', $user_p) ) !== false && mb_strlen($user_p, 'utf-8') > 7) {
+						$check_ps = array_unique($check_ps);
+						if(is_array($check_ps)) {
+							foreach($check_ps as $user_p) {
+								if(!empty($customer_cart_club)) {
+									if(!empty($user_p))
+									if(in_array( $user_p, $customer_cart_club ))
+									{
 										$add_coupon = true;
-										$b = 1; 
-										if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) ) 
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
-									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								));
-								else
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
-									'tax_query' => array(
-									   array(
-											'taxonomy' => 'shop_order_status',
-											'field' => 'slug',
-											'terms' => array( 'completed', 'processing' )
-										)
-								   ),
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								));
-							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
-								while ( $orders->have_posts() ) {
-									$orders->the_post();
-									$_order = $orders->post;
-									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
-									$rate_def = $this->compatibility_currency($order_currency);
-									if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
-									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
-									} else {
-										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+									if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+										if ($this->is_hpos_enabled) {
+											// HPOS включен
+											$orders = wc_get_orders(array(
+												'status'      => array( 'wc-processing', 'wc-completed' ),
+												'limit'       => -1,
+												'meta_query'  => array(
+													array(
+														'key' => '_billing_cart_club',
+														'value' => $user_p,
+														'compare' => 'LIKE',
+													),
+												),
+											));
 										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
-										}
+											$arg = array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 
+											'posts_per_page' => -1,
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_billing_cart_club',
+										   'value' => $user_p,
+										   'compare' => 'LIKE',
+										   )
+									   )
+									);
+									$orders = new WP_Query($arg);
 									}
+									} else {
+									$arg = array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
+										'tax_query' => array(
+										   array(
+												'taxonomy' => 'shop_order_status',
+												'field' => 'slug',
+												'terms' => array( 'completed', 'processing' )
+											)
+									   ),
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_billing_cart_club',
+										   'value' => $user_p,
+										   'compare' => 'LIKE',
+										   )
+									   )
+									);
+									$orders = new WP_Query($arg); 
+								}
+								$_order_shipping = $_order_discount = $_order_total = 0;
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+							
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
+										} else {
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
+										}
+							
+										$_order_total += $price_order;
+									}
+								}
+							} else {
+								if( $orders->have_posts() ) {
+									while ( $orders->have_posts() ) {
+										$orders->the_post();
+										$_order = $orders->post;
 										
-									
-									//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
-									$_order_total = $_order_total + $price_order;							
+										$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
+										$rate_def = $this->compatibility_currency($order_currency);
+										if( $rate_def != 1 ) {
+											$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)number_format( (float)get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+											$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
+										} else {
+											if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											} else {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
+											}
+										}
+											
+										
+										//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
+										$_order_total = $_order_total + $price_order;							
+									}
 								}
 							}
-							$total = $_order_total - $_order_shipping;
+							
+								$total = $_order_total - $_order_shipping;
+								
 										break;
 									}
+								} else {
+	
 								}
-								if($b) break;
-							} else {
-
 							}
 						}
 					}
+					if(isset($total) && $total) {
+						die( json_encode(array( 'result' => true, 'phone' => $post_data["billing_cart_club"], 's' => $total)) );
+					} else die(json_encode(array( 'result' => false, 'phone' => $post_data["billing_cart_club"] )));
+		}
+		 if( ( is_cart() || is_checkout() || (isset($_POST['action']) && ($_POST['action'] == 'woocommerce_update_order_review' || $action_ac ) ) ) && empty($_POST['coupon_code'])) {
+			if ( version_compare( WOOCOMMERCE_VERSION, '2.1.0', '<' ) ) $woocommerce->nocache();
+			$coupons = get_posts(array('post_type' => 'shop_coupon', 'post_status' => 'publish', 'meta_key' => 'discount_type', 'meta_value' => 'fixed_total_shop', 'posts_per_page' => -1));
+			$current_user = wp_get_current_user();
+			$check_emails = array();
+			$check_emails[] = $current_user->user_email;
+			$check_emails[] = get_user_meta($current_user->ID, 'billing_email', true);
+			$check_emails = array_unique($check_emails);
+			foreach($coupons as $_coupon) {
+				
+				$customer_email = get_post_meta( $_coupon->ID, 'customer_email', true );
+				$customer_cart_club = get_post_meta( $_coupon->ID, 'customer_cart_club', true );
+						
+				if ( is_array( $customer_email ) && 0 < count( $customer_email ) && ! $this->is_coupon_emails_allowed( $check_emails, $customer_email ) ) {
+	
+				} else {
+				$coupon_code[] = $_coupon->post_title;
+				$variant_discount[] = get_post_meta( $_coupon->ID, 'variant_discount', true );
 				}
-			}  else {
-				if(!$add_coupon ) {
-					if(isset($_POST['post_data'])) {
-						parse_str ($_POST['post_data'], $post_data);
-						if(isset($post_data["billing_cart_club"]) && !empty($post_data["billing_cart_club"]) ) {
-							$post_data["billing_cart_club"] = str_replace( array('(',')',' ', '-'), '', $post_data["billing_cart_club"] ) ;
-							$check_ps[] = $post_data["billing_cart_club"];
-							if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
-								$_SESSION['d_phone'] = $post_data["billing_cart_club"];
+					
+			}
+	
+			if(!empty($coupon_code)) {
+				//fix wpml
+				$coupon_code = array_unique($coupon_code);
+				$add_coupon = false;
+				if ( is_user_logged_in() ) {
+					
+					$add_coupon = true;
+					if(!empty($customer_email)) {
+						$add_coupon = false;
+					} elseif(!empty($customer_cart_club)) {
+						$add_coupon = false;
+					}
+					
+					if(is_array($check_emails)) {
+						foreach($check_emails as $user_email) {
+							if(!empty($customer_email)) {
+								if(!empty($user_email))
+								if(in_array( $user_email, $customer_email ))
+								{
+									$add_coupon = true;
+								if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+									if ($this->is_hpos_enabled) {
+										// HPOS включен
+										$orders = wc_get_orders(array(
+											'status'      => array( 'wc-processing', 'wc-completed' ),
+											'limit'       => -1,
+											'customer_id' => $current_user->ID,
+										));
+									} else {
+									$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-completed', 'wc-processing' ), 'posts_per_page' => -1,   
+										
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_customer_user',
+										   'value' => $current_user->ID,
+										   'compare' => '=',
+										   )
+									   )
+									));
+									}
+									
+								} else {
+									$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
+										'tax_query' => array(
+										   array(
+												'taxonomy' => 'shop_order_status',
+												'field' => 'slug',
+												'terms' => array( 'completed', 'processing' )
+											)
+									   ),
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_customer_user',
+										   'value' => $current_user->ID,
+										   'compare' => '=',
+										   )
+									   )
+									));
+								}
+								
+								$_order_shipping = $_order_discount = $_order_total = 0;
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+										if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
+										} else {
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
+										}
+							
+										$_order_total += $price_order;
+									}
+								}
 							} else {
-								$woocommerce->session->d_phone = $post_data["billing_cart_club"];
+								if( $orders->have_posts() ) {
+									while ( $orders->have_posts() ) {
+										$orders->the_post();
+										$_order = $orders->post;
+										
+										$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
+										$rate_def = $this->compatibility_currency($order_currency);
+										if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
+										if( $rate_def != 1 ) {
+											$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)number_format( (float)get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+											$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
+										} else {
+											if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											} else {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
+											}
+										}
+											
+										
+										//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
+										$_order_total = $_order_total + $price_order;							
+									}
+								}
+							}
+								$total = $_order_total - $_order_shipping;
+									break;
+								}
+								
+							} else {
+							if(!empty($user_email)) {
+								if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+									if ($this->is_hpos_enabled) {
+										// HPOS включен
+										$orders = wc_get_orders(array(
+											'status'      => array( 'wc-processing', 'wc-completed' ),
+											'limit'       => -1,
+											'customer_id' => $current_user->ID,
+										));
+									} else 
+								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-completed', 'wc-processing'), 'posts_per_page' => -1, 
+										
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_customer_user',
+										   'value' => $current_user->ID,
+										   'compare' => '=',
+										   )
+									   )
+								));
+								} else {
+								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1, 
+										'tax_query' => array(
+										   array(
+												'taxonomy' => 'shop_order_status',
+												'field' => 'slug',
+												'terms' => array( 'completed', 'processing' )
+											)
+									   ),
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_customer_user',
+										   'value' => $current_user->ID,
+										   'compare' => '=',
+										   )
+									   )
+								));
+								}
+							}
+								$_order_shipping = $_order_discount = $_order_total = 0;
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+										if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
+										} else {
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
+										}
+							
+										$_order_total += $price_order;
+									}
+								}
+							} else {
+								if( is_object($orders) && method_exists($orders, 'have_posts') && $orders->have_posts() ) {
+									while ( $orders->have_posts() ) {
+										$orders->the_post();
+										$_order = $orders->post;
+										$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
+										$rate_def = $this->compatibility_currency($order_currency);
+										if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
+										if( $rate_def != 1 ) {
+											$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+											$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
+										} else {
+											if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											} else {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
+											}
+										}
+											
+										
+										//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
+										$_order_total = $_order_total + $price_order;							
+								}
+									}
+								}
+								$total = $_order_total - $_order_shipping;
+								
+							}
+						}
+					}
+					if(!$add_coupon) {
+						$check_ps[] = get_user_meta($current_user->ID, 'billing_cart_club', true);
+						if(isset($_POST['post_data'])) {
+							 parse_str ($_POST['post_data'], $post_data);
+							 if(isset($post_data["billing_cart_club"])) {
+								$post_data["billing_cart_club"] = str_replace( array('(',')',' ', '-'), '', $post_data["billing_cart_club"] ) ;
+								$check_ps[] = $post_data["billing_cart_club"];
+								if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
+									$_SESSION['d_phone'] = $post_data["billing_cart_club"];
+								} else {
+									$woocommerce->session->d_phone = $post_data["billing_cart_club"];
+								}
+							 }
+						 }
+						$check_ps = array_unique($check_ps);
+						
+						if(is_array($check_ps)) {
+							foreach($check_ps as $user_p) {
+								if(!empty($customer_cart_club)) {
+									if(!empty($user_p))
+									if(in_array( $user_p, $customer_cart_club ))
+									{
+										$add_coupon = true;
+									if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+										if ($this->is_hpos_enabled) {
+											// HPOS включен
+											$orders = wc_get_orders(array(
+												'status'      => array( 'wc-processing', 'wc-completed' ),
+												'limit'       => -1,
+												'customer_id' => $current_user->ID,
+											));
+										} else {
+									$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_customer_user',
+										   'value' => $current_user->ID,
+										   'compare' => '=',
+										   )
+									   )
+									));
+										}
+									} else {
+									$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
+										'tax_query' => array(
+										   array(
+												'taxonomy' => 'shop_order_status',
+												'field' => 'slug',
+												'terms' => array( 'completed', 'processing' )
+											)
+									   ),
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_customer_user',
+										   'value' => $current_user->ID,
+										   'compare' => '=',
+										   )
+									   )
+									));
+									}
+								
+								$_order_shipping = $_order_discount = $_order_total = 0;
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+										if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
+										} else {
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
+										}
+							
+										$_order_total += $price_order;
+									}
+								}
+							} elseif( $orders->have_posts() ) {
+									while ( $orders->have_posts() ) {
+										$orders->the_post();
+										$_order = $orders->post;
+										
+										$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
+										$rate_def = $this->compatibility_currency($order_currency);
+										if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
+										if( $rate_def != 1 ) {
+											$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)number_format( (float)get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+											$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
+										} else {
+											if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											} else {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
+											}
+										}
+											
+										
+										//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
+										$_order_total = $_order_total + $price_order;							
+									}
+								}
+								$total = $_order_total - $_order_shipping;
+										break;
+									}
+									$b = 0;
+									foreach($customer_cart_club as $phone) {
+										if( strpos( $phone, str_replace('+', '', $user_p) ) !== false && mb_strlen($user_p, 'utf-8') > 7) {
+											$add_coupon = true;
+											$b = 1; 
+										if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+											if ($this->is_hpos_enabled) {
+												// HPOS включен
+												$orders = wc_get_orders(array(
+													'status'      => array( 'wc-processing', 'wc-completed' ),
+													'limit'       => -1,
+													'customer_id' => $current_user->ID,
+												));
+											} else {
+									$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
+										
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_customer_user',
+										   'value' => $current_user->ID,
+										   'compare' => '=',
+										   )
+									   )
+									));
+											}
+											
+										} else {
+									$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
+										'tax_query' => array(
+										   array(
+												'taxonomy' => 'shop_order_status',
+												'field' => 'slug',
+												'terms' => array( 'completed', 'processing' )
+											)
+									   ),
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_customer_user',
+										   'value' => $current_user->ID,
+										   'compare' => '=',
+										   )
+									   )
+									));
+										}
+								
+								$_order_shipping = $_order_discount = $_order_total = 0;
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+										if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format((float)$order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
+										} else {
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
+										}
+							
+										$_order_total += $price_order;
+									}
+								}
+							} elseif( $orders->have_posts() ) {
+									while ( $orders->have_posts() ) {
+										$orders->the_post();
+										$_order = $orders->post;
+										$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
+										$rate_def = $this->compatibility_currency($order_currency);
+										if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
+										if( $rate_def != 1 ) {
+											$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)number_format( (float)get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+											$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
+										} else {
+											if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											} else {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
+											}
+										}
+											
+										
+										//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
+										$_order_total = $_order_total + $price_order;							
+									}
+								}
+								$total = $_order_total - $_order_shipping;
+											break;
+										}
+									}
+									if($b) break;
+								} else {
+	
+								}
+							}
+						}
+					}
+				}  else {
+					if(!$add_coupon ) {
+						if(isset($_POST['post_data'])) {
+							parse_str ($_POST['post_data'], $post_data);
+							if(isset($post_data["billing_cart_club"]) && !empty($post_data["billing_cart_club"]) ) {
+								$post_data["billing_cart_club"] = str_replace( array('(',')',' ', '-'), '', $post_data["billing_cart_club"] ) ;
+								$check_ps[] = $post_data["billing_cart_club"];
+								if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
+									$_SESSION['d_phone'] = $post_data["billing_cart_club"];
+								} else {
+									$woocommerce->session->d_phone = $post_data["billing_cart_club"];
+								}
+							} else {
+								if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
+									if(isset($_SESSION['d_phone']))
+									$post_data["billing_cart_club"] = $_SESSION['d_phone'];
+								} else {
+									if(isset($woocommerce->session->d_phone))
+										$post_data["billing_cart_club"] = $woocommerce->session->d_phone;
+								}
+								if(isset($post_data["billing_cart_club"]))
+									$check_ps[] = $post_data["billing_cart_club"];
 							}
 						} else {
 							if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
@@ -3828,256 +4286,253 @@ class saphali_dicount {
 							if(isset($post_data["billing_cart_club"]))
 								$check_ps[] = $post_data["billing_cart_club"];
 						}
-					} else {
-						if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
-							if(isset($_SESSION['d_phone']))
-							$post_data["billing_cart_club"] = $_SESSION['d_phone'];
-						} else {
-							if(isset($woocommerce->session->d_phone))
-								$post_data["billing_cart_club"] = $woocommerce->session->d_phone;
-						}
-						if(isset($post_data["billing_cart_club"]))
-							$check_ps[] = $post_data["billing_cart_club"];
-					}
-					if( isset($check_ps) )
-					$check_ps = array_unique($check_ps);
-				
-					if( isset($check_ps) && is_array($check_ps) ) {
-						foreach($check_ps as $user_p) {
-							if(!empty($customer_cart_club)) {
-								if(!empty($user_p))
-								if(in_array( $user_p, $customer_cart_club ))
-								{
-									$add_coupon = true;
-									if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) ) {
-									$arg = array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
-									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_billing_cart_club',
-									   'value' => $user_p,
-									   'compare' => 'LIKE',
-									   )
-								   )
-								);
-								$orders = new WP_Query($arg);
-								} else {
-								$arg = array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
-									'tax_query' => array(
-									   array(
-											'taxonomy' => 'shop_order_status',
-											'field' => 'slug',
-											'terms' => array( 'completed', 'processing' )
-										)
-								   ),
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_billing_cart_club',
-									   'value' => $user_p,
-									   'compare' => 'LIKE',
-									   )
-								   )
-								);
-								$orders = new WP_Query($arg); 
-							}
-							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
-								while ( $orders->have_posts() ) {
-									$orders->the_post();
-									$_order = $orders->post;
-									
-									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
-									$rate_def = $this->compatibility_currency($order_currency);
-									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
-									} else {
-										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+						if( isset($check_ps) )
+						$check_ps = array_unique($check_ps);
+					
+						if( isset($check_ps) && is_array($check_ps) ) {
+							foreach($check_ps as $user_p) {
+								if(!empty($customer_cart_club)) {
+									if(!empty($user_p))
+									if(in_array( $user_p, $customer_cart_club ))
+									{
+										$add_coupon = true;
+									if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+										if ($this->is_hpos_enabled) {
+											// HPOS включен
+											$orders = wc_get_orders(array(
+												'status'      => array( 'wc-processing', 'wc-completed' ),
+												'limit'       => -1,
+												'meta_query'  => array(
+													array(
+														'key' => '_billing_cart_club',
+														'value' => $user_p,
+														'compare' => 'LIKE',
+													),
+												),
+											));
 										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
-										}
-									}
+										$arg = array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
 										
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_billing_cart_club',
+										   'value' => $user_p,
+										   'compare' => 'LIKE',
+										   )
+									   )
+									);
+									$orders = new WP_Query($arg);
+										}
 									
-									//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
-									$_order_total = $_order_total + $price_order;							
+									} else {
+									$arg = array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
+										'tax_query' => array(
+										   array(
+												'taxonomy' => 'shop_order_status',
+												'field' => 'slug',
+												'terms' => array( 'completed', 'processing' )
+											)
+									   ),
+									   'meta_query' => array(
+										   'relation' => 'AND',
+										   array(
+										   'key' => '_billing_cart_club',
+										   'value' => $user_p,
+										   'compare' => 'LIKE',
+										   )
+									   )
+									);
+									$orders = new WP_Query($arg); 
 								}
-							}
-							$total = $_order_total - $_order_shipping;
-									break;
-								}
-							} else {
-
-							}
-						}
-					}
-				}
-			}
-			$discount = array();
-			if( $add_coupon  ) {
-				// $total = apply_filters( 'WOOMULTI_CURRENCY_R', $total );
-				if(isset($_COOKIE['saphali'])) var_dump($total, __LINE__);
-				// var_dump($total);
-				if(is_array($variant_discount))
-				foreach($variant_discount as $key => $_variant_discount) {
-					foreach($_variant_discount['min'] as $_key => $_discount) {
-						
-						if( $total >= $_discount && $total <= $variant_discount[$key]['max'][$_key] ) {
-							$discount[$key] = $variant_discount[$key]['discount'][$_key];
-						} 
-					}
-				}
-			}
-			
-			if( $add_coupon && $discount  ) {
-				//
-				//$count=0;
-				
-				foreach($woocommerce->cart->applied_coupons as $_c_ )
-				$coupon__ = new WC_Coupon( $_c_ );
-				if( isset($coupon__) ) {
-					$type = method_exists($coupon__, 'get_discount_type') ? $coupon__->get_discount_type() : $coupon__->type;
-					$individual_use = method_exists($coupon__, 'get_individual_use') ? $coupon__->get_individual_use() : $coupon__->individual_use;
-					if( !( "fixed_total_shop" == $type || "fixed_total_cart" == $type ) && $individual_use == 'yes' ) return;
-				}
-				
-				foreach($coupon_code as $_k => $code) {
-
-					if(empty($discount[$_k])) {
-						if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
-							foreach($woocommerce->cart->applied_coupons as $key => $_code) {
-								if($code == $_code) {
-									$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка (%s) по всем Вашим заказам аннулирована', 'saphali-discount' ), $_SESSION['discount_saphali_shop'][$key] ) );
-									unset($_SESSION['discount_saphali_shop'][$key]); 
-									unset($woocommerce->cart->applied_coupons[$key]);
-								}
-							}
-							$_SESSION['coupons'] = $woocommerce->cart->applied_coupons;
-						} else {
-							foreach($woocommerce->cart->applied_coupons as $key => $_code) {
-								if($code == $_code) {
-									$this->comp_woocomerce_mess(  sprintf(__( 'Ваша накопительная скидка (%s) по всем Вашим заказам аннулирована', 'saphali-discount' ), $woocommerce->session->discount_saphali_shop[$key] ) );
-									if(empty($woocommerce->session->discount_saphali_shop)) $woocommerce->session->discount_saphali_shop = array();
-									$session = $woocommerce->session->discount_saphali_shop;
-									unset($session[$key]);
-									$woocommerce->session->discount_saphali_shop = $session;
-									unset($woocommerce->cart->applied_coupons[$key]);
-								}
-								
-							}
-							$woocommerce->session->coupon_codes = $woocommerce->cart->applied_coupons;
-						}
-						continue;
-					}
-					$status_add_code = false;
-					if(isset($woocommerce->cart->coupon_discount_amounts[$code]) && !isset($woocommerce->cart->applied_coupons[$_k]) )
-						$woocommerce->cart->applied_coupons[$_k] = $code;
-					$woocommerce->cart->applied_coupons = array_unique($woocommerce->cart->applied_coupons);
-					sort($woocommerce->cart->applied_coupons);
-					if(is_array($woocommerce->cart->applied_coupons)) {
-						if( !in_array($code, $woocommerce->cart->applied_coupons) ) {
-							$__coupon = new WC_Coupon( $code );
-							if($this->is_valid($__coupon))
-							$status_add_code = $this->add_discount( $code );
-							else $status_add_code = false;
-							//$count++;
-						} else {
-							$coupon = new WC_Coupon($code);
-							$id = method_exists($coupon, 'get_id') ? $coupon->get_id() : $coupon->id;
-							$this->info_cart_checkout = get_post_meta( $id, 'info_cart_checkout', true );
+								$_order_shipping = $_order_discount = $_order_total = 0;
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format((float)$order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
+										} else {
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
+										}
 							
-								if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
-									foreach($woocommerce->cart->applied_coupons as $key => $_code) {
-										if($code == $_code) {  
-											if($discount[$_k] != $_SESSION['discount_saphali_shop'][$key] ) {
+										$_order_total += $price_order;
+									}
+								}
+							} elseif( $orders->have_posts() ) {
+									while ( $orders->have_posts() ) {
+										$orders->the_post();
+										$_order = $orders->post;
+										
+										$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
+										$rate_def = $this->compatibility_currency($order_currency);
+										if( $rate_def != 1 ) {
+											$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)number_format( (float)get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+											$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
+										} else {
+											if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											} else {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
+											}
+										}
+											
+										
+										//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
+										$_order_total = $_order_total + $price_order;							
+									}
+								}
+								$total = $_order_total - $_order_shipping;
+										break;
+									}
+								} else {
+	
+								}
+							}
+						}
+					}
+				}
+				$discount = array();
+				if( $add_coupon  ) {
+					// $total = apply_filters( 'WOOMULTI_CURRENCY_R', $total );
+					if(isset($_COOKIE['saphali'])) var_dump($total, __LINE__);
+					// var_dump($total);
+					if(is_array($variant_discount))
+					foreach($variant_discount as $key => $_variant_discount) {
+						foreach($_variant_discount['min'] as $_key => $_discount) {
+							
+							if( $total >= $_discount && $total <= $variant_discount[$key]['max'][$_key] ) {
+								$discount[$key] = $variant_discount[$key]['discount'][$_key];
+							} 
+						}
+					}
+				}
+				
+				if( $add_coupon && $discount  ) {
+					//
+					//$count=0;
+					
+					foreach($woocommerce->cart->applied_coupons as $_c_ )
+					$coupon__ = new WC_Coupon( $_c_ );
+					if( isset($coupon__) ) {
+						$type = method_exists($coupon__, 'get_discount_type') ? $coupon__->get_discount_type() : $coupon__->type;
+						$individual_use = method_exists($coupon__, 'get_individual_use') ? $coupon__->get_individual_use() : $coupon__->individual_use;
+						if( !( "fixed_total_shop" == $type || "fixed_total_cart" == $type ) && $individual_use == 'yes' ) return;
+					}
+					
+					foreach($coupon_code as $_k => $code) {
+	
+						if(empty($discount[$_k])) {
+							if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
+								foreach($woocommerce->cart->applied_coupons as $key => $_code) {
+									if($code == $_code) {
+										$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка (%s) по всем Вашим заказам аннулирована', 'saphali-discount' ), $_SESSION['discount_saphali_shop'][$key] ) );
+										unset($_SESSION['discount_saphali_shop'][$key]); 
+										unset($woocommerce->cart->applied_coupons[$key]);
+									}
+								}
+								$_SESSION['coupons'] = $woocommerce->cart->applied_coupons;
+							} else {
+								foreach($woocommerce->cart->applied_coupons as $key => $_code) {
+									if($code == $_code) {
+										$this->comp_woocomerce_mess(  sprintf(__( 'Ваша накопительная скидка (%s) по всем Вашим заказам аннулирована', 'saphali-discount' ), $woocommerce->session->discount_saphali_shop[$key] ) );
+										if(empty($woocommerce->session->discount_saphali_shop)) $woocommerce->session->discount_saphali_shop = array();
+										$session = $woocommerce->session->discount_saphali_shop;
+										unset($session[$key]);
+										$woocommerce->session->discount_saphali_shop = $session;
+										unset($woocommerce->cart->applied_coupons[$key]);
+									}
+									
+								}
+								$woocommerce->session->coupon_codes = $woocommerce->cart->applied_coupons;
+							}
+							continue;
+						}
+						$status_add_code = false;
+						if(isset($woocommerce->cart->coupon_discount_amounts[$code]) && !isset($woocommerce->cart->applied_coupons[$_k]) )
+							$woocommerce->cart->applied_coupons[$_k] = $code;
+						$woocommerce->cart->applied_coupons = array_unique($woocommerce->cart->applied_coupons);
+						sort($woocommerce->cart->applied_coupons);
+						if(is_array($woocommerce->cart->applied_coupons)) {
+							if( !in_array($code, $woocommerce->cart->applied_coupons) ) {
+								$__coupon = new WC_Coupon( $code );
+								if($this->is_valid($__coupon))
+								$status_add_code = $this->add_discount( $code );
+								else $status_add_code = false;
+								//$count++;
+							} else {
+								$coupon = new WC_Coupon($code);
+								$id = method_exists($coupon, 'get_id') ? $coupon->get_id() : $coupon->id;
+								$this->info_cart_checkout = get_post_meta( $id, 'info_cart_checkout', true );
+								
+									if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
+										foreach($woocommerce->cart->applied_coupons as $key => $_code) {
+											if($code == $_code) {  
+												if($discount[$_k] != $_SESSION['discount_saphali_shop'][$key] ) {
+													if( $this->info_cart_checkout != 'yes' ) {
+														$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $discount[$_k]) );
+													}
+													
+												}
+												$_SESSION['discount_saphali_shop'][$key] = $discount[$_k]; 
+											}
+										}
+									} else {
+										foreach($woocommerce->cart->applied_coupons as $key => $_code) {
+											if($code == $_code) {  
+												if($discount[$_k] != $woocommerce->session->discount_saphali_shop[$key] ) {
 												if( $this->info_cart_checkout != 'yes' ) {
+													
 													$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $discount[$_k]) );
+													
 												}
 												
+												}
+												if(empty($woocommerce->session->discount_saphali_shop)) $woocommerce->session->discount_saphali_shop = array();
+												$session = $woocommerce->session->discount_saphali_shop;
+												$session[$key] = $discount[$_k];
+												$woocommerce->session->discount_saphali_shop = $session;
 											}
-											$_SESSION['discount_saphali_shop'][$key] = $discount[$_k]; 
 										}
 									}
-								} else {
-									foreach($woocommerce->cart->applied_coupons as $key => $_code) {
-										if($code == $_code) {  
-											if($discount[$_k] != $woocommerce->session->discount_saphali_shop[$key] ) {
-											if( $this->info_cart_checkout != 'yes' ) {
-												
-												$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $discount[$_k]) );
-												
-											}
-											
-											}
-											if(empty($woocommerce->session->discount_saphali_shop)) $woocommerce->session->discount_saphali_shop = array();
-											$session = $woocommerce->session->discount_saphali_shop;
-											$session[$key] = $discount[$_k];
-											$woocommerce->session->discount_saphali_shop = $session;
-										}
-									}
-								}
-							
-						}
-					} else {
-							$__coupon = new WC_Coupon( $code );
-							
-							if($this->is_valid($__coupon))
-							$status_add_code = $this->add_discount( $code );
-							else $status_add_code = false;
-						//$count++;
-					}
-					if($status_add_code) {
-						//if($count === 1) unset($woocommerce->session->discount_saphali_shop);
-						foreach($woocommerce->cart->applied_coupons as $key => $_code) {
-							if($code == $_code) $index = $key;
-						}
-						if ( strstr( $discount[$_k], '%' ) )  $_discount_str = $discount[$_k];
-						 else  $_discount_str = $this->wc_price($discount[$_k]);
-						//$this->messege_code = array(sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $_discount_str) ) + $this->messege_code;
-						//add_filter("woocommerce_add_message", array($this,"woocommerce_add_message"), 10 , 1);
-						
-						$coupon = new WC_Coupon($code);
-						$individual_use = method_exists($coupon, 'get_individual_use') ? $coupon->get_individual_use() : $coupon->individual_use;
-						if ( $individual_use == 'yes' ) {
-							unset($woocommerce->session->discount_saphali_shop);
-							
-							$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $_discount_str) . __(' <br />В заказе используется только эта скидка.', 'saphali-discount') ); 
+								
+							}
 						} else {
+								$__coupon = new WC_Coupon( $code );
+								
+								if($this->is_valid($__coupon))
+								$status_add_code = $this->add_discount( $code );
+								else $status_add_code = false;
+							//$count++;
+						}
+						if($status_add_code) {
+							//if($count === 1) unset($woocommerce->session->discount_saphali_shop);
+							foreach($woocommerce->cart->applied_coupons as $key => $_code) {
+								if($code == $_code) $index = $key;
+							}
+							if ( strstr( $discount[$_k], '%' ) )  $_discount_str = $discount[$_k];
+							 else  $_discount_str = $this->wc_price($discount[$_k]);
+							//$this->messege_code = array(sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $_discount_str) ) + $this->messege_code;
+							//add_filter("woocommerce_add_message", array($this,"woocommerce_add_message"), 10 , 1);
 							
-							$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $_discount_str) );
-							
-						}
-						if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
-						   $_SESSION['discount_saphali_shop'][$index] = $discount[$_k];
-						} else {
-							if(empty($woocommerce->session->discount_saphali_shop)) $woocommerce->session->discount_saphali_shop = array();
-							$session = $woocommerce->session->discount_saphali_shop;
-							$session = $session + array($index => $discount[$_k]);
-							$woocommerce->session->discount_saphali_shop = $session;
-						}
-					} elseif(  in_array($code, $woocommerce->cart->applied_coupons ) && isset($discount[$_k]) &&!empty($discount[$_k])) {
-						foreach($woocommerce->cart->applied_coupons as $key => $_code) {
-							if($code == $_code) $index = $key;
-						}
-						if ( strstr( $discount[$_k], '%' ) )  $_discount_str = $discount[$_k];
-						 else  $_discount_str = $this->wc_price($discount[$_k]);
-						 if(!is_object($coupon)) {
 							$coupon = new WC_Coupon($code);
-							$id = method_exists($coupon, 'get_id') ? $coupon->get_id() : $coupon->id;
-							$this->info_cart_checkout = get_post_meta( $id, 'info_cart_checkout', true );
-						}
-						if( $this->info_cart_checkout == 'yes' ) {
 							$individual_use = method_exists($coupon, 'get_individual_use') ? $coupon->get_individual_use() : $coupon->individual_use;
 							if ( $individual_use == 'yes' ) {
-								if ( !version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) unset($woocommerce->session->discount_saphali_shop);
-								else unset( $_SESSION['discount_saphali_shop'] );
-								$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $_discount_str) . __(' <br />В заказе используется только эта скидка.', 'saphali-discount') );
+								unset($woocommerce->session->discount_saphali_shop);
+								
+								$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $_discount_str) . __(' <br />В заказе используется только эта скидка.', 'saphali-discount') ); 
 							} else {
 								
 								$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $_discount_str) );
@@ -4091,51 +4546,81 @@ class saphali_dicount {
 								$session = $session + array($index => $discount[$_k]);
 								$woocommerce->session->discount_saphali_shop = $session;
 							}
-						}
-					}
-					unset($coupon);
-					$this->info_cart_checkout = false;
-				}
-			}  else {
-			
-				  foreach($coupon_code as $_k => $code) {
-						if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
+						} elseif(  in_array($code, $woocommerce->cart->applied_coupons ) && isset($discount[$_k]) &&!empty($discount[$_k])) {
 							foreach($woocommerce->cart->applied_coupons as $key => $_code) {
-								if($code == $_code) {
-									$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка (%s) по всем Вашим заказам аннулирована', 'saphali-discount' ), $_SESSION['discount_saphali_shop'][$key] ) );
-									unset($_SESSION['discount_saphali_shop'][$key]); 
-									unset($woocommerce->cart->applied_coupons[$key]);
-								}
+								if($code == $_code) $index = $key;
 							}
-							$_SESSION['coupons'] = $woocommerce->cart->applied_coupons;
-						} else {
-							foreach($woocommerce->cart->applied_coupons as $key => $_code) {
-								if($code == $_code) {
-									$d = isset($woocommerce->session->discount_saphali_shop[$key]) ? '('. $woocommerce->session->discount_saphali_shop[$key] . ')' : '' ;
-									$this->comp_woocomerce_mess(  sprintf(__( 'Ваша накопительная скидка %s по всем Вашим заказам аннулирована', 'saphali-discount' ), $d ) );
+							if ( strstr( $discount[$_k], '%' ) )  $_discount_str = $discount[$_k];
+							 else  $_discount_str = $this->wc_price($discount[$_k]);
+							 if(!is_object($coupon)) {
+								$coupon = new WC_Coupon($code);
+								$id = method_exists($coupon, 'get_id') ? $coupon->get_id() : $coupon->id;
+								$this->info_cart_checkout = get_post_meta( $id, 'info_cart_checkout', true );
+							}
+							if( $this->info_cart_checkout == 'yes' ) {
+								$individual_use = method_exists($coupon, 'get_individual_use') ? $coupon->get_individual_use() : $coupon->individual_use;
+								if ( $individual_use == 'yes' ) {
+									if ( !version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) unset($woocommerce->session->discount_saphali_shop);
+									else unset( $_SESSION['discount_saphali_shop'] );
+									$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $_discount_str) . __(' <br />В заказе используется только эта скидка.', 'saphali-discount') );
+								} else {
+									
+									$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка по всем Вашим заказам составила %s', 'saphali-discount' ), $_discount_str) );
+									
+								}
+								if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
+								   $_SESSION['discount_saphali_shop'][$index] = $discount[$_k];
+								} else {
 									if(empty($woocommerce->session->discount_saphali_shop)) $woocommerce->session->discount_saphali_shop = array();
 									$session = $woocommerce->session->discount_saphali_shop;
-									unset($session[$key]);
+									$session = $session + array($index => $discount[$_k]);
 									$woocommerce->session->discount_saphali_shop = $session;
-									unset($woocommerce->cart->applied_coupons[$key]);
 								}
-								
 							}
-							$woocommerce->session->coupon_codes = $woocommerce->cart->applied_coupons;
+						}
+						unset($coupon);
+						$this->info_cart_checkout = false;
+					}
+				}  else {
+				
+					  foreach($coupon_code as $_k => $code) {
+							if ( version_compare( WOOCOMMERCE_VERSION, '2.0', '<' ) ) {
+								foreach($woocommerce->cart->applied_coupons as $key => $_code) {
+									if($code == $_code) {
+										$this->comp_woocomerce_mess( sprintf(__( 'Ваша накопительная скидка (%s) по всем Вашим заказам аннулирована', 'saphali-discount' ), $_SESSION['discount_saphali_shop'][$key] ) );
+										unset($_SESSION['discount_saphali_shop'][$key]); 
+										unset($woocommerce->cart->applied_coupons[$key]);
+									}
+								}
+								$_SESSION['coupons'] = $woocommerce->cart->applied_coupons;
+							} else {
+								foreach($woocommerce->cart->applied_coupons as $key => $_code) {
+									if($code == $_code) {
+										$d = isset($woocommerce->session->discount_saphali_shop[$key]) ? '('. $woocommerce->session->discount_saphali_shop[$key] . ')' : '' ;
+										$this->comp_woocomerce_mess(  sprintf(__( 'Ваша накопительная скидка %s по всем Вашим заказам аннулирована', 'saphali-discount' ), $d ) );
+										if(empty($woocommerce->session->discount_saphali_shop)) $woocommerce->session->discount_saphali_shop = array();
+										$session = $woocommerce->session->discount_saphali_shop;
+										unset($session[$key]);
+										$woocommerce->session->discount_saphali_shop = $session;
+										unset($woocommerce->cart->applied_coupons[$key]);
+									}
+									
+								}
+								$woocommerce->session->coupon_codes = $woocommerce->cart->applied_coupons;
+							}
 						}
 					}
-				}
-		}
-		
-		//$woocommerce->cart->remove_coupons( 2 );
-		if($action_ac) {
-			if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '<' ) ) $woocommerce->clear_messages();
-			else
-			wc_clear_notices();
-		}
-	  }
-	  remove_filter( 'posts_where', array($this, 'filter_where') );
-	  remove_action( 'parse_query', array( $this, 'parse_query' ), 5 );
+			}
+			
+			//$woocommerce->cart->remove_coupons( 2 );
+			if($action_ac) {
+				if ( version_compare( WOOCOMMERCE_VERSION, '2.1', '<' ) ) $woocommerce->clear_messages();
+				else
+				wc_clear_notices();
+			}
+		  }
+		  remove_filter( 'posts_where', array($this, 'filter_where') );
+		  remove_action( 'parse_query', array( $this, 'parse_query' ), 5 );
 	}
 	
 	public function add_discount( $coupon_code ) {
@@ -5270,6 +5755,7 @@ class saphali_dicount {
 
 	if($discount_type == 'fixed_total_shop' || $discount_type == 'fixed_total_cart' ) {
 	$customer_email = get_post_meta( $post->ID, 'customer_email', true );
+	
 	//$customer_login = get_post_meta( $post->ID, 'customer_login', true );
 	$customer_cart_club = get_post_meta( $post->ID, 'customer_cart_club', true );
 	$exclude_revers_items_product = get_post_meta( $post->ID, 'exclude_revers_items_product', true );
@@ -5278,66 +5764,44 @@ class saphali_dicount {
 	$this->saph_min_total_order = get_option( 'saph_min_total_order','');
 					?>
 <div class="options_group">
-	<p class="form-field customer_email_field_saphali ">
-		<label for="customer_email"><?php _e('Эл. почта клиентов', 'saphali-discount');?></label>
-		<?php $args['exclude'] = array(1);
-					$args['orderby'] = 'email';
-					$args['fields'] = array('ID', 'user_email', 'user_login');
-					$all_users = get_users( $args );
-					//var_dump(   $customer_email, $post->ID ); ?>
-		<select id="customer_email" style="min-width:130px" name="customer_email[]" class="chosen_select" multiple="multiple" data-placeholder="<?php  _e( 'Any customer', 'woocommerce' ); ?>">
-				<?php 
-					if ( is_array($all_users) )  {
-						$check_emails = array();
-						foreach ( $all_users as $user ) {
-							$check_emails[] = $user->user_email;
-						}
-						//$check_emails[] = get_user_meta($user->ID, 'billing_email', true);
-						$check_emails = array_unique($check_emails);
-						foreach($check_emails as $email) {
-							$_user_login = '';//isset($user->user_login) ? ' (' .$user->user_login . ')' : '';
-							if(!empty($email))
-							echo '<option value="' . esc_attr( $email ) . '"' . selected( in_array( $email, (array)$customer_email ), true, false ) . '><!--email_off-->' . esc_html( $email .  $_user_login ) . '<!--email_off--></option>';
-						}
-						unset($check_emails);
-					}
-					
-				?>
-		</select> 
-		<img class="help_tip" data-tip='<?php  _e( 'Здесь указываются адреса электронной почты для создания специальных условий использования этого купона только с указанными пользовательским email-ми.', 'saphali-discount' ) ?>' src="<?php  echo $woocommerce->plugin_url(); ?>/assets/images/help.png" height="16" width="16" />
-	</p>
+  <p class="form-field customer_email_field_saphali">
+    <label for="customer_email_set"><?php _e('Эл. почта клиентов', 'saphali-discount'); ?></label>
+    <select id="customer_email_set"
+            name="customer_email_set[]"
+            class="saphali_select2_ajax"
+            multiple="multiple"
+            data-placeholder="<?php esc_attr_e('Any customer', 'woocommerce'); ?>" style="width: 150px;">
+      <?php
+      if (!empty($customer_email)) {
+          foreach ((array) $customer_email as $email) {
+              echo '<option value="' . esc_attr($email) . '" selected>' . esc_html($email) . '</option>';
+          }
+      }
+      ?>
+    </select>
+    <img class="help_tip" data-tip="<?php esc_attr_e('Укажите email-адреса покупателей, для которых действует скидка.', 'saphali-discount'); ?>"
+         src="<?php echo esc_url(WC()->plugin_url()); ?>/assets/images/help.png" height="16" width="16" />
+  </p>
 </div>
 <div class="options_group">
-	<p class="form-field customer_cart_club_field_saphali ">
-		<label for="customer_cart_club"><?php _e('Клубные карты клиентов', 'saphali-discount');?></label>
-		<select id="customer_cart_club" style="min-width:130px" name="customer_cart_club[]" class="chosen_select" multiple="multiple" data-placeholder="<?php  _e( 'Любой покупатель, без учета клубных карт', 'saphali-discount' ); ?>">
-				<?php 
-					$t = false;
-					if ( is_array($all_users) ) foreach ( $all_users as $user ) {
-						$phone = get_user_meta($user->ID, 'billing_cart_club', true);
-						$name = get_user_meta($user->ID, 'billing_first_name', true) . ' ' . get_user_meta($user->ID, 'billing_last_name', true);
-						//$check_logins = array_unique($check_logins);
-						if(!empty($phone)) {
-							$t = true;
-							echo '<option value="' . esc_attr( $phone ) . '"' . selected( in_array( $phone, $customer_cart_club ), true, false ) . '>' . esc_html( $phone .  " ({$user->user_email} - {$name})" ) . '</option>';
-							$index = array_search(trim($phone), $customer_cart_club);
-							if( is_integer( $index ) )
-							unset( $customer_cart_club[$index] );
-						}
-					}
-					if( isset($customer_cart_club) && is_array($customer_cart_club) )
-					foreach($customer_cart_club as $phone) {
-						echo '<option value="' . esc_attr( $phone ) . '"' . selected( true, true, false ) . '>' . esc_html( $phone ) . '</option>';
-					}
-					if($t) {
-				?>
-				<option value='0'><?php  _e('Добавить еще клубные карты', 'saphali-discount' ); ?>.</option>
-					<?php } else {
-						?><option value='0'><?php  _e('Указать клубные карты через запятую', 'saphali-discount' ); ?>.</option><?php
-					} ?>
-		</select> 
-		<img class="help_tip" data-tip='<?php  _e( 'Здесь указываются клубные карты для покупателей. Если указать их то, скидка будет предоставляться исключительно по ним.', 'saphali-discount' ) ?>' src="<?php  echo $woocommerce->plugin_url(); ?>/assets/images/help.png" height="16" width="16" />
-	</p>
+  <p class="form-field customer_cart_club_field_saphali">
+    <label for="customer_cart_club"><?php _e('Клубные карты клиентов', 'saphali-discount'); ?></label>
+    <select id="customer_cart_club"
+            name="customer_cart_club[]"
+            class="saphali_select2_cart_club"
+            multiple="multiple"
+            data-placeholder="<?php esc_attr_e('Любой покупатель, без учета клубных карт', 'saphali-discount'); ?>" style="width: 150px;">
+      <?php
+      if (!empty($customer_cart_club) && is_array($customer_cart_club)) {
+          foreach ($customer_cart_club as $card_number) {
+              echo '<option value="' . esc_attr($card_number) . '" selected>' . esc_html($card_number) . '</option>';
+          }
+      }
+      ?>
+    </select>
+    <img class="help_tip" data-tip="<?php esc_attr_e('Укажите клубные карты клиентов. Скидка будет действовать только при совпадении.', 'saphali-discount'); ?>"
+         src="<?php echo esc_url(WC()->plugin_url()); ?>/assets/images/help.png" height="16" width="16" />
+  </p>
 </div>
 <div class="options_group">
 	<p class="form-field customer_cat_field_saphali ">
@@ -5458,9 +5922,9 @@ class saphali_dicount {
 		?>
 			<p class="variant_discount_field">
 			<label for="variant_discount[min][]"<?php  if ( !version_compare( WOOCOMMERCE_VERSION, '2.1.0', '<' ) ) {echo ' style="margin: 0 0 0 -68px;"';} ?>>&nbsp;</label>
-			<input type="number" min="0" step="1" placeholder="<?php _e('мин. значение', 'saphali-discount');?>" value="<?php  echo $discount;?>" id="variant_discount[min][]" name="variant_discount[min][]" class="min_variant_discount short"> 
-			<input type="text" placeholder="<?php _e('макс. значение', 'saphali-discount');?>" value="<?php  echo $variant_discount['max'][$key];?>" id="variant_discount[max][]" name="variant_discount[max][]" class="max_variant_discount short"> 
-			<input type="text" placeholder="<?php _e('значение скидки', 'saphali-discount');?>" value="<?php  echo $variant_discount['discount'][$key];?>" id="variant_discount[discount][]" name="variant_discount[discount][]" class="max_variant_discount short" style="width: 105px" /> <span style="color: red" class="button-secondary remove"><?php _e('Удалить', 'saphali-discount');?></span>
+			<input type="number" min="0" step="1" placeholder="<?php _e('мин. значение', 'saphali-discount');?>" value="<?php  echo $discount;?>" id="variant_discount[min][<?php echo $key; ?>]" name="variant_discount[min][]" class="min_variant_discount short"> 
+			<input type="text" placeholder="<?php _e('макс. значение', 'saphali-discount');?>" value="<?php  echo $variant_discount['max'][$key];?>" id="variant_discount[max][<?php echo $key; ?>]" name="variant_discount[max][]" class="max_variant_discount short"> 
+			<input type="text" placeholder="<?php _e('значение скидки', 'saphali-discount');?>" value="<?php  echo $variant_discount['discount'][$key];?>" id="variant_discount[discount][<?php echo $key; ?>]" name="variant_discount[discount][]" class="max_variant_discount short" style="width: 105px" /> <span style="color: red" class="button-secondary remove"><?php _e('Удалить', 'saphali-discount');?></span>
 			</p>
 		<?php
 		}
@@ -5666,8 +6130,8 @@ class saphali_dicount {
 			update_post_meta( $post_id, 'saphali_coupone_customer_no_role', $_POST['_customer_role_no'] );
 		} else delete_post_meta( $post_id, 'saphali_coupone_customer_no_role');
 		
-		if(isset($_POST['customer_email']) && is_array($_POST['customer_email'])) {
-			$customer_email =  array_map( 'trim', $_POST['customer_email']  );
+		if(isset($_POST['customer_email_set']) && is_array($_POST['customer_email_set'])) {
+			$customer_email =  array_map( 'trim', $_POST['customer_email_set']  );
 			update_post_meta( $post_id, 'customer_email', $customer_email );
 			$_POST['customer_email'] = implode(',', $customer_email);
 		} else delete_post_meta( $post_id, 'customer_email');
@@ -5688,6 +6152,7 @@ class saphali_dicount {
 	function user_cart_apry_discount() {
 	global $woocommerce;
 		$content = '';
+		$total = 0;
 		if ( version_compare( WOOCOMMERCE_VERSION, '2.1.0', '<' ) ) $woocommerce->nocache();
 		$coupons = get_posts(array('post_type' => 'shop_coupon', 'post_status' => 'publish', 'meta_key' => 'discount_type', 'meta_value' => 'fixed_total_shop', 'posts_per_page' => -1));
 		$ob = wp_get_current_user();
@@ -5755,19 +6220,26 @@ class saphali_dicount {
 							if(in_array( $user_email, $customer_email ))
 							{
 								$add_coupon = true;
-								if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) ) 
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
-									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								));
-								else
+								if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+									if ($this->is_hpos_enabled) {
+										$orders = wc_get_orders(array(
+											'status'      => array( 'wc-processing', 'wc-completed' ),
+											'limit'       => -1,
+											'customer_id' => $current_user->ID,
+										));
+									} else 
+									$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
+										
+									'meta_query' => array(
+										'relation' => 'AND',
+										array(
+										'key' => '_customer_user',
+										'value' => $current_user->ID,
+										'compare' => '=',
+										)
+									)
+									));	
+								} else
 								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
 									'tax_query' => array(
 									   array(
@@ -5786,8 +6258,29 @@ class saphali_dicount {
 								   )
 								));
 							$_order_shipping = $_order_discount = $_order_total = 0;
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
+										} else {
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = $order->get_meta('_order_total_base_currency');
+												$_order_shipping += $order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
+										}
 							
-							if( $orders->have_posts() ) {
+										$_order_total += $price_order;
+									}
+								}
+							} elseif( $orders->have_posts() ) {
 								while ( $orders->have_posts() ) {
 									$orders->the_post();
 									$_order = $orders->post;
@@ -5795,16 +6288,16 @@ class saphali_dicount {
 									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
 									$rate_def = $this->compatibility_currency($order_currency);
 									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
+										$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
 										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
+										$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
 									} else {
 										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+											$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
 										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
+											$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
 										}
 									}
 										
@@ -5819,18 +6312,26 @@ class saphali_dicount {
 							}
 						} else {
 							if(!empty($user_email))
-							if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) ) {
-								$arg = array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								);
-								$orders = new WP_Query($arg);
+							if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+								if ($this->is_hpos_enabled) {
+									$orders = wc_get_orders(array(
+										'status'      => array( 'wc-processing', 'wc-completed' ),
+										'limit'       => -1,
+										'customer_id' => $current_user->ID,
+									));
+								} else {
+									$arg = array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,
+									'meta_query' => array(
+										'relation' => 'AND',
+										array(
+										'key' => '_customer_user',
+										'value' => $current_user->ID,
+										'compare' => '=',
+										)
+									)
+									);
+									$orders = new WP_Query($arg);	
+								}
 							}
 							else
 							$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1, 
@@ -5851,7 +6352,29 @@ class saphali_dicount {
 								   )
 							));
 							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
+										} else {
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = $order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
+										}
+							
+										$_order_total += $price_order;
+									}
+								}
+							} elseif( $orders->have_posts() ) {
 								while ( $orders->have_posts() ) {
 									$orders->the_post();
 									$_order = $orders->post;
@@ -5859,14 +6382,14 @@ class saphali_dicount {
 									$rate_def = $this->compatibility_currency($order_currency);
 									if( $rate_def != 1 ) {
 										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
+										$_order_shipping = $_order_shipping + (float)number_format( (float)get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+										$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
 									} else {
 										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+											$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
 										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
+											$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
 											$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
 										}
 									}
@@ -5903,19 +6426,27 @@ class saphali_dicount {
 								if(in_array( $user_p, $customer_cart_club ))
 								{
 									$add_coupon = true;
-									if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) ) 
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
-									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_customer_user',
-									   'value' => $current_user->ID,
-									   'compare' => '=',
-									   )
-								   )
-								));
-								else
+									if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+										if ($this->is_hpos_enabled) {
+											// HPOS включен
+											$orders = wc_get_orders(array(
+												'status'      => array( 'wc-processing', 'wc-completed' ),
+												'limit'       => -1,
+												'customer_id' => $current_user->ID,
+											));
+										} else
+									$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
+										
+									'meta_query' => array(
+										'relation' => 'AND',
+										array(
+										'key' => '_customer_user',
+										'value' => $current_user->ID,
+										'compare' => '=',
+										)
+									)
+									));		
+									} else
 								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
 									'tax_query' => array(
 									   array(
@@ -5934,7 +6465,29 @@ class saphali_dicount {
 								   )
 								));
 							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
+										} else {
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += (float)$order->get_shipping_total();
+											}
+										}
+							
+										$_order_total += $price_order;
+									}
+								}
+							} elseif( $orders->have_posts() ) {
 								while ( $orders->have_posts() ) {
 									$orders->the_post();
 									$_order = $orders->post;
@@ -5942,16 +6495,16 @@ class saphali_dicount {
 									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
 									$rate_def = $this->compatibility_currency($order_currency);
 									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
+										$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
+										$_order_shipping = $_order_shipping + (float)number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+										$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
 									} else {
 										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+											$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
 										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
+											$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
 										}
 									}
 										
@@ -5989,19 +6542,33 @@ class saphali_dicount {
 								if(in_array( $user_p, $customer_cart_club ))
 								{
 									$add_coupon = true;
-									if( ! version_compare( WOOCOMMERCE_VERSION, '2.2', '<' ) ) 
-								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
-									
-								   'meta_query' => array(
-									   'relation' => 'AND',
-									   array(
-									   'key' => '_billing_cart_club',
-									   'value' => $user_p,
-									   'compare' => 'LIKE',
-									   )
-								   )
-								));
-								else
+									if( version_compare(WOOCOMMERCE_VERSION, '2.2', '>=') ) {
+										if ($this->is_hpos_enabled) {
+											// HPOS включен
+											$orders = wc_get_orders(array(
+												'status'      => array( 'wc-processing', 'wc-completed' ),
+												'limit'       => -1,
+												'meta_query'  => array(
+													array(
+														'key' => '_billing_cart_club',
+														'value' => $user_p,
+														'compare' => 'LIKE',
+													),
+												),
+											));
+										} else
+										$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => array( 'wc-processing', 'wc-completed' ), 'posts_per_page' => -1,   
+										
+											'meta_query' => array(
+												'relation' => 'AND',
+												array(
+												'key' => '_billing_cart_club',
+												'value' => $user_p,
+												'compare' => 'LIKE',
+												)
+											)
+										));	
+									} else
 								$orders = new WP_Query(array('post_type' => 'shop_order', 'post_status' => 'publish', 'posts_per_page' => -1,   
 									'tax_query' => array(
 									   array(
@@ -6020,32 +6587,58 @@ class saphali_dicount {
 								   )
 								));
 							$_order_shipping = $_order_discount = $_order_total = 0;
-							if( $orders->have_posts() ) {
-								while ( $orders->have_posts() ) {
-									$orders->the_post();
-									$_order = $orders->post;
-									
-									$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
-									$rate_def = $this->compatibility_currency($order_currency);
-									if( $rate_def != 1 ) {
-										$amount = get_post_meta( $_order->ID, '_order_total', true );
-										$_order_shipping = $_order_shipping + number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
-										$price_order = number_format(  $amount * $rate_def, 2, '.', '');
-									} else {
-										if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
-											$price_order = get_post_meta( $_order->ID, '_order_total_base_currency', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+							if ($this->is_hpos_enabled) {
+								if (!empty($orders)) {
+									foreach ($orders as $order) {
+										$order_currency = $order->get_currency();
+										$rate_def = $this->compatibility_currency($order_currency);
+										if(isset($_COOKIE['saphali'])) var_dump($order_currency, __LINE__);
+										if ($rate_def != 1) {
+											$amount = $order->get_total();
+											$_order_shipping += (float)number_format($order->get_shipping_total() * $rate_def, 2, '.', '');
+											$price_order = (float)number_format($amount * $rate_def, 2, '.', '');
 										} else {
-											$price_order = get_post_meta( $_order->ID, '_order_total', true );
-											$_order_shipping = $_order_shipping + get_post_meta( $_order->ID, '_order_shipping', true );
+											if ($order->get_meta('_order_total_base_currency')) {
+												$price_order = (float)$order->get_meta('_order_total_base_currency');
+												$_order_shipping += (float)$order->get_meta('_order_shipping_base_currency');
+											} else {
+												$price_order = $order->get_total();
+												$_order_shipping += $order->get_shipping_total();
+											}
 										}
+							
+										$_order_total += $price_order;
 									}
-										
-									
-									//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
-									$_order_total = $_order_total + $price_order;							
 								}
+							} else {
+								if( $orders->have_posts() ) {
+									while ( $orders->have_posts() ) {
+										$orders->the_post();
+										$_order = $orders->post;
+										
+										$order_currency = get_post_meta( $_order->ID, '_order_currency', true );
+										$rate_def = $this->compatibility_currency($order_currency);
+										if( $rate_def != 1 ) {
+											$amount = (float)get_post_meta( $_order->ID, '_order_total', true );
+											$_order_shipping = $_order_shipping + (float)number_format( get_post_meta( $_order->ID, '_order_shipping', true )  * $rate_def, 2, '.', '');
+											$price_order = (float)number_format(  $amount * $rate_def, 2, '.', '');
+										} else {
+											if(get_post_meta( $_order->ID, '_order_total_base_currency', true ) ) {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total_base_currency', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping_base_currency', true );
+											} else {
+												$price_order = (float)get_post_meta( $_order->ID, '_order_total', true );
+												$_order_shipping = $_order_shipping + (float)get_post_meta( $_order->ID, '_order_shipping', true );
+											}
+										}
+											
+										
+										//$_order_tax = $_order_tax + get_post_meta( $_order->ID, '_order_tax', true );
+										$_order_total = $_order_total + $price_order;							
+									}
+								}	
 							}
+							
 							$total = $_order_total - $_order_shipping;
 									break;
 								}

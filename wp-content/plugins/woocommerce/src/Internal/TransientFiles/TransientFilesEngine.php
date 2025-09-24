@@ -7,6 +7,7 @@ use \Exception;
 use \InvalidArgumentException;
 use Automattic\WooCommerce\Internal\RegisterHooksInterface;
 use Automattic\WooCommerce\Proxies\LegacyProxy;
+use Automattic\WooCommerce\Internal\Traits\AccessiblePrivateMethods;
 use Automattic\WooCommerce\Utilities\TimeUtil;
 
 /**
@@ -34,6 +35,8 @@ use Automattic\WooCommerce\Utilities\TimeUtil;
  */
 class TransientFilesEngine implements RegisterHooksInterface {
 
+	use AccessiblePrivateMethods;
+
 	private const CLEANUP_ACTION_NAME  = 'woocommerce_expired_transient_files_cleanup';
 	private const CLEANUP_ACTION_GROUP = 'wc_batch_processes';
 
@@ -48,12 +51,12 @@ class TransientFilesEngine implements RegisterHooksInterface {
 	 * Register hooks.
 	 */
 	public function register() {
-		add_action( self::CLEANUP_ACTION_NAME, array( $this, 'handle_expired_files_cleanup_action' ) );
-		add_filter( 'woocommerce_debug_tools', array( $this, 'add_debug_tools_entries' ), 999, 1 );
+		self::add_action( self::CLEANUP_ACTION_NAME, array( $this, 'handle_expired_files_cleanup_action' ) );
+		self::add_filter( 'woocommerce_debug_tools', array( $this, 'add_debug_tools_entries' ), 999, 1 );
 
-		add_action( 'init', array( $this, 'add_endpoint' ), 0 );
-		add_filter( 'query_vars', array( $this, 'handle_query_vars' ), 0 );
-		add_action( 'parse_request', array( $this, 'handle_parse_request' ), 0 );
+		self::add_action( 'init', array( $this, 'add_endpoint' ), 0 );
+		self::add_filter( 'query_vars', array( $this, 'handle_query_vars' ), 0 );
+		self::add_action( 'parse_request', array( $this, 'handle_parse_request' ), 0 );
 	}
 
 	/**
@@ -344,10 +347,8 @@ class TransientFilesEngine implements RegisterHooksInterface {
 	 *
 	 * NOTE: If the default interval is changed to something different from DAY_IN_SECONDS, please adjust the
 	 * "every 24h" text in add_debug_tools_entries too.
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function handle_expired_files_cleanup_action(): void {
+	private function handle_expired_files_cleanup_action(): void {
 		$new_interval = null;
 
 		try {
@@ -379,10 +380,8 @@ class TransientFilesEngine implements RegisterHooksInterface {
 	 *
 	 * @param array $tools_array Original debug tools array.
 	 * @return array Updated debug tools array
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function add_debug_tools_entries( array $tools_array ): array {
+	private function add_debug_tools_entries( array $tools_array ): array {
 		$cleanup_is_scheduled = $this->expired_files_cleanup_is_scheduled();
 
 		$tools_array['schedule_expired_transient_files_cleanup'] = array(
@@ -425,8 +424,6 @@ class TransientFilesEngine implements RegisterHooksInterface {
 
 	/**
 	 * Handle the "init" action, add rewrite rules for the "wc/file" endpoint.
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
 	public static function add_endpoint() {
 		add_rewrite_rule( '^wc/file/transient/?$', 'index.php?wc-transient-file-name=', 'top' );
@@ -439,10 +436,8 @@ class TransientFilesEngine implements RegisterHooksInterface {
 	 *
 	 * @param array $vars The original query variables.
 	 * @return array The updated query variables.
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function handle_query_vars( $vars ) {
+	private function handle_query_vars( $vars ) {
 		$vars[] = 'wc-transient-file-name';
 		return $vars;
 	}
@@ -457,10 +452,8 @@ class TransientFilesEngine implements RegisterHooksInterface {
 	 * if it exists, is public and has not expired; or will return a "Not found" status otherwise.
 	 *
 	 * The file will be served with a content type header of "text/html".
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function handle_parse_request() {
+	private function handle_parse_request() {
 		global $wp;
 
 		// phpcs:ignore WordPress.Security

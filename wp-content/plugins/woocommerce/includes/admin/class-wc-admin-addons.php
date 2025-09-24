@@ -198,13 +198,7 @@ class WC_Admin_Addons {
 		$search  = isset( $_GET['search'] ) ? sanitize_text_field( wp_unslash( $_GET['search'] ) ) : '';
 
 		if ( 'helper' === $section ) {
-			$url = admin_url( 'admin.php?page=wc-admin&tab=my-subscriptions&path=%2Fextensions' );
-
-			if ( isset( $_GET['connect'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				$url .= '&connect';
-			}
-
-			wp_safe_redirect( $url );
+			wp_safe_redirect( admin_url( 'admin.php?page=wc-admin&tab=my-subscriptions&path=%2Fextensions' ) );
 			exit();
 		}
 

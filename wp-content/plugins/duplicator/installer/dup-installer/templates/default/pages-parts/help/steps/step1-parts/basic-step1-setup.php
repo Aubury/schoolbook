@@ -1,7 +1,6 @@
 <?php
 defined('ABSPATH') || defined('DUPXABSPATH') || exit;
 
-use Duplicator\Installer\Utils\InstallerUpsell;
 use Duplicator\Installer\Utils\InstallerLinkManager;
 ?>
 
@@ -33,7 +32,7 @@ other details about the archive file.   Below is an overview of the various stat
 
 <small class="hlp-lite-only">
     Note: Duplicator Lite supports only single WordPress sites, while
-    <a href="<?php echo InstallerUpsell::getCampaignUrl('installer', "Help section - Get Pro for Multisite"); ?>" target="_blank">
+    <a href="<?php echo InstallerLinkManager::getCampaignUrl('installer', "Help section - Get Pro for Multisite"); ?>" target="_blank">
         Duplicator Pro
     </a> supports single and multisite websites.
 </small>

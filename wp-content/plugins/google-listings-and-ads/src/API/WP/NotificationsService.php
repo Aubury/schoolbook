@@ -5,7 +5,6 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\WP;
 
 use Automattic\Jetpack\Connection\Client;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service;
-use Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\AccountService;
 use Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantCenterService;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareTrait;
@@ -60,24 +59,15 @@ class NotificationsService implements Service, OptionsAwareInterface {
 	 */
 	public MerchantCenterService $merchant_center;
 
-	/**
-	 * The AccountService service
-	 *
-	 * @var AccountService $account_service
-	 */
-	public AccountService $account_service;
-
 
 	/**
-	 * NotificationsService constructor
+	 * Class constructor
 	 *
 	 * @param MerchantCenterService $merchant_center
-	 * @param AccountService        $account_service
 	 */
-	public function __construct( MerchantCenterService $merchant_center, AccountService $account_service ) {
+	public function __construct( MerchantCenterService $merchant_center ) {
 		$blog_id                = Jetpack_Options::get_option( 'id' );
 		$this->merchant_center  = $merchant_center;
-		$this->account_service  = $account_service;
 		$this->notification_url = "https://public-api.wordpress.com/wpcom/v2/sites/{$blog_id}/partners/google/notifications";
 	}
 
@@ -126,7 +116,7 @@ class NotificationsService implements Service, OptionsAwareInterface {
 
 		do_action(
 			'woocommerce_gla_debug_message',
-			sprintf( 'Notification - Item ID: %s - Topic: %s - Data %s', $item_id, $topic, wp_json_encode( $data ) ),
+			sprintf( 'Notification - Item ID: %s - Topic: %s - Data %s', $item_id, $topic, json_encode( $data ) ),
 			__METHOD__
 		);
 
@@ -171,11 +161,10 @@ class NotificationsService implements Service, OptionsAwareInterface {
 	 * If the Notifications are ready
 	 * This happens when the WPCOM API is Authorized and the feature is enabled.
 	 *
-	 * @param bool $with_health_check If true. Performs a remote request to WPCOM API to get the status.
 	 * @return bool
 	 */
-	public function is_ready( bool $with_health_check = true ): bool {
-		return $this->options->is_wpcom_api_authorized() && $this->is_enabled() && $this->merchant_center->is_ready_for_syncing() && ( $with_health_check === false || $this->account_service->is_wpcom_api_status_healthy() );
+	public function is_ready(): bool {
+		return $this->options->is_wpcom_api_authorized() && $this->is_enabled() && $this->merchant_center->is_ready_for_syncing();
 	}
 
 	/**

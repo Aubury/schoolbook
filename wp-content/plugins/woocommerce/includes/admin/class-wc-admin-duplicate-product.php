@@ -6,9 +6,6 @@
  * @version     3.0.0
  */
 
-use Automattic\WooCommerce\Enums\ProductStatus;
-use Automattic\WooCommerce\Enums\ProductType;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -54,7 +51,7 @@ class WC_Admin_Duplicate_Product {
 			$the_product = wc_get_product( $post );
 		}
 
-		if ( $the_product && ProductStatus::PUBLISH === $the_product->get_status() && 0 < $the_product->get_total_sales() ) {
+		if ( 'publish' === $post->post_status && $the_product && 0 < $the_product->get_total_sales() ) {
 			$actions['trash'] = sprintf(
 				'<a href="%s" class="submitdelete trash-product" aria-label="%s">%s</a>',
 				get_delete_post_link( $the_product->get_id(), '', false ),
@@ -159,10 +156,7 @@ class WC_Admin_Duplicate_Product {
 		if ( '' !== $product->get_sku( 'edit' ) ) {
 			$duplicate->set_sku( wc_product_generate_unique_sku( 0, $product->get_sku( 'edit' ) ) );
 		}
-		if ( '' !== $product->get_global_unique_id( 'edit' ) ) {
-			$duplicate->set_global_unique_id( '' );
-		}
-		$duplicate->set_status( ProductStatus::DRAFT );
+		$duplicate->set_status( 'draft' );
 		$duplicate->set_date_created( null );
 		$duplicate->set_slug( '' );
 		$duplicate->set_rating_counts( 0 );
@@ -183,12 +177,8 @@ class WC_Admin_Duplicate_Product {
 		// Save parent product.
 		$duplicate->save();
 
-		/**
-		 * Duplicate children of a variable product.
-		 *
-		 * @since 2.7
-		 */
-		if ( ! apply_filters( 'woocommerce_duplicate_product_exclude_children', false, $product ) && $product->is_type( ProductType::VARIABLE ) ) {
+		// Duplicate children of a variable product.
+		if ( ! apply_filters( 'woocommerce_duplicate_product_exclude_children', false, $product ) && $product->is_type( 'variable' ) ) {
 			foreach ( $product->get_children() as $child_id ) {
 				$child           = wc_get_product( $child_id );
 				$child_duplicate = clone $child;
@@ -204,9 +194,6 @@ class WC_Admin_Duplicate_Product {
 
 				if ( '' !== $child->get_sku( 'edit' ) ) {
 					$child_duplicate->set_sku( wc_product_generate_unique_sku( 0, $child->get_sku( 'edit' ) ) );
-				}
-				if ( '' !== $child->get_global_unique_id( 'edit' ) ) {
-					$child_duplicate->set_global_unique_id( '' );
 				}
 
 				foreach ( $meta_to_exclude as $meta_key ) {

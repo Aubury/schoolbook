@@ -7,7 +7,6 @@
 
 namespace Automattic\WooCommerce\Admin\API;
 
-use Automattic\WooCommerce\Enums\ProductStatus;
 use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingIndustries;
 use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile;
 use Automattic\WooCommerce\Admin\Features\Features;
@@ -38,7 +37,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 	protected $rest_base = 'onboarding/tasks';
 
 	/**
-	 * Duration to millisecond mapping.
+	 * Duration to milisecond mapping.
 	 *
 	 * @var array
 	 */
@@ -375,7 +374,7 @@ class OnboardingTasks extends \WC_REST_Data_Controller {
 			);
 		}
 		$product = wc_get_product( $import['imported'][0] );
-		$product->set_status( ProductStatus::AUTO_DRAFT );
+		$product->set_status( 'auto-draft' );
 		$product->save();
 
 		return rest_ensure_response(

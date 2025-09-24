@@ -11,12 +11,13 @@ use Google\Protobuf\Internal\GPBUtil;
 /**
  * A message representing the message types used by a long-running operation.
  * Example:
- *     rpc Export(ExportRequest) returns (google.longrunning.Operation) {
- *       option (google.longrunning.operation_info) = {
- *         response_type: "ExportResponse"
- *         metadata_type: "ExportMetadata"
- *       };
- *     }
+ *   rpc LongRunningRecognize(LongRunningRecognizeRequest)
+ *       returns (google.longrunning.Operation) {
+ *     option (google.longrunning.operation_info) = {
+ *       response_type: "LongRunningRecognizeResponse"
+ *       metadata_type: "LongRunningRecognizeMetadata"
+ *     };
+ *   }
  *
  * Generated from protobuf message <code>google.longrunning.OperationInfo</code>
  */

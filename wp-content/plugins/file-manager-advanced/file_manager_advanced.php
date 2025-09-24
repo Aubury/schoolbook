@@ -3,9 +3,9 @@
   Plugin Name: File Manager Advanced
   Plugin URI: https://wordpress.org/plugins/file-manager-advanced
   Description: Cpanel for files management in wordpress
-  Author: wpexpertsio
-  Version: 5.3.0
-  Author URI: https://wpexperts.io
+  Author: modalweb
+  Version: 5.2.10
+  Author URI: https://advancedfilemanager.com
   License: GPLv2
 **/
 /**
@@ -35,4 +35,3 @@ if(is_admin()) {
  * Shortcode class
  */
 include('application/class_fma_shortcode.php');
-include 'application/rest-api/class-fma-controller.php';

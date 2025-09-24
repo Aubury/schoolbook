@@ -6,7 +6,7 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\DB;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Interface TableInterface
+ * Interface DBTableInterface
  *
  * @package Automattic\WooCommerce\GoogleListingsAndAds\DB
  */

@@ -24,6 +24,7 @@ if (!class_exists('MRKV_UA_SHIPPING_SETTINGS_UKR_POSHTA'))
 				'basic_settings' => __('Basic', 'mrkv-ua-shipping'),
 				'domestic_settings' => __('Domestic', 'mrkv-ua-shipping'),
 				'international_settings' => __('International', 'mrkv-ua-shipping'),
+				'email_settings' => __('Email', 'mrkv-ua-shipping'),
 				'automation_settings' => __('Automation', 'mrkv-ua-shipping'),
 				'checkout_settings' => __('Checkout', 'mrkv-ua-shipping'),
 				'log_settings' => __('Log', 'mrkv-ua-shipping')

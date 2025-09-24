@@ -44,7 +44,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 			require_once MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-api-nova-poshta.php';
 			$mrkv_object_nova_poshta = new MRKV_UA_SHIPPING_API_NOVA_POSHTA(get_option('nova-poshta_m_ua_settings'));
 
-			$key_search = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
+			$key_search = isset($_POST['name']) ? sanitize_text_field(wp_unslash($_POST['name'])) : '';
 
 			$args = array(
 	            'apiKey' => $mrkv_object_nova_poshta->get_api_key(),
@@ -55,6 +55,11 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
             		'Limit' => '10'
             	)
 	        );
+
+	        if ($mrkv_object_nova_poshta->active_api !== true) {
+	        	$args['modelName'] = 'Address';
+	        	unset($args['apiKey']);
+	        }
 
 	        # Send request
 	        $obj = $mrkv_object_nova_poshta->send_post_request( $args );
@@ -76,10 +81,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 	        }
 	        else
 	        {
-	        	echo wp_json_encode(array(array(
-	        		'value' => 'none',
-        			'label' => __('No results for your request', 'mrkv-ua-shipping')
-	        	)));
+	        	echo wp_json_encode(array());
 	        }
 
 			wp_die();
@@ -110,8 +112,37 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
             	)
 	        );
 
+	        if ($mrkv_object_nova_poshta->active_api !== true) {
+	        	$args['modelName'] = 'Address';
+	        	unset($args['apiKey']);
+	        }
+
 	        # Send request
 	        $obj = $mrkv_object_nova_poshta->send_post_request( $args );
+
+	        if ($mrkv_object_nova_poshta->active_api !== true) {
+		        if(!isset($obj['data']) || !isset($obj['data'][0]['Addresses'][0]))
+		        {
+		        	$response = wp_remote_get( 'https://np.morkva.co.ua/api.php', [
+					    'timeout' => 10,
+					    'headers' => [
+					        'Accept' => 'application/json',
+					    ],
+					    'body' => [
+					        'query_type' => 'city',
+					        'query_text' => $key_search,
+					    ]
+					]);
+
+		        	if ( is_wp_error( $response ) ) {
+					} else {
+					    $body = wp_remote_retrieve_body( $response );
+					    $city_array = json_decode( $body, true );
+
+				    	$obj['data'][0]['Addresses'] = $city_array;
+					}
+		        }
+		    }
 
 	        if(isset($obj['data'][0]['Addresses'][0]))
 	        {
@@ -132,10 +163,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 	        }
 	        else
 	        {
-	        	echo wp_json_encode(array(array(
-	        		'value' => 'none',
-        			'label' => __('No results for your request', 'mrkv-ua-shipping')
-	        	)));
+	        	echo wp_json_encode(array());
 	        }
 
 			wp_die();
@@ -159,6 +187,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 			$city_ref = isset($_POST['ref']) ? sanitize_text_field($_POST['ref']) : '';
 			$warehouse_type = isset($_POST['warehouse_type']) ? sanitize_text_field($_POST['warehouse_type']) : '';
 			$search_by = isset($_POST['search_by']) ? sanitize_text_field($_POST['search_by']) : '';
+			$source_query = isset($_POST['source_query']) ? sanitize_text_field($_POST['source_query']) : '';
 			$exclude_post = '';
 			
 			if($warehouse_type == 'none'){
@@ -174,6 +203,11 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
             		'CityRef' => $city_ref,
             	)
 	        );
+
+	        if ($mrkv_object_nova_poshta->active_api !== true) {
+	        	$args['modelName'] = 'Address';
+	        	unset($args['apiKey']);
+	        }
 
 	        if($search_by)
 	        {
@@ -192,6 +226,30 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 
 	        # Send request
 	        $obj = $mrkv_object_nova_poshta->send_post_request( $args );
+
+	        if ($mrkv_object_nova_poshta->active_api !== true) {
+		        if(!isset($obj['data']) || !isset($obj['data'][0]))
+		        {
+		        	$response = wp_remote_get( 'https://np.morkva.co.ua/api.php', [
+					    'timeout' => 10,
+					    'headers' => [
+					        'Accept' => 'application/json',
+					    ],
+					    'body' => [
+					        'query_type' => 'warehouse_poshtomat',
+					        'city_ref' => $city_ref,
+					    ]
+					]);
+
+		        	if ( is_wp_error( $response ) ) {
+					} else {
+					    $body = wp_remote_retrieve_body( $response );
+					    $warehouse_array = json_decode( $body, true );
+
+				    	$obj['data'] = $warehouse_array;
+					}
+		        }
+		    }
 
 	        if(isset($obj['data'][0]))
 	        {
@@ -215,7 +273,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 	        		);
 	        	}
 
-	        	if($skip_weight)
+	        	if($skip_weight  && $source_query == 'front')
 	        	{
 	        		$weight = 0;
 		        	$volume_weight = 0.00;
@@ -281,15 +339,23 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 	        		}
 	        	}
 
+	        	if($skip_weight  && $source_query == 'front' && count($areas) <= 1 && $obj['data'] > 1)
+	        	{
+	        		$areas = array(
+	        			array(
+		        			'value' => '',
+		        			'label' => __('Order products don\'t match weight and dimensions criteria, try another method', 'mrkv-ua-shipping'),
+		        			'number' => ''
+		        		)
+	        		);
+	        	}
+
 	        	# Return object
 	        	echo wp_json_encode($areas);
 	        }
 	        else
 	        {
-	        	echo wp_json_encode(array(array(
-	        		'value' => 'none',
-        			'label' => __('No results for your request', 'mrkv-ua-shipping')
-	        	)));
+	        	echo wp_json_encode(array());
 	        }
 
 			wp_die();
@@ -322,6 +388,11 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
             	)
 	        );
 
+	        if ($mrkv_object_nova_poshta->active_api !== true) {
+	        	$args['modelName'] = 'Address';
+	        	unset($args['apiKey']);
+	        }
+
 	        # Send request
 	        $obj = $mrkv_object_nova_poshta->send_post_request( $args );
 
@@ -342,10 +413,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 	        }
 	        else
 	        {
-	        	echo wp_json_encode(array(array(
-	        		'value' => 'none',
-        			'label' => __('No results for your request', 'mrkv-ua-shipping')
-	        	)));
+	        	echo wp_json_encode(array());
 	        }
 
 			wp_die();

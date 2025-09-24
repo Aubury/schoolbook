@@ -11,7 +11,6 @@ defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Admin\Notes\Note;
 use Automattic\WooCommerce\Admin\Notes\NoteTraits;
-use Automattic\WooCommerce\Enums\ProductStatus;
 
 /**
  * Class CustomizingProductCatalog
@@ -39,7 +38,7 @@ class CustomizingProductCatalog {
 			array(
 				'limit'    => 1,
 				'paginate' => true,
-				'status'   => array( ProductStatus::PUBLISH ),
+				'status'   => array( 'publish' ),
 				'orderby'  => 'post_date',
 				'order'    => 'DESC',
 			)

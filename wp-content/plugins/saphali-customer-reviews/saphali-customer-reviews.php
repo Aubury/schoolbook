@@ -111,7 +111,7 @@ class Reviews_Saphali {
 	function fix_comment_loop() {
 		wp_reset_query();
 	}
-	function woocommerce_comments_s_reviews( $comment, $args, $depth ) {
+	static function woocommerce_comments_s_reviews( $comment, $args, $depth ) {
 		global $s_reviews;
 		$GLOBALS['comment'] = $comment;
 		include(plugin_dir_path(__FILE__) . "templates/reviews-loop.php");
@@ -716,7 +716,7 @@ if($is_slider) {
 	$slider = array();
 }
 
-$this->recent_comments_remak ($number, $length, $comment_pr, $page, $name_pos, $slider);
+$this->recent_comments_remak ($comment_pr, $page, $name_pos, $slider, $number, $length);
 ?>
 </div>
 <?php 
@@ -749,7 +749,7 @@ jQuery('.widget_saphali_comment a.read-comment').click(function(){
 * $number - количество выводимых комментариев,
 * $length - количество символов для обрезки текста комментариев
 */
-	function recent_comments_remak ($number=5, $length=150, $comment_pr, $page, $name_pos = 0, $slider = array() ) {
+	function recent_comments_remak ($comment_pr, $page, $name_pos = 0, $slider = array(), $number=5, $length=150 ) {
 		$args = array (
 			'number' => $number,
             'status' => 'approve',

@@ -44,7 +44,7 @@ class CouponBulkEdit implements BulkEditInterface, Registerable {
 	protected $target_audience;
 
 	/**
-	 * CouponBulkEdit constructor.
+	 * AbstractMetaBox constructor.
 	 *
 	 * @param CouponMetaHandler     $meta_handler
 	 * @param MerchantCenterService $merchant_center

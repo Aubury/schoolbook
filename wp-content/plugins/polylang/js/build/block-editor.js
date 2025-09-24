@@ -1,6 +1,7 @@
 /******/ "use strict";
+var __webpack_exports__ = {};
 
-;// ./js/src/lib/confirmation-modal.js
+;// CONCATENATED MODULE: ./js/src/lib/confirmation-modal.js
 /**
  * @package Polylang
  */
@@ -101,7 +102,7 @@ const initializeLanguageOldValue = () => {
 	languagesList.attr( 'data-old-value', languagesList.children( ':selected' ).first().val() );
 };
 
-;// ./js/src/lib/metabox-autocomplete.js
+;// CONCATENATED MODULE: ./js/src/lib/metabox-autocomplete.js
 /**
  * @package Polylang
  */
@@ -144,7 +145,7 @@ function initMetaboxAutoComplete() {
 	);
 }
 
-;// ./js/src/lib/filter-path-middleware.js
+;// CONCATENATED MODULE: ./js/src/lib/filter-path-middleware.js
 /**
  * @package Polylang
  */
@@ -168,7 +169,7 @@ const filterPathMiddleware = ( options, filteredRoutes, filter ) => {
 
 /* harmony default export */ const filter_path_middleware = (filterPathMiddleware);
 
-;// ./js/src/block-editor.js
+;// CONCATENATED MODULE: ./js/src/block-editor.js
 /**
  * @package Polylang
  */

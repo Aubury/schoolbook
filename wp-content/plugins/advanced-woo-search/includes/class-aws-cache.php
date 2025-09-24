@@ -92,7 +92,9 @@ if ( ! class_exists( 'AWS_Cache' ) ) :
          */
         public function is_cache_table_not_exist() {
 
-            return AWS()->option_vars->is_cache_table_not_exists();
+            global $wpdb;
+
+            return ( $wpdb->get_var( "SHOW TABLES LIKE '{$this->cache_table_name}'" ) != $this->cache_table_name );
 
         }
 
@@ -106,11 +108,8 @@ if ( ! class_exists( 'AWS_Cache' ) ) :
             $charset_collate = $wpdb->get_charset_collate();
 
             $sql = "CREATE TABLE {$this->cache_table_name} (
-                      cacheid BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
                       name VARCHAR(100) NOT NULL,
-                      value LONGTEXT NOT NULL,
-                      PRIMARY KEY (cacheid),
-                      KEY name (name)
+                      value LONGTEXT NOT NULL
                 ) $charset_collate;";
 
             require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

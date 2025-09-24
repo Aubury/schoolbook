@@ -1,7 +1,5 @@
 <?php
 
-use Automattic\WooCommerce\Enums\OrderStatus;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
@@ -115,7 +113,7 @@ class WC_Report_Taxes_By_Date extends WC_Admin_Report {
 				'query_type'   => 'get_results',
 				'filter_range' => true,
 				'order_types'  => wc_get_order_types( 'sales-reports' ),
-				'order_status' => array( OrderStatus::COMPLETED, OrderStatus::PROCESSING, OrderStatus::REFUNDED ),
+				'order_status' => array( 'completed', 'processing', 'refunded' ),
 			)
 		);
 
@@ -142,7 +140,7 @@ class WC_Report_Taxes_By_Date extends WC_Admin_Report {
 				'query_type'          => 'get_results',
 				'filter_range'        => true,
 				'order_types'         => array( 'shop_order_refund' ),
-				'parent_order_status' => array( OrderStatus::REFUNDED ),
+				'parent_order_status' => array( 'refunded' ),
 			)
 		);
 
@@ -154,7 +152,7 @@ class WC_Report_Taxes_By_Date extends WC_Admin_Report {
 				'query_type'          => 'get_results',
 				'filter_range'        => true,
 				'order_types'         => array( 'shop_order_refund' ),
-				'parent_order_status' => array( OrderStatus::COMPLETED, OrderStatus::PROCESSING ), // Partial refunds inside refunded orders should be ignored.
+				'parent_order_status' => array( 'completed', 'processing' ), // Partial refunds inside refunded orders should be ignored.
 			)
 		);
 

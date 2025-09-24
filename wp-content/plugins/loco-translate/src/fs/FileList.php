@@ -27,17 +27,18 @@ class Loco_fs_FileList extends ArrayIterator implements Loco_fs_FileListInterfac
     /**
      * Use instead of clone because that does weird things to ArrayIterator instances.
      * Note that this does NOT clone individual file members.
+     * @return Loco_fs_FileList
      */
-    public function copy():self {
+    public function copy(){
         return new Loco_fs_FileList( $this->getArrayCopy() );
     }
     
 
     /**
      * Like getArrayCopy, but exports string paths
-     * @return string[]
+     * @return array
      */
-    public function export():array {
+    public function export(){
         $a = [];
         foreach( $this as $file ){
             $a[] = (string) $file;
@@ -48,16 +49,19 @@ class Loco_fs_FileList extends ArrayIterator implements Loco_fs_FileListInterfac
 
     /**
      * @internal
+     * @return string
      */
-    public function __toString():string {
+    public function __toString(){
         return implode( "\n", $this->getArrayCopy() );
     }
 
 
     /**
      * Generate a unique key for file
+     * @param Loco_fs_File $file
+     * @return string
      */
-    private function hash( Loco_fs_File $file ):string {
+    private function hash( Loco_fs_File $file ){
         return $file->getRealPath() ?: $file->normalize();
     }
 
@@ -74,7 +78,7 @@ class Loco_fs_FileList extends ArrayIterator implements Loco_fs_FileListInterfac
     /**
      * {@inheritDoc}
      */
-    public function add( Loco_fs_File $file ):bool {
+    public function add( Loco_fs_File $file ){
         $hash = $this->hash( $file );
         if( isset($this->unique[$hash]) ){
             return false;
@@ -87,8 +91,10 @@ class Loco_fs_FileList extends ArrayIterator implements Loco_fs_FileListInterfac
 
     /**
      * Check if given file is already in list
+     * @param Loco_fs_File $file
+     * @return bool
      */
-    public function has( Loco_fs_File $file ):bool {
+    public function has( Loco_fs_File $file ){
         $hash = $this->hash( $file );
         return isset($this->unique[$hash]);
     }
@@ -96,8 +102,10 @@ class Loco_fs_FileList extends ArrayIterator implements Loco_fs_FileListInterfac
 
     /**
      * Get a copy of list with only files not contained in passed list
+     * @param self $not_in
+     * @return self
      */
-    public function diff( Loco_fs_FileList $not_in ):self {
+    public function diff( Loco_fs_FileList $not_in ){
         $list = new Loco_fs_FileList;
         foreach( $this as $file ){
             $not_in->has($file) || $list->add( $file );
@@ -106,10 +114,13 @@ class Loco_fs_FileList extends ArrayIterator implements Loco_fs_FileListInterfac
     }
 
 
+
     /**
      * Merge another list of the SAME TYPE uniquely on top of current one
+     * @param self $list
+     * @return self
      */
-    public function augment( loco_fs_FileList $list ):self {
+    public function augment( loco_fs_FileList $list ){
         foreach( $list as $file ){
             $this->add( $file );
         }

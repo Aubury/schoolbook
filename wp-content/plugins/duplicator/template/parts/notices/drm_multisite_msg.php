@@ -4,7 +4,7 @@
  * @package Duplicator
  */
 
-use Duplicator\Utils\Upsell;
+use Duplicator\Utils\LinkManager;
 
 defined("ABSPATH") or die("");
 
@@ -17,7 +17,7 @@ defined("ABSPATH") or die("");
  */
 
 
-$upgradeUrl = Upsell::getCampaignUrl('lite-multisite-notice', 'Upgrade now!')
+$upgradeUrl = LinkManager::getCampaignUrl('lite-multisite-notice', 'Upgrade now!')
 ?>
 <span class='dashicons dashicons-warning'></span>
 <div class="dup-sub-content">

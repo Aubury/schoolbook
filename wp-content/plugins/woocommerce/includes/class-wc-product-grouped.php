@@ -8,8 +8,6 @@
  * @version 3.0.0
  */
 
-use Automattic\WooCommerce\Enums\ProductType;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -32,7 +30,7 @@ class WC_Product_Grouped extends WC_Product {
 	 * @return string
 	 */
 	public function get_type() {
-		return ProductType::GROUPED;
+		return 'grouped';
 	}
 
 	/**
@@ -146,17 +144,6 @@ class WC_Product_Grouped extends WC_Product {
 	 */
 	public function get_children( $context = 'view' ) {
 		return $this->get_prop( 'children', $context );
-	}
-
-	/**
-	 * Return the product's children - visible only.
-	 *
-	 * @since 9.8.0
-	 * @return array Child products
-	 */
-	public function get_visible_children() {
-		$grouped_products = array_map( 'wc_get_product', $this->get_children() );
-		return array_filter( $grouped_products, 'wc_products_array_filter_visible_grouped' );
 	}
 
 	/*

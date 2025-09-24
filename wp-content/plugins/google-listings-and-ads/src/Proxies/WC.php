@@ -55,19 +55,20 @@ class WC {
 	 * @param WC_Countries|null $countries
 	 */
 	public function __construct( ?WC_Countries $countries = null ) {
-		$this->wc_countries = $countries ?? new WC_Countries();
+		$countries               = $countries ?? new WC_Countries();
+		$this->wc_countries      = $countries;
+		$this->base_country      = $countries->get_base_country() ?? 'US';
+		$this->countries         = $countries->get_countries() ?? [];
+		$this->allowed_countries = $countries->get_allowed_countries() ?? [];
+		$this->continents        = $countries->get_continents() ?? [];
 	}
 
 	/**
-	 * Get WooCommerce countries.
+	 * Get WooCommerce
 	 *
 	 * @return array
 	 */
 	public function get_countries(): array {
-		if ( null === $this->countries ) {
-			$this->countries = $this->wc_countries->get_countries() ?? [];
-		}
-
 		return $this->countries;
 	}
 
@@ -77,10 +78,6 @@ class WC {
 	 * @return array
 	 */
 	public function get_allowed_countries(): array {
-		if ( null === $this->allowed_countries ) {
-			$this->allowed_countries = $this->wc_countries->get_allowed_countries() ?? [];
-		}
-
 		return $this->allowed_countries;
 	}
 
@@ -90,10 +87,6 @@ class WC {
 	 * @return string
 	 */
 	public function get_base_country(): string {
-		if ( null === $this->base_country ) {
-			$this->base_country = $this->wc_countries->get_base_country() ?? 'US';
-		}
-
 		return $this->base_country;
 	}
 
@@ -103,10 +96,6 @@ class WC {
 	 * @return array
 	 */
 	public function get_continents(): array {
-		if ( null === $this->continents ) {
-			$this->continents = $this->wc_countries->get_continents() ?? [];
-		}
-
 		return $this->continents;
 	}
 

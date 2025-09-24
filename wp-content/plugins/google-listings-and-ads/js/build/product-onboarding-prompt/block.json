@@ -13,7 +13,6 @@
   "supports": {
     "html": false,
     "inserter": false,
-    "lock": false,
-    "__experimentalToolbar": false
+    "lock": false
   }
 }

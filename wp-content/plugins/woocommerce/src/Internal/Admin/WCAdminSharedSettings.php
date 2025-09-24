@@ -5,8 +5,6 @@
 
 namespace Automattic\WooCommerce\Internal\Admin;
 
-use Automattic\WooCommerce\Admin\PageController;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -56,34 +54,14 @@ class WCAdminSharedSettings {
 	 * @return void
 	 */
 	public function on_woocommerce_blocks_loaded() {
-		// Ensure we only add admin settings on the admin.
-		if ( ! is_admin() ) {
-			return;
-		}
-
 		if ( class_exists( '\Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry' ) ) {
 			\Automattic\WooCommerce\Blocks\Package::container()->get( \Automattic\WooCommerce\Blocks\Assets\AssetDataRegistry::class )->add(
 				$this->settings_prefix,
-				function () {
-					/**
-					 * Filters the shared settings that are passed to the client.
-					 *
-					 * @since 6.4.0
-					 */
+				function() {
 					return apply_filters( 'woocommerce_admin_shared_settings', array() );
-				}
-			);
-
-			add_action(
-				'admin_enqueue_scripts',
-				function () {
-					if ( ! PageController::is_admin_or_embed_page() ) {
-						return;
-					}
-					// Enqueue deprecation scripts (client/wp-admin-scripts/wcsettings-deprecation/index.js).
-					WCAdminAssets::register_script( 'wp-admin-scripts', 'wcsettings-deprecation', true );
 				}
 			);
 		}
 	}
 }
+

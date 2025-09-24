@@ -3,7 +3,6 @@
 namespace Automattic\WooCommerce\Internal\DependencyManagement\ServiceProviders;
 
 use Automattic\WooCommerce\Internal\DependencyManagement\AbstractServiceProvider;
-use Automattic\WooCommerce\Internal\ComingSoon\ComingSoonAdminBarBadge;
 use Automattic\WooCommerce\Internal\ComingSoon\ComingSoonCacheInvalidator;
 use Automattic\WooCommerce\Internal\ComingSoon\ComingSoonRequestHandler;
 use Automattic\WooCommerce\Internal\ComingSoon\ComingSoonHelper;
@@ -19,7 +18,6 @@ class ComingSoonServiceProvider extends AbstractServiceProvider {
 	 * @var array
 	 */
 	protected $provides = array(
-		ComingSoonAdminBarBadge::class,
 		ComingSoonCacheInvalidator::class,
 		ComingSoonHelper::class,
 		ComingSoonRequestHandler::class,
@@ -29,7 +27,6 @@ class ComingSoonServiceProvider extends AbstractServiceProvider {
 	 * Register the classes.
 	 */
 	public function register() {
-		$this->add( ComingSoonAdminBarBadge::class );
 		$this->add( ComingSoonCacheInvalidator::class );
 		$this->add( ComingSoonHelper::class );
 		$this->add( ComingSoonRequestHandler::class )->addArgument( ComingSoonHelper::class );

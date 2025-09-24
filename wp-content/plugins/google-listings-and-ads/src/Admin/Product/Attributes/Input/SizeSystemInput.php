@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 class SizeSystemInput extends Select {
 
 	/**
-	 * SizeSystemInput constructor.
+	 * SizeInput constructor.
 	 */
 	public function __construct() {
 		parent::__construct();

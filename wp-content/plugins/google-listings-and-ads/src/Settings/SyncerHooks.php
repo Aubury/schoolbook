@@ -28,9 +28,9 @@ class SyncerHooks implements Service, Registerable {
 	protected $notifications_service;
 
 	/**
-	 * @var JobRepository
+	 * @var SettingsNotificationJob $settings_notification_job
 	 */
-	protected $job_repository;
+	protected $settings_notification_job;
 
 	/**
 	 * WooCommerce General Settings IDs
@@ -72,21 +72,21 @@ class SyncerHooks implements Service, Registerable {
 	 * @param NotificationsService $notifications_service
 	 */
 	public function __construct( JobRepository $job_repository, NotificationsService $notifications_service ) {
-		$this->job_repository        = $job_repository;
-		$this->notifications_service = $notifications_service;
+		$this->settings_notification_job = $job_repository->get( SettingsNotificationJob::class );
+		$this->notifications_service     = $notifications_service;
 	}
 
 	/**
 	 * Register the service.
 	 */
 	public function register(): void {
-		if ( ! $this->notifications_service->is_ready( false ) ) {
+		if ( ! $this->notifications_service->is_ready() ) {
 			return;
 		}
 
 		$update_rest = function ( $option ) {
 			if ( in_array( $option, self::ALLOWED_SETTINGS, true ) ) {
-				$this->job_repository->get( SettingsNotificationJob::class )->schedule();
+				$this->settings_notification_job->schedule();
 			}
 		};
 

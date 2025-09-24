@@ -63,7 +63,6 @@ class ProductsById extends AbstractRoute {
 						)
 					),
 				),
-				'allow_batch'         => [ 'v1' => true ],
 			],
 			'schema' => [ $this->schema, 'get_public_item_schema' ],
 		];

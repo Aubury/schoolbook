@@ -26,7 +26,7 @@ class Options {
 	 * @var array Map of all the default options of the plugin.
 	 */
 	private static $map = [
-		'mail'                     => [
+		'mail'                 => [
 			'from_name',
 			'from_email',
 			'mailer',
@@ -37,7 +37,7 @@ class Options {
 			'reply_to_replace_from',
 			'bcc_emails',
 		],
-		'smtp'                     => [
+		'smtp'                 => [
 			'host',
 			'port',
 			'encryption',
@@ -46,87 +46,63 @@ class Options {
 			'user',
 			'pass',
 		],
-		'outlook'                  => [
-			'one_click_setup_enabled',
+		'outlook'              => [
 			'client_id',
 			'client_secret',
 		],
-		'amazonses'                => [
+		'amazonses'            => [
 			'client_id',
 			'client_secret',
 			'region',
 		],
-		'mailgun'                  => [
+		'mailgun'              => [
 			'api_key',
 			'domain',
 			'region',
 		],
-		'mailjet'                  => [
-			'api_key',
-			'secret_key',
-		],
-		'sendgrid'                 => [
+		'sendgrid'             => [
 			'api_key',
 			'domain',
 		],
-		'smtpcom'                  => [
+		'smtpcom'              => [
 			'api_key',
 			'channel',
 		],
-		'sendinblue'               => [
+		'sendinblue'           => [
 			'api_key',
 			'domain',
 		],
-		'sendlayer'                => [
+		'sendlayer'            => [
 			'api_key',
 		],
-		'elasticemail'             => [
-			'api_key',
-		],
-		'smtp2go'                  => [
-			'api_key',
-		],
-		'postmark'                 => [
+		'postmark'             => [
 			'server_api_token',
 			'message_stream',
 		],
-		'sparkpost'                => [
+		'sparkpost'            => [
 			'api_key',
 			'region',
 		],
-		'zoho'                     => [
-			'domain',
-			'client_id',
-			'client_secret',
-		],
-		'license'                  => [
+		'license'              => [
 			'key',
 		],
-		'alert_email'              => [
+		'alert_email'          => [
 			'enabled',
 			'connections',
 		],
-		'alert_slack_webhook'      => [
+		'alert_slack_webhook'  => [
 			'enabled',
 			'connections',
 		],
-		'alert_discord_webhook'    => [
+		'alert_twilio_sms'     => [
 			'enabled',
 			'connections',
 		],
-		'alert_twilio_sms'         => [
+		'alert_custom_webhook' => [
 			'enabled',
 			'connections',
 		],
-		'alert_custom_webhook'     => [
-			'enabled',
-			'connections',
-		],
-		'alert_push_notifications' => [
-			'enabled',
-			'connections',
-		],
-		'alert_events'             => [
+		'alert_events'         => [
 			'email_hard_bounced',
 		],
 	];
@@ -145,15 +121,11 @@ class Options {
 		'amazonses',
 		'gmail',
 		'mailgun',
-		'mailjet',
 		'outlook',
 		'postmark',
 		'sendgrid',
-		'elasticemail',
-		'smtp2go',
 		'sparkpost',
 		'smtp',
-		'zoho',
 	];
 
 	/**
@@ -235,7 +207,7 @@ class Options {
 	 */
 	public static function get_defaults() {
 
-		$defaults = [
+		return [
 			'mail'    => [
 				'from_email'       => get_option( 'admin_email' ),
 				'from_name'        => get_bloginfo( 'name' ),
@@ -248,19 +220,10 @@ class Options {
 				'auth'    => true,
 			],
 			'general' => [
-				'domain_check_allowed_domains'    => wp_parse_url( get_site_url(), PHP_URL_HOST ),
+				'domain_check_allowed_domains' => wp_parse_url( get_site_url(), PHP_URL_HOST ),
 				SummaryReportEmail::SETTINGS_SLUG => ! is_multisite() ? false : true,
 			],
 		];
-
-		/**
-		 * Filters the default options.
-		 *
-		 * @since 2.9.0
-		 *
-		 * @param array $defaults Default options.
-		 */
-		return apply_filters( 'easy_wp_smtp_options_get_defaults', $defaults );
 	}
 
 	/**
@@ -322,7 +285,7 @@ class Options {
 		 * Get the values saved in DB.
 		 * If plugin is configured with constants right from the start - this will not have all the values.
 		 */
-		$options = isset( $this->options[ $group ] ) ? $this->options[ $group ] : [];
+		$options = isset( $this->options[ $group ] ) ? $this->options[ $group ] : array();
 
 		// We need to process certain constants-aware options through actual constants.
 		if ( isset( self::$map[ $group ] ) ) {
@@ -472,7 +435,7 @@ class Options {
 	 *
 	 * @param string $group
 	 * @param string $key
-	 * @param mixed  $value
+	 * @param mixed $value
 	 *
 	 * @return mixed
 	 */
@@ -555,34 +518,15 @@ class Options {
 
 				break;
 
-			case 'elasticemail':
-				switch ( $key ) {
-					case 'api_key':
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_ELASTICEMAIL_API_KEY : $value;
-						break;
-				}
-
-				break;
-
-			case 'smtp2go':
-				switch ( $key ) {
-					case 'api_key':
-						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_SMTP2GO_API_KEY : $value;
-						break;
-				}
-
-				break;
-
 			case 'outlook':
 				switch ( $key ) {
 					case 'client_id':
 						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_OUTLOOK_CLIENT_ID : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_OUTLOOK_CLIENT_ID : $value;
 						break;
 					case 'client_secret':
 						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_OUTLOOK_CLIENT_SECRET : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_OUTLOOK_CLIENT_SECRET : $value;
 						break;
 				}
 
@@ -592,15 +536,15 @@ class Options {
 				switch ( $key ) {
 					case 'client_id':
 						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_AMAZONSES_CLIENT_ID : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_AMAZONSES_CLIENT_ID : $value;
 						break;
 					case 'client_secret':
 						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_AMAZONSES_CLIENT_SECRET : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_AMAZONSES_CLIENT_SECRET : $value;
 						break;
 					case 'region':
 						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_AMAZONSES_REGION : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_AMAZONSES_REGION : $value;
 						break;
 				}
 
@@ -624,29 +568,15 @@ class Options {
 
 				break;
 
-			case 'mailjet':
-				switch ( $key ) {
-					case 'api_key':
-						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_MAILJET_API_KEY : $value;
-						break;
-					case 'secret_key':
-						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_MAILJET_SECRET_KEY : $value;
-						break;
-				}
-
-				break;
-
 			case 'sendgrid':
 				switch ( $key ) {
 					case 'api_key':
 						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_SENDGRID_API_KEY : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_SENDGRID_API_KEY : $value;
 						break;
 					case 'domain':
 						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_SENDGRID_DOMAIN : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_SENDGRID_DOMAIN : $value;
 						break;
 				}
 
@@ -656,11 +586,11 @@ class Options {
 				switch ( $key ) {
 					case 'server_api_token':
 						/** No inspection comment @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_POSTMARK_SERVER_API_TOKEN : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_POSTMARK_SERVER_API_TOKEN : $value;
 						break;
 					case 'message_stream':
 						/** No inspection comment @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_POSTMARK_MESSAGE_STREAM : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_POSTMARK_MESSAGE_STREAM : $value;
 						break;
 				}
 
@@ -670,11 +600,11 @@ class Options {
 				switch ( $key ) {
 					case 'api_key':
 						/** No inspection comment @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_SPARKPOST_API_KEY : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_SPARKPOST_API_KEY : $value;
 						break;
 					case 'region':
 						/** No inspection comment @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_SPARKPOST_REGION : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_SPARKPOST_REGION : $value;
 						break;
 				}
 
@@ -708,28 +638,10 @@ class Options {
 
 				break;
 
-			case 'zoho':
-				switch ( $key ) {
-					case 'domain':
-						/** No inspection comment @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_ZOHO_DOMAIN : $value;
-						break;
-					case 'client_id':
-						/** No inspection comment @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_ZOHO_CLIENT_ID : $value;
-						break;
-					case 'client_secret':
-						/** No inspection comment @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_ZOHO_CLIENT_SECRET : $value;
-						break;
-				}
-
-				break;
-
 			case 'alert_email':
 				switch ( $key ) {
 					case 'connections':
-						$return = $this->is_const_defined( $group, $key ) ? [ [ 'send_to' => EASY_WP_SMTP_ALERT_EMAIL_SEND_TO ] ] : $value;
+						$return = $this->is_const_defined( $group, $key ) ? [ [ 'send_to' => EasyWPSMTP_ALERT_EMAIL_SEND_TO ] ] : $value;
 						break;
 				}
 
@@ -738,16 +650,7 @@ class Options {
 			case 'alert_slack_webhook':
 				switch ( $key ) {
 					case 'connections':
-						$return = $this->is_const_defined( $group, $key ) ? [ [ 'webhook_url' => EASY_WP_SMTP_ALERT_SLACK_WEBHOOK_URL ] ] : $value;
-						break;
-				}
-
-				break;
-
-			case 'alert_discord_webhook':
-				switch ( $key ) {
-					case 'connections':
-						$return = $this->is_const_defined( $group, $key ) ? [ [ 'webhook_url' => EASY_WP_SMTP_ALERT_DISCORD_WEBHOOK_URL ] ] : $value;
+						$return = $this->is_const_defined( $group, $key ) ? [ [ 'webhook_url' => EasyWPSMTP_ALERT_SLACK_WEBHOOK_URL ] ] : $value;
 						break;
 				}
 
@@ -756,7 +659,7 @@ class Options {
 			case 'alert_teams_webhook':
 				switch ( $key ) {
 					case 'connections':
-						$return = $this->is_const_defined( $group, $key ) ? [ [ 'webhook_url' => EASY_WP_SMTP_ALERT_TEAMS_WEBHOOK_URL ] ] : $value;
+						$return = $this->is_const_defined( $group, $key ) ? [ [ 'webhook_url' => EasyWPSMTP_ALERT_TEAMS_WEBHOOK_URL ] ] : $value;
 						break;
 				}
 
@@ -768,10 +671,10 @@ class Options {
 						if ( $this->is_const_defined( $group, $key ) ) {
 							$return = [
 								[
-									'account_sid'       => EASY_WP_SMTP_ALERT_TWILIO_SMS_ACCOUNT_SID,
-									'auth_token'        => EASY_WP_SMTP_ALERT_TWILIO_SMS_AUTH_TOKEN,
-									'from_phone_number' => EASY_WP_SMTP_ALERT_TWILIO_SMS_FROM_PHONE_NUMBER,
-									'to_phone_number'   => EASY_WP_SMTP_ALERT_TWILIO_SMS_TO_PHONE_NUMBER,
+									'account_sid'       => EasyWPSMTP_ALERT_TWILIO_SMS_ACCOUNT_SID,
+									'auth_token'        => EasyWPSMTP_ALERT_TWILIO_SMS_AUTH_TOKEN,
+									'from_phone_number' => EasyWPSMTP_ALERT_TWILIO_SMS_FROM_PHONE_NUMBER,
+									'to_phone_number'   => EasyWPSMTP_ALERT_TWILIO_SMS_TO_PHONE_NUMBER,
 								],
 							];
 						} else {
@@ -785,7 +688,7 @@ class Options {
 			case 'alert_custom_webhook':
 				switch ( $key ) {
 					case 'connections':
-						$return = $this->is_const_defined( $group, $key ) ? [ [ 'webhook_url' => EASY_WP_SMTP_ALERT_CUSTOM_WEBHOOK_URL ] ] : $value;
+						$return = $this->is_const_defined( $group, $key ) ? [ [ 'webhook_url' => EasyWPSMTP_ALERT_CUSTOM_WEBHOOK_URL ] ] : $value;
 						break;
 				}
 
@@ -795,7 +698,7 @@ class Options {
 				switch ( $key ) {
 					case 'key':
 						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? EASY_WP_SMTP_LICENSE_KEY : $value;
+						$return = $this->is_const_defined( $group, $key ) ? EasyWPSMTP_LICENSE_KEY : $value;
 						break;
 				}
 
@@ -810,13 +713,7 @@ class Options {
 					case SummaryReportEmail::SETTINGS_SLUG:
 						/** No inspection comment @noinspection PhpUndefinedConstantInspection */
 						$return = $this->is_const_defined( $group, $key ) ?
-							$this->parse_boolean( EASY_WP_SMTP_SUMMARY_REPORT_EMAIL_DISABLED ) :
-							$value;
-						break;
-					case OptimizedEmailSending::SETTINGS_SLUG:
-						/** No inspection comment @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ?
-							$this->parse_boolean( EASY_WP_SMTP_OPTIMIZED_EMAIL_SENDING_ENABLED ) :
+							$this->parse_boolean( EasyWPSMTP_SUMMARY_REPORT_EMAIL_DISABLED ) :
 							$value;
 						break;
 				}
@@ -827,7 +724,7 @@ class Options {
 				switch ( $key ) {
 					case 'retention_period':
 						/** @noinspection PhpUndefinedConstantInspection */
-						$return = $this->is_const_defined( $group, $key ) ? intval( EASY_WP_SMTP_DEBUG_EVENTS_RETENTION_PERIOD ) : $value;
+						$return = $this->is_const_defined( $group, $key ) ? intval( EasyWPSMTP_DEBUG_EVENTS_RETENTION_PERIOD ) : $value;
 						break;
 				}
 
@@ -850,16 +747,8 @@ class Options {
 	 */
 	public function is_const_enabled() {
 
-		$return = defined( 'EASY_WP_SMTP_ON' ) && EASY_WP_SMTP_ON === true;
-
-		/**
-		 * Filters whether or not constant support is enabled.
-		 *
-		 * @since 2.9.0
-		 *
-		 * @param bool $return Whether to enable constant support. Default `true`.
-		 */
-		return apply_filters( 'easy_wp_smtp_options_is_const_enabled', $return );
+		// Disable constants support.
+		return false;
 	}
 
 	/**
@@ -943,31 +832,13 @@ class Options {
 
 				break;
 
-			case 'elasticemail':
-				switch ( $key ) {
-					case 'api_key':
-						$return = defined( 'EASY_WP_SMTP_ELASTICEMAIL_API_KEY' ) && EASY_WP_SMTP_ELASTICEMAIL_API_KEY;
-						break;
-				}
-
-				break;
-
-			case 'smtp2go':
-				switch ( $key ) {
-					case 'api_key':
-						$return = defined( 'EASY_WP_SMTP_SMTP2GO_API_KEY' ) && EASY_WP_SMTP_SMTP2GO_API_KEY;
-						break;
-				}
-
-				break;
-
 			case 'outlook':
 				switch ( $key ) {
 					case 'client_id':
-						$return = defined( 'EASY_WP_SMTP_OUTLOOK_CLIENT_ID' ) && EASY_WP_SMTP_OUTLOOK_CLIENT_ID;
+						$return = defined( 'EasyWPSMTP_OUTLOOK_CLIENT_ID' ) && EasyWPSMTP_OUTLOOK_CLIENT_ID;
 						break;
 					case 'client_secret':
-						$return = defined( 'EASY_WP_SMTP_OUTLOOK_CLIENT_SECRET' ) && EASY_WP_SMTP_OUTLOOK_CLIENT_SECRET;
+						$return = defined( 'EasyWPSMTP_OUTLOOK_CLIENT_SECRET' ) && EasyWPSMTP_OUTLOOK_CLIENT_SECRET;
 						break;
 				}
 
@@ -976,13 +847,13 @@ class Options {
 			case 'amazonses':
 				switch ( $key ) {
 					case 'client_id':
-						$return = defined( 'EASY_WP_SMTP_AMAZONSES_CLIENT_ID' ) && EASY_WP_SMTP_AMAZONSES_CLIENT_ID;
+						$return = defined( 'EasyWPSMTP_AMAZONSES_CLIENT_ID' ) && EasyWPSMTP_AMAZONSES_CLIENT_ID;
 						break;
 					case 'client_secret':
-						$return = defined( 'EASY_WP_SMTP_AMAZONSES_CLIENT_SECRET' ) && EASY_WP_SMTP_AMAZONSES_CLIENT_SECRET;
+						$return = defined( 'EasyWPSMTP_AMAZONSES_CLIENT_SECRET' ) && EasyWPSMTP_AMAZONSES_CLIENT_SECRET;
 						break;
 					case 'region':
-						$return = defined( 'EASY_WP_SMTP_AMAZONSES_REGION' ) && EASY_WP_SMTP_AMAZONSES_REGION;
+						$return = defined( 'EasyWPSMTP_AMAZONSES_REGION' ) && EasyWPSMTP_AMAZONSES_REGION;
 						break;
 				}
 
@@ -1003,25 +874,13 @@ class Options {
 
 				break;
 
-			case 'mailjet':
-				switch ( $key ) {
-					case 'api_key':
-						$return = defined( 'EASY_WP_SMTP_MAILJET_API_KEY' ) && EASY_WP_SMTP_MAILJET_API_KEY;
-						break;
-					case 'secret_key':
-						$return = defined( 'EASY_WP_SMTP_MAILJET_SECRET_KEY' ) && EASY_WP_SMTP_MAILJET_SECRET_KEY;
-						break;
-				}
-
-				break;
-
 			case 'sparkpost':
 				switch ( $key ) {
 					case 'api_key':
-						$return = defined( 'EASY_WP_SMTP_SPARKPOST_API_KEY' ) && EASY_WP_SMTP_SPARKPOST_API_KEY;
+						$return = defined( 'EasyWPSMTP_SPARKPOST_API_KEY' ) && EasyWPSMTP_SPARKPOST_API_KEY;
 						break;
 					case 'region':
-						$return = defined( 'EASY_WP_SMTP_SPARKPOST_REGION' ) && EASY_WP_SMTP_SPARKPOST_REGION;
+						$return = defined( 'EasyWPSMTP_SPARKPOST_REGION' ) && EasyWPSMTP_SPARKPOST_REGION;
 						break;
 				}
 
@@ -1030,10 +889,10 @@ class Options {
 			case 'sendgrid':
 				switch ( $key ) {
 					case 'api_key':
-						$return = defined( 'EASY_WP_SMTP_SENDGRID_API_KEY' ) && EASY_WP_SMTP_SENDGRID_API_KEY;
+						$return = defined( 'EasyWPSMTP_SENDGRID_API_KEY' ) && EasyWPSMTP_SENDGRID_API_KEY;
 						break;
 					case 'domain':
-						$return = defined( 'EASY_WP_SMTP_SENDGRID_DOMAIN' ) && EASY_WP_SMTP_SENDGRID_DOMAIN;
+						$return = defined( 'EasyWPSMTP_SENDGRID_DOMAIN' ) && EasyWPSMTP_SENDGRID_DOMAIN;
 						break;
 				}
 
@@ -1042,10 +901,10 @@ class Options {
 			case 'postmark':
 				switch ( $key ) {
 					case 'server_api_token':
-						$return = defined( 'EASY_WP_SMTP_POSTMARK_SERVER_API_TOKEN' ) && EASY_WP_SMTP_POSTMARK_SERVER_API_TOKEN;
+						$return = defined( 'EasyWPSMTP_POSTMARK_SERVER_API_TOKEN' ) && EasyWPSMTP_POSTMARK_SERVER_API_TOKEN;
 						break;
 					case 'message_stream':
-						$return = defined( 'EASY_WP_SMTP_POSTMARK_MESSAGE_STREAM' ) && EASY_WP_SMTP_POSTMARK_MESSAGE_STREAM;
+						$return = defined( 'EasyWPSMTP_POSTMARK_MESSAGE_STREAM' ) && EasyWPSMTP_POSTMARK_MESSAGE_STREAM;
 						break;
 				}
 
@@ -1075,25 +934,10 @@ class Options {
 
 				break;
 
-			case 'zoho':
-				switch ( $key ) {
-					case 'domain':
-						$return = defined( 'EASY_WP_SMTP_ZOHO_DOMAIN' ) && EASY_WP_SMTP_ZOHO_DOMAIN;
-						break;
-					case 'client_id':
-						$return = defined( 'EASY_WP_SMTP_ZOHO_CLIENT_ID' ) && EASY_WP_SMTP_ZOHO_CLIENT_ID;
-						break;
-					case 'client_secret':
-						$return = defined( 'EASY_WP_SMTP_ZOHO_CLIENT_SECRET' ) && EASY_WP_SMTP_ZOHO_CLIENT_SECRET;
-						break;
-				}
-
-				break;
-
 			case 'alert_email':
 				switch ( $key ) {
 					case 'connections':
-						$return = defined( 'EASY_WP_SMTP_ALERT_EMAIL_SEND_TO' ) && EASY_WP_SMTP_ALERT_EMAIL_SEND_TO;
+						$return = defined( 'EasyWPSMTP_ALERT_EMAIL_SEND_TO' ) && EasyWPSMTP_ALERT_EMAIL_SEND_TO;
 						break;
 				}
 
@@ -1102,24 +946,16 @@ class Options {
 			case 'alert_slack_webhook':
 				switch ( $key ) {
 					case 'connections':
-						$return = defined( 'EASY_WP_SMTP_ALERT_SLACK_WEBHOOK_URL' ) && EASY_WP_SMTP_ALERT_SLACK_WEBHOOK_URL;
+						$return = defined( 'EasyWPSMTP_ALERT_SLACK_WEBHOOK_URL' ) && EasyWPSMTP_ALERT_SLACK_WEBHOOK_URL;
 						break;
 				}
 
-				break;
-
-			case 'alert_discord_webhook':
-				switch ( $key ) {
-					case 'connections':
-						$return = defined( 'EASY_WP_SMTP_ALERT_DISCORD_WEBHOOK_URL' ) && EASY_WP_SMTP_ALERT_DISCORD_WEBHOOK_URL;
-						break;
-				}
 				break;
 
 			case 'alert_teams_webhook':
 				switch ( $key ) {
 					case 'connections':
-						$return = defined( 'EASY_WP_SMTP_ALERT_TEAMS_WEBHOOK_URL' ) && EASY_WP_SMTP_ALERT_TEAMS_WEBHOOK_URL;
+						$return = defined( 'EasyWPSMTP_ALERT_TEAMS_WEBHOOK_URL' ) && EasyWPSMTP_ALERT_TEAMS_WEBHOOK_URL;
 						break;
 				}
 
@@ -1128,10 +964,10 @@ class Options {
 			case 'alert_twilio_sms':
 				switch ( $key ) {
 					case 'connections':
-						$return = defined( 'EASY_WP_SMTP_ALERT_TWILIO_SMS_ACCOUNT_SID' ) && EASY_WP_SMTP_ALERT_TWILIO_SMS_ACCOUNT_SID &&
-						          defined( 'EASY_WP_SMTP_ALERT_TWILIO_SMS_AUTH_TOKEN' ) && EASY_WP_SMTP_ALERT_TWILIO_SMS_AUTH_TOKEN &&
-						          defined( 'EASY_WP_SMTP_ALERT_TWILIO_SMS_FROM_PHONE_NUMBER' ) && EASY_WP_SMTP_ALERT_TWILIO_SMS_FROM_PHONE_NUMBER &&
-						          defined( 'EASY_WP_SMTP_ALERT_TWILIO_SMS_TO_PHONE_NUMBER' ) && EASY_WP_SMTP_ALERT_TWILIO_SMS_TO_PHONE_NUMBER;
+						$return = defined( 'EasyWPSMTP_ALERT_TWILIO_SMS_ACCOUNT_SID' ) && EasyWPSMTP_ALERT_TWILIO_SMS_ACCOUNT_SID &&
+											defined( 'EasyWPSMTP_ALERT_TWILIO_SMS_AUTH_TOKEN' ) && EasyWPSMTP_ALERT_TWILIO_SMS_AUTH_TOKEN &&
+											defined( 'EasyWPSMTP_ALERT_TWILIO_SMS_FROM_PHONE_NUMBER' ) && EasyWPSMTP_ALERT_TWILIO_SMS_FROM_PHONE_NUMBER &&
+											defined( 'EasyWPSMTP_ALERT_TWILIO_SMS_TO_PHONE_NUMBER' ) && EasyWPSMTP_ALERT_TWILIO_SMS_TO_PHONE_NUMBER;
 						break;
 				}
 
@@ -1140,7 +976,7 @@ class Options {
 			case 'alert_custom_webhook':
 				switch ( $key ) {
 					case 'connections':
-						$return = defined( 'EASY_WP_SMTP_ALERT_CUSTOM_WEBHOOK_URL' ) && EASY_WP_SMTP_ALERT_CUSTOM_WEBHOOK_URL;
+						$return = defined( 'EasyWPSMTP_ALERT_CUSTOM_WEBHOOK_URL' ) && EasyWPSMTP_ALERT_CUSTOM_WEBHOOK_URL;
 						break;
 				}
 
@@ -1149,7 +985,7 @@ class Options {
 			case 'license':
 				switch ( $key ) {
 					case 'key':
-						$return = defined( 'EASY_WP_SMTP_LICENSE_KEY' ) && EASY_WP_SMTP_LICENSE_KEY;
+						$return = defined( 'EasyWPSMTP_LICENSE_KEY' ) && EasyWPSMTP_LICENSE_KEY;
 						break;
 				}
 
@@ -1162,10 +998,7 @@ class Options {
 						$return = defined( 'EASY_WP_SMTP_DO_NOT_SEND' ) && EASY_WP_SMTP_DO_NOT_SEND;
 						break;
 					case SummaryReportEmail::SETTINGS_SLUG:
-						$return = defined( 'EASY_WP_SMTP_SUMMARY_REPORT_EMAIL_DISABLED' );
-						break;
-					case OptimizedEmailSending::SETTINGS_SLUG:
-						$return = defined( 'EASY_WP_SMTP_OPTIMIZED_EMAIL_SENDING_ENABLED' );
+						$return = defined( 'EasyWPSMTP_SUMMARY_REPORT_EMAIL_DISABLED' );
 						break;
 				}
 
@@ -1223,11 +1056,7 @@ class Options {
 		if ( $once ) {
 			add_option( static::META_KEY, $options, '', 'no' ); // Do not autoload these options.
 		} else {
-			if ( is_multisite() && WP::use_global_plugin_settings() ) {
-				update_blog_option( get_main_site_id(), static::META_KEY, $options );
-			} else {
-				update_option( static::META_KEY, $options, 'no' );
-			}
+			update_option( static::META_KEY, $options, 'no' );
 		}
 
 		// Now we need to re-cache values of all instances.
@@ -1296,7 +1125,6 @@ class Options {
 							case 'uninstall':
 							case UsageTracking::SETTINGS_SLUG:
 							case SummaryReportEmail::SETTINGS_SLUG:
-							case OptimizedEmailSending::SETTINGS_SLUG:
 								$options[ $group ][ $option_name ] = (bool) $option_value;
 								break;
 							case 'domain_check_allowed_domains':
@@ -1352,11 +1180,11 @@ class Options {
 					case 'user': // smtp.
 					case 'encryption': // smtp.
 					case 'region': // mailgun/amazonses/sparkpost.
-					case 'api_key': // mailgun/sendinblue/smtpcom/sendlayer/sendgrid/sparkpost/smtp2go/mailjet/elasticemail.
-					case 'domain': // mailgun/sendinblue/sendgrid/zoho.
+					case 'api_key': // mailgun/sendinblue/smtpcom/sendlayer/sendgrid/sparkpost.
+					case 'domain': // mailgun/sendinblue/sendgrid.
 					case 'channel': // smtpcom.
-					case 'client_id': // outlook/amazonses/zoho.
-					case 'client_secret': // outlook/amazonses/zoho.
+					case 'client_id': // outlook/amazonses.
+					case 'client_secret': // outlook/amazonses.
 					case 'auth_code': // outlook.
 					case 'server_api_token': // postmark.
 					case 'message_stream': // postmark.
@@ -1380,13 +1208,12 @@ class Options {
 						if ( $mailer === 'smtp' && ! $this->is_const_defined( 'smtp', 'pass' ) ) {
 							try {
 								$options[ $mailer ][ $option_name ] = Crypto::encrypt( $option_value );
-							} catch ( \Exception $e ) {
-							} // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch, Squiz.Commenting.EmptyCatchComment.Missing, Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace
+							} catch ( \Exception $e ) {} // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch, Squiz.Commenting.EmptyCatchComment.Missing, Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace
 						}
 						break;
 
-					case 'access_token': // outlook/zoho, is an array.
-					case 'user_details': // gmail/outlook/zoho, is an array.
+					case 'access_token': // outlook, is an array.
+					case 'user_details': // gmail/outlook, is an array.
 					case 'relay_credentials': // gmail is an array.
 						// These options don't support constants.
 						$options[ $mailer ][ $option_name ] = $option_value;
@@ -1411,16 +1238,16 @@ class Options {
 		$arrays = func_get_args();
 
 		if ( count( $arrays ) < 2 ) {
-			return isset( $arrays[0] ) ? $arrays[0] : [];
+			return isset( $arrays[0] ) ? $arrays[0] : array();
 		}
 
-		$merged = [];
+		$merged = array();
 
 		while ( $arrays ) {
 			$array = array_shift( $arrays );
 
 			if ( ! is_array( $array ) ) {
-				return [];
+				return array();
 			}
 
 			if ( empty( $array ) ) {
@@ -1474,8 +1301,7 @@ class Options {
 	 * @return bool
 	 */
 	public function is_mailer_smtp() {
-
-		return apply_filters( 'easy_wp_smtp_options_is_mailer_smtp', in_array( $this->get( 'mail', 'mailer' ), [ 'smtp' ], true ) );
+		return apply_filters( 'easy_wp_smtp_options_is_mailer_smtp', in_array( $this->get( 'mail', 'mailer' ), array( 'smtp' ), true ) );
 	}
 
 	/**

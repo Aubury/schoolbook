@@ -9,7 +9,7 @@ use wpdb;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class MigrationVersion141
+ * Class MigrationVersion1_4_1
  *
  * @package Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration
  *

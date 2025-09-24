@@ -9,6 +9,7 @@ use Automattic\WooCommerce\Caches\OrderCache;
 use Automattic\WooCommerce\Caches\OrderCacheController;
 use Automattic\WooCommerce\Internal\BatchProcessing\BatchProcessingController;
 use Automattic\WooCommerce\Internal\Features\FeaturesController;
+use Automattic\WooCommerce\Internal\Traits\AccessiblePrivateMethods;
 use Automattic\WooCommerce\Internal\Utilities\DatabaseUtil;
 use Automattic\WooCommerce\Utilities\OrderUtil;
 use Automattic\WooCommerce\Utilities\PluginUtil;
@@ -25,6 +26,8 @@ defined( 'ABSPATH' ) || exit;
  * ...and in general, any functionality that doesn't imply database access.
  */
 class CustomOrdersTableController {
+
+	use AccessiblePrivateMethods;
 
 	private const SYNC_QUERY_ARG = 'wc_hpos_sync_now';
 
@@ -52,8 +55,6 @@ class CustomOrdersTableController {
 	public const HPOS_FTS_ADDRESS_INDEX_CREATED_OPTION = 'woocommerce_hpos_address_fts_index_created';
 
 	public const HPOS_FTS_ORDER_ITEM_INDEX_CREATED_OPTION = 'woocommerce_hpos_order_item_fts_index_created';
-
-	public const HPOS_DATASTORE_CACHING_ENABLED_OPTION = 'woocommerce_hpos_datastore_caching_enabled';
 
 	/**
 	 * The data store object to use.
@@ -136,17 +137,17 @@ class CustomOrdersTableController {
 	 * Initialize the hooks used by the class.
 	 */
 	private function init_hooks() {
-		add_filter( 'woocommerce_order_data_store', array( $this, 'get_orders_data_store' ), 999, 1 );
-		add_filter( 'woocommerce_order-refund_data_store', array( $this, 'get_refunds_data_store' ), 999, 1 );
-		add_filter( 'woocommerce_debug_tools', array( $this, 'add_hpos_tools' ), 999 );
-		add_filter( 'updated_option', array( $this, 'process_updated_option' ), 999, 3 );
-		add_filter( 'updated_option', array( $this, 'process_updated_option_fts_index' ), 999, 3 );
-		add_filter( 'pre_update_option', array( $this, 'process_pre_update_option' ), 999, 3 );
-		add_action( 'woocommerce_after_register_post_type', array( $this, 'register_post_type_for_order_placeholders' ), 10, 0 );
-		add_action( 'woocommerce_sections_advanced', array( $this, 'sync_now' ) );
-		add_filter( 'removable_query_args', array( $this, 'register_removable_query_arg' ) );
-		add_filter( 'get_edit_post_link', array( $this, 'maybe_rewrite_order_edit_link' ), 10, 2 );
-		add_action( 'before_woocommerce_init', array( $this, 'maybe_set_order_cache_group_as_non_persistent' ) );
+		self::add_filter( 'woocommerce_order_data_store', array( $this, 'get_orders_data_store' ), 999, 1 );
+		self::add_filter( 'woocommerce_order-refund_data_store', array( $this, 'get_refunds_data_store' ), 999, 1 );
+		self::add_filter( 'woocommerce_debug_tools', array( $this, 'add_hpos_tools' ), 999 );
+		self::add_filter( 'updated_option', array( $this, 'process_updated_option' ), 999, 3 );
+		self::add_filter( 'updated_option', array( $this, 'process_updated_option_fts_index' ), 999, 3 );
+		self::add_filter( 'pre_update_option', array( $this, 'process_pre_update_option' ), 999, 3 );
+		self::add_action( 'woocommerce_after_register_post_type', array( $this, 'register_post_type_for_order_placeholders' ), 10, 0 );
+		self::add_action( 'woocommerce_sections_advanced', array( $this, 'sync_now' ) );
+		self::add_filter( 'removable_query_args', array( $this, 'register_removable_query_arg' ) );
+		self::add_action( 'woocommerce_register_feature_definitions', array( $this, 'add_feature_definition' ) );
+		self::add_filter( 'get_edit_post_link', array( $this, 'maybe_rewrite_order_edit_link' ), 10, 2 );
 	}
 
 	/**
@@ -199,25 +200,13 @@ class CustomOrdersTableController {
 	}
 
 	/**
-	 * Is caching of data within the CustomerOrdersTable datastores enabled?
-	 *
-	 * @return bool True if the caching is enabled within the CustomeOrderTable Datastores.
-	 */
-	public function hpos_data_caching_is_enabled(): bool {
-		return get_option( self::HPOS_DATASTORE_CACHING_ENABLED_OPTION ) === 'yes' &&
-			$this->custom_orders_table_usage_is_enabled();
-	}
-
-	/**
 	 * Gets the instance of the orders data store to use.
 	 *
 	 * @param \WC_Object_Data_Store_Interface|string $default_data_store The default data store (as received via the woocommerce_order_data_store hook).
 	 *
 	 * @return \WC_Object_Data_Store_Interface|string The actual data store to use.
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function get_orders_data_store( $default_data_store ) {
+	private function get_orders_data_store( $default_data_store ) {
 		return $this->get_data_store_instance( $default_data_store, 'order' );
 	}
 
@@ -227,10 +216,8 @@ class CustomOrdersTableController {
 	 * @param \WC_Object_Data_Store_Interface|string $default_data_store The default data store (as received via the woocommerce_order-refund_data_store hook).
 	 *
 	 * @return \WC_Object_Data_Store_Interface|string The actual data store to use.
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function get_refunds_data_store( $default_data_store ) {
+	private function get_refunds_data_store( $default_data_store ) {
 		return $this->get_data_store_instance( $default_data_store, 'order_refund' );
 	}
 
@@ -260,11 +247,9 @@ class CustomOrdersTableController {
 	 * and also an entry to delete the table as appropriate.
 	 *
 	 * @param array $tools_array The array of tools to add the tool to.
-	 * @return array The updated array of tools.
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
+	 * @return array The updated array of tools-
 	 */
-	public function add_hpos_tools( array $tools_array ): array {
+	private function add_hpos_tools( array $tools_array ): array {
 		if ( ! $this->data_synchronizer->check_orders_table_exists() ) {
 			return $tools_array;
 		}
@@ -321,15 +306,10 @@ class CustomOrdersTableController {
 	 * @param string $option Setting name.
 	 * @param mixed  $old_value Old value of the setting.
 	 * @param mixed  $value New value of the setting.
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function process_updated_option( $option, $old_value, $value ) {
+	private function process_updated_option( $option, $old_value, $value ) {
 		if ( DataSynchronizer::ORDERS_DATA_SYNC_ENABLED_OPTION === $option && 'no' === $value ) {
 			$this->data_synchronizer->cleanup_synchronization_state();
-		}
-		if ( self::HPOS_DATASTORE_CACHING_ENABLED_OPTION === $option && $old_value !== $value && 'yes' === $value ) {
-			$this->data_store->clear_all_cached_data();
 		}
 	}
 
@@ -341,10 +321,8 @@ class CustomOrdersTableController {
 	 * @param string $value New value of the option.
 	 *
 	 * @return void
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function process_updated_option_fts_index( $option, $old_value, $value ) {
+	private function process_updated_option_fts_index( $option, $old_value, $value ) {
 		if ( self::HPOS_FTS_INDEX_OPTION !== $option ) {
 			return;
 		}
@@ -367,9 +345,9 @@ class CustomOrdersTableController {
 
 		// Check again to see if index was actually created.
 		if ( $this->db_util->fts_index_on_order_address_table_exists() ) {
-			update_option( self::HPOS_FTS_ADDRESS_INDEX_CREATED_OPTION, 'yes', false );
+			update_option( self::HPOS_FTS_ADDRESS_INDEX_CREATED_OPTION, 'yes', true );
 		} else {
-			update_option( self::HPOS_FTS_ADDRESS_INDEX_CREATED_OPTION, 'no', false );
+			update_option( self::HPOS_FTS_ADDRESS_INDEX_CREATED_OPTION, 'no', true );
 			if ( class_exists( 'WC_Admin_Settings ' ) ) {
 				WC_Admin_Settings::add_error( __( 'Failed to create FTS index on address table', 'woocommerce' ) );
 			}
@@ -381,45 +359,12 @@ class CustomOrdersTableController {
 
 		// Check again to see if index was actually created.
 		if ( $this->db_util->fts_index_on_order_item_table_exists() ) {
-			update_option( self::HPOS_FTS_ORDER_ITEM_INDEX_CREATED_OPTION, 'yes', false );
+			update_option( self::HPOS_FTS_ORDER_ITEM_INDEX_CREATED_OPTION, 'yes', true );
 		} else {
-			update_option( self::HPOS_FTS_ORDER_ITEM_INDEX_CREATED_OPTION, 'no', false );
+			update_option( self::HPOS_FTS_ORDER_ITEM_INDEX_CREATED_OPTION, 'no', true );
 			if ( class_exists( 'WC_Admin_Settings ' ) ) {
 				WC_Admin_Settings::add_error( __( 'Failed to create FTS index on order item table', 'woocommerce' ) );
 			}
-		}
-	}
-
-	/**
-	 * Recreate order addresses FTS index. Useful when updating to 9.4 when phone number was added to index, or when other recreating index is needed.
-	 *
-	 * @since 9.4.0.
-	 *
-	 * @return array Array with keys status (bool) and message (string).
-	 */
-	public function recreate_order_address_fts_index(): array {
-		$this->db_util->drop_fts_index_order_address_table();
-		if ( $this->db_util->fts_index_on_order_address_table_exists() ) {
-			return array(
-				'status'  => false,
-				'message' => __( 'Failed to modify existing FTS index. Please go to WooCommerce > Status > Tools and run the "Re-create Order Address FTS index" tool.', 'woocommerce' ),
-			);
-		} else {
-			update_option( self::HPOS_FTS_ADDRESS_INDEX_CREATED_OPTION, 'no', false );
-		}
-
-		$this->db_util->create_fts_index_order_address_table();
-		if ( ! $this->db_util->fts_index_on_order_address_table_exists() ) {
-			return array(
-				'status'  => false,
-				'message' => __( 'Failed to create FTS index on order address table. Please go to WooCommerce > Status > Tools and run the "Re-create Order Address FTS index" tool.', 'woocommerce' ),
-			);
-		} else {
-			update_option( self::HPOS_FTS_ADDRESS_INDEX_CREATED_OPTION, 'yes', false );
-			return array(
-				'status'  => true,
-				'message' => __( 'FTS index recreated.', 'woocommerce' ),
-			);
 		}
 	}
 
@@ -432,10 +377,8 @@ class CustomOrdersTableController {
 	 * @param mixed  $old_value Old value of the setting.
 	 *
 	 * @throws \Exception Attempt to change the authoritative orders table while orders sync is pending.
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function process_pre_update_option( $value, $option, $old_value ) {
+	private function process_pre_update_option( $value, $option, $old_value ) {
 		if ( DataSynchronizer::ORDERS_DATA_SYNC_ENABLED_OPTION === $option && $value !== $old_value ) {
 			$this->order_cache->flush();
 			return $value;
@@ -471,10 +414,8 @@ class CustomOrdersTableController {
 	 * Callback to trigger a sync immediately by clicking a button on the Features screen.
 	 *
 	 * @return void
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function sync_now() {
+	private function sync_now() {
 		$section = filter_input( INPUT_GET, 'section' );
 		if ( 'features' !== $section ) {
 			return;
@@ -512,10 +453,8 @@ class CustomOrdersTableController {
 	 * @param array $query_args The query args that are removable.
 	 *
 	 * @return array
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function register_removable_query_arg( $query_args ) {
+	private function register_removable_query_arg( $query_args ) {
 		$query_args[] = self::SYNC_QUERY_ARG;
 		$query_args[] = self::STOP_SYNC_QUERY_ARG;
 
@@ -527,10 +466,8 @@ class CustomOrdersTableController {
 	 * registers the post type for placeholder orders.
 	 *
 	 * @return void
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function register_post_type_for_order_placeholders(): void {
+	private function register_post_type_for_order_placeholders(): void {
 		wc_register_order_type(
 			DataSynchronizer::PLACEHOLDER_ORDER_POST_TYPE,
 			array(
@@ -561,18 +498,15 @@ class CustomOrdersTableController {
 	 * @param FeaturesController $features_controller The instance of FeaturesController.
 	 *
 	 * @return void
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function add_feature_definition( $features_controller ) {
+	private function add_feature_definition( $features_controller ) {
 		$definition = array(
-			'option_key'                          => self::CUSTOM_ORDERS_TABLE_USAGE_ENABLED_OPTION,
-			'is_experimental'                     => false,
-			'enabled_by_default'                  => false,
-			'order'                               => 50,
-			'setting'                             => $this->get_hpos_setting_for_feature(),
-			'plugins_are_incompatible_by_default' => true,
-			'additional_settings'                 => array(
+			'option_key'          => self::CUSTOM_ORDERS_TABLE_USAGE_ENABLED_OPTION,
+			'is_experimental'     => false,
+			'enabled_by_default'  => false,
+			'order'               => 50,
+			'setting'             => $this->get_hpos_setting_for_feature(),
+			'additional_settings' => array(
 				$this->get_hpos_setting_for_sync(),
 			),
 		);
@@ -610,11 +544,11 @@ class CustomOrdersTableController {
 		};
 
 		$get_disabled = function () {
-			$compatibility_info = $this->features_controller->get_compatible_plugins_for_feature( 'custom_order_tables', true );
-			$sync_complete      = 0 === $this->data_synchronizer->get_current_orders_pending_sync_count();
-			$disabled           = array();
-			// Changing something here? You might also want to look at `enable|disable` functions in Automattic\WooCommerce\Database\Migrations\CustomOrderTable\CLIRunner.
-			$incompatible_plugins = $this->plugin_util->get_items_considered_incompatible( 'custom_order_tables', $compatibility_info );
+			$plugin_compatibility = $this->features_controller->get_compatible_plugins_for_feature( 'custom_order_tables', true );
+			$sync_complete        = 0 === $this->data_synchronizer->get_current_orders_pending_sync_count();
+			$disabled             = array();
+			// Changing something here? might also want to look at `enable|disable` functions in CLIRunner.
+			$incompatible_plugins = array_merge( $plugin_compatibility['uncertain'], $plugin_compatibility['incompatible'] );
 			$incompatible_plugins = array_diff( $incompatible_plugins, $this->plugin_util->get_plugins_excluded_from_compatibility_ui() );
 			if ( count( $incompatible_plugins ) > 0 ) {
 				$disabled = array( 'yes' );
@@ -753,7 +687,7 @@ class CustomOrdersTableController {
 			'id'                   => DataSynchronizer::ORDERS_DATA_SYNC_ENABLED_OPTION,
 			'title'                => '',
 			'type'                 => 'checkbox',
-			'desc'                 => __( 'Enable compatibility mode (Synchronize orders between High-performance order storage and WordPress posts storage).', 'woocommerce' ),
+			'desc'                 => __( 'Enable compatibility mode (synchronizes orders to the posts table).', 'woocommerce' ),
 			'value'                => $get_value,
 			'desc_tip'             => $get_sync_message,
 			'description_is_error' => $get_description_is_error,
@@ -790,29 +724,12 @@ class CustomOrdersTableController {
 	 * @param string $link    The edit link.
 	 * @param int    $post_id Post ID.
 	 * @return string
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function maybe_rewrite_order_edit_link( $link, $post_id ) {
+	private function maybe_rewrite_order_edit_link( $link, $post_id ) {
 		if ( DataSynchronizer::PLACEHOLDER_ORDER_POST_TYPE === get_post_type( $post_id ) ) {
 			$link = OrderUtil::get_order_admin_edit_url( $post_id );
 		}
 
 		return $link;
-	}
-
-	/**
-	 * Set the `order_objects` cache group as non-persistent if Custom Order data caching is enabled.
-	 *
-	 * With order datastore cache enabled, caching of raw data is now handled by the datastore, rather than full object
-	 * being stored in persistent cache.
-	 *
-	 * @return void
-	 */
-	public function maybe_set_order_cache_group_as_non_persistent() {
-		if ( OrderUtil::custom_orders_table_datastore_cache_enabled() ) {
-			// If we're using datastore cache, we don't want to persist the order objects in cache. It should be in-memory only.
-			wp_cache_add_non_persistent_groups( array( $this->order_cache->get_object_type() ) );
-		}
 	}
 }

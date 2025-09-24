@@ -66,11 +66,9 @@ class Package {
 	 * Returns an instance of the FeatureGating class.
 	 *
 	 * @return FeatureGating
-	 * @deprecated since 9.6, use wp_get_environment_type() instead.
 	 */
 	public static function feature() {
-		wc_deprecated_function( 'Package::feature', '9.6', 'wp_get_environment_type' );
-		return new FeatureGating();
+		return self::get_package()->feature();
 	}
 
 	/**
@@ -95,7 +93,8 @@ class Package {
 					$version = '11.8.0-dev';
 					return new NewPackage(
 						$version,
-						dirname( __DIR__, 2 )
+						dirname( __DIR__, 2 ),
+						new FeatureGating()
 					);
 				}
 			);

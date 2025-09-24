@@ -7,7 +7,6 @@ use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migration20231109T1
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\MigrationInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migration20211228T1640692399;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migration20220524T1653383133;
-use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migration20240813T1653383133;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\MigrationVersion141;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migrator;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\ProductFeedQueryHelper;
@@ -50,7 +49,6 @@ class DBServiceProvider extends AbstractServiceProvider {
 	 */
 	protected $provides = [
 		AttributeMappingRulesTable::class => true,
-		AttributeMappingRulesQuery::class => true,
 		ShippingRateTable::class          => true,
 		ShippingRateQuery::class          => true,
 		ShippingTimeTable::class          => true,
@@ -79,12 +77,12 @@ class DBServiceProvider extends AbstractServiceProvider {
 
 	/**
 	 * Use the register method to register items with the container via the
-	 * protected $this->container property or the `getContainer` method
+	 * protected $this->leagueContainer property or the `getLeagueContainer` method
 	 * from the ContainerAwareTrait.
 	 *
 	 * @return void
 	 */
-	public function register(): void {
+	public function register() {
 		$this->share_table_class( AttributeMappingRulesTable::class );
 		$this->add_query_class( AttributeMappingRulesQuery::class, AttributeMappingRulesTable::class );
 		$this->share_table_class( BudgetRecommendationTable::class );
@@ -104,7 +102,6 @@ class DBServiceProvider extends AbstractServiceProvider {
 		$this->share_migration( Migration20211228T1640692399::class, ShippingRateTable::class, OptionsInterface::class );
 		$this->share_with_tags( Migration20220524T1653383133::class, BudgetRecommendationTable::class );
 		$this->share_migration( Migration20231109T1653383133::class, BudgetRecommendationTable::class );
-		$this->share_migration( Migration20240813T1653383133::class, ShippingTimeTable::class );
 		$this->share_with_tags( Migrator::class, MigrationInterface::class );
 	}
 

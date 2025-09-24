@@ -64,9 +64,9 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * {@inheritdoc}
      */
-    public function putContents( string $data ):int {
-        $this->contents = $data;
-        return strlen($data);
+    public function putContents( $data ){
+        $this->contents = (string) $data;
+        return $this;
     }
 
 

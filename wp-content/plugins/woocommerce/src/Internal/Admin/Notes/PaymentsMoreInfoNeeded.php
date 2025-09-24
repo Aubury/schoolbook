@@ -38,8 +38,8 @@ class PaymentsMoreInfoNeeded {
 	 * @return bool
 	 */
 	public static function should_display_note() {
-		// A WooPayments incentive must not be visible.
-		if ( WcPayWelcomePage::instance()->has_incentive() ) {
+		// WCPay welcome page must not be visible.
+		if ( WcPayWelcomePage::instance()->must_be_visible() ) {
 			return false;
 		}
 

@@ -3,7 +3,6 @@
 namespace EasyWPSMTP\Providers\Postmark;
 
 use EasyWPSMTP\ConnectionInterface;
-use EasyWPSMTP\Helpers\UI;
 use EasyWPSMTP\Providers\OptionsAbstract;
 
 /**
@@ -90,22 +89,13 @@ class Options extends OptionsAbstract {
 			<div class="easy-wp-smtp-setting-row__field">
 				<?php if ( $this->connection_options->is_const_defined( $this->get_slug(), 'server_api_token' ) ) : ?>
 					<input type="text" disabled value="****************************************"
-					       id="easy-wp-smtp-setting-<?php echo esc_attr( $this->get_slug() ); ?>-server_api_token"/>
-					<?php $this->display_const_set_message( 'EASY_WP_SMTP_POSTMARK_SERVER_API_TOKEN' ); ?>
+						   id="easy-wp-smtp-setting-<?php echo esc_attr( $this->get_slug() ); ?>-server_api_token"/>
+					<?php $this->display_const_set_message( 'EasyWPSMTP_POSTMARK_SERVER_API_TOKEN' ); ?>
 				<?php else : ?>
-					<?php
-					$slug  = $this->get_slug();
-					$value = $this->connection_options->get( $slug, 'server_api_token' );
-
-					UI::hidden_password_field(
-						[
-							'name'       => "easy-wp-smtp[{$slug}][server_api_token]",
-							'id'         => "easy-wp-smtp-setting-{$slug}-server_api_token",
-							'value'      => $value,
-							'clear_text' => esc_html__( 'Remove Server API Token', 'easy-wp-smtp' ),
-						]
-					);
-					?>
+					<input type="password" spellcheck="false"
+						   name="easy-wp-smtp[<?php echo esc_attr( $this->get_slug() ); ?>][server_api_token]"
+						   value="<?php echo esc_attr( $this->connection_options->get( $this->get_slug(), 'server_api_token' ) ); ?>"
+						   id="easy-wp-smtp-setting-<?php echo esc_attr( $this->get_slug() ); ?>-server_api_token"/>
 				<?php endif; ?>
 				<p class="desc">
 					<?php
@@ -132,7 +122,7 @@ class Options extends OptionsAbstract {
 					   id="easy-wp-smtp-setting-<?php echo esc_attr( $this->get_slug() ); ?>-message_stream" spellcheck="false"/>
 				<?php
 				if ( $this->connection_options->is_const_defined( $this->get_slug(), 'message_stream' ) ) {
-					$this->display_const_set_message( 'EASY_WP_SMTP_POSTMARK_MESSAGE_STREAM' );
+					$this->display_const_set_message( 'EasyWPSMTP_POSTMARK_MESSAGE_STREAM' );
 				}
 				?>
 				<p class="desc">

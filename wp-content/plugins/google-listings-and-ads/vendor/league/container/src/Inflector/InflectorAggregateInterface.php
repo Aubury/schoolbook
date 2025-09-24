@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Automattic\WooCommerce\GoogleListingsAndAds\Vendor\League\Container\Inflector;
 
@@ -9,6 +7,21 @@ use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\League\Container\Containe
 
 interface InflectorAggregateInterface extends ContainerAwareInterface, IteratorAggregate
 {
-    public function add(string $type, ?callable $callback = null): Inflector;
-    public function inflect(object $object);
+    /**
+     * Add an inflector to the aggregate.
+     *
+     * @param string   $type
+     * @param callable $callback
+     *
+     * @return Inflector
+     */
+    public function add(string $type, callable $callback = null) : Inflector;
+
+    /**
+     * Applies all inflectors to an object.
+     *
+     * @param  object $object
+     * @return object
+     */
+    public function inflect($object);
 }

@@ -1,3 +1,4 @@
+var __webpack_exports__ = {};
 /**
  * Adds a flag to the widgets filtered by a language.
  *

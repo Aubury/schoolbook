@@ -215,26 +215,7 @@ abstract class ParentPageAbstract implements PageInterface {
 
 		$tab = sanitize_key( $tab );
 
-		return in_array( $tab, $this->get_tabs_slugs(), true ) ? $tab : $this->get_default_tab();
-	}
-
-	/**
-	 * Get the default tab.
-	 *
-	 * @since 2.7.0
-	 *
-	 * @return string Default tab.
-	 */
-	protected function get_default_tab() {
-
-		/**
-		 * Filters this page's default tab.
-		 *
-		 * @since 2.7.0
-		 *
-		 * @param string $default_tab Default tab.
-		 */
-		return apply_filters( 'easy_wp_smtp_admin_page_' . $this->slug . '_default_tab', $this->default_tab );
+		return in_array( $tab, $this->get_tabs_slugs(), true ) ? $tab : $this->default_tab;
 	}
 
 	/**
@@ -295,7 +276,7 @@ abstract class ParentPageAbstract implements PageInterface {
 	 *
 	 * @since 2.0.0
 	 */
-	public function display() { //phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
+	public function display() {
 
 		$current_tab = $this->get_current_tab();
 		$page_slug   = $this->slug;
@@ -307,20 +288,6 @@ abstract class ParentPageAbstract implements PageInterface {
 						<?php echo esc_html( $this->get_tab_title( $current_tab ) ); ?>
 					</div>
 					<?php $this->display_after_page_title(); ?>
-
-					<?php
-					if ( count( $this->tabs ) === 1 ) {
-
-						/**
-						 * Fires after page title.
-						 *
-						 * @since 2.7.0
-						 *
-						 * @param ParentPageAbstract $page Current page.
-						 */
-						do_action( "easy_wp_smtp_admin_page_{$page_slug}_{$current_tab}_display_header", $this );
-					}
-					?>
 				</div>
 			</div>
 		<?php endif; ?>
@@ -335,17 +302,6 @@ abstract class ParentPageAbstract implements PageInterface {
 								<?php echo esc_html( $tab->get_label() ); ?>
 							</a>
 						<?php endforeach; ?>
-
-						<?php
-						/**
-						 * Fires after page title.
-						 *
-						 * @since 2.7.0
-						 *
-						 * @param ParentPageAbstract $page Current page.
-						 */
-						do_action( "easy_wp_smtp_admin_page_{$page_slug}_{$current_tab}_display_header", $this );
-						?>
 					</div>
 				</div>
 			<?php endif; ?>

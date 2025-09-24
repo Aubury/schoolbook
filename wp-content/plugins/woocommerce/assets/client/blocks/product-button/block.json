@@ -4,14 +4,8 @@
 	"title": "Add to Cart Button",
 	"description": "Display a call to action button which either adds the product to the cart, or links to the product page.",
 	"category": "woocommerce-product-elements",
-	"keywords": [
-		"WooCommerce"
-	],
-	"usesContext": [
-		"query",
-		"queryId",
-		"postId"
-	],
+	"keywords": [ "WooCommerce" ],
+	"usesContext": [ "query", "queryId", "postId" ],
 	"textdomain": "woocommerce",
 	"attributes": {
 		"productId": {
@@ -35,10 +29,7 @@
 		}
 	},
 	"supports": {
-		"align": [
-			"wide",
-			"full"
-		],
+		"align": [ "wide", "full" ],
 		"color": {
 			"background": false,
 			"link": true
@@ -67,9 +58,7 @@
 			"label": "Outline"
 		}
 	],
-	"viewScript": [
-		"wc-product-button-interactivity-frontend"
-	],
-	"apiVersion": 3,
+	"viewScript": [ "wc-product-button-interactivity-frontend" ],
+	"apiVersion": 2,
 	"$schema": "https://schemas.wp.org/trunk/block.json"
 }

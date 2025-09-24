@@ -5,13 +5,13 @@
  * @package Polylang
  *
  * @since 2.7
- *
- * @var PLL_Model $model `PLL_Model` instance.
  */
 
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Don't access directly.
+}
 
-$languages_list = $model->languages->get_list();
+$languages_list = $this->model->get_languages_list();
 ?>
 <h2><?php esc_html_e( 'Content without language', 'polylang' ); ?></h2>
 <p>

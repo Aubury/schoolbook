@@ -79,9 +79,7 @@ if ( ! class_exists( 'WC_Email_Customer_Reset_Password', false ) ) :
 		 * @return string
 		 */
 		public function get_default_subject() {
-			return $this->email_improvements_enabled
-				? __( 'Reset your password for {site_title}', 'woocommerce' )
-				: __( 'Password Reset Request for {site_title}', 'woocommerce' );
+			return __( 'Password Reset Request for {site_title}', 'woocommerce' );
 		}
 
 		/**
@@ -91,9 +89,7 @@ if ( ! class_exists( 'WC_Email_Customer_Reset_Password', false ) ) :
 		 * @return string
 		 */
 		public function get_default_heading() {
-			return $this->email_improvements_enabled
-				? __( 'Reset your password', 'woocommerce' )
-				: __( 'Password Reset Request', 'woocommerce' );
+			return __( 'Password Reset Request', 'woocommerce' );
 		}
 
 		/**

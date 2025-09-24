@@ -1,6 +1,6 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
-    "apiVersion": 3,
+    "apiVersion": 2,
     "name": "woocommerce/conditional",
     "title": "Conditional",
     "category": "widgets",
@@ -8,7 +8,7 @@
     "textdomain": "default",
     "attributes": {
         "mustMatch": {
-            "role": "content",
+            "__experimentalRole": "content",
             "type": "array",
             "items": {
                 "type": "object"

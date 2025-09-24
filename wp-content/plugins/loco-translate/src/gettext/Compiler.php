@@ -48,9 +48,9 @@ class Loco_gettext_Compiler {
 
 
     /**
-     * Write PO, MO and JSON siblings
+     * @return Loco_fs_FileList
      */
-    public function writeAll( Loco_gettext_Data $po, Loco_package_Project $project = null ):Loco_fs_FileList {
+    public function writeAll( Loco_gettext_Data $po, Loco_package_Project $project = null ){
         $this->writePo($po);
         $this->writeMo($po);
         if( $project ){
@@ -64,7 +64,7 @@ class Loco_gettext_Compiler {
      * @return int bytes written to PO file
      * @throws Loco_error_WriteException
      */
-    public function writePo( Loco_gettext_Data $po ):int {
+    public function writePo( Loco_gettext_Data $po ){
         $file = $this->files->getSource();
         // Perform PO file backup before overwriting an existing PO
         if( $file->exists() && $this->fs ){
@@ -84,7 +84,7 @@ class Loco_gettext_Compiler {
     /**
      * @return int bytes written to MO file
      */
-    public function writeMo( Loco_gettext_Data $po ):int {
+    public function writeMo( Loco_gettext_Data $po ){
         try {
             $mofile = $this->files->getBinary();
             $bytes = $this->writeFile( $mofile, $po->msgfmt() );
@@ -111,7 +111,7 @@ class Loco_gettext_Compiler {
     /**
      * @return int bytes written to .l10n.php file
      */
-    private function writePhp( Loco_gettext_Data $po ):int {
+    private function writePhp( Loco_gettext_Data $po ){
         $phfile = $this->files->getCache();
         if( $phfile && class_exists('WP_Translation_File_PHP',false) ){
             return $this->writeFile( $phfile, Loco_gettext_PhpCache::render($po) );
@@ -123,8 +123,9 @@ class Loco_gettext_Compiler {
     /**
      * @param Loco_package_Project $project Translation set, required to resolve script paths
      * @param Loco_gettext_Data $po PO data to export
+     * @return Loco_fs_FileList All json files created
      */
-    public function writeJson( Loco_package_Project $project, Loco_gettext_Data $po ):Loco_fs_FileList {
+    public function writeJson( Loco_package_Project $project, Loco_gettext_Data $po ){
         $domain = $project->getDomain()->getName();
         $pofile = $this->files->getSource();
         $jsons = new Loco_fs_FileList;
@@ -237,15 +238,16 @@ class Loco_gettext_Compiler {
 
     /**
      * Clone localised file as a WordPress script translation file
+     * @return Loco_fs_File
      */
-    private static function cloneJson( Loco_fs_File $pofile, string $ref, string $domain ):Loco_fs_File {
+    private static function cloneJson( Loco_fs_File $pofile, $ref, $domain ){
         $name = $pofile->filename();
         // Theme author PO files have no text domain, but JSON files must always be prefixed
         if( $domain && 'default' !== $domain && preg_match('/^[a-z]{2,3}(?:_[a-z\\d_]+)?$/i',$name) ){
             $name = $domain.'-'.$name;
         }
         // Hashable reference is always finally unminified, as per load_script_textdomain()
-        if( '' !== $ref ){
+        if( is_string($ref) && '' !== $ref ){
             $name .= '-'.self::hashRef($ref);
         }
         return $pofile->cloneBasename( $name.'.json' );
@@ -255,8 +257,9 @@ class Loco_gettext_Compiler {
     /**
      * Hashable reference is always finally unminified, as per load_script_textdomain()
      * @param string $ref script path relative to plugin base
+     * @return string
      */
-    private static function hashRef( string $ref ):string {
+    private static function hashRef( $ref ){
         if( substr($ref,-7) === '.min.js' ) {
             $ref = substr($ref,0,-7).'.js';
         }
@@ -266,8 +269,9 @@ class Loco_gettext_Compiler {
 
     /**
      * Fetch compilation summary and raise most relevant success message
+     * @return Loco_mvc_ViewParams
      */
-    public function getSummary():Loco_mvc_ViewParams {
+    public function getSummary(){
         $pofile = $this->files->getSource();
         // Avoid calling this unless the initial PO save was successful
         if( ! $this->progress['pobytes'] ){
@@ -291,10 +295,19 @@ class Loco_gettext_Compiler {
 
 
     /**
+     * Get all files written, not including backups.
+     * @return Loco_fs_File[]
+     */
+    public function getFilesWritten(){
+        return $this->done->getArrayCopy();
+    }
+
+
+    /**
      * Obtain non-standard JavaScript file extensions.
      * @return string[] where keys are PCRE safe extensions, all mapped to "js"
      */
-    private function getJsExtMap():array {
+    private function getJsExtMap(){
         $map = ['js'=>'js','jsx'=>'js'];
         $exts = Loco_data_Settings::get()->jsx_alias;
         if( is_array($exts) && $exts ){
@@ -308,7 +321,7 @@ class Loco_gettext_Compiler {
     /**
      * @internal
      */
-    private static function pregQuote( string $value ):string {
+    private static function pregQuote( $value ){
         return preg_quote($value,'/');
     }
 
@@ -318,7 +331,7 @@ class Loco_gettext_Compiler {
      * @param string $data to write to given file
      * @return int bytes written
      */
-    public function writeFile( Loco_fs_File $file, string $data ):int {
+    public function writeFile( Loco_fs_File $file, $data ){
         if( $this->fs ) {
             $this->fs->authorizeSave( $file );
         }

@@ -16,20 +16,9 @@ defined( 'ABSPATH' ) || exit();
 
 		<div class="start-container">
 			<div class="text">
-			<img src="<?php echo esc_url( WC()->plugin_url() . '/assets/images/woo-logo.svg' ); ?>" alt="
-								<?php
-								esc_attr_e(
-									'WooCommerce',
-									'woocommerce'
-								);
-								?>
-				" style="width:180px;">
+				<img src="<?php echo esc_url( WC()->plugin_url() . '/assets/images/woocommerce_logo.png' ); ?>" alt="<?php esc_attr_e( 'WooCommerce', 'woocommerce' ); ?>" style="width:180px;">
 
-			<?php
-			// phpcs:disable WordPress.Security.NonceVerification.Recommended
-			if ( ! empty( $_GET['wc-helper-status'] ) && 'helper-disconnected' === $_GET['wc-helper-status'] ) :
-				// phpcs:enable WordPress.Security.NonceVerification.Recommended
-				?>
+				<?php if ( ! empty( $_GET['wc-helper-status'] ) && 'helper-disconnected' === $_GET['wc-helper-status'] ) : ?>
 					<p><strong><?php esc_html_e( 'Sorry to see you go.', 'woocommerce' ); ?></strong> <?php esc_html_e( 'Feel free to reconnect again using the button below.', 'woocommerce' ); ?></p>
 				<?php endif; ?>
 

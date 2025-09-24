@@ -6,18 +6,16 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google;
 use Automattic\WooCommerce\GoogleListingsAndAds\Google\GoogleHelper;
 use Automattic\WooCommerce\GoogleListingsAndAds\Exception\InvalidTerm;
 use Automattic\WooCommerce\GoogleListingsAndAds\Exception\InvalidDomainName;
-use Automattic\WooCommerce\GoogleListingsAndAds\Internal\ContainerAwareTrait;
-use Automattic\WooCommerce\GoogleListingsAndAds\Internal\Interfaces\ContainerAwareInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareTrait;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\TransientsInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\PluginHelper;
-use Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WC;
 use Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WP;
 use Automattic\WooCommerce\GoogleListingsAndAds\Utility\DateTimeUtility;
 use Automattic\WooCommerce\GoogleListingsAndAds\Value\TosAccepted;
 use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\GuzzleHttp\Client;
 use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Psr\Container\ContainerExceptionInterface;
+use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Psr\Container\ContainerInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Psr\Container\NotFoundExceptionInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Psr\Http\Client\ClientExceptionInterface;
 use DateTime;
@@ -34,17 +32,29 @@ defined( 'ABSPATH' ) || exit;
  * - DateTimeUtility
  * - GoogleHelper
  * - Merchant
- * - WC
  * - WP
  *
  * @package Automattic\WooCommerce\GoogleListingsAndAds\API\Google
  */
-class Middleware implements ContainerAwareInterface, OptionsAwareInterface {
+class Middleware implements OptionsAwareInterface {
 
-	use ContainerAwareTrait;
 	use ExceptionTrait;
 	use OptionsAwareTrait;
 	use PluginHelper;
+
+	/**
+	 * @var ContainerInterface
+	 */
+	protected $container;
+
+	/**
+	 * Middleware constructor.
+	 *
+	 * @param ContainerInterface $container
+	 */
+	public function __construct( ContainerInterface $container ) {
+		$this->container = $container;
+	}
 
 	/**
 	 * Get all Merchant Accounts associated with the connected account.
@@ -131,7 +141,7 @@ class Middleware implements ContainerAwareInterface, OptionsAwareInterface {
 			$result = $client->post(
 				$this->get_manager_url( 'create-merchant' ),
 				[
-					'body' => wp_json_encode(
+					'body' => json_encode(
 						[
 							'name'       => $name,
 							'websiteUrl' => $site_url,
@@ -198,7 +208,7 @@ class Middleware implements ContainerAwareInterface, OptionsAwareInterface {
 			$result = $client->post(
 				$this->get_manager_url( 'link-merchant' ),
 				[
-					'body' => wp_json_encode(
+					'body' => json_encode(
 						[
 							'accountId' => $this->options->get_merchant_id(),
 						]
@@ -240,7 +250,7 @@ class Middleware implements ContainerAwareInterface, OptionsAwareInterface {
 			$result = $client->post(
 				$this->get_manager_url( 'claim-website' ),
 				[
-					'body' => wp_json_encode(
+					'body' => json_encode(
 						[
 							'accountId' => $this->options->get_merchant_id(),
 							'overwrite' => $overwrite,
@@ -280,7 +290,7 @@ class Middleware implements ContainerAwareInterface, OptionsAwareInterface {
 	 */
 	public function create_ads_account(): array {
 		try {
-			$country = $this->container->get( WC::class )->get_base_country();
+			$country = WC()->countries->get_base_country();
 
 			/** @var GoogleHelper $google_helper */
 			$google_helper = $this->container->get( GoogleHelper::class );
@@ -299,7 +309,7 @@ class Middleware implements ContainerAwareInterface, OptionsAwareInterface {
 			$result = $client->post(
 				$this->get_manager_url( $country . '/create-customer' ),
 				[
-					'body' => wp_json_encode(
+					'body' => json_encode(
 						[
 							'descriptive_name' => $this->new_account_name(),
 							'currency_code'    => get_woocommerce_currency(),
@@ -358,7 +368,7 @@ class Middleware implements ContainerAwareInterface, OptionsAwareInterface {
 			$result = $client->post(
 				$this->get_manager_url( 'link-customer' ),
 				[
-					'body' => wp_json_encode(
+					'body' => json_encode(
 						[
 							'client_customer' => $id,
 						]
@@ -429,7 +439,7 @@ class Middleware implements ContainerAwareInterface, OptionsAwareInterface {
 			$result = $client->post(
 				$this->get_tos_url( $service ),
 				[
-					'body' => wp_json_encode(
+					'body' => json_encode(
 						[
 							'email' => $email,
 						]

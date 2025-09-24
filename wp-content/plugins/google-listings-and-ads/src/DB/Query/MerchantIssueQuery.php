@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 class MerchantIssueQuery extends Query {
 
 	/**
-	 * MerchantIssueQuery constructor.
+	 * Query constructor.
 	 *
 	 * @param wpdb               $wpdb
 	 * @param MerchantIssueTable $table

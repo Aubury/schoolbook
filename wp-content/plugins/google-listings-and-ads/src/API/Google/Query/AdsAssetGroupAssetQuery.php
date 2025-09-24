@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 class AdsAssetGroupAssetQuery extends AdsQuery {
 
 	/**
-	 * AdsAssetGroupAssetQuery constructor.
+	 * Query constructor.
 	 */
 	public function __construct() {
 		parent::__construct( 'asset_group_asset' );

@@ -1,6 +1,6 @@
 <?php
 
-use Duplicator\Utils\Upsell;
+use Duplicator\Utils\LinkManager;
 
 defined('ABSPATH') || defined('DUPXABSPATH') || exit;
 ?>
@@ -78,7 +78,7 @@ SYSTEM AND WORDPRESS -->
             echo '<span style="font-weight:bold">';
             _e('Get faster builds with Duplicator Pro with access to shell_exec zip.', 'duplicator');
             echo '</span>';
-            echo "&nbsp;<i><a href='" .  esc_url(Upsell::getCampaignUrl('package-build-scan', 'For Shell Zip Get Pro'))  . "' target='_blank'>[" . esc_html__('details', 'duplicator') . "]</a></i>";
+            echo "&nbsp;<i><a href='" .  esc_url(LinkManager::getCampaignUrl('package-build-scan', 'For Shell Zip Get Pro'))  . "' target='_blank'>[" . esc_html__('details', 'duplicator') . "]</a></i>";
         }
 
         //MANAGED HOST
@@ -99,7 +99,7 @@ SYSTEM AND WORDPRESS -->
                 '1 and 2 are <a> tags',
                 'duplicator'
             ),
-            '<i><a href="' .  esc_url(Upsell::getCampaignUrl('package-build-scan', 'Managed Host Support'))  . '" target="_blank">',
+            '<i><a href="' .  esc_url(LinkManager::getCampaignUrl('package-build-scan', 'Managed Host Support'))  . '" target="_blank">',
             '</a></i>'
         );
         echo '<br/><br/>';
@@ -191,12 +191,12 @@ WP SETTINGS -->
 
             esc_html_e('While it is not recommended you can still continue with the build of this Backup.  At install time additional manual custom configurations will '
                 . 'need to be made to finalize this multisite migration.  Please note that any support requests for mulitsite with Duplicator Lite will not be supported.', 'duplicator');
-            echo "&nbsp;<i><a href='" .  esc_url(Upsell::getCampaignUrl('package-build-scan', 'Not Multisite Get Pro'))  . "' target='_blank'>[" . esc_html__('upgrade to pro', 'duplicator') . "]</a></i>";
+            echo "&nbsp;<i><a href='" .  esc_url(LinkManager::getCampaignUrl('package-build-scan', 'Not Multisite Get Pro'))  . "' target='_blank'>[" . esc_html__('upgrade to pro', 'duplicator') . "]</a></i>";
         } else {
             echo '<hr size="1" /><span><div class="scan-good"><i class="fa fa-check"></i></div></span>&nbsp;<b>' . esc_html__('Multisite: N/A', 'duplicator') . "</b> <br/>";
             esc_html_e('This is not a multisite install so duplication will proceed without issue.  Duplicator does not officially support multisite. However, Duplicator Pro supports '
                 . 'duplication of a full multisite network and also has the ability to install a multisite subsite as a standalone site.', 'duplicator');
-            echo "&nbsp;<i><a href='" .  esc_url(Upsell::getCampaignUrl('package-build-scan', 'Multisite Get Pro'))  . "' target='_blank'>[" . esc_html__('upgrade to pro', 'duplicator') . "]</a></i>";
+            echo "&nbsp;<i><a href='" .  esc_url(LinkManager::getCampaignUrl('package-build-scan', 'Multisite Get Pro'))  . "' target='_blank'>[" . esc_html__('upgrade to pro', 'duplicator') . "]</a></i>";
         }
         ?>
     </div>

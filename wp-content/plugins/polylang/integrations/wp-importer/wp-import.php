@@ -44,6 +44,7 @@ class PLL_WP_Import extends WP_Import {
 			$languages = get_terms( array( 'taxonomy' => 'language', 'hide_empty' => false, 'orderby' => 'term_id' ) );
 			$default_lang = reset( $languages );
 			PLL()->options['default_lang'] = $default_lang->slug;
+			update_option( 'polylang', PLL()->options );
 		}
 
 		// Clean languages cache in case some of them were created during import.
@@ -128,18 +129,20 @@ class PLL_WP_Import extends WP_Import {
 			$translations = maybe_unserialize( $term['term_description'] );
 			foreach ( $translations as $slug => $old_id ) {
 				if ( $old_id && ! empty( $this->processed_terms[ $old_id ] ) && $lang = PLL()->model->get_language( $slug ) ) {
-					// Language relationship.
-					$trs[] = array( $this->processed_terms[ $old_id ], $lang->get_tax_prop( 'term_language', 'term_taxonomy_id' ) );
+					// Language relationship
+					$trs[] = $wpdb->prepare( '( %d, %d )', $this->processed_terms[ $old_id ], $lang->get_tax_prop( 'term_language', 'term_taxonomy_id' ) );
 
-					// Translation relationship.
-					$trs[] = array( $this->processed_terms[ $old_id ], get_term( $this->processed_terms[ $term['term_id'] ], 'term_translations' )->term_taxonomy_id );
+					// Translation relationship
+					$trs[] = $wpdb->prepare( '( %d, %d )', $this->processed_terms[ $old_id ], get_term( $this->processed_terms[ $term['term_id'] ], 'term_translations' )->term_taxonomy_id );
 				}
 			}
 		}
 
-		// Insert term_relationships.
+		// Insert term_relationships
 		if ( ! empty( $trs ) ) {
-			// Make sure we don't attempt to insert already existing term relationships.
+			$trs = array_unique( $trs );
+
+			// Make sure we don't attempt to insert already existing term relationships
 			$existing_trs = $wpdb->get_results(
 				"SELECT tr.object_id, tr.term_taxonomy_id FROM {$wpdb->term_relationships} AS tr
 				INNER JOIN {$wpdb->term_taxonomy} AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
@@ -147,21 +150,14 @@ class PLL_WP_Import extends WP_Import {
 			);
 
 			foreach ( $existing_trs as $key => $tr ) {
-				$existing_trs[ $key ] = array( $tr->object_id, $tr->term_taxonomy_id );
+				$existing_trs[ $key ] = $wpdb->prepare( '( %d, %d )', $tr->object_id, $tr->term_taxonomy_id );
 			}
 
 			$trs = array_diff( $trs, $existing_trs );
 
 			if ( ! empty( $trs ) ) {
-				$wpdb->query(
-					$wpdb->prepare( // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
-						sprintf(
-							"INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES %s",
-							implode( ',', array_fill( 0, count( $trs ), '( %d, %d )' ) )
-						),
-						array_merge( ...$trs )
-					)
-				);
+				// PHPCS:ignore WordPress.DB.PreparedSQL.NotPrepared
+				$wpdb->query( "INSERT INTO {$wpdb->term_relationships} ( object_id, term_taxonomy_id ) VALUES " . implode( ',', $trs ) );
 			}
 		}
 	}
@@ -190,24 +186,19 @@ class PLL_WP_Import extends WP_Import {
 			}
 
 			if ( ! empty( $new_translations ) ) {
-				$u['case'][] = array( $this->processed_terms[ $term['term_id'] ], maybe_serialize( $new_translations ) );
+				$u['case'][] = $wpdb->prepare( 'WHEN %d THEN %s', $this->processed_terms[ $term['term_id'] ], maybe_serialize( $new_translations ) );
 				$u['in'][] = (int) $this->processed_terms[ $term['term_id'] ];
 			}
 		}
 
 		if ( ! empty( $u ) ) {
+			// PHPCS:disable WordPress.DB.PreparedSQL.NotPrepared
 			$wpdb->query(
-				$wpdb->prepare(
-					sprintf(
-						"UPDATE {$wpdb->term_taxonomy}
-						SET description = ( CASE term_id %s END )
-						WHERE term_id IN (%s)",
-						implode( ' ', array_fill( 0, count( $u['case'] ), 'WHEN %d THEN %s' ) ),
-						implode( ',', array_fill( 0, count( $u['in'] ), '%d' ) )
-					),
-					array_merge( array_merge( ...$u['case'] ), $u['in'] )
-				)
+				"UPDATE {$wpdb->term_taxonomy}
+				SET description = ( CASE term_id " . implode( ' ', $u['case'] ) . ' END )
+				WHERE term_id IN ( ' . implode( ',', $u['in'] ) . ' )'
 			);
+			// PHPCS:enable
 		}
 	}
 }

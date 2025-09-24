@@ -11,6 +11,8 @@ use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsDataSourcePoller;
 use Automattic\WooCommerce\Admin\RemoteInboxNotifications\RemoteInboxNotificationsEngine;
 use Automattic\WooCommerce\Internal\Admin\Notes\AddFirstProduct;
+use Automattic\WooCommerce\Internal\Admin\Notes\ChoosingTheme;
+use Automattic\WooCommerce\Internal\Admin\Notes\CouponPageMoved;
 use Automattic\WooCommerce\Internal\Admin\Notes\CustomizeStoreWithBlocks;
 use Automattic\WooCommerce\Internal\Admin\Notes\CustomizingProductCatalog;
 use Automattic\WooCommerce\Internal\Admin\Notes\EditProductsOnTheMove;
@@ -69,6 +71,7 @@ class Events {
 	 */
 	private static $note_classes_to_added_or_updated = array(
 		AddFirstProduct::class,
+		ChoosingTheme::class,
 		CustomizeStoreWithBlocks::class,
 		CustomizingProductCatalog::class,
 		EditProductsOnTheMove::class,
@@ -99,6 +102,7 @@ class Events {
 	 * @var array
 	 */
 	private static $other_note_classes = array(
+		CouponPageMoved::class,
 		InstallJPAndWCSPlugins::class,
 		OrderMilestones::class,
 		SellingOnlineCourses::class,

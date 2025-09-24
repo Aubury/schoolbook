@@ -139,8 +139,6 @@ class PLL_WPML_Config {
 		add_filter( 'pll_blocks_xpath_rules', array( $this, 'translate_blocks' ) );
 		add_filter( 'pll_blocks_rules_for_attributes', array( $this, 'translate_blocks_attributes' ) );
 
-		$matcher = new PLL_Format_Util();
-
 		foreach ( $this->xmls as $context => $xml ) {
 			$keys = $xml->xpath( 'admin-texts/key' );
 
@@ -151,14 +149,19 @@ class PLL_WPML_Config {
 			foreach ( $keys as $key ) {
 				$name = $this->get_field_attribute( $key, 'name' );
 
-				if ( ! $matcher->is_format( $name ) ) {
+				if ( false === strpos( $name, '*' ) ) {
 					$this->register_or_translate_option( $context, $name, $key );
 					continue;
 				}
 
-				$names = $matcher->filter_list( (array) wp_load_alloptions(), $name );
+				$pattern = '#^' . str_replace( '*', '(?:.+)', $name ) . '$#';
+				$names = preg_grep( $pattern, array_keys( wp_load_alloptions() ) );
 
-				foreach ( $names as $_name => $_val ) {
+				if ( ! is_array( $names ) ) {
+					continue;
+				}
+
+				foreach ( $names as $_name ) {
 					$this->register_or_translate_option( $context, $_name, $key );
 				}
 			}
@@ -445,7 +448,7 @@ class PLL_WPML_Config {
 			$this->parsing_rules = $this->extract_blocks_parsing_rules();
 		}
 
-		return $this->parsing_rules[ $rule_tag ] ?? array();
+		return isset( $this->parsing_rules[ $rule_tag ] ) ? $this->parsing_rules[ $rule_tag ] : array();
 	}
 
 	/**
@@ -518,7 +521,7 @@ class PLL_WPML_Config {
 	}
 
 	/**
-	 * Merges two arrays recursively.
+	 * Merge two arrays recursively.
 	 * Unlike `array_merge_recursive()`, this method doesn't change the type of the values.
 	 *
 	 * @since 3.6

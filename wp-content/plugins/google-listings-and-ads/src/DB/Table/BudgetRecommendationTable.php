@@ -29,7 +29,7 @@ class BudgetRecommendationTable extends Table {
 	 * @return string
 	 */
 	protected function get_install_query(): string {
-		return "
+		return <<< SQL
 CREATE TABLE `{$this->get_sql_safe_name()}` (
     id bigint(20) NOT NULL AUTO_INCREMENT,
     currency varchar(3) NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE `{$this->get_sql_safe_name()}` (
     PRIMARY KEY (id),
     UNIQUE KEY country_currency (country, currency)
 ) {$this->get_collation()};
-";
+SQL;
 	}
 
 	/**
@@ -102,12 +102,7 @@ CREATE TABLE `{$this->get_sql_safe_name()}` (
 		$chunk_size = 500;
 
 		if ( file_exists( $path ) ) {
-			$csv = array_map(
-				function ( $row ) {
-					return str_getcsv( $row, ',', '"', '\\' );
-				},
-				file( $path )
-			);
+			$csv = array_map( 'str_getcsv', file( $path ) );
 
 			// Remove the headers
 			array_shift( $csv );

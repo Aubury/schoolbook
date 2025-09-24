@@ -96,9 +96,12 @@ if (!class_exists('MRKV_UA_SHIPPING_ADMIN_ASSETS'))
 				$all_hooks[] = 'morkva-ua-shipping_page_mrkv_ua_shipping_' . $slug;
 				$all_hooks_shipping[] = 'morkva-ua-shipping_page_mrkv_ua_shipping_' . $slug;
 
-				foreach($shipping['pages'] as $page_slug => $page_name)
+				if(isset($shipping['pages']))
 				{
-					$all_hooks[] = 'admin_page_mrkv_ua_shipping_' . $slug . '_' . $page_slug;
+					foreach($shipping['pages'] as $page_slug => $page_name)
+					{
+						$all_hooks[] = 'admin_page_mrkv_ua_shipping_' . $slug . '_' . $page_slug;
+					}
 				}
 
 				if($hook == 'mrkv-ua-shipping_page_mrkv_ua_shipping_' . $slug || $hook == 'morkva-ua-shipping_page_mrkv_ua_shipping_' . $slug)

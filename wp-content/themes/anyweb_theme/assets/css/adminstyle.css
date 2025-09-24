@@ -1,0 +1,24 @@
+.any-groupe-wc-attributes .form-field{
+    display: flex;
+    justify-content: space-evenly;
+}
+.any-groupe-wc-attributes .short{
+    width: 80% !important;
+}
+.any-groupe-wc-attributes .woocommerce-help-tip{
+    width: 5%;
+}
+
+.any-groupe-wc-attributes label{
+    width: 10% !important;
+}
+.any-groupe-wc-attributes-title{
+    margin: 0 5px;
+}
+.adminka-field{
+    margin-left: 5px;
+}
+.cf-complex__tabs-item--current, .block-editor .cf-complex__tabs-item--current{
+    background-color: pink !important;   
+    border: solid 2px red !important;    
+}

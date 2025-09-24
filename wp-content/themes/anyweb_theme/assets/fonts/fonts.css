@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'Manrope';
+    src: url('Manrope-VariableFont_wght.ttf');
+}
+
+  
+@font-face {
+    font-family: BebasNeueRegular;
+    src: url(BebasNeueRegular.eot);
+    src: url(BebasNeueRegular.eot?#iefix) format('embedded-opentype'), url(BebasNeueRegular.woff) format('woff'), url(BebasNeueRegular.ttf) format('truetype');
+    font-weight: 400;
+    font-style: normal
+  }
+
+  @font-face {
+    font-family: "FontAwesome";
+    src: url("fontawesome-webfont.eot?v=4.3.0");
+    src: url("fontawesome-webfont.eot?#iefix&v=4.3.0")
+        format("embedded-opentype"),
+      url("fontawesome-webfont.woff2?v=4.3.0") format("woff2"),
+      url("fontawesome-webfont.woff?v=4.3.0") format("woff"),
+      url("fontawesome-webfont.ttf?v=4.3.0") format("truetype"),
+      url("fontawesome-webfont.svg?v=4.3.0#fontawesomeregular")
+        format("svg");
+    font-weight: normal;
+    font-style: normal;
+  }

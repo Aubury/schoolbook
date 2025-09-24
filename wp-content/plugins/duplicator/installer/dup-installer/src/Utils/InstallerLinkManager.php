@@ -74,6 +74,20 @@ class InstallerLinkManager
     }
 
     /**
+     * Utils::getCampainUrl
+     * Get upgrade campaign URL
+     *
+     * @param string $medium  utm_medium flag
+     * @param string $content utm_content flag
+     *
+     * @return string
+     */
+    public static function getCampaignUrl($medium, $content = '')
+    {
+        return static::buildUrl('lite-upgrade', $medium, $content);
+    }
+
+    /**
      * @param string|string[] $paths   The path to the article
      * @param string          $medium  The utm medium
      * @param string          $content The utm content

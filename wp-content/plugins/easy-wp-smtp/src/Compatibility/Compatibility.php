@@ -2,6 +2,8 @@
 
 namespace EasyWPSMTP\Compatibility;
 
+use EasyWPSMTP\WP;
+
 /**
  * Compatibility.
  * Class for managing compatibility with other plugins.
@@ -26,7 +28,10 @@ class Compatibility {
 	 */
 	public function init() {
 
-		$this->setup_compatibility();
+		// Setup compatibility only in admin area.
+		if ( WP::in_wp_admin() ) {
+			$this->setup_compatibility();
+		}
 	}
 
 	/**
@@ -37,10 +42,7 @@ class Compatibility {
 	public function setup_compatibility() {
 
 		$plugins = [
-			'admin-2020'   => '\EasyWPSMTP\Compatibility\Plugin\Admin2020',
-			'wpforms-lite' => '\EasyWPSMTP\Compatibility\Plugin\WPFormsLite',
-			'wpforms'      => '\EasyWPSMTP\Compatibility\Plugin\WPForms',
-			'woocommerce'  => '\EasyWPSMTP\Compatibility\Plugin\WooCommerce',
+			'admin-2020' => '\EasyWPSMTP\Compatibility\Plugin\Admin2020',
 		];
 
 		foreach ( $plugins as $key => $classname ) {

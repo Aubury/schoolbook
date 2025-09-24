@@ -40,7 +40,7 @@ class UpdateMerchantProductStatuses extends AbstractActionSchedulerJob {
 	protected $merchant_statuses;
 
 	/**
-	 * UpdateMerchantProductStatuses constructor.
+	 * UpdateShippingSettings constructor.
 	 *
 	 * @param ActionSchedulerInterface  $action_scheduler
 	 * @param ActionSchedulerJobMonitor $monitor

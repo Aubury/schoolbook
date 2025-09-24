@@ -485,11 +485,11 @@ abstract class WC_Data {
 			}
 
 			if ( ! empty( $matches ) ) {
-				// Update first match and delete the rest.
-				$array_key = array_shift( $matches );
+				// Set matches to null so only one key gets the new value.
 				foreach ( $matches as $meta_data_array_key ) {
 					$this->meta_data[ $meta_data_array_key ]->value = null;
 				}
+				$array_key = current( $matches );
 			}
 		}
 
@@ -709,7 +709,8 @@ abstract class WC_Data {
 				do_action( "added_{$this->object_type}_meta", $meta->id, $this->get_id(), $meta->key, $meta->value );
 
 				$meta->apply_changes();
-			} elseif ( $meta->get_changes() ) {
+			} else {
+				if ( $meta->get_changes() ) {
 					$this->data_store->update_meta( $this, $meta );
 					/**
 					 * Fires immediately after updating metadata.
@@ -722,6 +723,7 @@ abstract class WC_Data {
 					do_action( "updated_{$this->object_type}_meta", $meta->id, $this->get_id(), $meta->key, $meta->value );
 
 					$meta->apply_changes();
+				}
 			}
 		}
 		if ( ! empty( $this->cache_group ) ) {

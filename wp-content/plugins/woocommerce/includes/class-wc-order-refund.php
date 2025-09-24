@@ -7,8 +7,6 @@
  * @package WooCommerce\Classes
  */
 
-use Automattic\WooCommerce\Enums\OrderStatus;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -74,7 +72,7 @@ class WC_Order_Refund extends WC_Abstract_Order {
 	 * @return string
 	 */
 	public function get_status( $context = 'view' ) {
-		return OrderStatus::COMPLETED;
+		return 'completed';
 	}
 
 	/**

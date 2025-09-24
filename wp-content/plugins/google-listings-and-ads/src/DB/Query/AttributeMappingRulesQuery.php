@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
 class AttributeMappingRulesQuery extends Query {
 
 	/**
-	 * AttributeMappingRulesQuery constructor.
+	 * Query constructor.
 	 *
 	 * @param wpdb                       $wpdb
 	 * @param AttributeMappingRulesTable $table

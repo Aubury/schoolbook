@@ -5,8 +5,6 @@
  * @package WooCommerce\Admin\Reporting
  */
 
-use Automattic\WooCommerce\Enums\OrderStatus;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -87,7 +85,7 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 				),
 				'query_type'   => 'get_var',
 				'filter_range' => true,
-				'order_status' => array( OrderStatus::COMPLETED, OrderStatus::PROCESSING, OrderStatus::ON_HOLD, OrderStatus::REFUNDED ),
+				'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 			)
 		);
 
@@ -113,7 +111,7 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 					),
 					'query_type'   => 'get_var',
 					'filter_range' => true,
-					'order_status' => array( OrderStatus::COMPLETED, OrderStatus::PROCESSING, OrderStatus::ON_HOLD, OrderStatus::REFUNDED ),
+					'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 				)
 			)
 		);
@@ -258,7 +256,7 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 						'limit'        => 12,
 						'query_type'   => 'get_results',
 						'filter_range' => true,
-						'order_status' => array( OrderStatus::COMPLETED, OrderStatus::PROCESSING, OrderStatus::ON_HOLD, OrderStatus::REFUNDED ),
+						'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 					)
 				);
 
@@ -355,7 +353,7 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 						'limit'        => 12,
 						'query_type'   => 'get_results',
 						'filter_range' => true,
-						'order_status' => array( OrderStatus::COMPLETED, OrderStatus::PROCESSING, OrderStatus::ON_HOLD, OrderStatus::REFUNDED ),
+						'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 					)
 				);
 
@@ -466,7 +464,7 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 					'order_by'     => 'post_date ASC',
 					'query_type'   => 'get_results',
 					'filter_range' => true,
-					'order_status' => array( OrderStatus::COMPLETED, OrderStatus::PROCESSING, OrderStatus::ON_HOLD, OrderStatus::REFUNDED ),
+					'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 				)
 			);
 
@@ -504,7 +502,7 @@ class WC_Report_Sales_By_Product extends WC_Admin_Report {
 					'order_by'     => 'post_date ASC',
 					'query_type'   => 'get_results',
 					'filter_range' => true,
-					'order_status' => array( OrderStatus::COMPLETED, OrderStatus::PROCESSING, OrderStatus::ON_HOLD, OrderStatus::REFUNDED ),
+					'order_status' => array( 'completed', 'processing', 'on-hold', 'refunded' ),
 				)
 			);
 

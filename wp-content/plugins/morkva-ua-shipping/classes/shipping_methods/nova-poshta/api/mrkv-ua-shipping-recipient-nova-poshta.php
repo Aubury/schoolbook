@@ -79,6 +79,12 @@ if (!class_exists('MRKV_UA_SHIPPING_RECIPIENT_NOVA_POSHTA'))
 
 	    public function get_recipient_address_ref($recipient_ref, $city_ref, $order, $is_new_shipping = false)
 	    {
+	    	$flat_number = $this->get_recipient_flat_number( $order, $is_new_shipping );
+	    	if($flat_number == '-')
+	    	{
+	    		$flat_number = '';
+	    	}
+	    	
 	    	$args = array(
 	            "apiKey" => $this->nova_poshta_api->get_api_key(),
 	            "modelName" => "Address",
@@ -87,7 +93,7 @@ if (!class_exists('MRKV_UA_SHIPPING_RECIPIENT_NOVA_POSHTA'))
 	                "CounterpartyRef" => $recipient_ref,
 	                "StreetRef" => $this->get_recipient_street_ref( $city_ref, $order, $is_new_shipping),
 	                "BuildingNumber" => $this->get_recipient_building_number($order, $is_new_shipping),
-	                "Flat" => $this->get_recipient_flat_number( $order, $is_new_shipping ),
+	                "Flat" => $flat_number,
 	                "Note" => ""
 	            )
 	        );

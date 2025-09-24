@@ -197,7 +197,7 @@ if(!function_exists('openssl_decrypt')) {
 	add_action("admin_head", array( 'Request_Saphali_Rest', "sp_unfiltered_request_saphalid") );
 	return;
 }
-$Request_Saphali = new Request_Saphali_Rest( 'cumulative-discounts', '2.3.3', base64_decode('V29vQ29tbWVyY2UuINCd0LDQutC+0L/QuNGC0LXQu9GM0L3Ri9C1INGB0LrQuNC00LrQuA=='), '840c566c49b9119a68aae0a157976855' );
+$Request_Saphali = new Request_Saphali_Rest( 'cumulative-discounts', '2.3.3', base64_decode('V29vQ29tbWVyY2UuINCd0LDQutC+0L/QuNGC0LXQu9GM0L3Ri9C1INGB0LrQuNC00LrQuA=='), '4a1303289a6e70cd6c6dc69100dd2590' );
 $filename = 'saphali-plugins.inc';
 $_handle = fopen(plugin_dir_path(__FILE__) . str_replace('inc', 'php', $filename), "r");
 $handle = fopen(plugin_dir_path(__FILE__) . $filename, "r");

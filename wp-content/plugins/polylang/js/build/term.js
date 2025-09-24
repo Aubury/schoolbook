@@ -1,3 +1,4 @@
+var __webpack_exports__ = {};
 /**
  * @package Polylang
  */
@@ -177,8 +178,8 @@ jQuery(
 			'change',
 			function () {
 				var value = $( this ).val();
-				// The selected option in the dropdown list.
-				const selectedOption = event.target;
+				var lang  = $( this ).children( 'option[value="' + value + '"]' ).attr( 'lang' );
+				var dir   = $( '.pll-translation-column > span[lang="' + lang + '"]' ).attr( 'dir' );
 
 				var data = {
 					action:     'term_lang_choice',
@@ -221,28 +222,10 @@ jQuery(
 							}
 						);
 
-						// Creates an event once the language has been successfully changed.
-						const onTermLangChoice = new CustomEvent(
-							"onTermLangChoice",
-							{
-								detail: {
-									lang: JSON.parse( selectedOption.options[selectedOption.options.selectedIndex].getAttribute( 'data-lang' ) )
-								},
-							}
-						);
-						document.dispatchEvent( onTermLangChoice );
+						// Modifies the text direction
+						$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
 					}
 				);
-			}
-		);
-
-		// Listen to `onTermLangChoice` to perform actions after the language has been changed.
-		document.addEventListener(
-			'onTermLangChoice',
-			( e ) => {
-				// Modifies the text direction.
-				let dir = e.detail.lang.is_rtl ? 'rtl' : 'ltr'
-				$( 'body' ).removeClass( 'pll-dir-rtl' ).removeClass( 'pll-dir-ltr' ).addClass( 'pll-dir-' + dir );
 			}
 		);
 	}

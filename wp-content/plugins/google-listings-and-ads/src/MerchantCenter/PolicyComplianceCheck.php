@@ -41,7 +41,7 @@ class PolicyComplianceCheck implements Service {
 	protected $target_audience;
 
 	/**
-	 * PolicyComplianceCheck constructor.
+	 * BaseController constructor.
 	 *
 	 * @param WC             $wc
 	 * @param GoogleHelper   $google_helper

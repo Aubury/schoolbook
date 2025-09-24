@@ -2,8 +2,6 @@
 namespace Automattic\WooCommerce\Blocks\BlockTypes;
 
 use Automattic\WooCommerce\Blocks\Utils\StyleAttributesUtils;
-use Automattic\WooCommerce\Blocks\Utils\ProductAvailabilityUtils;
-use Automattic\WooCommerce\Enums\ProductType;
 
 /**
  * ProductStockIndicator class.
@@ -22,7 +20,7 @@ class ProductStockIndicator extends AbstractBlock {
 	 *
 	 * @var string
 	 */
-	protected $api_version = '3';
+	protected $api_version = '2';
 
 	/**
 	 * Register script and style assets for the block type before it is registered.
@@ -41,26 +39,35 @@ class ProductStockIndicator extends AbstractBlock {
 	}
 
 	/**
-	 * Get product types that should not display stock indicators.
+	 * Get stock text based on stock. For example:
+	 * - In stock
+	 * - Out of stock
+	 * - Available on backorder
+	 * - 2 left in stock
 	 *
-	 * @return array
+	 * @param bool     $is_in_stock Whether the product is in stock.
+	 * @param bool     $is_low_stock Whether the product is low in stock.
+	 * @param int|null $low_stock_amount The amount of stock that is considered low.
+	 * @param bool     $is_on_backorder Whether the product is on backorder.
+	 * @return string Stock text.
 	 */
-	protected function get_product_types_without_stock_indicator() {
-		return array( ProductType::EXTERNAL, ProductType::GROUPED );
+	protected static function getTextBasedOnStock( $is_in_stock, $is_low_stock, $low_stock_amount, $is_on_backorder ) {
+		if ( $is_low_stock ) {
+			return sprintf(
+				/* translators: %d is number of items in stock for product */
+				__( '%d left in stock', 'woocommerce' ),
+				$low_stock_amount
+			);
+		} elseif ( $is_on_backorder ) {
+			return __( 'Available on backorder', 'woocommerce' );
+		} elseif ( $is_in_stock ) {
+			return __( 'In stock', 'woocommerce' );
+		} else {
+			return __( 'Out of stock', 'woocommerce' );
+		}
 	}
 
-	/**
-	 * Extra data passed through from server to client for block.
-	 *
-	 * @param array $attributes  Any attributes that currently are available from the block.
-	 *                           Note, this will be empty in the editor context when the block is
-	 *                           not in the post content on editor load.
-	 */
-	protected function enqueue_data( array $attributes = [] ) {
-		parent::enqueue_data( $attributes );
 
-		$this->asset_data_registry->add( 'productTypesWithoutStockIndicator', $this->get_product_types_without_stock_indicator() );
-	}
 
 	/**
 	 * Include and render the block.
@@ -76,44 +83,38 @@ class ProductStockIndicator extends AbstractBlock {
 			$this->register_chunk_translations( [ $this->block_name ] );
 			return $content;
 		}
+
 		$post_id = isset( $block->context['postId'] ) ? $block->context['postId'] : '';
 		$product = wc_get_product( $post_id );
 
-		if ( ! $product || in_array( $product->get_type(), $this->get_product_types_without_stock_indicator(), true ) ) {
+		if ( ! $product ) {
 			return '';
 		}
 
-		$availability = ProductAvailabilityUtils::get_product_availability( $product );
+		$is_in_stock     = $product->is_in_stock();
+		$is_on_backorder = $product->is_on_backorder();
 
-		if ( empty( $availability['availability'] ) ) {
-			return '';
-		}
+		$low_stock_amount = $product->get_low_stock_amount();
+		$total_stock      = $product->get_stock_quantity();
+		$is_low_stock     = $low_stock_amount && $total_stock <= $low_stock_amount;
 
-		$total_stock        = $product->get_stock_quantity();
 		$classes_and_styles = StyleAttributesUtils::get_classes_and_styles_by_attributes( $attributes );
 
 		$classnames  = isset( $classes_and_styles['classes'] ) ? ' ' . $classes_and_styles['classes'] . ' ' : '';
-		$classnames .= sprintf( ' wc-block-components-product-stock-indicator--%s', $availability['class'] );
-
-		$is_backorder_notification_visible = $product->is_in_stock() && $product->backorders_require_notification();
-
-		if ( empty( $content ) && $is_backorder_notification_visible && $total_stock > 0 ) {
-			$low_stock_text = sprintf(
-				/* translators: %d is number of items in stock for product */
-				__( '%d left in stock', 'woocommerce' ),
-				$total_stock
-			);
-		}
-
-		$output_text = $low_stock_text ?? $availability['availability'];
+		$classnames .= isset( $attributes['className'] ) ? ' ' . $attributes['className'] . ' ' : '';
+		$classnames .= ! $is_in_stock ? ' wc-block-components-product-stock-indicator--out-of-stock ' : '';
+		$classnames .= $is_in_stock ? ' wc-block-components-product-stock-indicator--in-stock ' : '';
+		$classnames .= $is_low_stock ? ' wc-block-components-product-stock-indicator--low-stock ' : '';
+		$classnames .= $is_on_backorder ? ' wc-block-components-product-stock-indicator--available-on-backorder ' : '';
 
 		$output  = '';
 		$output .= '<div class="wc-block-components-product-stock-indicator wp-block-woocommerce-product-stock-indicator ' . esc_attr( $classnames ) . '"';
 		$output .= isset( $classes_and_styles['styles'] ) ? ' style="' . esc_attr( $classes_and_styles['styles'] ) . '"' : '';
 		$output .= '>';
-		$output .= wp_kses_post( $output_text );
+		$output .= wp_kses_post( self::getTextBasedOnStock( $is_in_stock, $is_low_stock, $low_stock_amount, $is_on_backorder ) );
 		$output .= '</div>';
 
 		return $output;
+
 	}
 }

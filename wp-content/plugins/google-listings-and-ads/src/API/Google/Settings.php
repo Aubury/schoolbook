@@ -3,10 +3,8 @@ declare( strict_types=1 );
 
 namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google;
 
-use Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\ShippingRateQuery;
-use Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\ShippingTimeQuery;
-use Automattic\WooCommerce\GoogleListingsAndAds\Internal\ContainerAwareTrait;
-use Automattic\WooCommerce\GoogleListingsAndAds\Internal\Interfaces\ContainerAwareInterface;
+use Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\ShippingRateQuery as RateQuery;
+use Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\ShippingTimeQuery as TimeQuery;
 use Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\TargetAudience;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WC;
@@ -19,27 +17,30 @@ use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Google\Service\ShoppingCo
 use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Google\Service\ShoppingContent\AccountTax;
 use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Google\Service\ShoppingContent\AccountTaxTaxRule as TaxRule;
 use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Google\Service\ShoppingContent\ShippingSettings;
+use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Psr\Container\ContainerInterface;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
  * Class Settings
  *
- * Container used for:
- * - OptionsInterface
- * - ShippingRateQuery
- * - ShippingTimeQuery
- * - ShippingZone
- * - ShoppingContent
- * - TargetAudience
- * - WC
- *
  * @package Automattic\WooCommerce\GoogleListingsAndAds\API\Google
  */
-class Settings implements ContainerAwareInterface {
+class Settings {
 
-	use ContainerAwareTrait;
 	use LocationIDTrait;
+
+	/** @var ContainerInterface */
+	protected $container;
+
+	/**
+	 * Settings constructor.
+	 *
+	 * @param ContainerInterface $container
+	 */
+	public function __construct( ContainerInterface $container ) {
+		$this->container = $container;
+	}
 
 	/**
 	 * Return a set of formatted settings which can be used in tracking.
@@ -196,8 +197,8 @@ class Settings implements ContainerAwareInterface {
 		static $times = null;
 
 		if ( null === $times ) {
-			$time_query = $this->container->get( ShippingTimeQuery::class );
-			$times      = $time_query->get_all_shipping_times();
+			$time_query = $this->container->get( TimeQuery::class );
+			$times      = array_column( $time_query->get_results(), 'time', 'country' );
 		}
 
 		return $times;
@@ -209,7 +210,7 @@ class Settings implements ContainerAwareInterface {
 	 * @return array
 	 */
 	protected function get_shipping_rates_from_database(): array {
-		$rate_query = $this->container->get( ShippingRateQuery::class );
+		$rate_query = $this->container->get( RateQuery::class );
 
 		return $rate_query->get_results();
 	}
@@ -276,7 +277,10 @@ class Settings implements ContainerAwareInterface {
 	 * @return string
 	 */
 	protected function get_store_country(): string {
-		return $this->container->get( WC::class )->get_base_country();
+		/** @var WC $wc */
+		$wc = $this->container->get( WC::class );
+
+		return $wc->get_wc_countries()->get_base_country();
 	}
 
 	/**

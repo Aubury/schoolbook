@@ -48,7 +48,7 @@ class RateLimits extends WC_Rate_Limiter {
 	 * @param string $action_id Identifier of the action.
 	 * @return string
 	 */
-	protected static function get_cache_key( $action_id ): string {
+	protected static function get_cache_key( $action_id ) {
 		return WC_Cache_Helper::get_cache_prefix( 'store_api_rate_limit' . $action_id );
 	}
 
@@ -57,13 +57,10 @@ class RateLimits extends WC_Rate_Limiter {
 	 * a new rate limit row if none exists.
 	 *
 	 * @param string $action_id Identifier of the action.
-	 *
 	 * @return object Object containing reset and remaining.
 	 */
-	protected static function get_rate_limit_row( string $action_id ): object {
+	protected static function get_rate_limit_row( $action_id ) {
 		global $wpdb;
-
-		$time = time();
 
 		$row = $wpdb->get_row(
 			$wpdb->prepare(
@@ -74,7 +71,7 @@ class RateLimits extends WC_Rate_Limiter {
 					AND rate_limit_expiry > %s
 				",
 				$action_id,
-				$time
+				time()
 			),
 			'OBJECT'
 		);
@@ -83,7 +80,7 @@ class RateLimits extends WC_Rate_Limiter {
 			$options = self::get_options();
 
 			return (object) [
-				'reset'     => (int) $options->seconds + $time,
+				'reset'     => (int) $options->seconds + time(),
 				'remaining' => (int) $options->limit,
 			];
 		}
@@ -98,10 +95,9 @@ class RateLimits extends WC_Rate_Limiter {
 	 * Returns current rate limit values using cache where possible.
 	 *
 	 * @param string $action_id Identifier of the action.
-	 *
 	 * @return object
 	 */
-	public static function get_rate_limit( string $action_id ): object {
+	public static function get_rate_limit( $action_id ) {
 		$current_limit = self::get_cached( $action_id );
 
 		if ( false === $current_limit ) {
@@ -119,12 +115,12 @@ class RateLimits extends WC_Rate_Limiter {
 	 *
 	 * @return bool|int
 	 */
-	public static function is_exceeded_retry_after( string $action_id ) {
+	public static function is_exceeded_retry_after( $action_id ) {
 		$current_limit = self::get_rate_limit( $action_id );
-		$time          = time();
+
 		// Before the next run is allowed, retry forbidden.
-		if ( $time <= (int) $current_limit->reset && 0 === (int) $current_limit->remaining ) {
-			return (int) $current_limit->reset - $time;
+		if ( time() <= $current_limit->reset && 0 === $current_limit->remaining ) {
+			return (int) $current_limit->reset - time();
 		}
 
 		// After the next run is allowed, retry allowed.
@@ -135,15 +131,14 @@ class RateLimits extends WC_Rate_Limiter {
 	 * Sets the rate limit delay in seconds for action with identifier $id.
 	 *
 	 * @param string $action_id Identifier of the action.
-	 *
 	 * @return object Current rate limits.
 	 */
-	public static function update_rate_limit( string $action_id ): object {
+	public static function update_rate_limit( $action_id ) {
 		global $wpdb;
 
-		$options           = self::get_options();
-		$time              = time();
-		$rate_limit_expiry = $time + (int) $options->seconds;
+		$options = self::get_options();
+
+		$rate_limit_expiry = time() + $options->seconds;
 
 		$wpdb->query(
 			$wpdb->prepare(
@@ -157,9 +152,9 @@ class RateLimits extends WC_Rate_Limiter {
 				",
 				$action_id,
 				$rate_limit_expiry,
-				(int) $options->limit - 1,
-				$time,
-				$time
+				$options->limit - 1,
+				time(),
+				time()
 			)
 		);
 
@@ -174,7 +169,7 @@ class RateLimits extends WC_Rate_Limiter {
 	 * Retrieve a cached store api rate limit.
 	 *
 	 * @param string $action_id Identifier of the action.
-	 * @return false|object
+	 * @return bool|object
 	 */
 	protected static function get_cached( $action_id ) {
 		return wp_cache_get( self::get_cache_key( $action_id ), self::CACHE_GROUP );
@@ -187,7 +182,7 @@ class RateLimits extends WC_Rate_Limiter {
 	 * @param object $current_limit Current limit object with expiry and retries remaining.
 	 * @return bool
 	 */
-	protected static function set_cache( $action_id, $current_limit ): bool {
+	protected static function set_cache( $action_id, $current_limit ) {
 		return wp_cache_set( self::get_cache_key( $action_id ), $current_limit, self::CACHE_GROUP );
 	}
 
@@ -196,7 +191,7 @@ class RateLimits extends WC_Rate_Limiter {
 	 *
 	 * @return object Default options.
 	 */
-	public static function get_options(): object {
+	public static function get_options() {
 		$default_options = [
 			/**
 			 * Filters the Store API rate limit check, which is disabled by default.

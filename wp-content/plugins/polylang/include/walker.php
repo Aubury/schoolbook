@@ -38,9 +38,6 @@ class PLL_Walker extends Walker {
 	public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
 		if ( $element instanceof PLL_Language ) {
 			$element = $element->to_std_class();
-
-			// Sets the w3c locale as the main locale.
-			$element->locale = $element->w3c ?? $element->locale;
 		}
 
 		$element->parent = $element->id = 0; // Don't care about this.
@@ -60,13 +57,13 @@ class PLL_Walker extends Walker {
 	 */
 	protected function maybe_fix_walk_args( &$max_depth, &$args ) {
 		if ( ! is_array( $max_depth ) ) {
-			$args = $args[0] ?? array();
+			$args = isset( $args[0] ) ? $args[0] : array();
 			return;
 		}
 
 		// Backward compatibility with Polylang < 2.6.7
 		_doing_it_wrong(
-			self::class . '::walk()',
+			__CLASS__ . '::walk()',
 			'The method expects an integer as second parameter.',
 			'2.6.7'
 		);

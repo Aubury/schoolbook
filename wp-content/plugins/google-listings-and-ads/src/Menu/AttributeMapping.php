@@ -7,7 +7,7 @@ use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Registerable;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service;
 
 /**
- * Class AttributeMapping
+ * Class ProductFeed
  *
  * @package Automattic\WooCommerce\GoogleListingsAndAds\Menu
  */
@@ -22,10 +22,14 @@ class AttributeMapping implements Service, Registerable {
 			function () {
 				wc_admin_register_page(
 					[
-						'title'  => __( 'Attribute Mapping', 'google-listings-and-ads' ),
-						'parent' => 'google-listings-and-ads-category',
-						'path'   => '/google/attribute-mapping',
-						'id'     => 'google-attribute-mapping',
+						'title'    => __( 'Attribute Mapping', 'google-listings-and-ads' ),
+						'parent'   => 'google-listings-and-ads-category',
+						'path'     => '/google/attribute-mapping',
+						'id'       => 'google-attribute-mapping',
+						'nav_args' => [
+							'order'  => 40,
+							'parent' => 'google-listings-and-ads-category',
+						],
 					]
 				);
 			}

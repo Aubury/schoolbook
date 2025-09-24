@@ -24,7 +24,6 @@ use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\DeleteProducts;
 use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobInitializer;
 use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobRepository;
-use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\MigrateGTIN;
 use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\Notifications\CouponNotificationJob;
 use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\Notifications\ProductNotificationJob;
 use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\Notifications\SettingsNotificationJob;
@@ -52,7 +51,6 @@ use Automattic\WooCommerce\GoogleListingsAndAds\Coupon;
 use Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter\MerchantStatuses;
 use Automattic\WooCommerce\GoogleListingsAndAds\Product;
 use Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WC;
-use Automattic\WooCommerce\GoogleListingsAndAds\Proxies\WP;
 use Automattic\WooCommerce\GoogleListingsAndAds\Shipping;
 use Automattic\WooCommerce\GoogleListingsAndAds\Settings;
 
@@ -87,7 +85,7 @@ class JobServiceProvider extends AbstractServiceProvider {
 
 	/**
 	 * Use the register method to register items with the container via the
-	 * protected $this->container property or the `getContainer` method
+	 * protected $this->leagueContainer property or the `getLeagueContainer` method
 	 * from the ContainerAwareTrait.
 	 *
 	 * @return void
@@ -129,14 +127,10 @@ class JobServiceProvider extends AbstractServiceProvider {
 			CouponHelper::class
 		);
 
-		// share GTIN migration job
-		$this->share_action_scheduler_job(
-			MigrateGTIN::class,
-			ProductRepository::class,
-			Product\Attributes\AttributeManager::class
+		$this->share_with_tags(
+			JobRepository::class,
+			JobInterface::class
 		);
-
-		$this->share_with_tags( JobRepository::class );
 		$this->conditionally_share_with_tags(
 			JobInitializer::class,
 			JobRepository::class,
@@ -159,8 +153,7 @@ class JobServiceProvider extends AbstractServiceProvider {
 			JobRepository::class,
 			MerchantCenterService::class,
 			NotificationsService::class,
-			WC::class,
-			WP::class
+			WC::class
 		);
 
 		$this->share_with_tags( StartProductSync::class, JobRepository::class );

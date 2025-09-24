@@ -18,6 +18,8 @@
 						$has_empty = false;	
 						$sender_type = isset($mrk_ua_ship_ukr_settings['sender']['type']) ? $mrk_ua_ship_ukr_settings['sender']['type'] : '';
 						$fullname = '';
+						$middlename = '';
+						$phone = '';
 
 						if($sender_type == 'INDIVIDUAL')
 						{

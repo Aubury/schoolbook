@@ -318,6 +318,10 @@ abstract class Query implements QueryInterface {
 		}
 
 		if ( ! $get_count ) {
+			if ( empty( $this->groupby ) ) {
+				$pieces[] = "GROUP BY `{$this->table->get_name()}`.`{$this->table->get_primary_column()}`";
+			}
+
 			if ( $this->orderby ) {
 				$pieces[] = 'ORDER BY ' . implode( ', ', $this->orderby );
 			}

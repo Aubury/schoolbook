@@ -10,7 +10,6 @@ defined( 'ABSPATH' ) || exit;
 
 use Automattic\WooCommerce\Internal\AssignDefaultCategory;
 use Automattic\WooCommerce\Internal\BatchProcessing\BatchProcessingController;
-use Automattic\WooCommerce\Internal\ComingSoon\ComingSoonAdminBarBadge;
 use Automattic\WooCommerce\Internal\ComingSoon\ComingSoonCacheInvalidator;
 use Automattic\WooCommerce\Internal\ComingSoon\ComingSoonRequestHandler;
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
@@ -23,12 +22,14 @@ use Automattic\WooCommerce\Internal\ProductImage\MatchImageBySKU;
 use Automattic\WooCommerce\Internal\RegisterHooksInterface;
 use Automattic\WooCommerce\Internal\RestockRefundedItemsAdjuster;
 use Automattic\WooCommerce\Internal\Settings\OptionSanitizer;
+use Automattic\WooCommerce\Internal\Traits\AccessiblePrivateMethods;
 use Automattic\WooCommerce\Internal\Utilities\LegacyRestApiStub;
 use Automattic\WooCommerce\Internal\Utilities\WebhookUtil;
 use Automattic\WooCommerce\Internal\Admin\Marketplace;
 use Automattic\WooCommerce\Proxies\LegacyProxy;
-use Automattic\WooCommerce\Utilities\{LoggingUtil, RestApiUtil, TimeUtil};
-use Automattic\WooCommerce\Internal\Logging\RemoteLogger;
+use Automattic\WooCommerce\Utilities\{ LoggingUtil, TimeUtil };
+use Automattic\WooCommerce\Admin\WCAdminHelper;
+use Automattic\WooCommerce\Admin\Features\Features;
 
 /**
  * Main WooCommerce Class.
@@ -37,12 +38,14 @@ use Automattic\WooCommerce\Internal\Logging\RemoteLogger;
  */
 final class WooCommerce {
 
+	use AccessiblePrivateMethods;
+
 	/**
 	 * WooCommerce version.
 	 *
 	 * @var string
 	 */
-	public $version = '9.8.3';
+	public $version = '9.1.4';
 
 	/**
 	 * WooCommerce Schema version.
@@ -51,7 +54,7 @@ final class WooCommerce {
 	 *
 	 * @var string
 	 */
-	public $db_version = '920';
+	public $db_version = '430';
 
 	/**
 	 * The single instance of the class.
@@ -78,11 +81,11 @@ final class WooCommerce {
 	/**
 	 * API instance
 	 *
-	 * @deprecated 9.0.0 The Legacy REST API has been removed from WooCommerce core. Now this property points to a RestApiUtil instance, unless the Legacy REST API plugin is installed.
+	 * @deprecated 9.0.0 The Legacy REST API has been removed from WooCommerce core. This property will be null unless the WooCommerce Legacy REST API plugin is installed.
 	 *
 	 * @var WC_API
 	 */
-	private $api;
+	public $api;
 
 	/**
 	 * Product factory instance.
@@ -176,55 +179,15 @@ final class WooCommerce {
 	}
 
 	/**
-	 * Autoload inaccessible or non-existing properties on demand.
+	 * Auto-load in-accessible properties on demand.
 	 *
 	 * @param mixed $key Key name.
 	 * @return mixed
 	 */
 	public function __get( $key ) {
-		if ( 'api' === $key ) {
-			// The Legacy REST API was removed from WooCommerce core as of version 9.0 (moved to a dedicated plugin),
-			// but some plugins are still using wc()->api->get_endpoint_data. This method now lives in the RestApiUtil class,
-			// but we expose it through LegacyRestApiStub to limit the scope of what can be done via WC()->api.
-			//
-			// On the other hand, if the dedicated plugin is installed it will set the $api property by itself
-			// to an instance of the old WC_API class, which of course still has the get_endpoint_data method.
-			if ( is_null( $this->api ) && ! $this->legacy_rest_api_is_available() ) {
-				$this->api = wc_get_container()->get( LegacyRestApiStub::class );
-			}
-
-			return $this->api;
-		}
-
 		if ( in_array( $key, array( 'payment_gateways', 'shipping', 'mailer', 'checkout' ), true ) ) {
 			return $this->$key();
 		}
-	}
-
-	/**
-	 * Set the value of an inaccessible or non-existing property.
-	 *
-	 * @param string $key Property name.
-	 * @param mixed  $value Property value.
-	 * @throws Exception Attempt to access a property that's private or protected.
-	 */
-	public function __set( string $key, $value ) {
-		if ( 'api' === $key ) {
-			$this->api = $value;
-		} elseif ( property_exists( $this, $key ) ) {
-			throw new Exception( 'Cannot access private property ' . __CLASS__ . '::$' . esc_html( $key ) );
-		} else {
-			$this->$key = $value;
-		}
-	}
-
-	/**
-	 * Check if the Legacy REST API plugin is active (and thus the Legacy REST API is available).
-	 *
-	 * @return bool
-	 */
-	public function legacy_rest_api_is_available() {
-		return class_exists( 'WC_Legacy_REST_API_Plugin', false );
 	}
 
 	/**
@@ -256,7 +219,7 @@ final class WooCommerce {
 	}
 
 	/**
-	 * Initialize Jetpack Connection Config.
+	 * Initiali Jetpack Connection Config.
 	 *
 	 * @return void
 	 */
@@ -266,9 +229,7 @@ final class WooCommerce {
 			'connection',
 			array(
 				'slug' => 'woocommerce',
-				// Cannot use __() here because it would cause translations to be loaded too early.
-				// See https://github.com/woocommerce/woocommerce/pull/47113.
-				'name' => 'WooCommerce',
+				'name' => __( 'WooCommerce', 'woocommerce' ),
 			)
 		);
 	}
@@ -301,15 +262,11 @@ final class WooCommerce {
 		add_action( 'deactivated_plugin', array( $this, 'deactivated_plugin' ) );
 		add_action( 'woocommerce_installed', array( $this, 'add_woocommerce_inbox_variant' ) );
 		add_action( 'woocommerce_updated', array( $this, 'add_woocommerce_inbox_variant' ) );
-		add_action( 'rest_api_init', array( $this, 'register_wp_admin_settings' ) );
+		self::add_action( 'rest_api_init', array( $this, 'register_wp_admin_settings' ) );
 		add_action( 'woocommerce_installed', array( $this, 'add_woocommerce_remote_variant' ) );
 		add_action( 'woocommerce_updated', array( $this, 'add_woocommerce_remote_variant' ) );
-		add_action( 'woocommerce_newly_installed', 'wc_set_hooked_blocks_version', 10 );
-		add_action( 'update_option_woocommerce_allow_tracking', array( $this, 'get_tracking_history' ), 10, 2 );
 
-		add_filter( 'robots_txt', array( $this, 'robots_txt' ) );
 		add_filter( 'wp_plugin_dependencies_slug', array( $this, 'convert_woocommerce_slug' ) );
-		add_filter( 'woocommerce_register_log_handlers', array( $this, 'register_remote_log_handler' ) );
 
 		// These classes set up hooks on instantiation.
 		$container = wc_get_container();
@@ -327,29 +284,18 @@ final class WooCommerce {
 		$container->get( WebhookUtil::class );
 		$container->get( Marketplace::class );
 		$container->get( TimeUtil::class );
-		$container->get( ComingSoonAdminBarBadge::class );
 		$container->get( ComingSoonCacheInvalidator::class );
 		$container->get( ComingSoonRequestHandler::class );
 
 		/**
 		 * These classes have a register method for attaching hooks.
+		 *
+		 * @var RegisterHooksInterface[] $hook_register_classes
 		 */
-		$container->get( Automattic\WooCommerce\Internal\Utilities\PluginInstaller::class )->register();
-		$container->get( Automattic\WooCommerce\Internal\TransientFiles\TransientFilesEngine::class )->register();
-		$container->get( Automattic\WooCommerce\Internal\Orders\OrderAttributionController::class )->register();
-		$container->get( Automattic\WooCommerce\Internal\Orders\OrderAttributionBlocksController::class )->register();
-		$container->get( Automattic\WooCommerce\Internal\CostOfGoodsSold\CostOfGoodsSoldController::class )->register();
-		$container->get( Automattic\WooCommerce\Internal\Admin\Settings\PaymentsController::class )->register();
-		$container->get( Automattic\WooCommerce\Internal\Utilities\LegacyRestApiStub::class )->register();
-		$container->get( Automattic\WooCommerce\Internal\Email\EmailStyleSync::class )->register();
-		Automattic\WooCommerce\Internal\Admin\WcPayWelcomePage::instance()->register();
-
-		// Classes inheriting from RestApiControllerBase.
-		$container->get( Automattic\WooCommerce\Internal\ReceiptRendering\ReceiptRenderingRestController::class )->register();
-		$container->get( Automattic\WooCommerce\Internal\Orders\OrderActionsRestController::class )->register();
-		$container->get( Automattic\WooCommerce\Internal\Orders\OrderStatusRestController::class )->register();
-		$container->get( Automattic\WooCommerce\Internal\Admin\Settings\PaymentsRestController::class )->register();
-		$container->get( Automattic\WooCommerce\Internal\Admin\EmailPreview\EmailPreviewRestController::class )->register();
+		$hook_register_classes = $container->get( RegisterHooksInterface::class );
+		foreach ( $hook_register_classes as $hook_register_class ) {
+			$hook_register_class->register();
+		}
 	}
 
 	/**
@@ -391,10 +337,8 @@ final class WooCommerce {
 			unset( $error_copy['message'] );
 
 			$context = array(
-				'source'         => 'fatal-errors',
-				'error'          => $error_copy,
-				// Indicate that this error should be logged remotely if remote logging is enabled.
-				'remote-logging' => true,
+				'source' => 'fatal-errors',
+				'error'  => $error_copy,
 			);
 
 			if ( false !== strpos( $message, 'Stack trace:' ) ) {
@@ -429,6 +373,8 @@ final class WooCommerce {
 	 * Define WC Constants.
 	 */
 	private function define_constants() {
+		$upload_dir = wp_upload_dir( null, false );
+
 		$this->define( 'WC_ABSPATH', dirname( WC_PLUGIN_FILE ) . '/' );
 		$this->define( 'WC_PLUGIN_BASENAME', plugin_basename( WC_PLUGIN_FILE ) );
 		$this->define( 'WC_VERSION', $this->version );
@@ -447,9 +393,8 @@ final class WooCommerce {
 		 */
 		if ( defined( 'WC_LOG_DIR' ) ) {
 			$this->define( 'WC_LOG_DIR_CUSTOM', true );
-		} else {
-			$this->define( 'WC_LOG_DIR', LoggingUtil::get_log_directory( false ) );
 		}
+		$this->define( 'WC_LOG_DIR', LoggingUtil::get_log_directory() );
 
 		// These three are kept defined for compatibility, but are no longer used.
 		$this->define( 'WC_NOTICE_MIN_PHP_VERSION', '7.2' );
@@ -716,11 +661,6 @@ final class WooCommerce {
 		include_once WC_ABSPATH . 'includes/wccom-site/class-wc-wccom-site.php';
 
 		/**
-		 * Product Usage
-		 */
-		include_once WC_ABSPATH . 'includes/product-usage/class-wc-product-usage.php';
-
-		/**
 		 * Libraries and packages.
 		 */
 		include_once WC_ABSPATH . 'packages/action-scheduler/action-scheduler.php';
@@ -731,9 +671,6 @@ final class WooCommerce {
 
 		if ( $this->is_request( 'admin' ) ) {
 			include_once WC_ABSPATH . 'includes/admin/class-wc-admin.php';
-			// Simulate loading plugin for the legacy reports.
-			// This will be removed after moving the legacy reports to a separate plugin.
-			include_once WC_ABSPATH . 'includes/admin/woocommerce-legacy-reports.php';
 		}
 
 		// We load frontend includes in the post editor, because they may be invoked via pre-loading of blocks.
@@ -750,6 +687,8 @@ final class WooCommerce {
 
 		$this->theme_support_includes();
 		$this->query = new WC_Query();
+
+		LegacyRestApiStub::setup();
 	}
 
 	/**
@@ -832,9 +771,6 @@ final class WooCommerce {
 	 * Init WooCommerce when WordPress Initialises.
 	 */
 	public function init() {
-		// See the comment inside FeaturesController::__construct.
-		wc_get_container()->get( FeaturesController::class )->register_additional_features();
-
 		/**
 		 * Action triggered before WooCommerce initialization begins.
 		 */
@@ -875,21 +811,16 @@ final class WooCommerce {
 	 *      - WP_LANG_DIR/plugins/woocommerce-LOCALE.mo
 	 */
 	public function load_plugin_textdomain() {
+		$locale = determine_locale();
+
 		/**
 		 * Filter to adjust the WooCommerce locale to use for translations.
 		 */
-		$locale                  = apply_filters( 'plugin_locale', determine_locale(), 'woocommerce' ); // phpcs:ignore WooCommerce.Commenting.CommentHooks.MissingSinceComment
-		$custom_translation_path = WP_LANG_DIR . '/woocommerce/woocommerce-' . $locale . '.mo';
-		$plugin_translation_path = WP_LANG_DIR . '/plugins/woocommerce-' . $locale . '.mo';
+		$locale = apply_filters( 'plugin_locale', $locale, 'woocommerce' ); // phpcs:ignore WooCommerce.Commenting.CommentHooks.MissingSinceComment
 
-		// If a custom translation exists (by default it will not, as it is not a standard WordPress convention)
-		// we unload the existing translation, then essentially layer the custom translation on top of the canonical
-		// translation. Otherwise, we simply step back and let WP manage things.
-		if ( is_readable( $custom_translation_path ) ) {
-			unload_textdomain( 'woocommerce' );
-			load_textdomain( 'woocommerce', $custom_translation_path );
-			load_textdomain( 'woocommerce', $plugin_translation_path );
-		}
+		unload_textdomain( 'woocommerce' );
+		load_textdomain( 'woocommerce', WP_LANG_DIR . '/woocommerce/woocommerce-' . $locale . '.mo' );
+		load_plugin_textdomain( 'woocommerce', false, plugin_basename( dirname( WC_PLUGIN_FILE ) ) . '/i18n/languages' );
 	}
 
 	/**
@@ -1065,45 +996,6 @@ final class WooCommerce {
 			$this->session = new $session_class();
 			$this->session->init();
 		}
-	}
-
-	/**
-	 * Tell bots not to index some WooCommerce-created directories.
-	 *
-	 * We try to detect the default "User-agent: *" added by WordPress and add our rules to that group, because
-	 * it's possible that some bots will only interpret the first group of rules if there are multiple groups with
-	 * the same user agent.
-	 *
-	 * @param string $output The contents that WordPress will output in a robots.txt file.
-	 *
-	 * @return string
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
-	 */
-	public function robots_txt( $output ) {
-		$path = ( ! empty( $site_url['path'] ) ) ? $site_url['path'] : '';
-
-		$lines       = preg_split( '/\r\n|\r|\n/', $output );
-		$agent_index = array_search( 'User-agent: *', $lines, true );
-
-		if ( false !== $agent_index ) {
-			$above = array_slice( $lines, 0, $agent_index + 1 );
-			$below = array_slice( $lines, $agent_index + 1 );
-		} else {
-			$above = $lines;
-			$below = array();
-
-			$above[] = '';
-			$above[] = 'User-agent: *';
-		}
-
-		$above[] = "Disallow: $path/wp-content/uploads/wc-logs/";
-		$above[] = "Disallow: $path/wp-content/uploads/woocommerce_transient_files/";
-		$above[] = "Disallow: $path/wp-content/uploads/woocommerce_uploads/";
-
-		$lines = array_merge( $above, $below );
-
-		return implode( PHP_EOL, $lines );
 	}
 
 	/**
@@ -1307,10 +1199,8 @@ final class WooCommerce {
 	 * This method used to be part of the now removed Legacy REST API.
 	 *
 	 * @since 9.0.0
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function register_wp_admin_settings() {
+	private function register_wp_admin_settings() {
 		$pages = WC_Admin_Settings::get_settings_pages();
 		foreach ( $pages as $page ) {
 			new WC_Register_WP_Admin_Settings( $page, 'page' );
@@ -1336,40 +1226,5 @@ final class WooCommerce {
 			$slug = dirname( WC_PLUGIN_BASENAME );
 		}
 		return $slug;
-	}
-
-	/**
-	 * Register the remote log handler.
-	 *
-	 * @param \WC_Log_Handler[] $handlers The handlers to register.
-	 *
-	 * @return \WC_Log_Handler[]
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
-	 */
-	public function register_remote_log_handler( $handlers ) {
-		$handlers[] = wc_get_container()->get( RemoteLogger::class );
-		return $handlers;
-	}
-
-	/**
-	 * Tracks the history WooCommerce Allow Tracking option.
-	 * - When the field was first set to allow tracking
-	 * - Last time the option was changed
-	 *
-	 * @param string $old_value The old value for the woocommerce_allow_tracking option.
-	 * @param string $value The current value for the woocommerce_allow_tracking option.
-	 * @since x.x.x
-	 *
-	 * @return void
-	 */
-	public function get_tracking_history( $old_value, $value ) {
-		// If woocommerce_allow_tracking_first_optin is not set. It means is the first time it gets set.
-		if ( ! get_option( 'woocommerce_allow_tracking_first_optin' ) && 'yes' === $value ) {
-			update_option( 'woocommerce_allow_tracking_first_optin', time() );
-		}
-
-		// Always update the last change.
-		update_option( 'woocommerce_allow_tracking_last_modified', time() );
 	}
 }

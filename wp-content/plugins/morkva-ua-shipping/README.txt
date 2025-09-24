@@ -4,7 +4,7 @@ Tags: Nova Poshta, нова пошта, новая почта, доставка
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.4.2
+Stable tag: 1.6.2
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -165,6 +165,30 @@ https://youtu.be/47-VrH_QJAE
 
 
 == Changelog ==
+
+= 1.6.2 =
+* [fix] виправили налаштування ваги
+* PHP 8.4 compatible
+
+= 1.6.1 =
+* [new] додали вивід вартості доставки Nova Global у кошик
+
+= 1.6.0 =
+* WooCommerce 10.0 tested
+* PHP 8.4 compatible
+
+= 1.5.3 =
+* [fix] виправили warnings
+
+= 1.5.2 =
+* [fix] виправили завантаження відділень
+
+= 1.5.1 =
+* [new] Після створення ТТН сторінка замовлення перезавантажується автоматично
+
+= 1.5.0 =
+* [new] додали оффлайн завантаження відділень НП
+* [new] оновлення тарифів Nova Global з 12.06
 
 = 1.4.2 =
 * [fix] виправили метод отримання відділень Rozetka Delivery

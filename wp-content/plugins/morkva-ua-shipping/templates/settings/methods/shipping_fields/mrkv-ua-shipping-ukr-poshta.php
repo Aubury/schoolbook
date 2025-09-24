@@ -591,6 +591,44 @@
                 The length should not exceed 32 characters.', 'mrkv-ua-shipping') . '</p>'; ?>
 	</div>
 </section>
+<section id="email_settings" class="mrkv_up_ship_shipping_tab_block">
+	<h2><img src="<?php echo MRKV_UA_SHIPPING_ASSETS_URL . '/images/global/mention-square-icon.svg'; ?>" alt="Sending email from TTN" title="Sending email from TTN"><?php echo __('Email settings', 'mrkv-ua-shipping'); ?></h2>
+	<p><?php echo __('Create a custom message that will be sent after creating the shipment', 'mrkv-ua-shipping'); ?></p>
+	<hr class="mrkv-ua-ship__hr">
+	<div class="admin_ua_ship_morkva_settings_row">
+		<div class="col-mrkv-5">
+			<div class="admin_ua_ship_morkva_settings_line mrkv-field-disabled">
+				<?php 
+					$data = '';
+					$description = '<span class="mrkv-ua-ship-only-pro">' . __('Only in the Pro version', 'mrkv-ua-shipping') . '</span>';
+
+					echo $mrkv_global_option_generator->get_input_text(__('Email subject', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[email][subject]', $data, MRKV_OPTION_OBJECT_NAME. '_email_subject' , '', __('Enter the subject...', 'mrkv-ua-shipping'), $description, 'readonly');
+				?>
+			</div>
+		</div>
+		<div class="col-mrkv-5">
+			<div class="admin_ua_ship_morkva_settings_line mrkv-field-disabled">
+				<?php
+					$data = '';
+					echo $mrkv_global_option_generator->get_input_checkbox(__('Send automatically', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[email][auto]', $data, MRKV_OPTION_OBJECT_NAME . '_email_auto', '', 'disabled');
+				?>
+				<?php echo '<span class="mrkv-ua-ship-only-pro">' . __('Only in the Pro version', 'mrkv-ua-shipping') . '</span>'; ?>
+				<?php echo '<p class="mrkv-ua-ship-description">' . __('Enable if you want to send an email automatically after a shipment is created', 'mrkv-ua-shipping') . '</p>'; ?>
+			</div>
+		</div>
+	</div>
+	<div class="admin_ua_ship_morkva_settings_line mrkv-field-disabled">
+		<?php
+			$data = '';
+			$description = '<span class="mrkv-ua-ship-only-pro">' . __('Only in the Pro version', 'mrkv-ua-shipping') . '</span>';
+
+			echo $mrkv_global_option_generator->get_textarea(__('Email text', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[email][content]', $data, MRKV_OPTION_OBJECT_NAME. '_email_content' , '', __('Enter the email...', 'mrkv-ua-shipping'), $description, 'readonly');
+		?>
+		<div class="admin_ua_ship_morkva_settings_row admin_ua_ship_morkva_settings_row_btns">
+			<div class="button button-primary adm-textarea-btn"><?php echo __('Default email template', 'mrkv-ua-shipping'); ?></div>
+		</div>
+	</div>
+</section>
 <section id="automation_settings" class="mrkv_up_ship_shipping_tab_block">
 	<h2><img src="<?php echo MRKV_UA_SHIPPING_ASSETS_URL . '/images/global/automation-icon.svg'; ?>" alt="Automation Settings" title="Automation Settings"><?php echo __('Automation Settings', 'mrkv-ua-shipping'); ?></h2>
 	<p><?php echo __('Connect automation when working with shipments', 'mrkv-ua-shipping'); ?></p>

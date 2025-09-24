@@ -193,7 +193,7 @@ jQuery(window).on('load', function()
 
 	jQuery('.mrkv_ua_ship_close, .close-error-mrkv-ua-ship').click(function()
 	{
-		jQuery(this).closest('.mrkv_ua_ship_modal').fadeOut(300);
+		location.reload();
 	});
 	jQuery('#mrkv_ua_ship_create_invoice .mrkv_ua_ship_close').click(function()
 	{

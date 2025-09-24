@@ -24,7 +24,7 @@ namespace Automattic\WooCommerce\Internal\BatchProcessing;
 /**
  * Class BatchProcessingController
  *
- * @package Automattic\WooCommerce\Internal\BatchProcessing.
+ * @package Automattic\WooCommerce\Internal\Updates.
  */
 class BatchProcessingController {
 	/*
@@ -220,19 +220,17 @@ class BatchProcessingController {
 	 * @return array Current state for the processor, or a "blank" state if none exists yet.
 	 */
 	private function get_process_details( BatchProcessorInterface $batch_processor ): array {
-		$defaults = array(
-			'total_time_spent'    => 0,
-			'current_batch_size'  => $batch_processor->get_default_batch_size(),
-			'last_error'          => null,
-			'recent_failures'     => 0,
-			'batch_first_failure' => null,
-			'batch_last_failure'  => null,
+		return get_option(
+			$this->get_processor_state_option_name( $batch_processor ),
+			array(
+				'total_time_spent'    => 0,
+				'current_batch_size'  => $batch_processor->get_default_batch_size(),
+				'last_error'          => null,
+				'recent_failures'     => 0,
+				'batch_first_failure' => null,
+				'batch_last_failure'  => null,
+			)
 		);
-
-		$process_details = get_option( $this->get_processor_state_option_name( $batch_processor ) );
-		$process_details = wp_parse_args( is_array( $process_details ) ? $process_details : array(), $defaults );
-
-		return $process_details;
 	}
 
 	/**
@@ -257,7 +255,7 @@ class BatchProcessingController {
 	 * @param float                   $time_taken Time take by the batch to complete processing.
 	 * @param \Exception|null         $last_error Exception object in processing the batch, if there was one.
 	 */
-	private function update_processor_state( BatchProcessorInterface $batch_processor, float $time_taken, ?\Exception $last_error = null ): void {
+	private function update_processor_state( BatchProcessorInterface $batch_processor, float $time_taken, \Exception $last_error = null ): void {
 		$current_status                      = $this->get_process_details( $batch_processor );
 		$current_status['total_time_spent'] += $time_taken;
 		$current_status['last_error']        = null !== $last_error ? $last_error->getMessage() : null;
@@ -351,15 +349,7 @@ class BatchProcessingController {
 	 * @return array List (of string) of the class names of the enqueued processors.
 	 */
 	public function get_enqueued_processors(): array {
-		$enqueued_processors = get_option( self::ENQUEUED_PROCESSORS_OPTION_NAME, array() );
-
-		if ( ! is_array( $enqueued_processors ) ) {
-			$this->logger->error( 'Could not fetch list of processors. Clearing up queue.', array( 'source' => 'batch-processing' ) );
-			delete_option( self::ENQUEUED_PROCESSORS_OPTION_NAME );
-			$enqueued_processors = array();
-		}
-
-		return $enqueued_processors;
+		return get_option( self::ENQUEUED_PROCESSORS_OPTION_NAME, array() );
 	}
 
 	/**

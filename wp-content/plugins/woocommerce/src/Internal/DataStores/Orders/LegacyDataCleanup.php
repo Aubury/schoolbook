@@ -7,6 +7,7 @@ namespace Automattic\WooCommerce\Internal\DataStores\Orders;
 
 use Automattic\WooCommerce\Internal\BatchProcessing\BatchProcessingController;
 use Automattic\WooCommerce\Internal\BatchProcessing\BatchProcessorInterface;
+use Automattic\WooCommerce\Internal\Traits\AccessiblePrivateMethods;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -14,6 +15,8 @@ defined( 'ABSPATH' ) || exit;
  * This class handles the background process in charge of cleaning up legacy data for orders when HPOS is authoritative.
  */
 class LegacyDataCleanup implements BatchProcessorInterface {
+
+	use AccessiblePrivateMethods;
 
 	/**
 	 * Option name for this feature.

@@ -7,6 +7,7 @@ use Automattic\Jetpack\Config;
 use Automattic\Jetpack\Connection\Manager;
 use Automattic\WooCommerce\GoogleListingsAndAds\Internal\Interfaces\ISO3166AwareInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\PluginHelper;
+use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\League\Container\Argument\RawArgument;
 use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\League\ISO3166\ISO3166;
 use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\League\ISO3166\ISO3166DataProvider;
 use Symfony\Component\Validator\Validation;
@@ -39,28 +40,28 @@ class ThirdPartyServiceProvider extends AbstractServiceProvider {
 
 	/**
 	 * Use the register method to register items with the container via the
-	 * protected $this->container property or the `getContainer` method
+	 * protected $this->leagueContainer property or the `getLeagueContainer` method
 	 * from the ContainerAwareTrait.
 	 *
 	 * @return void
 	 */
-	public function register(): void {
-		$jetpack_id = 'google-listings-and-ads';
+	public function register() {
+		$jetpack_id = new RawArgument( 'google-listings-and-ads' );
 		$this->share( Manager::class )->addArgument( $jetpack_id );
 
 		$this->share( Config::class )->addMethodCall(
 			'ensure',
 			[
-				'connection',
+				new RawArgument( 'connection' ),
 				[
-					'slug' => $jetpack_id,
-					'name' => 'Google for WooCommerce', // Use hardcoded name for initial registration.
+					'slug' => $jetpack_id->getValue(),
+					'name' => __( 'Google for WooCommerce', 'google-listings-and-ads' ),
 				],
 			]
 		);
 
 		$this->share_concrete( ISO3166DataProvider::class, ISO3166::class );
-		$this->getContainer()
+		$this->getLeagueContainer()
 			->inflector( ISO3166AwareInterface::class )
 			->invokeMethod( 'set_iso3166_provider', [ ISO3166DataProvider::class ] );
 
@@ -70,17 +71,6 @@ class ThirdPartyServiceProvider extends AbstractServiceProvider {
 				return Validation::createValidatorBuilder()
 					->addMethodMapping( 'load_validator_metadata' )
 					->getValidator();
-			}
-		);
-
-		// Update Jetpack connection with a translatable name, after init is called.
-		add_action(
-			'init',
-			function () {
-				$manager = $this->getContainer()->get( Manager::class );
-				$manager->get_plugin()->add(
-					__( 'Google for WooCommerce', 'google-listings-and-ads' )
-				);
 			}
 		);
 	}

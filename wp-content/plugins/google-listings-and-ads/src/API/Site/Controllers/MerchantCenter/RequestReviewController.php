@@ -17,7 +17,7 @@ use Exception;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class RequestReviewController
+ * Class IssuesController
  *
  * @package Automattic\WooCommerce\GoogleListingsAndAds\API\Site\Controllers\MerchantCenter
  */

@@ -43,14 +43,19 @@ class SyncerHooks implements Service, Registerable {
 	protected $merchant_center;
 
 	/**
-	 * @var JobRepository
+	 * @var UpdateShippingSettings
 	 */
-	protected $job_repository;
+	protected $update_shipping_job;
 
 	/**
 	 * @var NotificationsService $notifications_service
 	 */
 	protected $notifications_service;
+
+	/**
+	 * @var ShippingNotificationJob $shipping_notification_job
+	 */
+	protected $shipping_notification_job;
 
 	/**
 	 * SyncerHooks constructor.
@@ -61,10 +66,11 @@ class SyncerHooks implements Service, Registerable {
 	 * @param NotificationsService  $notifications_service
 	 */
 	public function __construct( MerchantCenterService $merchant_center, GoogleSettings $google_settings, JobRepository $job_repository, NotificationsService $notifications_service ) {
-		$this->google_settings       = $google_settings;
-		$this->merchant_center       = $merchant_center;
-		$this->job_repository        = $job_repository;
-		$this->notifications_service = $notifications_service;
+		$this->google_settings           = $google_settings;
+		$this->merchant_center           = $merchant_center;
+		$this->update_shipping_job       = $job_repository->get( UpdateShippingSettings::class );
+		$this->shipping_notification_job = $job_repository->get( ShippingNotificationJob::class );
+		$this->notifications_service     = $notifications_service;
 	}
 
 	/**
@@ -139,10 +145,10 @@ class SyncerHooks implements Service, Registerable {
 		}
 
 		if ( $this->notifications_service->is_ready() ) {
-			$this->job_repository->get( ShippingNotificationJob::class )->schedule( [ 'topic' => NotificationsService::TOPIC_SHIPPING_UPDATED ] );
+			$this->shipping_notification_job->schedule( [ 'topic' => NotificationsService::TOPIC_SHIPPING_UPDATED ] );
 		}
 
-		$this->job_repository->get( UpdateShippingSettings::class )->schedule();
+		$this->update_shipping_job->schedule();
 
 		$this->already_scheduled = true;
 	}

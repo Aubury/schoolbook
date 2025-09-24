@@ -5,8 +5,6 @@ use WP_Error;
 
 /**
  * PatternsToolkit class.
- *
- * @internal
  */
 class PTKClient {
 	/**

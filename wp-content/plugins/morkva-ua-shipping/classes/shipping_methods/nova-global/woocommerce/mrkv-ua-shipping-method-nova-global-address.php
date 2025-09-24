@@ -161,15 +161,22 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_GLOBAL_ADDRESS'))
                     }
                 }
 
+                if(is_cart() && !$country)
+                {
+                    $country = WC()->customer->get_shipping_country();
+                }
+
                 $dimension_unit = get_option( 'woocommerce_dimension_unit' );
 
                 foreach(WC()->cart->get_cart() as $cart_item => $cart_value)
                 {
+                    $quantity    = $cart_value['quantity'];
+                    
                     $item_length = ( null !== $cart_value['data']->get_length() && $cart_value['data']->get_length()) ? wc_get_dimension( $cart_value['data']->get_length(), 'cm', $dimension_unit ) : 0.00;
                     $item_width = ( null !== $cart_value['data']->get_width() && $cart_value['data']->get_width()) ? wc_get_dimension( $cart_value['data']->get_width(), 'cm', $dimension_unit ) : 0.00;
                     $item_height = ( null !== $cart_value['data']->get_height() && $cart_value['data']->get_height()) ? wc_get_dimension( $cart_value['data']->get_height(), 'cm', $dimension_unit ) : 0.00;
 
-                    $volume_weight += $item_length * $item_width * $item_height / 5000;
+                    $volume_weight += ($item_length * $item_width * $item_height / 5000) * $quantity;
                 }
 
                 $settings_method = get_option('nova-global_m_ua_settings');
@@ -302,7 +309,7 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_GLOBAL_ADDRESS'))
                 if ($key === '30+') {
                     $over30 = $value;
                 } else {
-                    $numericKeys[(float)$key] = $value;
+                    $numericKeys[$key] = $value;
                 }
             }
             ksort($numericKeys);

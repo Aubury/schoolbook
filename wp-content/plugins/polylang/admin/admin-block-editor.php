@@ -48,7 +48,11 @@ class PLL_Admin_Block_Editor {
 			return $preload_paths;
 		}
 
-		if ( 'core/edit-post' !== $context->name || ! $context->post instanceof WP_Post ) {
+		// Backward compatibility with WP < 6.0 where `WP_Block_Editor_Context::$name` doesn't exist yet.
+		if (
+			( property_exists( $context, 'name' ) && 'core/edit-post' !== $context->name )
+			|| ! $context->post instanceof WP_Post
+		) {
 			// Do nothing if not post editor.
 			return $preload_paths;
 		}

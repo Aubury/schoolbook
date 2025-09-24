@@ -1,20 +1,16 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
-    "apiVersion": 3,
+    "apiVersion": 2,
     "name": "woocommerce/product-custom-fields",
     "title": "Product custom fields control",
     "category": "woocommerce",
     "description": "The product custom fields.",
-    "keywords": [
-        "products",
-        "custom",
-        "fields"
-    ],
+    "keywords": ["products", "custom", "fields"],
     "textdomain": "default",
     "attributes": {
         "name": {
             "type": "string",
-            "role": "content"
+            "__experimentalRole": "content"
         }
     },
     "supports": {

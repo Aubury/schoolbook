@@ -1,7 +1,7 @@
 <?php
 
 use Duplicator\Core\Views\TplMng;
-use Duplicator\Utils\Upsell;
+use Duplicator\Utils\LinkManager;
 
 defined("ABSPATH") || exit;
 
@@ -123,7 +123,7 @@ defined("ABSPATH") || exit;
         'title'        => __('Advanced Backup Permissions', 'duplicator'),
         'warning-text' => __('Advanced Backup Permissions are not available in Duplicator Lite!', 'duplicator'),
         'content-tpl'  => 'mocks/settings/access/content-popup',
-        'upsell-url'   => Upsell::getCampaignUrl('blurred-mocks', 'Settings Access Tab')
+        'upsell-url'   => LinkManager::getCampaignUrl('blurred-mocks', 'Settings Access Tab')
     ),
     true
 ); ?>

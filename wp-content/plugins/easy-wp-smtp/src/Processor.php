@@ -42,42 +42,6 @@ class Processor {
 	private $force_processing = false;
 
 	/**
-	 * This attribute will hold the arguments passed to the `wp_mail` function.
-	 *
-	 * @since 2.5.0
-	 *
-	 * @var array
-	 */
-	private $original_wp_mail_args;
-
-	/**
-	 * This attribute will hold the arguments passed to the `wp_mail` function and filtered via `wp_mail` filter.
-	 *
-	 * @since 2.5.0
-	 *
-	 * @var array
-	 */
-	private $filtered_wp_mail_args;
-
-	/**
-	 * This attribute will hold the From address filtered via the `wp_mail_from` filter.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @var string
-	 */
-	private $filtered_from_email;
-
-	/**
-	 * This attribute will hold the From name filtered via the `wp_mail_from_name` filter.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @var string
-	 */
-	private $filtered_from_name;
-
-	/**
 	 * Class constructor.
 	 *
 	 * @since 2.0.0
@@ -100,14 +64,11 @@ class Processor {
 	 */
 	public function hooks() {
 
-		add_action( 'phpmailer_init', [ $this, 'phpmailer_init' ] );
+		add_action( 'phpmailer_init', array( $this, 'phpmailer_init' ) );
 
 		// High priority number tries to ensure our plugin code executes last and respects previous hooks, if not forced.
-		add_filter( 'wp_mail_from', [ $this, 'filter_mail_from_email' ], PHP_INT_MAX );
-		add_filter( 'wp_mail_from_name', [ $this, 'filter_mail_from_name' ], PHP_INT_MAX );
-
-		add_action( 'wp_mail', [ $this, 'capture_early_wp_mail_filter_call' ], - PHP_INT_MAX );
-		add_action( 'wp_mail', [ $this, 'capture_late_wp_mail_filter_call' ], PHP_INT_MAX );
+		add_filter( 'wp_mail_from', array( $this, 'filter_mail_from_email' ), PHP_INT_MAX );
+		add_filter( 'wp_mail_from_name', array( $this, 'filter_mail_from_name' ), PHP_INT_MAX );
 	}
 
 	/**
@@ -247,9 +208,6 @@ class Processor {
 	 */
 	public function filter_mail_from_email( $wp_email ) {
 
-		// Save the original from address.
-		$this->filtered_from_email = filter_var( $wp_email, FILTER_VALIDATE_EMAIL );
-
 		if ( $this->skip_processing() ) {
 			return $wp_email;
 		}
@@ -297,9 +255,6 @@ class Processor {
 	 * @return string
 	 */
 	public function filter_mail_from_name( $name ) {
-
-		// Save the original from name.
-		$this->filtered_from_name = $name;
 
 		if ( $this->skip_processing() ) {
 			return $name;
@@ -411,8 +366,7 @@ class Processor {
 					$phpmailer->AddReplyTo( $reply_to_email, $from_name );
 
 					unset( $reply_to_emails[ $from_email ] );
-				} catch ( Exception $e ) {
-				}
+				} catch ( Exception $e ) {}
 
 				foreach ( $reply_to_emails as $email => $reply_to ) {
 					try {
@@ -425,8 +379,7 @@ class Processor {
 		} else {
 			try {
 				$phpmailer->AddReplyTo( $reply_to_email, $from_name );
-			} catch ( Exception $e ) {
-			}
+			} catch ( Exception $e ) {}
 		}
 	}
 
@@ -490,107 +443,5 @@ class Processor {
 		$from_name  = $connection_options->get( 'mail', 'from_name' );
 
 		return empty( $from_email ) || empty( $from_name ) || Helpers::is_domain_blocked();
-	}
-
-	/**
-	 * Capture `wp_mail` filter call on earliest priority.
-	 *
-	 * Currently used to capture the original `wp_mail` arguments before they are filtered.
-	 *
-	 * @since 2.5.0
-	 *
-	 * @param array $args The original `wp_mail` arguments.
-	 *
-	 * @return array
-	 */
-	public function capture_early_wp_mail_filter_call( $args ) {
-
-		$this->original_wp_mail_args = $args;
-
-		return $args;
-	}
-
-	/**
-	 * Capture `wp_mail` filter call on latest priority.
-	 *
-	 * Currently used to capture the `wp_mail` arguments after they are filtered
-	 * and capture `wp_mail` function call.
-	 *
-	 * @since 2.5.0
-	 *
-	 * @param array $args The filtered `wp_mail` arguments.
-	 *
-	 * @return array
-	 */
-	public function capture_late_wp_mail_filter_call( $args ) {
-
-		$this->filtered_wp_mail_args = $args;
-
-		$this->capture_wp_mail_call();
-
-		return $args;
-	}
-
-	/**
-	 * Capture `wp_mail` function call.
-	 *
-	 * @since 2.5.0
-	 */
-	private function capture_wp_mail_call() {
-
-		/**
-		 * Fires on `wp_mail` function call.
-		 *
-		 * @since 2.5.0
-		 */
-		do_action( 'easy_wp_smtp_processor_capture_wp_mail_call' );
-	}
-
-	/**
-	 * Get the original `wp_mail` arguments.
-	 *
-	 * @since 2.5.0
-	 *
-	 * @return array
-	 */
-	public function get_original_wp_mail_args() {
-
-		return $this->original_wp_mail_args;
-	}
-
-	/**
-	 * Get the filtered `wp_mail` arguments.
-	 *
-	 * @since 2.5.0
-	 *
-	 * @return array
-	 */
-	public function get_filtered_wp_mail_args() {
-
-		return $this->filtered_wp_mail_args;
-	}
-
-	/**
-	 * Get the filtered `wp_mail_from` value.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @return string
-	 */
-	public function get_filtered_from_email() {
-
-		return $this->filtered_from_email;
-	}
-
-	/**
-	 * Get the filtered `wp_mail_from_name` value.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @return string
-	 */
-	public function get_filtered_from_name() {
-
-		return $this->filtered_from_name;
 	}
 }

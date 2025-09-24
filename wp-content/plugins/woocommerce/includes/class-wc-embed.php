@@ -6,8 +6,6 @@
  * @package  WooCommerce\Classes\Embed
  */
 
-use Automattic\WooCommerce\Enums\ProductType;
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -101,7 +99,7 @@ class WC_Embed {
 		$buttons  = array();
 		$button   = '<a href="%s" class="wp-embed-more wc-embed-button">%s</a>';
 
-		if ( $_product->is_type( ProductType::SIMPLE ) && $_product->is_purchasable() && $_product->is_in_stock() ) {
+		if ( $_product->is_type( 'simple' ) && $_product->is_purchasable() && $_product->is_in_stock() ) {
 			$buttons[] = sprintf( $button, esc_url( add_query_arg( 'add-to-cart', get_the_ID(), wc_get_cart_url() ) ), esc_html__( 'Buy now', 'woocommerce' ) );
 		}
 

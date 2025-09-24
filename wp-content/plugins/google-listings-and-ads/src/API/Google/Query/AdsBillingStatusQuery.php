@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 class AdsBillingStatusQuery extends AdsQuery {
 
 	/**
-	 * AdsBillingStatusQuery constructor.
+	 * Query constructor.
 	 */
 	public function __construct() {
 		parent::__construct( 'billing_setup' );

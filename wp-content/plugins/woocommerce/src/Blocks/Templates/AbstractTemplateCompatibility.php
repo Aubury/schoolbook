@@ -21,6 +21,10 @@ abstract class AbstractTemplateCompatibility {
 	 * Initialization method.
 	 */
 	public function init() {
+		if ( ! wc_current_theme_is_fse_theme() ) {
+			return;
+		}
+
 		$this->set_hook_data();
 
 		add_filter(
@@ -57,9 +61,9 @@ abstract class AbstractTemplateCompatibility {
 				* @since 7.6.0
 				* @param boolean.
 				*/
-				$is_disabled_compatibility_layer = apply_filters( 'woocommerce_disable_compatibility_layer', false );
+				$is_disabled_compatility_layer = apply_filters( 'woocommerce_disable_compatibility_layer', false );
 
-				if ( $is_disabled_compatibility_layer ) {
+				if ( $is_disabled_compatility_layer ) {
 					return $block_content;
 				}
 
@@ -115,6 +119,7 @@ abstract class AbstractTemplateCompatibility {
 	 *   priority.
 	 */
 	abstract protected function set_hook_data();
+
 
 	/**
 	 * Remove the default callback added by WooCommerce. We replaced these

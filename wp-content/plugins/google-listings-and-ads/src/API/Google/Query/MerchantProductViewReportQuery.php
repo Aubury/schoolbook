@@ -15,7 +15,7 @@ class MerchantProductViewReportQuery extends MerchantQuery {
 	use ReportQueryTrait;
 
 	/**
-	 * MerchantProductViewReportQuery constructor.
+	 * Query constructor.
 	 *
 	 * @param array $args Query arguments.
 	 */

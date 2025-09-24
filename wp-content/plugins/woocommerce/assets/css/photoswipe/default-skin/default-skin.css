@@ -29,7 +29,7 @@
   border: 0;
   padding: 0;
   margin: 0;
-  float: left;
+  float: right;
   opacity: 0.75;
   -webkit-transition: opacity 0.2s;
           transition: opacity 0.2s;
@@ -245,7 +245,7 @@ a.pswp__share--download:hover {
 
  */
 .pswp__counter {
-  position: relative;
+  position: absolute;
   left: 0;
   top: 0;
   height: 44px;
@@ -253,9 +253,7 @@ a.pswp__share--download:hover {
   line-height: 44px;
   color: #FFF;
   opacity: 0.75;
-  padding: 0 10px;
-  margin-inline-end: auto;
-}
+  padding: 0 10px; }
 
 /*
 	
@@ -427,10 +425,7 @@ a.pswp__share--download:hover {
   left: 0;
   top: 0;
   height: 44px;
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-}
+  width: 100%; }
 
 .pswp__caption,
 .pswp__top-bar,

@@ -6,7 +6,6 @@
  * @since   3.2.0
  */
 
-use Automattic\WooCommerce\Enums\OrderInternalStatus;
 use Automattic\WooCommerce\Utilities\DiscountsUtil;
 use Automattic\WooCommerce\Utilities\NumberUtil;
 
@@ -636,7 +635,7 @@ class WC_Discounts {
 			$recent_pending_orders = wc_get_orders(
 				array(
 					'limit'       => 1,
-					'post_status' => array( OrderInternalStatus::FAILED, OrderInternalStatus::PENDING ),
+					'post_status' => array( 'wc-failed', 'wc-pending' ),
 					'customer'    => get_current_user_id(),
 					'return'      => 'ids',
 				)
@@ -971,7 +970,7 @@ class WC_Discounts {
 		}
 
 		$user         = wp_get_current_user();
-		$check_emails = array( $user->user_email );
+		$check_emails = array( $user->get_billing_email(), $user->get_email() );
 
 		if ( $this->object instanceof WC_Cart ) {
 			$check_emails[] = $this->object->get_customer()->get_billing_email();

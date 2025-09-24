@@ -1,10 +1,8 @@
 <?php
 namespace Automattic\WooCommerce\Blocks\BlockTypes;
 
-use Automattic\WooCommerce\Enums\ProductStatus;
 use WP_Query;
 use Automattic\WooCommerce\Blocks\Utils\Utils;
-use Automattic\WooCommerce\Enums\ProductStockStatus;
 
 // phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 // phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_query
@@ -191,7 +189,7 @@ class ProductQuery extends AbstractBlock {
 				'query_loop_block_query_vars',
 				array( $this, 'build_query' ),
 				10,
-				2
+				1
 			);
 		}
 
@@ -241,13 +239,11 @@ class ProductQuery extends AbstractBlock {
 	 * Return a custom query based on attributes, filters and global WP_Query.
 	 *
 	 * @param WP_Query $query The WordPress Query.
-	 * @param WP_Block $block The block being rendered.
 	 * @return array
 	 */
-	public function build_query( $query, $block = null ) {
-		$parsed_block                = $this->parsed_block;
-		$is_product_collection_block = $block->context['query']['isProductCollectionBlock'] ?? false;
-		if ( ! $this->is_woocommerce_variation( $parsed_block ) || $is_product_collection_block ) {
+	public function build_query( $query ) {
+		$parsed_block = $this->parsed_block;
+		if ( ! $this->is_woocommerce_variation( $parsed_block ) ) {
 			return $query;
 		}
 
@@ -258,7 +254,7 @@ class ProductQuery extends AbstractBlock {
 			'order'          => $query['order'],
 			'offset'         => $query['offset'],
 			'post__in'       => array(),
-			'post_status'    => ProductStatus::PUBLISH,
+			'post_status'    => 'publish',
 			'post_type'      => 'product',
 			'tax_query'      => array(),
 		);
@@ -455,7 +451,7 @@ class ProductQuery extends AbstractBlock {
 		 * @see get_product_visibility_query()
 		 */
 		$diff = array_diff( $stock_status_options, $stock_statii );
-		if ( count( $diff ) === 1 && in_array( ProductStockStatus::OUT_OF_STOCK, $diff, true ) ) {
+		if ( count( $diff ) === 1 && in_array( 'outofstock', $diff, true ) ) {
 			return array();
 		}
 
@@ -483,7 +479,7 @@ class ProductQuery extends AbstractBlock {
 
 		// Hide out of stock products.
 		if ( empty( $stock_query ) && 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) ) {
-			$product_visibility_not_in[] = $product_visibility_terms[ ProductStockStatus::OUT_OF_STOCK ];
+			$product_visibility_not_in[] = $product_visibility_terms['outofstock'];
 		}
 
 		return array(
@@ -518,6 +514,7 @@ class ProductQuery extends AbstractBlock {
 			'attributes_filter_query_args' => $attributes_filter_query_args,
 			'rating_filter_query_args'     => array( RatingFilter::RATING_QUERY_VAR ),
 		);
+
 	}
 
 	/**
@@ -622,7 +619,7 @@ class ProductQuery extends AbstractBlock {
 		$max_price_query = empty( $max_price ) ? array() : [
 			'key'     => '_price',
 			'value'   => $max_price,
-			'compare' => '<=',
+			'compare' => '<',
 			'type'    => 'numeric',
 		];
 
@@ -781,7 +778,7 @@ class ProductQuery extends AbstractBlock {
 	 * - For array items with numeric keys, we merge them as normal.
 	 * - For array items with string keys:
 	 *
-	 *   - If the value isn't array, we'll use the value coming from the merge array.
+	 *   - If the value isn't array, we'll use the value comming from the merge array.
 	 *     $base = ['orderby' => 'date']
 	 *     $new  = ['orderby' => 'meta_value_num']
 	 *     Result: ['orderby' => 'meta_value_num']

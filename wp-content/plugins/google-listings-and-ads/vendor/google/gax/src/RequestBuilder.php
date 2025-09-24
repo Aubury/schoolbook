@@ -233,7 +233,7 @@ class RequestBuilder
         foreach ($placeholders as $placeholder => $metadata) {
             $value = array_reduce(
                 $metadata['getters'],
-                function (?Message $result = null, $getter = null) {
+                function (Message $result = null, $getter) {
                     if ($result) {
                         return $result->$getter();
                     }

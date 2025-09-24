@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 class AdsCampaignBudgetQuery extends AdsQuery {
 
 	/**
-	 * AdsCampaignBudgetQuery constructor.
+	 * Query constructor.
 	 */
 	public function __construct() {
 		parent::__construct( 'campaign' );

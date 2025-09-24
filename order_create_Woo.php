@@ -12,10 +12,10 @@ use Automattic\WooCommerce\HttpClient\HttpClientException;
  *****************************************/
 
 $url = home_url();
-$login = 'scbook';
-$password = 'bgm5naOZM(yGv6HU#d';
-$key = 'ck_f7bb8f437939f444c8af23c232c44bde714f4219';
-$secret = 'cs_130880bd084a4a92cf08e9250c91f2eb6d9d9b8c';
+$login = WOOCOMMERCE_LOGIN;
+$password = WOOCOMMERCE_PASS;
+$key = WOOCOMMERCE_API_CK;
+$secret = WOOCOMMERCE_API_CS;
 
 $woocommerce = new Client(
     $url,
@@ -32,7 +32,7 @@ $woocommerce = new Client(
 /*************
 /* FTP directory
  **************/
-$ordersDirectory = __DIR__ . '/public_html/ORDERS/';
+$ordersDirectory = __DIR__ . '/FTP_EXCHANGE/ORDERS/';
 
 if (!file_exists($ordersDirectory)) {
     mkdir($ordersDirectory, 0777, true);
@@ -44,6 +44,11 @@ $order = json_decode($data, true); // Преобразуем JSON в масси�
 
 function creatFileAllOrders ($order) {
     
+    $data_order = wc_get_order($order['id']);
+    $ukr_poshta_patronymic = $data_order->get_meta('mrkv_ua_shipping_ukr-poshta_address_patronymic');
+    $nova_poshta_patronymic = $data_order->get_meta('mrkv_ua_shipping_nova-poshta_address_patronymic');
+    $ukr_poshta_patronymic !== '' ? $patronymic = $ukr_poshta_patronymic : $patronymic = $nova_poshta_patronymic;
+    
     $_update = [];
     $_update['NomerZakaza']         = $order['id'];
     $_update['KlientID']            = $order['customer_id'];
@@ -51,6 +56,7 @@ function creatFileAllOrders ($order) {
     $_update['phone']               = $order['billing']['phone'];
     $_update['first_name']          = $order['billing']['first_name'];
     $_update['last_name']           = $order['billing']['last_name'];
+    $_update['patronymic']          = $patronymic;
     $_update['SummaZakaza']         = $order['total'];
     $_update['Valuta']              = $order['currency'];
     $_update['date_created']        = $order['date_created'];
@@ -130,23 +136,29 @@ function creatFileAllOrders ($order) {
     }
     
     $_update['payment_detail'] = $order['payment_detail'];
-
-    $data_order = wc_get_order($order['id']);
+    
+    $full_shipping_address = $data_order->get_meta('_shipping_address_index');
+    $full_billing_address = $data_order->get_meta('_billing_address_index');
+    $nova_poshta_address_city = $data_order->get_meta('mrkv_ua_shipping_nova-poshta_city');
     $nova_poshta_address_flat = $data_order->get_meta('mrkv_ua_shipping_nova-poshta_address_flat');
     $ukr_poshta_address_flat = $data_order->get_meta('mrkv_ua_shipping_ukr-poshta_address_flat');
+    $nova_poshta_address_flat !== '' ? $flat = $nova_poshta_address_flat : $flat = $ukr_poshta_address_flat;
 
     $_update['shipping']       = [
-        'shipping_method' => $order['shipping_lines']['0']['method_title'],
-        'city'      => $order['billing']['city'] ?? $order['shipping']['city'],
-        'postcode'  => $order['billing']['postcode'] ?? $order['shipping']['postcode'],
-        'address_1' => $order['billing']['address_1'] ?? $order['shipping']['address_1'],
-        'address_2' => $order['billing']['address_2'] ?? $order['shipping']['address_2'],
-        'ukr-poshta_address_flat' => $order['mrkv_ua_shipping_ukr-poshta_address_flat'],
-        'nova-poshta_address_fla' => $order['mrkv_ua_shipping_nova-poshta_address_flat'],
-        'ukr_poshta_address_flat' => $ukr_poshta_address_flat,
+        'first_name'               => $order['shipping']['first_name'] ?? $order['billing']['first_name'],
+        'last_name'                => $order['shipping']['last_name'] ?? $order['billing']['last_name'],
+        'patronymic'               => $patronymic,
+        'shipping_method'          => $order['shipping_lines']['0']['method_title'],
+        'city'                     => $order['billing']['city'] ?? $order['shipping']['city'],
+        'nova_poshta_address_city' => $nova_poshta_address_city,
+        'postcode'                 => $order['billing']['postcode'] ?? $order['shipping']['postcode'],
+        'address_1'                => $order['billing']['address_1'] ?? $order['shipping']['address_1'],
+        'address_2'                => $order['billing']['address_2'] ?? $order['shipping']['address_2'],
+        'ukr_poshta_address_flat'  => $ukr_poshta_address_flat,
         'nova_poshta_address_flat' => $nova_poshta_address_flat,
-        'flat'      => $nova_poshta_address_flat ?? $ukr_poshta_address_flat
-
+        'flat'                     => $flat,
+        'full_shipping_address'    =>  $full_shipping_address,
+        'full_billing_address'     =>  $full_billing_address,
     ];
 
     foreach ($order['line_items'] as $index => $item ) {

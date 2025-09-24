@@ -10,7 +10,6 @@
  * @since   3.0.0
  */
 
-use Automattic\WooCommerce\Enums\ProductTaxStatus;
 use Automattic\WooCommerce\Utilities\NumberUtil;
 
 defined( 'ABSPATH' ) || exit;
@@ -19,21 +18,6 @@ defined( 'ABSPATH' ) || exit;
  * Order item fee.
  */
 class WC_Order_Item_Fee extends WC_Order_Item {
-	/**
-	 * Legacy fee data.
-	 *
-	 * @deprecated 4.4.0 For legacy actions.
-	 * @var object
-	 */
-	public $legacy_fee = '';
-
-	/**
-	 * Legacy fee key.
-	 *
-	 * @deprecated 4.4.0 For legacy actions.
-	 * @var string
-	 */
-	public $legacy_fee_key = '';
 
 	/**
 	 * Order Data array. This is the core order data exposed in APIs since 3.0.0.
@@ -43,7 +27,7 @@ class WC_Order_Item_Fee extends WC_Order_Item {
 	 */
 	protected $extra_data = array(
 		'tax_class'  => '',
-		'tax_status' => ProductTaxStatus::TAXABLE,
+		'tax_status' => 'taxable',
 		'amount'     => '',
 		'total'      => '',
 		'total_tax'  => '',
@@ -68,7 +52,7 @@ class WC_Order_Item_Fee extends WC_Order_Item {
 			if ( 0 > $item->get_total() ) {
 				continue;
 			}
-			if ( ProductTaxStatus::TAXABLE !== $item->get_tax_status() ) {
+			if ( 'taxable' !== $item->get_tax_status() ) {
 				$costs['non-taxable'] += $item->get_total();
 			} elseif ( 'inherit' === $item->get_tax_class() ) {
 				$inherit_class            = reset( $order_item_tax_classes );
@@ -157,10 +141,10 @@ class WC_Order_Item_Fee extends WC_Order_Item {
 	 * @param string $value Tax status.
 	 */
 	public function set_tax_status( $value ) {
-		if ( in_array( $value, array( ProductTaxStatus::TAXABLE, ProductTaxStatus::NONE ), true ) ) {
+		if ( in_array( $value, array( 'taxable', 'none' ), true ) ) {
 			$this->set_prop( 'tax_status', $value );
 		} else {
-			$this->set_prop( 'tax_status', ProductTaxStatus::TAXABLE );
+			$this->set_prop( 'tax_status', 'taxable' );
 		}
 	}
 

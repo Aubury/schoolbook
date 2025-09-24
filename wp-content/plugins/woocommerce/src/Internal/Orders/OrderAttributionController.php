@@ -71,15 +71,16 @@ class OrderAttributionController implements RegisterHooksInterface {
 	 *
 	 * @internal
 	 *
-	 * @param LegacyProxy        $proxy      The legacy proxy.
-	 * @param FeaturesController $controller The feature controller.
-	 * @param WPConsentAPI       $consent    The WPConsentAPI integration.
+	 * @param LegacyProxy         $proxy      The legacy proxy.
+	 * @param FeaturesController  $controller The feature controller.
+	 * @param WPConsentAPI        $consent    The WPConsentAPI integration.
+	 * @param WC_Logger_Interface $logger     The logger object. If not provided, it will be obtained from the proxy.
 	 */
-	final public function init( LegacyProxy $proxy, FeaturesController $controller, WPConsentAPI $consent ) {
+	final public function init( LegacyProxy $proxy, FeaturesController $controller, WPConsentAPI $consent, ?WC_Logger_Interface $logger = null ) {
 		$this->proxy              = $proxy;
 		$this->feature_controller = $controller;
 		$this->consent            = $consent;
-		$this->logger             = $proxy->call_function( 'wc_get_logger' );
+		$this->logger             = $logger ?? $proxy->call_function( 'wc_get_logger' );
 		$this->set_fields_and_prefix();
 	}
 
@@ -94,13 +95,6 @@ class OrderAttributionController implements RegisterHooksInterface {
 			return;
 		}
 
-		add_action( 'init', array( $this, 'on_init' ) );
-	}
-
-	/**
-	 * Hook into WordPress on init.
-	 */
-	public function on_init() {
 		// Bail if the feature is not enabled.
 		if ( ! $this->feature_controller->feature_is_enabled( 'order_attribution' ) ) {
 			return;
@@ -111,14 +105,14 @@ class OrderAttributionController implements RegisterHooksInterface {
 
 		add_action(
 			'wp_enqueue_scripts',
-			function () {
+			function() {
 				$this->enqueue_scripts_and_styles();
 			}
 		);
 
 		add_action(
 			'admin_enqueue_scripts',
-			function () {
+			function() {
 				$this->enqueue_admin_scripts_and_styles();
 			}
 		);
@@ -149,13 +143,7 @@ class OrderAttributionController implements RegisterHooksInterface {
 		// Update order based on submitted fields.
 		add_action(
 			'woocommerce_checkout_order_created',
-			function ( $order ) {
-
-				// Check if this order already has any attribution data to prevent duplicates attribution data.
-				if ( $this->has_attribution( $order ) ) {
-					return;
-				}
-
+			function( $order ) {
 				// Nonce check is handled by WooCommerce before woocommerce_checkout_order_created hook.
 				// phpcs:ignore WordPress.Security.NonceVerification
 				$params = $this->get_unprefixed_field_values( $_POST );
@@ -173,7 +161,7 @@ class OrderAttributionController implements RegisterHooksInterface {
 
 		add_action(
 			'woocommerce_order_save_attribution_data',
-			function ( $order, $data ) {
+			function( $order, $data ) {
 				$source_data = $this->get_source_values( $data );
 				$this->send_order_tracks( $source_data, $order );
 				$this->set_order_source_data( $source_data, $order );
@@ -184,7 +172,7 @@ class OrderAttributionController implements RegisterHooksInterface {
 
 		add_action(
 			'user_register',
-			function ( $customer_id ) {
+			function( $customer_id ) {
 				try {
 					$customer = new WC_Customer( $customer_id );
 					$this->set_customer_source_data( $customer );
@@ -197,14 +185,14 @@ class OrderAttributionController implements RegisterHooksInterface {
 		// Add origin data to the order table.
 		add_action(
 			'admin_init',
-			function () {
+			function() {
 				$this->register_order_origin_column();
 			}
 		);
 
 		add_action(
 			'woocommerce_new_order',
-			function ( $order_id, $order ) {
+			function( $order_id, $order ) {
 				$this->maybe_set_admin_source( $order );
 			},
 			2,
@@ -526,7 +514,7 @@ class OrderAttributionController implements RegisterHooksInterface {
 	private function register_order_origin_column() {
 		$screen_id = $this->get_order_screen_id();
 
-		$add_column = function ( $columns ) {
+		$add_column = function( $columns ) {
 			$columns['origin'] = esc_html__( 'Origin', 'woocommerce' );
 
 			return $columns;
@@ -535,7 +523,7 @@ class OrderAttributionController implements RegisterHooksInterface {
 		add_filter( "manage_{$screen_id}_columns", $add_column );
 		add_filter( "manage_edit-{$screen_id}_columns", $add_column );
 
-		$display_column = function ( $column_name, $order_id ) {
+		$display_column = function( $column_name, $order_id ) {
 			if ( 'origin' !== $column_name ) {
 				return;
 			}
@@ -544,22 +532,5 @@ class OrderAttributionController implements RegisterHooksInterface {
 		// HPOS and non-HPOS use different hooks.
 		add_action( "manage_{$screen_id}_custom_column", $display_column, 10, 2 );
 		add_action( "manage_{$screen_id}_posts_custom_column", $display_column, 10, 2 );
-	}
-
-	/**
-	 * Check if this order already has any attribution data
-	 *
-	 * @param WC_Order $order The order object.
-	 *
-	 * @return bool
-	 * @since 9.8.0
-	 */
-	public function has_attribution( $order ) {
-		foreach ( $this->field_names as $field ) {
-			if ( $order->meta_exists( $this->get_meta_prefixed_field_name( $field ) ) ) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

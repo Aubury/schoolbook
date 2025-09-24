@@ -32,7 +32,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_RZTK'))
 		    require_once MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/rozetka-delivery/api/mrkv-ua-shipping-api-rozetka-delivery.php';
 			$mrkv_object_rztk_delivery = new MRKV_UA_SHIPPING_API_ROZETKA_DELIVERY(get_option('rozetka-delivery_m_ua_settings'));
 
-			$key_search = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
+			$key_search = isset($_POST['name']) ? sanitize_text_field(wp_unslash($_POST['name'])) : '';
 
 	        # Send request
 	        $obj = $mrkv_object_rztk_delivery->send_post_request('api/city?page=1&limit=50&name=' . $key_search . '&can_receive_tracks=true&sort_by_population=ASC', 'GET');
@@ -59,10 +59,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_RZTK'))
        		}
        		else
        		{
-       			echo wp_json_encode(array(array(
-	        		'value' => 'none',
-        			'label' => __('No results for your request', 'mrkv-ua-shipping')
-	        	)));
+       			echo wp_json_encode(array());
        		}
 
 		    wp_die();
@@ -125,10 +122,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_RZTK'))
        		}
        		else
        		{
-       			echo wp_json_encode(array(array(
-	        		'value' => 'none',
-        			'label' => __('No results for your request', 'mrkv-ua-shipping')
-	        	)));
+       			echo wp_json_encode(array());
        		}
 
        		wp_die();

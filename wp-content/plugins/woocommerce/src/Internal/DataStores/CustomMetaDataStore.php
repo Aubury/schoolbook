@@ -53,21 +53,31 @@ abstract class CustomMetaDataStore {
 	/**
 	 * Returns an array of meta for an object.
 	 *
-	 * @param  \WC_Data $object WC_Data object.
+	 * @param  WC_Data $object WC_Data object.
 	 * @return array
 	 */
 	public function read_meta( &$object ) {
-		$object_id     = $object->get_id();
-		$raw_meta_data = $this->get_meta_data_for_object_ids( array( $object_id ) );
+		global $wpdb;
 
-		return isset( $raw_meta_data[ $object_id ] ) ? (array) $raw_meta_data[ $object_id ] : array();
+		$db_info = $this->get_db_info();
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$raw_meta_data = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT {$db_info['meta_id_field']} AS meta_id, meta_key, meta_value FROM {$db_info['table']} WHERE {$db_info['object_id_field']} = %d ORDER BY meta_id",
+				$object->get_id()
+			)
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		return $raw_meta_data;
 	}
 
 	/**
 	 * Deletes meta based on meta ID.
 	 *
-	 * @param  \WC_Data  $object WC_Data object.
-	 * @param  \stdClass $meta (containing at least ->id).
+	 * @param  WC_Data  $object WC_Data object.
+	 * @param  stdClass $meta (containing at least ->id).
 	 *
 	 * @return bool
 	 */
@@ -81,14 +91,7 @@ abstract class CustomMetaDataStore {
 		$db_info = $this->get_db_info();
 		$meta_id = absint( $meta->id );
 
-		return (bool) $wpdb->delete(
-			$db_info['table'],
-			array(
-				$db_info['meta_id_field']   => $meta_id,
-				$db_info['object_id_field'] => $object->get_id(),
-			),
-			'%d'
-		);
+		return (bool) $wpdb->delete( $db_info['table'], array( $db_info['meta_id_field'] => $meta_id ) );
 	}
 
 	/**
@@ -125,8 +128,8 @@ abstract class CustomMetaDataStore {
 	/**
 	 * Update meta.
 	 *
-	 * @param  \WC_Data  $object WC_Data object.
-	 * @param  \stdClass $meta (containing ->id, ->key and ->value).
+	 * @param  WC_Data  $object WC_Data object.
+	 * @param  stdClass $meta (containing ->id, ->key and ->value).
 	 *
 	 * @return bool
 	 */
@@ -144,13 +147,12 @@ abstract class CustomMetaDataStore {
 		);
 		// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_value,WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 
+		$db_info = $this->get_db_info();
+
 		$result = $wpdb->update(
-			$this->get_table_name(),
+			$db_info['table'],
 			$data,
-			array(
-				$this->get_meta_id_field()   => $meta->id,
-				$this->get_object_id_field() => $object->get_id(),
-			),
+			array( $db_info['meta_id_field'] => $meta->id ),
 			'%s',
 			'%d'
 		);
@@ -261,48 +263,6 @@ abstract class CustomMetaDataStore {
 		}
 
 		return $wpdb->get_col( $query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query is prepared.
-	}
-
-	/**
-	 * Return order meta data for multiple IDs.
-	 *
-	 * @param array $object_ids List of object IDs.
-	 *
-	 * @return \stdClass[][] An array, keyed by object_ids, containing array of raw meta data records for each object. Objects with no meta data will have an empty array.
-	 */
-	public function get_meta_data_for_object_ids( array $object_ids ): array {
-		global $wpdb;
-
-		if ( empty( $object_ids ) ) {
-			return array();
-		}
-
-		$id_placeholder   = implode( ', ', array_fill( 0, count( $object_ids ), '%d' ) );
-		$meta_table       = $this->get_table_name();
-		$object_id_column = $this->get_object_id_field();
-
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- $object_id_column and $meta_table is hardcoded. IDs are prepared above.
-		$meta_rows = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT id, $object_id_column as object_id, meta_key, meta_value FROM $meta_table WHERE $object_id_column in ( $id_placeholder )",
-				$object_ids
-			)
-		);
-		// phpcs:enable
-
-		$meta_data = array_fill_keys( $object_ids, array() );
-		foreach ( $meta_rows as $meta_row ) {
-			if ( ! isset( $meta_data[ $meta_row->object_id ] ) ) {
-				$meta_data[ $meta_row->object_id ] = array();
-			}
-			$meta_data[ $meta_row->object_id ][] = (object) array(
-				'meta_id'    => $meta_row->id,
-				'meta_key'   => $meta_row->meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				'meta_value' => $meta_row->meta_value, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
-			);
-		}
-
-		return $meta_data;
 	}
 
 }

@@ -2,7 +2,6 @@
 namespace Automattic\WooCommerce\Blocks\Payments\Integrations;
 
 use Automattic\WooCommerce\Blocks\Assets\Api;
-use WC_Gateway_COD;
 
 /**
  * Cash on Delivery (COD) payment method integration
@@ -15,7 +14,7 @@ final class CashOnDelivery extends AbstractPaymentMethodType {
 	 *
 	 * @var string
 	 */
-	protected $name = WC_Gateway_COD::ID;
+	protected $name = 'cod';
 
 	/**
 	 * An instance of the Asset Api

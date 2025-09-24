@@ -5,26 +5,11 @@
  * @package Polylang
  *
  * @since 2.7
- *
- * @var array[]    $steps {
- *   List of steps.
- *
- *     @type array {
- *         List of step properties.
- *
- *         @type string   $name    I18n string which names the step.
- *         @type callable $view    The callback function use to display the step content.
- *         @type callable $handler The callback function use to process the step after it is submitted.
- *         @type array    $scripts List of script handles needed by the step.
- *         @type array    $styles  The list of style handles needed by the step.
- *     }
- * }
- * @var string   $current_step Current step.
- * @var string[] $styles       List of wizard page styles.
  */
 
-defined( 'ABSPATH' ) || exit;
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Don't access directly.
+}
 $admin_body_class = array( 'pll-wizard', 'wp-core-ui' );
 if ( is_rtl() ) {
 	$admin_body_class[] = 'rtl';
@@ -47,8 +32,9 @@ if ( is_rtl() ) {
 		<script>
 			var ajaxurl = '<?php echo esc_url( admin_url( 'admin-ajax.php', 'relative' ) ); ?>';
 		</script>
-		<?php wp_print_scripts( $steps[ $current_step ]['scripts'] ); ?>
-		<?php wp_print_styles( array_merge( $styles, $steps[ $current_step ]['styles'] ) ); ?>
+		<?php do_action( 'admin_enqueue_scripts' ); ?>
+		<?php wp_print_scripts( $this->steps[ $this->step ]['scripts'] ); ?>
+		<?php wp_print_styles( array_merge( $this->styles, $this->steps[ $this->step ]['styles'] ) ); ?>
 		<?php do_action( 'admin_head' ); ?>
 	</head>
 	<body class="<?php echo join( ' ', array_map( 'sanitize_key', $admin_body_class ) ); ?>">
@@ -60,10 +46,10 @@ if ( is_rtl() ) {
 		</h1>
 		<ol class="pll-wizard-steps">
 			<?php
-			foreach ( $steps as $step_key => $step ) {
-				$is_completed = array_search( $current_step, array_keys( $steps ), true ) > array_search( $step_key, array_keys( $steps ), true );
+			foreach ( $this->steps as $step_key => $step ) {
+				$is_completed = array_search( $this->step, array_keys( $this->steps ), true ) > array_search( $step_key, array_keys( $this->steps ), true );
 
-				if ( $step_key === $current_step ) {
+				if ( $step_key === $this->step ) {
 					?>
 					<li class="active"><?php echo esc_html( $step['name'] ); ?></li>
 					<?php
@@ -86,15 +72,15 @@ if ( is_rtl() ) {
 			?>
 		</ol>
 		<div class="pll-wizard-content">
-			<form method="post" class="<?php echo esc_attr( "{$current_step}-step" ); ?>">
+			<form method="post" class="<?php echo esc_attr( "{$this->step}-step" ); ?>">
 				<?php
 				wp_nonce_field( 'pll-wizard', '_pll_nonce' );
 
-				if ( ! empty( $steps[ $current_step ]['view'] ) ) {
-					call_user_func( $steps[ $current_step ]['view'] );
+				if ( ! empty( $this->steps[ $this->step ]['view'] ) ) {
+					call_user_func( $this->steps[ $this->step ]['view'], $this );
 				}
 				?>
-				<?php if ( 'last' !== $current_step ) : ?>
+				<?php if ( 'last' !== $this->step ) : ?>
 				<p class="pll-wizard-actions step">
 					<button
 						type="submit"
@@ -109,7 +95,7 @@ if ( is_rtl() ) {
 			</form>
 		</div>
 		<div class="pll-wizard-footer">
-			<?php if ( 'last' !== $current_step ) : ?>
+			<?php if ( 'last' !== $this->step ) : ?>
 				<a
 					class="pll-wizard-footer-links"
 					href="<?php echo esc_url( admin_url() ); ?>"

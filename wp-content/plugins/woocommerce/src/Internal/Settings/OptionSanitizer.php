@@ -5,6 +5,8 @@
 
 namespace Automattic\WooCommerce\Internal\Settings;
 
+use Automattic\WooCommerce\Internal\Traits\AccessiblePrivateMethods;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -13,6 +15,8 @@ defined( 'ABSPATH' ) || exit;
  * @since 6.6.0
  */
 class OptionSanitizer {
+
+	use AccessiblePrivateMethods;
 
 	/**
 	 * OptionSanitizer constructor.
@@ -27,7 +31,7 @@ class OptionSanitizer {
 		);
 
 		foreach ( $color_options as $option_name ) {
-			add_filter(
+			self::add_filter(
 				"woocommerce_admin_settings_sanitize_option_{$option_name}",
 				array( $this, 'sanitize_color_option' ),
 				10,
@@ -35,7 +39,7 @@ class OptionSanitizer {
 			);
 		}
 		// Cast "Out of stock threshold" field to absolute integer to prevent storing empty value.
-		add_filter( 'woocommerce_admin_settings_sanitize_option_woocommerce_notify_no_stock_amount', 'absint' );
+		self::add_filter( 'woocommerce_admin_settings_sanitize_option_woocommerce_notify_no_stock_amount', 'absint' );
 	}
 
 	/**
@@ -46,10 +50,8 @@ class OptionSanitizer {
 	 * @param string $value Option value.
 	 * @param array  $option Option data.
 	 * @return string Color in hex format.
-	 *
-	 * @internal For exclusive usage of WooCommerce core, backwards compatibility not guaranteed.
 	 */
-	public function sanitize_color_option( $value, $option ) {
+	private function sanitize_color_option( $value, $option ) {
 		$value = sanitize_hex_color( $value );
 
 		// If invalid, try the current value.

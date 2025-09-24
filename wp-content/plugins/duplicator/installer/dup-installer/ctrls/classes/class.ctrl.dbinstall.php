@@ -504,7 +504,20 @@ class DUPX_DBInstall extends AbstractJsonSerializable
 
     protected function pingAndReconnect()
     {
-        if (!mysqli_ping($this->dbh)) {
+        if (!$this->dbh instanceof mysqli) {
+            $this->dbConnect(true);
+            return;
+        }
+
+        try {
+            $result = $this->dbh->query('/* ping */ DO 1');
+
+            if ($result instanceof mysqli_result) {
+                $result->free();
+            }
+        } catch (Throwable $e) {
+            Log::info('DB PING FAILED: ' . $e->getMessage());
+            Log::info('Attempting to reconnect');
             $this->dbConnect(true);
         }
     }

@@ -1199,8 +1199,7 @@ jQuery( function ( $ ) {
 			var do_variation_action = $( this ).val(),
 				data = {},
 				changes = 0,
-				value,
-				cancel = false;
+				value;
 
 			switch ( do_variation_action ) {
 				case 'delete_all':
@@ -1229,27 +1228,9 @@ jQuery( function ( $ ) {
 				case 'variable_regular_price_decrease':
 				case 'variable_sale_price_increase':
 				case 'variable_sale_price_decrease':
-					let promptMessage =
-						woocommerce_admin_meta_boxes_variations.i18n_enter_a_value_fixed_or_percent;
-
-					/**
-					 * There are two cases where sale price becomes more than regular price:
-					 * 1. When regular price is decreased
-					 * 2. When sale price is increased
-					 *
-					 * In both cases, we need to show the warning message.
-					 */
-					if (
-						do_variation_action ===
-							'variable_regular_price_decrease' ||
-						do_variation_action === 'variable_sale_price_increase'
-					) {
-						promptMessage +=
-							'\n\n' +
-							woocommerce_admin_meta_boxes_variations.i18n_sale_price_warning;
-					}
-
-					value = window.prompt( promptMessage );
+					value = window.prompt(
+						woocommerce_admin_meta_boxes_variations.i18n_enter_a_value_fixed_or_percent
+					);
 
 					if ( value != null ) {
 						if ( value.indexOf( '%' ) >= 0 ) {
@@ -1265,7 +1246,7 @@ jQuery( function ( $ ) {
 							);
 						}
 					} else {
-						cancel = true;
+						return;
 					}
 					break;
 				case 'variable_regular_price':
@@ -1285,16 +1266,7 @@ jQuery( function ( $ ) {
 					if ( value != null ) {
 						data.value = value;
 					} else {
-						cancel = true;
-					}
-					break;
-				case 'variable_unset_cogs_value':
-					if (
-						! window.confirm (
-							woocommerce_admin_meta_boxes_variations.i18n_variation_cost_remove_warning
-							)
-					) {
-						cancel = true;
+						return;
 					}
 					break;
 				case 'variable_sale_schedule':
@@ -1314,7 +1286,7 @@ jQuery( function ( $ ) {
 					}
 
 					if ( false === data.date_to && false === data.date_from ) {
-						cancel = true;
+						return;
 					}
 					break;
 				default:
@@ -1327,48 +1299,41 @@ jQuery( function ( $ ) {
 					);
 
 					if ( null === data ) {
-						cancel = true;
+						return;
 					}
 					break;
 			}
 
-			if ( cancel ) {
-				$( '#field_to_edit' ).val( 'bulk_actions' );
+			if ( 'delete_all' === do_variation_action && data.allowed ) {
+				$( '#variable_product_options' )
+					.find( '.variation-needs-update' )
+					.removeClass( 'variation-needs-update' );
+				$( '.generate_variations' ).text( 'Generate variations' );
 			} else {
-				if ( 'delete_all' === do_variation_action && data.allowed ) {
-					$( '#variable_product_options' )
-						.find( '.variation-needs-update' )
-						.removeClass( 'variation-needs-update' );
-					$( '.generate_variations' ).text( 'Generate variations' );
-				} else {
-					wc_meta_boxes_product_variations_ajax.check_for_changes();
-				}
-
-				wc_meta_boxes_product_variations_ajax.block();
-
-				$.ajax( {
-					url: woocommerce_admin_meta_boxes_variations.ajax_url,
-					data: {
-						action: 'woocommerce_bulk_edit_variations',
-						security:
-						woocommerce_admin_meta_boxes_variations.bulk_edit_variations_nonce,
-						product_id: woocommerce_admin_meta_boxes_variations.post_id,
-						product_type: $( '#product-type' ).val(),
-						bulk_action: do_variation_action,
-						data: data,
-					},
-					type: 'POST',
-					success: function () {
-						wc_meta_boxes_product_variations_pagenav.go_to_page(
-							1,
-							changes
-						);
-					},
-					complete: function () {
-						$( '#field_to_edit' ).val( 'bulk_actions' );
-					}
-				});
+				wc_meta_boxes_product_variations_ajax.check_for_changes();
 			}
+
+			wc_meta_boxes_product_variations_ajax.block();
+
+			$.ajax( {
+				url: woocommerce_admin_meta_boxes_variations.ajax_url,
+				data: {
+					action: 'woocommerce_bulk_edit_variations',
+					security:
+						woocommerce_admin_meta_boxes_variations.bulk_edit_variations_nonce,
+					product_id: woocommerce_admin_meta_boxes_variations.post_id,
+					product_type: $( '#product-type' ).val(),
+					bulk_action: do_variation_action,
+					data: data,
+				},
+				type: 'POST',
+				success: function () {
+					wc_meta_boxes_product_variations_pagenav.go_to_page(
+						1,
+						changes
+					);
+				},
+			} );
 		},
 
 		/**

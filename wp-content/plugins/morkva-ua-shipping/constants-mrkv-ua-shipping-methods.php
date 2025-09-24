@@ -13,7 +13,7 @@ define('MRKV_UA_SHIPPING_LIST', array(
 			'invoice_pdf' => 'https://my.novaposhta.ua/orders/printDocument/orders[]/',
 			'invoice_sticker' => 'https://my.novaposhta.ua/orders/printMarkings/orders[]/',
 			'invoice_link_end' => '/type/pdf/apiKey/',
-			'invoice_view' => 'https://novaposhta.ua/tracking/?cargo_number='
+			'invoice_view' => 'https://novaposhta.ua/tracking/'
 		),
 		'old_slugs' => array(
 			'mrkv_ua_shipping_nova-poshta' => 'nova_poshta_shipping_method',
@@ -457,48 +457,6 @@ define('MRKV_UA_SHIPPING_LIST', array(
 		'old_slugs' => array(),
 		'old_ttn_slug' => '',
 		'method' => array(
-			/*'mrkv_ua_shipping_nova-global' => array(
-				'class' => 'MRKV_UA_SHIPPING_NOVA_GLOBAL',
-				'slug' => 'mrkv_ua_shipping_nova-global',
-				'filename' => 'mrkv-ua-shipping-method-nova-global',
-				'checkout_fields' => array(
-					'_warehouse' => array(
-						'type' => 'select',
-						'autocomplete' => 'off',
-						'options' => array('' => __('Choose the warehouse', 'mrkv-ua-shipping')),
-						'required' => true,
-						'label' => __('Warehouse', 'mrkv-ua-shipping'),
-						'replace' => '_address_1'
-					),
-					'_warehouse_ref' => array(
-						'type' => 'hidden',
-						'autocomplete' => 'off',
-						'replace' => '_warehouse_ref',
-						'required' => true,
-						'label' => __('Warehouse', 'mrkv-ua-shipping'),
-					),
-					'_city_label' => array(
-						'type' => 'hidden',
-						'autocomplete' => 'off',
-						'replace' => '_city'
-					),
-					'_address' => array(
-						'type' => 'hidden',
-						'autocomplete' => 'off',
-						'replace' => '_address_2'
-					),
-					'_area_name' => array(
-						'type' => 'hidden',
-						'autocomplete' => 'off',
-						'replace' => '_state'
-					),
-					'_zipcode' => array(
-						'type' => 'hidden',
-						'autocomplete' => 'off',
-						'replace' => '_postcode'
-					),
-				)
-			),*/
 			'mrkv_ua_shipping_nova-global_address' => array(
 				'class' => 'MRKV_UA_SHIPPING_NOVA_GLOBAL_ADDRESS',
 				'slug' => 'mrkv_ua_shipping_nova-global_address',

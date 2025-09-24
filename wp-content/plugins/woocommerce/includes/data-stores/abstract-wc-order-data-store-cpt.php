@@ -6,7 +6,6 @@
  */
 
 use Automattic\Jetpack\Constants;
-use Automattic\WooCommerce\Enums\OrderStatus;
 use Automattic\WooCommerce\Proxies\LegacyProxy;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -320,7 +319,7 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 			}
 
 			wp_trash_post( $id );
-			$order->set_status( OrderStatus::TRASH );
+			$order->set_status( 'trash' );
 
 			if ( $do_filters ) {
 				/**
@@ -361,7 +360,7 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 			 *
 			 * @since 3.7.0
 			 */
-			$order_status = apply_filters( 'woocommerce_default_order_status', OrderStatus::PENDING );
+			$order_status = apply_filters( 'woocommerce_default_order_status', 'pending' );
 		}
 
 		$post_status    = $order_status;
@@ -371,7 +370,7 @@ abstract class Abstract_WC_Order_Data_Store_CPT extends WC_Data_Store_WP impleme
 		// In the future this should only happen based on `wc_is_order_status`, but in order to
 		// preserve back-compatibility this happens to all statuses except a select few. A doing_it_wrong
 		// Notice will be needed here, followed by future removal.
-		if ( ! in_array( $post_status, array( OrderStatus::AUTO_DRAFT, OrderStatus::DRAFT, OrderStatus::TRASH ), true ) && in_array( 'wc-' . $post_status, $valid_statuses, true ) ) {
+		if ( ! in_array( $post_status, array( 'auto-draft', 'draft', 'trash' ), true ) && in_array( 'wc-' . $post_status, $valid_statuses, true ) ) {
 			$post_status = 'wc-' . $post_status;
 		}
 

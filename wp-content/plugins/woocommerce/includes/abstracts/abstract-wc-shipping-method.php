@@ -10,8 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use Automattic\WooCommerce\Enums\ProductTaxStatus;
-
 /**
  * WooCommerce Shipping Method Class.
  *
@@ -81,7 +79,7 @@ abstract class WC_Shipping_Method extends WC_Settings_API {
 	 *
 	 * @var string
 	 */
-	public $tax_status = ProductTaxStatus::TAXABLE;
+	public $tax_status = 'taxable';
 
 	/**
 	 * Fee for the method (if applicable).
@@ -194,7 +192,7 @@ abstract class WC_Shipping_Method extends WC_Settings_API {
 	 * @return boolean
 	 */
 	public function is_taxable() {
-		return wc_tax_enabled() && ProductTaxStatus::TAXABLE === $this->tax_status && ( WC()->customer && ! WC()->customer->get_is_vat_exempt() );
+		return wc_tax_enabled() && 'taxable' === $this->tax_status && ( WC()->customer && ! WC()->customer->get_is_vat_exempt() );
 	}
 
 	/**
@@ -332,7 +330,6 @@ abstract class WC_Shipping_Method extends WC_Settings_API {
 		$rate->set_label( $args['label'] );
 		$rate->set_cost( $total_cost );
 		$rate->set_taxes( $taxes );
-		$rate->set_tax_status( $this->tax_status );
 
 		if ( ! empty( $args['meta_data'] ) ) {
 			foreach ( $args['meta_data'] as $key => $value ) {
@@ -480,7 +477,7 @@ abstract class WC_Shipping_Method extends WC_Settings_API {
 	/**
 	 * Get_option function.
 	 *
-	 * Gets an option from the settings API, using defaults if necessary to prevent undefined notices.
+	 * Gets and option from the settings API, using defaults if necessary to prevent undefined notices.
 	 *
 	 * @param  string $key Key.
 	 * @param  mixed  $empty_value Empty value.

@@ -7,21 +7,32 @@ use Automattic\WooCommerce\GoogleListingsAndAds\API\Site\Controllers\BaseControl
 use Automattic\WooCommerce\GoogleListingsAndAds\Exception\ValidateInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Registerable;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service;
-use Automattic\WooCommerce\GoogleListingsAndAds\Internal\ContainerAwareTrait;
-use Automattic\WooCommerce\GoogleListingsAndAds\Internal\Interfaces\ContainerAwareInterface;
+use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Psr\Container\ContainerInterface;
 
 /**
  * Class RESTControllers
  *
- * Container used for:
- * - classes tagged with 'rest_controller'
- *
  * @package Automattic\WooCommerce\GoogleListingsAndAds\API\Site
  */
-class RESTControllers implements ContainerAwareInterface, Service, Registerable {
+class RESTControllers implements Service, Registerable {
 
-	use ContainerAwareTrait;
 	use ValidateInterface;
+
+	/**
+	 * Our container object.
+	 *
+	 * @var ContainerInterface
+	 */
+	protected $container;
+
+	/**
+	 * RESTControllers constructor.
+	 *
+	 * @param ContainerInterface $container
+	 */
+	public function __construct( ContainerInterface $container ) {
+		$this->container = $container;
+	}
 
 	/**
 	 * Register a service.

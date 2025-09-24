@@ -15,10 +15,6 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Class ReportsController
  *
- * ContainerAware used for:
- * - AdsReport
- * - WP (in parent class)
- *
  * @package Automattic\WooCommerce\GoogleListingsAndAds\API\Site\Controllers\Ads
  */
 class ReportsController extends BaseReportsController {

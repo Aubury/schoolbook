@@ -36,7 +36,7 @@ class NotificationStatus implements ValueInterface {
 	protected $status;
 
 	/**
-	 * NotificationStatus constructor.
+	 * SyncStatus constructor.
 	 *
 	 * @param string $status The value.
 	 *

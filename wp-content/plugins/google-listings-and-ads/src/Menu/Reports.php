@@ -22,10 +22,14 @@ class Reports implements Service, Registerable {
 			function () {
 				wc_admin_register_page(
 					[
-						'title'  => __( 'Reports', 'google-listings-and-ads' ),
-						'parent' => 'google-listings-and-ads-category',
-						'path'   => '/google/reports',
-						'id'     => 'google-reports',
+						'title'    => __( 'Reports', 'google-listings-and-ads' ),
+						'parent'   => 'google-listings-and-ads-category',
+						'path'     => '/google/reports',
+						'id'       => 'google-reports',
+						'nav_args' => [
+							'order'  => 20,
+							'parent' => 'google-listings-and-ads-category',
+						],
 					]
 				);
 			}

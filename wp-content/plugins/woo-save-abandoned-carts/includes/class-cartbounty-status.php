@@ -46,7 +46,7 @@ class CartBounty_System_Status{
 	 * Output system status information
 	 *
 	 * @since    6.1.2
-	 * @return   Array
+	 * @return   HTML
 	 */
 	public function get_system_status(){
 
@@ -119,10 +119,6 @@ class CartBounty_System_Status{
 
 		if( $main_settings['notification_email'] ){
 			$settings[] = 'Notification emails: '. esc_html( $main_settings['notification_email'] );
-		}
-
-		if( $main_settings['email_consent'] ){
-			$settings[] = 'Enable email consent';
 		}
 
 		if( $main_settings['lift_email'] ){
@@ -253,11 +249,6 @@ class CartBounty_System_Status{
 					</tbody>';
 		$output .= '</table>';
 
-		$response = array(
-			'container' => $admin->output_modal_container( 'report' ),
-			'report' 	=> $output
-		);
-
-		wp_send_json_success( $response );
+		wp_send_json_success( $output );
 	}
 }

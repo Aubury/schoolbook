@@ -1,6 +1,6 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 3,
+	"apiVersion": 2,
 	"name": "woocommerce/product-taxonomy-field",
 	"title": "Taxonomy",
 	"category": "widgets",
@@ -10,31 +10,31 @@
 	"attributes": {
 		"slug": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"property": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"label": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"createTitle": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"dialogNameHelpText": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
 		"parentTaxonomyText": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		},
-		"help": {
+		"placeholder": {
 			"type": "string",
-			"role": "content"
+			"__experimentalRole": "content"
 		}
 	},
 	"supports": {

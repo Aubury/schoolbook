@@ -26,18 +26,12 @@
 			"default": false
 		}
 	},
-	"usesContext": [
-		"query",
-		"queryId",
-		"postId"
-	],
-	"keywords": [
-		"WooCommerce"
-	],
+	"usesContext": [ "query", "queryId", "postId" ],
+	"keywords": [ "WooCommerce" ],
 	"supports": {
 		"align": true
 	},
 	"textdomain": "woocommerce",
-	"apiVersion": 3,
+	"apiVersion": 2,
 	"$schema": "https://schemas.wp.org/trunk/block.json"
 }
