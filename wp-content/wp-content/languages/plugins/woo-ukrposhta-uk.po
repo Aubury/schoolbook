@@ -1,0 +1,178 @@
+# Translation of Plugins - Woo Ukrposhta - Stable (latest release) in Ukrainian
+# This file is distributed under the same license as the Plugins - Woo Ukrposhta - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2024-10-18 13:04:30+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: uk_UA\n"
+"Project-Id-Version: Plugins - Woo Ukrposhta - Stable (latest release)\n"
+
+#: includes/class-morkvaup-plugin-loader.php:1250
+msgid "Укрпошта"
+msgstr "Укрпошта"
+
+#: includes/class-morkvaup-plugin-loader.php:1105
+msgid "Коди ТН ЗЕД в атрибутах"
+msgstr "Коди ТН ЗЕД в атрибутах"
+
+#: includes/class-morkvaup-plugin-loader.php:1091
+msgid "Глобальний код ТН ЗЕД"
+msgstr "Глобальний код ТН ЗЕД"
+
+#: includes/class-morkvaup-plugin-loader.php:823
+msgid "Відправник представляє"
+msgstr "Відправник представляє"
+
+#: includes/class-morkvaup-plugin-loader.php:777
+msgid "Довжина відправлення, см"
+msgstr "Довжина відправлення, см"
+
+#: includes/class-morkvaup-plugin-loader.php:764
+msgid "Вага відправлення, г"
+msgstr "Вага відправлення, г"
+
+#: includes/class-morkvaup-plugin-callbacks.php:400
+msgid "Виберіть атрибут товару, що встановлює коди ТН ЗЕД"
+msgstr "Виберіть атрибут товару, що встановлює коди ТН ЗЕД"
+
+#: classes/ukrPoshtaShippingMethod.php:85
+msgid "Укрпошта "
+msgstr "Укрпошта "
+
+#: classes/ukrPoshtaFrontendInjector.php:161
+msgid "Вкажіть по батькові"
+msgstr "Вкажіть по батькові"
+
+#: classes/ukrPoshtaFrontendInjector.php:160
+msgid "По батькові"
+msgstr "По батькові"
+
+#: classes/ukrPoshtaFrontendInjector.php:150
+msgid "Введіть назву міста отримувача"
+msgstr "Введіть назву міста отримувача"
+
+#: classes/ukrPoshtaFrontendInjector.php:149
+msgid "Населений пункт"
+msgstr "Населений пункт"
+
+#: classes/ukrPoshtaFrontendInjector.php:139
+msgid "Введіть поштовий індекс отримувача"
+msgstr "Введіть поштовий індекс отримувача"
+
+#: classes/ukrPoshtaFrontendInjector.php:138
+msgid "Індекс Відділення"
+msgstr "Індекс відділення"
+
+#: classes/ukrPoshtaAddressShippingMethod.php:85
+msgid "Укрпошта на Адресу "
+msgstr "Укрпошта на Адресу "
+
+#: classes/ukrPoshtaAddressShippingMethod.php:84
+#: classes/ukrPoshtaShippingMethod.php:84
+msgid "This controls the title which the user sees during checkout."
+msgstr "Заголовок, котрий бачить користувач у процесі оформлення замовлення."
+
+#: classes/ukrPoshtaAddressShippingMethod.php:82
+#: classes/ukrPoshtaShippingMethod.php:82
+msgid "Title"
+msgstr "Заголовок"
+
+#: classes/OptionsRepository.php:20
+msgid "Введіть адресу доставки"
+msgstr "Введіть адресу доставки"
+
+#: classes/OptionsRepository.php:19
+msgid "Доставка на адресу"
+msgstr "Доставка на адресу"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:611
+msgid "Search"
+msgstr "Пошук"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:606
+msgid "Мої відправлення Укрпошти "
+msgstr "Мої відправлення Укрпошти "
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:572
+msgid "Відправлень Укрпошти для відображення не знайдено."
+msgstr "Відправлень Укрпошти для відображення не знайдено."
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:495
+msgid "Apply"
+msgstr "Застосувати"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:482
+msgid "Bulk Actions"
+msgstr "Масові дії"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:480
+msgid "Select bulk action"
+msgstr "Select bulk action"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:448
+msgid "Друкувати"
+msgstr "Друкувати"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:447
+msgid "Delete"
+msgstr "Delete"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:140
+msgid "Статус"
+msgstr "Статус"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:139
+msgid "Напрямок"
+msgstr "Напрямок"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:138
+msgid "При не врученні"
+msgstr "При не врученні"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:137
+msgid "Тип доставки"
+msgstr "Тип доставки"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:136
+msgid "Тип відправлення"
+msgstr "Тип відправлення"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:135
+msgid "Вартість доставки"
+msgstr "Вартість доставки"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:134
+msgid "ID Замовлення"
+msgstr "ID замовлення"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:133
+msgid "Номер накладної"
+msgstr "Номер накладної"
+
+#: admin/partials/morkvaup-plugin-invoices-page.php:132
+msgid "ID накладної"
+msgstr "ID накладної"
+
+#. Author of the plugin
+#: morkvaup-plugin.php
+msgid "Morkva"
+msgstr "Morkva"
+
+#. Description of the plugin
+#: morkvaup-plugin.php
+msgid "Генеруйте накладні просто зі сторінки замовлення і зекономте тонну часу на відділенні при відправці."
+msgstr "Генеруйте накладні просто зі сторінки замовлення і зекономте тонну часу на відділенні при відправці."
+
+#. Plugin URI of the plugin
+#: morkvaup-plugin.php
+msgid "https://morkva.co.ua/shop/woo-ukrposhta-pro-lifetime"
+msgstr "https://morkva.co.ua/shop/woo-ukrposhta-pro-lifetime"
+
+#. Plugin Name of the plugin
+#: morkvaup-plugin.php
+msgid "Ukrposhta"
+msgstr "Ukrposhta"

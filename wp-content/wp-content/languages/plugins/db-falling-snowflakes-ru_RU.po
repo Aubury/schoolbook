@@ -1,0 +1,190 @@
+# Translation of Plugins - DB Falling Snowflakes - Stable (latest release) in Russian
+# This file is distributed under the same license as the Plugins - DB Falling Snowflakes - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2025-01-05 20:38:37+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: ru\n"
+"Project-Id-Version: Plugins - DB Falling Snowflakes - Stable (latest release)\n"
+
+#: inc/admin.php:210
+msgid "Set when the plugin is active"
+msgstr "Укажите, когда плагин активен"
+
+#: inc/admin.php:209
+msgid "Period of activity"
+msgstr "Период активности"
+
+#: inc/admin.php:188
+msgid "December"
+msgstr "декабрь"
+
+#: inc/admin.php:187
+msgid "November"
+msgstr "ноябрь"
+
+#: inc/admin.php:186
+msgid "October"
+msgstr "октябрь"
+
+#: inc/admin.php:185
+msgid "September"
+msgstr "сентябрь"
+
+#: inc/admin.php:184
+msgid "August"
+msgstr "август"
+
+#: inc/admin.php:183
+msgid "July"
+msgstr "июль"
+
+#: inc/admin.php:182
+msgid "June"
+msgstr "июнь"
+
+#: inc/admin.php:181
+msgid "May"
+msgstr "май"
+
+#: inc/admin.php:180
+msgid "April"
+msgstr "апрель"
+
+#: inc/admin.php:179
+msgid "March"
+msgstr "март"
+
+#: inc/admin.php:178
+msgid "February"
+msgstr "февраль"
+
+#: inc/admin.php:177
+msgid "January"
+msgstr "январь"
+
+#: inc/admin.php:347
+msgid "Desktop"
+msgstr "Компьютер"
+
+#: inc/admin.php:341
+msgid "Tablet"
+msgstr "Планшет"
+
+#: inc/admin.php:335
+msgid "Mobile"
+msgstr "Смартфон"
+
+#: inc/admin.php:483
+msgid "Once installed it will run the script only in the period of time when you want. A lot of options to customize snowflakes and their actions."
+msgstr "После установки скрипт будет запущен только в тот период времени, когда вы захотите. Множество опций для настройки снежинок и их поведения."
+
+#: inc/admin.php:481
+msgid "The plugin generates snowflakes falling down on the foreground of the pages of the website."
+msgstr "Плагин генерирует снежинки, падающие на страницах веб-сайта."
+
+#: inc/admin.php:477
+msgid "About"
+msgstr "О плагине"
+
+#: inc/admin.php:431
+msgid "Opacity"
+msgstr "Прозрачность"
+
+#: inc/admin.php:283 inc/admin.php:292 inc/admin.php:301 inc/admin.php:310
+#: inc/admin.php:319
+msgid "Color"
+msgstr "Цвет"
+
+#: inc/admin.php:280
+msgid "Choose 5 colors of the snowflakes. The color of every other snowflake will be chosen randomly from these five ones"
+msgstr "Выберите 5 цветов снежинок. Цвет каждой второй снежинки будет выбран случайным образом из этих пяти"
+
+#: inc/admin.php:279
+msgid "Colors"
+msgstr "Цвета"
+
+#: inc/admin.php:405
+msgid "Speed"
+msgstr "Скорость"
+
+#: inc/admin.php:388
+msgid "Maximum Size"
+msgstr "Максимальный размер"
+
+#: inc/admin.php:371
+msgid "Minimum Size"
+msgstr "Минимальный размер"
+
+#: inc/admin.php:354
+msgid "Maximum number of snowflakes"
+msgstr "Максимальное количество снежинок"
+
+#: inc/admin.php:331
+msgid "Customization of the performance of the snowflakes"
+msgstr "Настройка исполнения снежинок"
+
+#: inc/admin.php:330
+msgid "Parameters"
+msgstr "Параметры"
+
+#: inc/admin.php:245
+msgid "Stop on"
+msgstr "Когда остановить"
+
+#: inc/admin.php:176
+msgid "Month"
+msgstr "Месяц"
+
+#: inc/admin.php:217 inc/admin.php:249
+msgid "Day"
+msgstr "День"
+
+#: inc/admin.php:213
+msgid "Start on"
+msgstr "Когда запустить"
+
+#: inc/admin.php:49
+msgid "Error: You do not have the permission to update the value"
+msgstr "Ошибка: у вас нет разрешения на обновление этого значения"
+
+#: bisteinoff-snow.php:192 inc/admin.php:202
+msgid "Settings"
+msgstr "Настройки"
+
+#: bisteinoff-snow.php:166 inc/admin.php:194
+msgid "DB Snow Flakes"
+msgstr "DB Snow Flakes"
+
+#: bisteinoff-snow.php:165
+msgid "DB Snow Flakes Settings"
+msgstr "Настройки DB Snow Flakes"
+
+#. Author URI of the plugin
+#: bisteinoff-snow.php
+msgid "https://bisteinoff.com"
+msgstr "https://bisteinoff.com"
+
+#. Author of the plugin
+#: bisteinoff-snow.php
+msgid "Denis Bisteinov"
+msgstr "Денис Биштейнов"
+
+#. Description of the plugin
+#: bisteinoff-snow.php
+msgid "Add snow falling animation to your website. Personal settings to make your own style of snowflakes and their movement. Once installed the plugin will run only during the period of time that you set."
+msgstr "Добавьте анимацию падения снега на свой веб-сайт. Персональные настройки для создания вашего собственного стиля снежинок и их движения. После установки плагин будет запущен только в течение заданного вами периода времени."
+
+#. Plugin URI of the plugin
+#: bisteinoff-snow.php
+msgid "https://github.com/bisteinoff/db-snow"
+msgstr "https://github.com/bisteinoff/db-snow"
+
+#. Plugin Name of the plugin
+#: bisteinoff-snow.php
+msgid "DB Falling Snowflakes"
+msgstr "DB Falling Snowflakes"

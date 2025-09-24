@@ -1,0 +1,743 @@
+# Translation of Plugins - Weather Effect &#8211; Christmas, Santa, Snow Falling, Snowflake Effect - Stable (latest release) in Russian
+# This file is distributed under the same license as the Plugins - Weather Effect &#8211; Christmas, Santa, Snow Falling, Snowflake Effect - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2023-05-26 09:02:15+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: ru\n"
+"Project-Id-Version: Plugins - Weather Effect &#8211; Christmas, Santa, Snow Falling, Snowflake Effect - Stable (latest release)\n"
+
+#: settings.php:84
+msgid "Disable"
+msgstr "Отключить"
+
+#: settings.php:77
+msgid "Enable"
+msgstr "Включить"
+
+#: settings.php:62
+msgid "Turn ON / OFF Effect"
+msgstr "Включить/выключить эффект"
+
+#: settings/winter-settings.php:141
+msgid "C. Snows Flakes Falls Time Duration"
+msgstr "C. Продолжительность падения снежных хлопьев"
+
+#: settings/winter-settings.php:126
+msgid "B. Maximum Snows Flakes Size On page"
+msgstr "B. Макс. размер снежных хлопьев на странице"
+
+#: settings/winter-settings.php:111
+msgid "A. Minimum Snows Flakes Size On page"
+msgstr "A. Мин. размер снежных хлопьев на странице"
+
+#: settings/winter-settings.php:109
+msgid "2. Falling Snows Flakes Settings"
+msgstr "2. Настройки снежных хлопьев"
+
+#: settings/winter-settings.php:18
+msgid "Snows"
+msgstr "Снег"
+
+#: settings/christmas-snow-settings.php:408
+msgid "Snowfall Effect Settings"
+msgstr "Настройки эффекта снегопада"
+
+#: settings/christmas-snow-settings.php:340
+msgid "Snow Flake 3"
+msgstr "Снежинка 3"
+
+#: settings/christmas-snow-settings.php:334
+msgid "Snow Flake 2"
+msgstr "Снежинка 2"
+
+#: settings/christmas-snow-settings.php:328
+msgid "Snow Flake 1"
+msgstr "Снежинка 1"
+
+#: settings/christmas-snow-settings.php:29
+msgid "Snowfall Effect"
+msgstr "Эффект снегопада"
+
+#: settings.php:59
+msgid "Configure Settings"
+msgstr "Настройка параметров"
+
+#: settings.php:458
+msgid "Review Appeal"
+msgstr "Оставить отзыв"
+
+#: settings.php:6
+msgid "More Free Plugins"
+msgstr "Больше бесплатных плагинов"
+
+#. Author of the plugin
+#: weather-effect.php
+msgid "A WP Life"
+msgstr "A WP Life"
+
+#. Description of the plugin
+#: weather-effect.php
+msgid "This is Weather Effect Widget."
+msgstr "Это виджет с эффектом погоды."
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: weather-effect.php
+msgid "https://awplife.com/"
+msgstr "https://awplife.com/"
+
+#: settings/winter-settings.php:156
+msgid "D. Select Flakes Color"
+msgstr "D. Выбрать цвет снежинок"
+
+#: settings/winter-settings.php:90
+msgid "D. Snow Flakes Count"
+msgstr "D. Количество снежинок"
+
+#: settings/winter-settings.php:75
+msgid "C. Maximum Snow Size On page"
+msgstr "C. Макс. размер снежинок на странице"
+
+#: settings/winter-settings.php:60
+msgid "B. Minimum Snow Size On page"
+msgstr "B. Мин. размер снежинок на странице"
+
+#: settings/winter-settings.php:33
+msgid "A. Ice Cube Settings"
+msgstr "А. Настройки кубика льда"
+
+#: settings/winter-settings.php:31
+msgid "1. Snow Falls Settings"
+msgstr "1. Настройки падающего снега"
+
+#: settings/winter-settings.php:3
+msgid "Winter Falls Types"
+msgstr "Типы зимнего падения"
+
+#: settings/valentine-settings.php:149
+msgid "Heart 2"
+msgstr "Сердце 2"
+
+#: settings/valentine-settings.php:143
+msgid "Heart 1"
+msgstr "Сердце 1"
+
+#: settings/valentine-settings.php:129
+msgid "Select Valentine Falling Heart"
+msgstr "Выбрать падающие сердце-валентинка"
+
+#: settings/valentine-settings.php:124
+msgid "3. Valentine Heart"
+msgstr "3. Сердце-валентинка"
+
+#: settings/valentine-settings.php:102
+msgid "Balloon 1"
+msgstr "Воздушный шар 1"
+
+#: settings/valentine-settings.php:88
+msgid "Select Valentine Falling Balloon"
+msgstr "Выбрать падающий воздушный шар-валентинка"
+
+#: settings/valentine-settings.php:83
+msgid "2. Valentine Balloon"
+msgstr "2. Воздушный шар-валентинка"
+
+#: settings/valentine-settings.php:61
+msgid "Yellow Rose 2"
+msgstr "Желтая роза 2"
+
+#: settings/valentine-settings.php:55
+msgid "Yellow Rose 1"
+msgstr "Желтая роза 1"
+
+#: settings/valentine-settings.php:49
+msgid "Pink Rose"
+msgstr "Розовая роза"
+
+#: settings/valentine-settings.php:43
+msgid "Red Rose 1"
+msgstr "Красная роза 1"
+
+#: settings/valentine-settings.php:29
+msgid "Select Valentine Falling Rose"
+msgstr "Выбрать падающую розу Валентина"
+
+#: settings/valentine-settings.php:24
+msgid "1. Valentine Rose"
+msgstr "1. Роза Валентина"
+
+#: settings/valentine-settings.php:5
+msgid "Valentine Effect Settings"
+msgstr "Настройки эффекта св. Валентина"
+
+#: settings/thanks-giving-settings.php:45
+msgid "For More Falls Turkey Buy Now"
+msgstr "Для большего кол-ва индейки благодарения  Купить сейчас"
+
+#: settings/thanks-giving-settings.php:43
+msgid "Turkey 1"
+msgstr "Индейка 1"
+
+#: settings/thanks-giving-settings.php:29
+msgid "Select Thanks Giving Falling Turkey"
+msgstr "Выбрать падающую индейку благодарения"
+
+#: settings/thanks-giving-settings.php:24
+msgid "1. Thanks Giving Turkey "
+msgstr "1. Индейка на День благодарения "
+
+#: settings/thanks-giving-settings.php:5
+msgid "Thanks Giving Effect Settings"
+msgstr "Настройки эффекта благодарения"
+
+#: settings/summer-settings.php:83
+msgid "Sun 1"
+msgstr "Солнце 1"
+
+#: settings/summer-settings.php:69
+msgid "Select summer Falling Sun"
+msgstr "Выбрать падающие летнее солнце"
+
+#: settings/summer-settings.php:65
+msgid "2. Summer Sun"
+msgstr "2. Летнее солнце"
+
+#: settings/summer-settings.php:43
+msgid "Drink 1"
+msgstr "Напиток 1"
+
+#: settings/summer-settings.php:29
+msgid "Select Summer Falling Drink"
+msgstr "Выбрать падающий летний напиток"
+
+#: settings/summer-settings.php:24
+msgid "1. Summer Drink"
+msgstr "1. Летний напиток"
+
+#: settings/summer-settings.php:5
+msgid "Summer Effect Settings"
+msgstr "Настройки эффекта лета"
+
+#: settings/spring-settings.php:44
+msgid "For More Spring Leaves Buy Now"
+msgstr "Для большего кол-ва весенних листьев Купить сейчас"
+
+#: settings/spring-settings.php:42
+msgid "Spring Leaf 1"
+msgstr "Весенний лист 1"
+
+#: settings/spring-settings.php:28
+msgid "Select spring Falling Leaf"
+msgstr "Выбрать падающие весенние листья"
+
+#: settings/spring-settings.php:24
+msgid "1. Spring Leaves"
+msgstr "1. Весенние листья"
+
+#: settings/spring-settings.php:5
+msgid "Spring Effect Settings"
+msgstr "Настройки эффекта весны"
+
+#: settings/rainy-settings.php:122
+msgid "Cloud 1"
+msgstr "Облако 1"
+
+#: settings/rainy-settings.php:108
+msgid "Select Rain Falling Cloud"
+msgstr "Выбрать падающие дождливое облако"
+
+#: settings/rainy-settings.php:104
+msgid "3. Rainy Cloud"
+msgstr "3. Дождливое облако"
+
+#: settings/rainy-settings.php:83
+msgid "Drops 1"
+msgstr "Капли 1"
+
+#: settings/rainy-settings.php:69
+msgid "Select Rain Falling Drops"
+msgstr "Выбрать падающие капли дождя"
+
+#: settings/rainy-settings.php:65
+msgid "2. Rainy Drops"
+msgstr "2. Капли дождя"
+
+#: settings/rainy-settings.php:43
+msgid "Umbrella 1"
+msgstr "Зонт 1"
+
+#: settings/rainy-settings.php:29
+msgid "Select Rain Falling Umbrella"
+msgstr "Выбрать падающий зонт от дождя"
+
+#: settings/rainy-settings.php:24
+msgid "1. Rainy Umbrella"
+msgstr "1. Зонт от дождя"
+
+#: settings/rainy-settings.php:5
+msgid "Rain Effect Settings"
+msgstr "Настройки эффекта дождя"
+
+#: settings/new-year-settings.php:102
+msgid "Newyear Sticker 2"
+msgstr "Новогодняя наклейка 2"
+
+#: settings/new-year-settings.php:96
+msgid "Newyear Sticker 1"
+msgstr "Новогодняя наклейка 1"
+
+#: settings/new-year-settings.php:82
+msgid "Select New Year Falling Sticker"
+msgstr "Выбрать падающую новогоднюю наклейку"
+
+#: settings/new-year-settings.php:77
+msgid "2. New Year Sticker"
+msgstr "2. Новогодняя наклейка"
+
+#: settings/new-year-settings.php:55
+msgid "Newyear Balloon 3"
+msgstr "Новогодний воздушный шар 3"
+
+#: settings/new-year-settings.php:49
+msgid "Newyear Balloon 2"
+msgstr "Новогодний воздушный шар 2"
+
+#: settings/new-year-settings.php:43
+msgid "Newyear Balloon 1"
+msgstr "Новогодний воздушный шар 1"
+
+#: settings/new-year-settings.php:29
+msgid "Select New Year Falling Balloon"
+msgstr "Выбрать падающий новогодний воздушный шар"
+
+#: settings/new-year-settings.php:24
+msgid "1. New Year Balloon"
+msgstr "1. Новогодний воздушный шар"
+
+#: settings/new-year-settings.php:5
+msgid "New Year Effect Settings"
+msgstr "Настройки эффекта Нового года"
+
+#: settings/halloween-settings.php:239
+msgid "Witch 1"
+msgstr "Ведьма 1"
+
+#: settings/halloween-settings.php:225
+msgid "Select Halloween Falling Witch"
+msgstr "Выбрать падающую ведьму на Хэллоуин"
+
+#: settings/halloween-settings.php:221
+msgid "6. Halloween Witch"
+msgstr "6. Ведьма на Хэллоуин"
+
+#: settings/halloween-settings.php:200
+msgid "Web 1"
+msgstr "Паутина 1"
+
+#: settings/halloween-settings.php:186
+msgid "Select Halloween Falling Web"
+msgstr "Выбрать падающую паутину на Хэллоуин"
+
+#: settings/halloween-settings.php:182
+msgid "5. Halloween Web"
+msgstr "5. Паутина на Хэллоуин"
+
+#: settings/halloween-settings.php:161
+msgid "Pumpkin 1"
+msgstr "Тыква 1"
+
+#: settings/halloween-settings.php:147
+msgid "Select Halloween Falling Pumpkin"
+msgstr "Выбрать падающую тыкву на Хэллоуин"
+
+#: settings/halloween-settings.php:143
+msgid "4. Halloween Pumpkin"
+msgstr "4. Тыква на Хэллоуин"
+
+#: settings/halloween-settings.php:122
+msgid "Moon 1"
+msgstr "Луна 1"
+
+#: settings/halloween-settings.php:108
+msgid "Select Halloween Falling Moon"
+msgstr "Выбрать падающую луну на Хэллоуин"
+
+#: settings/halloween-settings.php:104
+msgid "3. Halloween Moon"
+msgstr "3. Луна на Хэллоуин"
+
+#: settings/halloween-settings.php:83
+msgid "Bats 1"
+msgstr "Летучие мыши 1"
+
+#: settings/halloween-settings.php:69
+msgid "Select Halloween Falling Bats"
+msgstr "Выбрать падающих летучих мышей на Хэллоуин"
+
+#: settings/halloween-settings.php:65
+msgid "2. Halloween Bats"
+msgstr "2. Летучие мыши на Хэллоуин"
+
+#: settings/halloween-settings.php:43
+msgid "Ghost 1"
+msgstr "Призрак 1"
+
+#: settings/halloween-settings.php:29
+msgid "Select Halloween Falling Ghost"
+msgstr "Выбрать Падающий призрак Хэллоуина"
+
+#: settings/halloween-settings.php:24
+msgid "1. Halloween Ghost"
+msgstr "1. Призрак Хэллоуина"
+
+#: settings/halloween-settings.php:5
+msgid "Halloween Effect Settings"
+msgstr "Настройки эффекта Хэллоуина"
+
+#: settings/christmas-snow-settings.php:549
+msgid "2. Flakes On Page"
+msgstr "2. Хлопья на странице"
+
+#: settings/christmas-snow-settings.php:545
+msgid "Hide"
+msgstr "Скрыть"
+
+#: settings/christmas-snow-settings.php:538
+msgid "Show"
+msgstr "Показать"
+
+#: settings/christmas-snow-settings.php:523
+msgid "1. Show Falls Shadow"
+msgstr "1. Показать падающую тень"
+
+#: settings/christmas-snow-settings.php:496
+msgid "B. Shadows Type"
+msgstr "B. Тип теней"
+
+#: settings/christmas-snow-settings.php:460 settings/winter-settings.php:56
+msgid "Square"
+msgstr "Квадрат"
+
+#: settings/christmas-snow-settings.php:453 settings/winter-settings.php:49
+msgid "Round"
+msgstr "Круглый"
+
+#: settings/christmas-snow-settings.php:438
+msgid "1. Fall Type"
+msgstr "1. Тип падения"
+
+#: settings/christmas-snow-settings.php:433
+#: settings/christmas-snow-settings.php:518
+msgid "No"
+msgstr "Нет"
+
+#: settings/christmas-snow-settings.php:426
+#: settings/christmas-snow-settings.php:511
+msgid "Yes"
+msgstr "Да"
+
+#: settings/christmas-snow-settings.php:411
+msgid "A. Round Type"
+msgstr "А. Тип круглый"
+
+#: settings/christmas-snow-settings.php:314
+msgid "Select Christmas Falling Snow Flake"
+msgstr "Выбрать падающие Рождественские снежинки"
+
+#: settings/christmas-snow-settings.php:310
+msgid "6. Christmas Snow Flake"
+msgstr "6. Рождественская снежинка"
+
+#: settings/christmas-snow-settings.php:289
+msgid "Snowman 3"
+msgstr "Снеговик 3"
+
+#: settings/christmas-snow-settings.php:283
+msgid "Snowman 2"
+msgstr "Снеговик 2"
+
+#: settings/christmas-snow-settings.php:277
+msgid "Snowman 1"
+msgstr "Снеговик 1"
+
+#: settings/christmas-snow-settings.php:263
+msgid "Select Christmas Falling Snowman"
+msgstr "Выбрать падающего рождественского снеговика"
+
+#: settings/christmas-snow-settings.php:259
+msgid "5. Christmas Snowman"
+msgstr "5. Рождественский снеговик"
+
+#: settings/christmas-snow-settings.php:238
+msgid "Gift 3"
+msgstr "Подарок 3"
+
+#: settings/christmas-snow-settings.php:232
+msgid "Gift 2"
+msgstr "Подарок 2"
+
+#: settings/christmas-snow-settings.php:226
+msgid "Gift 1"
+msgstr "Подарок 1"
+
+#: settings/christmas-snow-settings.php:212
+msgid "Select Christmas Falling Gift"
+msgstr "Выбрать падающий рождественский подарок"
+
+#: settings/christmas-snow-settings.php:208
+msgid "4. Christmas Gift"
+msgstr "4. Рождественский подарок"
+
+#: settings/christmas-snow-settings.php:186
+msgid "Candy 3"
+msgstr "Конфеты 3"
+
+#: settings/christmas-snow-settings.php:180
+msgid "Candy 2"
+msgstr "Конфеты 2"
+
+#: settings/christmas-snow-settings.php:174
+msgid "Candy 1"
+msgstr "Конфеты 1"
+
+#: settings/christmas-snow-settings.php:160
+msgid "Select Christmas Falling Candy"
+msgstr "Выбрать падающие рождественские конфеты"
+
+#: settings/christmas-snow-settings.php:156
+msgid "3. Christmas Candy"
+msgstr "3. Рождественские конфеты"
+
+#: settings/christmas-snow-settings.php:135
+msgid "Bell 3"
+msgstr "Колокольчик 3"
+
+#: settings/christmas-snow-settings.php:129
+msgid "Bell 2"
+msgstr "Колокольчик 2"
+
+#: settings/christmas-snow-settings.php:123
+msgid "Bell 1"
+msgstr "Колокольчик 1"
+
+#: settings/christmas-snow-settings.php:109
+msgid "Select Christmas Falling Bell"
+msgstr "Выбрать падающие рождественские колокольчики"
+
+#: settings/christmas-snow-settings.php:105
+msgid "2. Christmas bells"
+msgstr "2. Рождественские колокольчики"
+
+#: settings/christmas-snow-settings.php:83
+msgid "Ball 3"
+msgstr "Шар 3"
+
+#: settings/christmas-snow-settings.php:77
+msgid "Ball 2"
+msgstr "Шар 2"
+
+#: settings/christmas-snow-settings.php:71
+msgid "Ball 1"
+msgstr "Шар 1"
+
+#: settings/christmas-snow-settings.php:57
+msgid "Select Christmas Falling Ball"
+msgstr "Выбрать падающий рождественский шар"
+
+#: settings/christmas-snow-settings.php:53
+msgid "1. Christmas balls"
+msgstr "1. Рождественские шары"
+
+#: settings/christmas-snow-settings.php:34
+msgid "Christmas Effect Settings"
+msgstr "Настройки эффекта Рождества"
+
+#: settings/christmas-snow-settings.php:22
+msgid "Christmas Effect"
+msgstr "Эффект Рождества"
+
+#: settings/christmas-snow-settings.php:7
+msgid "Christmas Fall Types"
+msgstr "Типы рождественских падений"
+
+#: settings/autumn-settings.php:110 settings/christmas-snow-settings.php:390
+#: settings/halloween-settings.php:292 settings/new-year-settings.php:157
+#: settings/rainy-settings.php:175 settings/spring-settings.php:95
+#: settings/summer-settings.php:136 settings/thanks-giving-settings.php:98
+#: settings/valentine-settings.php:203
+msgid "5. Falls Speed On page"
+msgstr "5. Скорость падения на странице"
+
+#: settings/autumn-settings.php:95 settings/christmas-snow-settings.php:376
+#: settings/halloween-settings.php:277 settings/new-year-settings.php:142
+#: settings/rainy-settings.php:160 settings/spring-settings.php:80
+#: settings/summer-settings.php:121 settings/thanks-giving-settings.php:83
+#: settings/valentine-settings.php:188
+msgid "4. Falls On page"
+msgstr "4. Падения на странице"
+
+#: settings/autumn-settings.php:80 settings/christmas-snow-settings.php:362
+#: settings/christmas-snow-settings.php:478 settings/halloween-settings.php:262
+#: settings/new-year-settings.php:127 settings/rainy-settings.php:145
+#: settings/spring-settings.php:65 settings/summer-settings.php:106
+#: settings/thanks-giving-settings.php:68 settings/valentine-settings.php:173
+msgid "3. Maximum Fall Size On page"
+msgstr "3. Макс. размер падения на странице"
+
+#: settings/autumn-settings.php:65 settings/christmas-snow-settings.php:348
+#: settings/christmas-snow-settings.php:464 settings/halloween-settings.php:247
+#: settings/new-year-settings.php:112 settings/rainy-settings.php:130
+#: settings/spring-settings.php:50 settings/summer-settings.php:91
+#: settings/thanks-giving-settings.php:53 settings/valentine-settings.php:158
+msgid "2. Minimum Fall Size On page"
+msgstr "2. Мин. размер падения на странице"
+
+#: settings/autumn-settings.php:57
+msgid "Leaf 3"
+msgstr "Лист 3"
+
+#: settings/autumn-settings.php:51
+msgid "Leaf 2"
+msgstr "Лист 2"
+
+#: settings/autumn-settings.php:45
+msgid "Leaf 1"
+msgstr "Лист 1"
+
+#: settings/autumn-settings.php:31
+msgid "Select Autumn Falling Leaf"
+msgstr "Выбрать падающий осенний листопад"
+
+#: settings/autumn-settings.php:27
+msgid "1. Autumn Leafs"
+msgstr "1. Осенние листья"
+
+#: settings/autumn-settings.php:8
+msgid "Autumn Effect Settings"
+msgstr "Настройки осеннего эффекта"
+
+#: settings/autumn-settings.php:4
+msgid "Autumn Fall"
+msgstr "Осенний листопад"
+
+#: settings.php:451
+msgid "Preview"
+msgstr "Предпросмотр"
+
+#: settings.php:450
+msgid "Save"
+msgstr "Сохранить"
+
+#: settings.php:448
+msgid "Please wait..."
+msgstr "Пожалуйста, подождите..."
+
+#: settings.php:156
+msgid "New Year"
+msgstr "Новый год"
+
+#: settings.php:150
+msgid "Valentine"
+msgstr "День святого Валентина"
+
+#: settings.php:144
+msgid "Thanks Giving"
+msgstr "День благодарения"
+
+#: settings.php:138
+msgid "Halloween"
+msgstr "Хэллоуин"
+
+#: settings.php:132
+msgid "Rain"
+msgstr "Дождь"
+
+#: settings.php:126
+msgid "Summer"
+msgstr "Лето"
+
+#: settings.php:120
+msgid "Spring"
+msgstr "Весна"
+
+#: settings.php:114
+msgid "Autumn"
+msgstr "Осень"
+
+#: settings.php:108
+msgid "Winter"
+msgstr "Зима"
+
+#: settings.php:102
+msgid "Christmas"
+msgstr "Рождество"
+
+#: settings.php:88
+msgid "Select A Weather Or Occasion"
+msgstr "Выберите погоду или событие"
+
+#. Plugin Name of the plugin
+#: weather-effect.php settings.php:5
+msgid "Weather Effect"
+msgstr "Weather Effect"
+
+#: featured-plugins/featured-plugins.php:246
+msgid "%s download"
+msgid_plural "%s downloads"
+msgstr[0] "%s скачан"
+msgstr[1] "%s скачано"
+msgstr[2] "%s скачано"
+
+#: featured-plugins/featured-plugins.php:241
+msgid "Last Updated:"
+msgstr "Последнее обновление:"
+
+#: featured-plugins/featured-plugins.php:210
+msgid "By "
+msgstr "От "
+
+#: featured-plugins/featured-plugins.php:172
+msgctxt "plugin"
+msgid "Installed"
+msgstr "Установлен"
+
+#: featured-plugins/featured-plugins.php:172
+msgid "This plugin is already installed and is up to date"
+msgstr "Этот плагин уже установлен и находится в актуальном состоянии"
+
+#. translators: 1: Plugin name and version
+#: featured-plugins/featured-plugins.php:167
+msgid "Update Now"
+msgstr "Обновить сейчас"
+
+#. translators: 1: Plugin name and version.
+#: featured-plugins/featured-plugins.php:161
+msgid "Install Now"
+msgstr "Установить сейчас"
+
+#. translators: 1: Plugin name and version.
+#: featured-plugins/featured-plugins.php:153
+msgid "More Details"
+msgstr "Детали"
+
+#: featured-plugins/featured-plugins.php:103
+msgid "Get More Free WordPress Plugin From A WP Life"
+msgstr "Получите больше бесплатных плагинов WordPress от WP Life"
+
+#. translators: 1: The rating
+#: featured-plugins/featured-plugins.php:89
+msgid "%s rating"
+msgstr "рейтинг %s"
+
+#. translators: 1: The rating, 2: The number of ratings
+#: featured-plugins/featured-plugins.php:85
+msgid "%1$s rating based on %2$s rating"
+msgid_plural "%1$s rating based on %2$s ratings"
+msgstr[0] "Рейтинг %1$s на основе %2$s голоса"
+msgstr[1] "Рейтинг %1$s на основе %2$s голосов"
+msgstr[2] "Рейтинг %1$s на основе %2$s голосов"
