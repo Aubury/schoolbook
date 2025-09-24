@@ -12,6 +12,10 @@
       <excludeFolder url="file://$MODULE_DIR$/wp-content/plugins/wp-super-cache/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/wp-content/themes/anyweb_theme/inc/carbon-fields/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/wp-content/themes/anyweb_theme/inc/carbon-fields/vendor/htmlburger/carbon-fields" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/automattic/woocommerce" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/monolog/monolog" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
