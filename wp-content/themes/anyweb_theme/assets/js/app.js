@@ -939,20 +939,30 @@ function addFavorite(id)
 		del_filter.addEventListener('click', function(){
 			filter_chbx.forEach(element => {
 				if (element.checked) {
-					element.checked=false
+					element.checked = false;
+                }
+            });
 
-			arr['sort'][0]='news'
-			jQuery(document).ready( function( jQuery ){
+            setCookie('products_filters', null);
+
+            arr = {};
+            arr = {
+                sort: ['news']
+            };
+
+            jQuery(document).ready( function( jQuery ){
 					var jqXHR = {
 						action:'sjax',
 						nonce_code: soJsLet.nonce,
 						category: h2_title.dataset.termslug,
 						filters: JSON.stringify(arr),
+                        flag: 'delete_filter',
 					}
+
 				  jQuery.post( soJsLet.ajaxurl, jqXHR, function( response){
 					// bx_filter_text.classList.remove("hidden-non");
 					let backResponse = JSON.parse(response);
-					countelement.innerHTML = backResponse[0];
+                    countelementblock.classList.add("hidden");
 					product_item_container.innerHTML = '';
 					product_item_container.innerHTML = backResponse[1];
 					setCookie('products', backResponse[2]);
@@ -964,11 +974,13 @@ function addFavorite(id)
 					  } else {
 						  $('.woocommerce-pagination').css('display', 'block');
 					  }
-				});
+
+                      location.href = location.pathname;
+
+                  });
 			});
-		  }
+
 		 })
-	  })
 	}
 
 // sort
@@ -990,8 +1002,6 @@ function addFavorite(id)
 			}
 		});
 	});
-
-
 
 // \sort
 
@@ -1046,6 +1056,8 @@ function addFavorite(id)
 				}
 
 				console.log(arr);
+
+                setCookie('products_filters', JSON.stringify(arr));
 				
 				jQuery(document).ready( function( jQuery ){
 					var jqXHR = {
@@ -1069,7 +1081,8 @@ function addFavorite(id)
 						  } else {
 							  $('.woocommerce-pagination').css('display', 'block');
 						  }
-					  } );
+
+                      } );
 					} );   
 
 			}, false);

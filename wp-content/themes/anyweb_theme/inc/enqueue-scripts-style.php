@@ -92,6 +92,24 @@ function anyweb_scripts() {
          'showmore'   => __('Переглянути всі результати', 'advanced-woo-search'),
          'noresults'  => __('Нічого не знайдено', 'advanced-woo-search'),
         ));
+
+    // Магазин (архив товаров)
+    $is_shop = is_shop() || is_post_type_archive('product');
+
+    // Категории/метки товаров
+    $is_product_tax = is_product_taxonomy() || is_product_category() || is_product_tag();
+
+    if ( $is_shop || $is_product_tax ) {
+        wp_enqueue_script('shop-helper', get_stylesheet_directory_uri() . '/assets/js/shop-helper.js', ['jquery'], null, true);
+
+        // Можно передать в JS полезные данные
+        wp_localize_script('shop-helper', 'SHOP_CTX', [
+                'isShop' => true,
+                'shopUrl' => get_permalink( wc_get_page_id('shop') ),
+        ]);
+
+
+    }
 }
 add_action( 'wp_enqueue_scripts', 'anyweb_scripts' );
 

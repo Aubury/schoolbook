@@ -181,24 +181,123 @@ function so_render_catalog_product($product_id){
   }
 }
 
+function get_cookie_products_filters () {
+    $raw = $_COOKIE['products_filters'] ?? null;
+
+    if ($raw === null || $raw === '') {
+        // Для отладки можно посмотреть, что реально приходит в PHP
+        error_log('products_filters cookie is missing. $_COOKIE keys: ' . implode(', ', array_keys($_COOKIE)));
+        $products_filters = null;
+    } else {
+        // 2) Разкодируем URL-процентную запись (%7B...%7D -> {...})
+        $decoded = rawurldecode($raw);
+
+        // 3) Если ставили через JS со строковыми кавычками — иногда полезно убрать лишние слеши
+        // (безопасно: сработает только если они есть)
+        $decoded = stripslashes($decoded);
+
+        // 4) Превращаем в массив PHP
+        $products_filters = json_decode($decoded, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log('products_filters JSON error: ' . json_last_error_msg() . ' | value: ' . $decoded);
+            // fallback: можно оставить как строку, если нужно
+            // $products_filters = $decoded;
+            $products_filters = null;
+        }
+    }
+
+    return $products_filters;
+}
+
+function query_products_filters ( $data, $category ) {
+    $query_request =  array(
+            'product_cat' => $category,
+            'post_type' => array('product'),
+            'posts_per_page' => -1,
+            'tax_query' => array(
+                    'relation' => 'AND',
+            ),
+            'post_status' => 'publish'
+    );
+
+    if ($data['sort'][0] == "price_down") {
+
+        $query_request['meta_key'] = '_price';
+        $query_request['orderby'] = 'meta_value_num';
+        $query_request['order'] = 'DESC';
+
+    } elseif ($data['sort'][0] == "popularity") {
+
+        $query_request['meta_key'] = 'popularity';
+        $query_request['orderby'] = 'meta_value_num';
+        $query_request['order'] = 'DESC';
+
+    } elseif ($data['sort'][0] == "price_up") {
+
+        $query_request['meta_key'] = '_price';
+        $query_request['orderby'] = 'meta_value_num';
+        $query_request['order'] = 'ASC';
+
+    } elseif ($data['sort'][0] == "news") {
+
+        $query_request['orderby'] = 'date';
+        $query_request['order'] = 'DESC';
+
+    }
+
+    array_shift($data);
+    foreach ($data as $key => $taxonomy) {
+        if( isset($taxonomy)) {
+            $terms = array();
+
+            foreach ($taxonomy as $sub_key => $variaable) {
+                array_push($terms , $variaable);
+            }
+
+            if(!empty($terms)){
+                $arr = array(
+                        'taxonomy' => 'pa_'.$key,
+                        'field' => 'slug',
+                );
+
+                $arr['terms'] = $terms;
+                $arr['operator'] = 'IN';
+                array_push($query_request['tax_query'], $arr);
+            }
+        }
+    }
+
+    return $query_request;
+}
+
 remove_action('woocommerce_before_shop_loop', 'woocommerce_result_count', 20);
 remove_action('woocommerce_after_shop_loop', 'woocommerce_result_count', 20);
 	
 add_action( 'woocommerce_before_shop_loop', 'ss_woocommerce_wrapper_before' );
 
 function ss_woocommerce_wrapper_before(){
-    $queried_object = get_queried_object();
+   $queried_object = get_queried_object();
 
    $slug = $queried_object->slug;
-	
-   if ($slug === '') {
+
+    $products_filters = get_cookie_products_filters();
+
+    if ($products_filters !== null) {
+
+        $args = query_products_filters($products_filters, $slug);
+
+    } elseif ( $slug === '' ) {
+
         $args = array(
-            'post_type'      => 'product',
-            'posts_per_page' => -1,
-            'orderby' => 'date',
-            'order'   => 'ASC',
+                'post_type' => 'product',
+                'posts_per_page' => -1,
+                'orderby' => 'date',
+                'order' => 'ASC',
         );
+
     } else {
+
         $args = array(
             'post_type'      => 'product',
             'posts_per_page' => -1,
@@ -371,7 +470,11 @@ function ss_woocommerce_wrapper_before(){
             </div>
                 <div class="row filter-bts countelementblock hidden fixed">
                 <div class="col-xl-12 bx-filter-button-box">
-                    <span class="bx-filter-text hidden-non"> Знайдено <span id="countelement" class="filter-text">0</span> товара </span>
+                    <span class="bx-filter-text hidden-non"> 
+                        Знайдено 
+                        <span id="countelement" class="filter-text">0</span> 
+                        товара 
+                    </span>
                     <div class="bx-filter-block">
                     <div class="bx-filter-parameters-box-container">
                         <div class="filter-bts-row">
@@ -537,60 +640,7 @@ function sjax(){
     $filters = stripslashes($_POST['filters']);
     $data = json_decode($filters,true);
 
-    $query_request =  array(
-    'product_cat' => $_POST['category'],
-    'post_type' => array('product'),
-    'posts_per_page' => -1,
-    'tax_query' => array(
-        'relation' => 'AND',
-    ),
-    'post_status' => 'publish'
-    );
-
-  if ($data['sort'][0] == "price_down") {
-
-    $query_request['meta_key'] = '_price';
-    $query_request['orderby'] = 'meta_value_num';
-    $query_request['order'] = 'DESC';
-
-  } elseif ($data['sort'][0] == "popularity") {
-
-    $query_request['meta_key'] = 'popularity';
-    $query_request['orderby'] = 'meta_value_num';
-    $query_request['order'] = 'DESC';
-
-  } elseif ($data['sort'][0] == "price_up") {
-
-    $query_request['meta_key'] = '_price';
-    $query_request['orderby'] = 'meta_value_num';
-    $query_request['order'] = 'ASC';
-
-  } elseif ($data['sort'][0] == "news") {
-
-    $query_request['orderby'] = 'date';
-    $query_request['order'] = 'DESC';
-
-  }
-
-    array_shift($data);
-    foreach ($data as $key => $taxonomy) {
-        $terms = array();
-
-        foreach ($taxonomy as $sub_key => $variaable) {
-            array_push($terms , $variaable);
-        }
-
-        if(!empty($terms)){
-            $arr = array(
-                    'taxonomy' => 'pa_'.$key,
-                    'field' => 'slug',
-            );
-
-            $arr['terms'] = $terms;
-            $arr['operator'] = 'IN';
-            array_push($query_request['tax_query'], $arr);
-        }
-    }
+    $query_request = query_products_filters($data, $_POST['category']);
 
     $q = new WP_Query( $query_request );
 
@@ -645,3 +695,137 @@ function more_products() {
     echo json_encode($request_products);
     wp_die();
 }
+
+/////////////// FILTERS  /////////////////////////////
+
+
+// 1) Читаем фильтры: приоритет URL > cookie
+function sb_get_current_filters(): array
+{
+    $filters = [];
+    if (isset($_GET['currentFilters'])) {
+        $data = json_decode(wp_unslash($_GET['currentFilters']), true);
+        if (is_array($data)) $filters = $data;
+    } elseif (isset($_COOKIE['products_filters'])) {
+        $data = json_decode(wp_unslash($_COOKIE['products_filters']), true);
+        if (is_array($data)) $filters = $data;
+    }
+    foreach ($filters as $k => $v) {
+        $arr = is_array($v) ? $v : [$v];
+        $arr = array_values(array_filter(array_map('sanitize_title', $arr)));
+        if ($arr) $filters[$k] = $arr; else unset($filters[$k]);
+    }
+    return $filters;
+}
+
+/// ---------- Архивы магазина ----------
+add_action('woocommerce_product_query', function(WP_Query $q) {
+
+    $filters = sb_get_current_filters();
+    if (!$filters) return;
+
+    $sort = $filters['sort'];
+    array_shift($filters);
+
+    $tax_query = (array) $q->get('tax_query');
+    if (!isset($tax_query['relation'])) $tax_query['relation'] = 'AND';
+
+    foreach ($filters as $param => $values) {
+        $values = array_values(array_filter((array)$values, 'strlen'));
+        if (!$values) continue;
+
+        $taxonomy = 'pa_' . $param;
+        if (!taxonomy_exists($taxonomy)) continue;
+
+        $tax_query[] = [
+                'taxonomy' => $taxonomy,
+                'field'    => 'slug',
+                'terms'    => $values,
+                'operator' => 'IN',
+        ];
+    }
+
+    $q->set('tax_query', $tax_query);
+
+    if (!empty($sort[0])) {
+        switch (sanitize_text_field($sort[0])) {
+            case 'news':       $q->set('orderby','date'); $q->set('order','DESC'); break;
+            case 'price':      $q->set('meta_key','_price'); $q->set('orderby','meta_value_num'); $q->set('order','ASC');  break;
+            case 'price-desc': $q->set('meta_key','_price'); $q->set('orderby','meta_value_num'); $q->set('order','DESC'); break;
+        }
+    }
+
+}, 10);
+
+// ---------- Шорткод [products] ----------
+add_filter('woocommerce_shortcode_products_query', function(array $args, $atts) {
+
+    $filters = sb_get_current_filters();
+    if (!$filters) return $args;
+
+    $sort = $filters['sort'];
+    array_shift($filters);
+
+    // базовый tax_query
+    $tax_query = ['relation' => 'AND'];
+
+    // если в $args уже был корректный tax_query — аккуратно переносим его к нам
+    if (isset($args['tax_query']) && is_array($args['tax_query'])) {
+        foreach ($args['tax_query'] as $clause) {
+            if (is_array($clause) && isset($clause['taxonomy'])) {
+                $tax_query[] = $clause;
+            }
+        }
+    }
+
+    foreach ($filters as $param => $values) {
+        $values = array_values(array_filter((array)$values, 'strlen'));
+        if (!$values) continue;
+
+        $taxonomy = 'pa_' . $param;
+        if (!taxonomy_exists($taxonomy)) continue;
+
+        $tax_query[] = [
+                'taxonomy' => $taxonomy,
+                'field'    => 'slug',
+                'terms'    => $values,
+                'operator' => 'IN',
+        ];
+    }
+
+    if (count($tax_query) > 1) { // есть хотя бы одна клауза
+        $args['tax_query'] = $tax_query;
+    }
+
+    // сортировка — отдельно, НЕ в tax_query
+    if (!empty($sort[0])) {
+        switch (sanitize_text_field($sort[0])) {
+            case 'news':
+                $args['orderby'] = 'date';
+                $args['order']   = 'DESC';
+                break;
+            case 'price':
+                $args['meta_key'] = '_price';
+                $args['orderby']  = 'meta_value_num';
+                $args['order']    = 'ASC';
+                break;
+            case 'price-desc':
+                $args['meta_key'] = '_price';
+                $args['orderby']  = 'meta_value_num';
+                $args['order']    = 'DESC';
+                break;
+        }
+    }
+
+    // временно для отладки
+//    if (defined('WP_DEBUG') && WP_DEBUG) {
+//        error_log('tax_query=' . print_r($args['tax_query'], true));
+//    }
+
+
+    return $args;
+}, 10, 2);
+
+
+
+
