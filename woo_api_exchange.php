@@ -159,166 +159,188 @@ $subcategories = array_filter((array)$allCategories, fn($category) => $category-
  *      FUNCTIONS
  ******************************************/
 
+function getAttributeIdByName ($name) {
+    global $allAttributes;
+
+    foreach ($allAttributes as $attribute) {
+        if ($attribute->name == $name) {
+            return $attribute->id;
+        }
+    }
+
+    return false;
+}
+
 /**
  * @return array[]
  *  Attributes
  */
-function generateAttributes()
+function generateAttributes( $product )
 {
+    $authors = normalize_list($product['Autors']);
+    !empty($authors) ? $authorsName = $authors : $authorsName = '';
+
     $attributeMap = [
-        'Autors' => [
-            'id' => 3,
-            'name' => 'Автори',
-            'slug' => 'pa_avtori',
-            'visible' => true,
-        ],
-        'NumberOfPages' => [
-            'id' => 4,
-            'name' => 'Кількість стрінок',
-            'slug' => 'pa_kilkist-strinok',
-            'visible' => true,
-        ],
-        'PriceCode' => [
-            'id' => 5,
-            'name' => 'Код прайса',
-            'slug' => 'pa_kod-prajsa',
-            'visible' => true,
-        ],
-        'BriefDescription' => [
-            'id' => 6,
-            'name' => 'Короткий опис',
-            'slug' => 'pa_korotkij-opis',
-            'visible' => true,
-        ],
-        'BooksForPreschoolers' => [
-            'id' => 7,
-            'name' => 'КТ Книги для дошкільнят',
-            'slug' => 'pa_kt-knigi-dla-doskilnat',
-            'visible' => true,
-        ],
-        'LanguageOfThePublication' => [
-            'id' => 8,
-            'name' => 'Мова видання',
-            'slug' => 'pa_mova-vidanna',
-            'visible' => true,
-        ],
-        'Cover' => [
-            'id' => 9,
-            'name' => 'Обкладинка',
-            'slug' => 'pa_obkladinka',
-            'visible' => true,
-        ],
-        'YearOfPublication' => [
-            'id' => 10,
-            'name' => 'Рік видання',
-            'slug' => 'pa_rik-vidanna',
-        ],
-        'Size' => [
-            'id' => 11,
-            'name' => 'Розмір',
-            'slug' => 'pa_rozmir',
-            'visible' => true,
-        ],
-        'PackStandard' => [
-            'id' => 12,
-            'name' => 'Стандарт пачки',
-            'slug' => 'pa_standart-packi',
-            'visible' => true,
-        ],
-        'BooksForYoungerStudents' => [
-            'id' => 13,
-            'name' => 'КТ Книги для молодших школярів',
-            'slug' => 'pa_kt-knigi-dla-molodsih-skol',
-            'visible' => true,
-        ],
-        'BookSeries' => [
-            'id' => 14,
-            'name' => 'Серія книги',
-            'slug' => 'pa_seria-knigi',
-            'visible' => true,
-        ],
-        'BooksForMiddleAndHighSchoolStudents' => [
-            'id' => 15,
-            'name' => 'КТ Книги для школярів середнього та старшого віку',
-            'slug' => 'pa_kt-knigi-dla-skolariv-sere',
-            'visible' => true,
-        ],
-        'BooksForEveryone' => [
-            'id' => 16,
-            'name' => 'КТ Книги для всіх',
-            'slug' => 'pa_kt-knigi-dla-vsih',
-            'visible' => true,
-        ],
-        'Publisher' => [
-            'id' => 17,
-            'name' => 'Виробник',
-            'slug' => 'pa_virobnik',
-            'visible' => true,
-        ],
-        'Age' => [
-            'id' => 18,
-            'name' => 'Вік',
-            'slug' => 'pa_vik',
-            'visible' => true,
-        ],
+            'Автор'                   => $product['AutorBook'] ?? '',
+            'Автори'                  => $authorsName,
+            'Кількість стрінок'       => $product['NumberOfPages'] ?? '',
+            'Код прайса'              => $product['PriceCode'] ?? '',
+            'Короткий опис'           => $product['BriefDescription'] ?? '',
+            'КТ Книги для дошкільнят' => $product['BooksForPreschoolers'] ?? '',
+            'Мова видання'            => $product['LanguageOfThePublication'] ?? '',
+            'Обкладинка'              => $product['Cover'] ?? '',
+            'Рік видання'             => $product['YearOfPublication'] ?? '',
+            'Розмір'                  => $product['Size'] ?? '',
+            'Стандарт пачки'          => $product['PackStandard'] ?? '',
+            'Серія книги'             => $product['BookSeries'] ?? '',
+            'Книги для всіх'          => $product['BooksForEveryone'] ?? '',
+            'Виробник'                => $newData['Publisher'] ?? '',
+            'Вік'                     => $product['Age'] ?? '',
+            'Книжки на картоні'       => $product['BooksForPreschoolers'] ?? '',
+            'КТ Книги для молодших школярів' => $product['BooksForYoungerStudents'] ?? '',
+            'КТ Книги для школярів середнього та старшого віку' => $product['BooksForMiddleAndHighSchoolStudents'] ?? '',
     ];
 
     return $attributeMap;
 }
 
-/**
- * function for compare existing attributes with new info
- * if info change: do update
- * if info new info: add new info
- * @param $existingAttributes
- * @param $newData
- * @return array
- */
-function compareAndUpdateAttributes ($existingAttributes, $newData) {
-    global $allAttributes;
-    $updates = [];
+function clean_name($s): string
+{
+    $s = preg_replace('/[\p{P}\p{S}]+$/u', '', (string)$s); // сносим хвостовые . , … и т.п.
+    $s = preg_replace('/\s+/u', ' ', $s);
+    return trim($s);
+}
 
-    // Преобразуем существующие атрибуты в удобный формат для сравнения
-    $existingMapped = [];
-    foreach ($existingAttributes as $attribute) {
-        $existingMapped[$attribute->name] = $attribute->options[0];
+/**
+ * Нормализуем список авторов:
+ * - принимает строку "Ім'я., Прізвище; Інший Автор" или массив имен
+ * - режем по , ; |
+ * - у каждого имени убираем пунктуацию в КОНЦЕ (.,;:…— и т.п.)
+ * - схлопываем пробелы
+ * - возвращаем уникальный массив имен без пустых элементов
+ */
+function normalize_authors($raw): string
+{
+    // получаем массив
+    $items = is_array($raw) ? $raw : preg_split('/[,;|]+/u', (string)$raw);
+
+    $cleanOne = function ($s) {
+        // убрать хвостовую пунктуацию (точки, запятые, тире, кавычки, многоточия и т.п.)
+        $s = preg_replace('/[\p{P}\p{S}]+$/u', '', (string)$s);
+        // схлопнуть лишние пробелы
+        $s = preg_replace('/\s+/u', ' ', $s);
+        return trim($s);
+    };
+
+    $out = array_map($cleanOne, $items);
+    // убрать пустые и дубли
+    $out = array_values(array_unique(array_filter($out, fn($v) => $v !== '')));
+
+    return implode(', ', $out);
+}
+
+
+function normalize_list($raw): array {
+    if (is_array($raw)) {
+        $a = $raw;
+    } else {
+        $a = preg_split('/[,;|]+/u', (string)$raw);
+    }
+    $a = array_map(fn($s) => trim(preg_replace('/\s+/u', ' ', $s)), $a);
+    return array_values(array_filter($a, fn($s) => $s !== ''));
+}
+
+
+function ensure_terms_and_return_names(int $attrId, array $names): array {
+    global $woocommerce;
+
+    $norm = fn($s) => mb_strtolower(clean_name($s), 'UTF-8');
+    $out  = [];
+
+    foreach ($names as $name) {
+        $name   = clean_name($name);
+        if ($name === '') continue;
+
+        // ищем кандидатов
+        $found = $woocommerce->get("products/attributes/{$attrId}/terms",
+                ['search' => $name, 'hide_empty' => false, 'per_page' => 100]);
+
+        $hit = null;
+        foreach ((array)$found as $t) {
+            if (isset($t->name) && $norm($t->name) === $norm($name)) { $hit = $t; break; }
+        }
+
+        if ($hit) {
+            // если найденный отличается только пунктуацией — переименуем на чистый
+            if ($hit->name !== $name) {
+                // убедимся, что «чистого» ещё нет
+                $exists = $woocommerce->get("products/attributes/{$attrId}/terms",
+                        ['search' => $name, 'per_page' => 100]);
+                $exact = null;
+                foreach ((array)$exists as $e) {
+                    if (mb_strtolower($e->name,'UTF-8') === mb_strtolower($name,'UTF-8')) { $exact = $e; break; }
+                }
+                if (!$exact) {
+                    $hit = $woocommerce->put("products/attributes/{$attrId}/terms/{$hit->id}", ['name' => $name]);
+                } else {
+                    $hit = $exact; // уже есть чистый — используем его
+                }
+            }
+        } else {
+            // нет термина — создаём сразу чистый
+            $hit = $woocommerce->post("products/attributes/{$attrId}/terms", ['name' => $name]);
+        }
+
+        $out[] = $hit->name; // теперь это чистое имя
     }
 
-    // Подготовка атрибутов из JSON
-    $newAttributes = [
-        'Автори'                  => $newData['Autors'] ?? '',
-        'Кількість стрінок'       => $newData['NumberOfPages'] ?? '',
-        'Код прайса'              => $newData['PriceCode'] ?? '',
-        'Короткий опис'           => $newData['BriefDescription'] ?? '',
-        'КТ Книги для дошкільнят' => $newData['BooksForPreschoolers'] ?? '',
-        'Мова видання'            => $newData['LanguageOfThePublication'] ?? '',
-        'Обкладинка'              => $newData['Cover'] ?? '',
-        'Рік видання'             => $newData['YearOfPublication'] ?? '',
-        'Розмір'                  => $newData['Size'] ?? '',
-        'Стандарт пачки'          => $newData['PackStandard'] ?? '',
-        'Серія книги'             => $newData['BookSeries'] ?? '',
-        'Книги для всіх'          => $newData['BooksForEveryone'] ?? '',
-        'Виробник'                => $newData['Publisher'] ?? '',
-        'Вік'                     => $newData['Age'] ?? '',
-        'Книжки на картоні'       => $newData['BooksForPreschoolers'] ?? '',
-        'КТ Книги для молодших школярів' => $newData['BooksForYoungerStudents'] ?? '',
-        'КТ Книги для школярів середнього та старшого віку' => $newData['BooksForMiddleAndHighSchoolStudents'] ?? '',
+    return array_values(array_unique($out));
+}
 
-    ];
+function generatedProductAttributes( $newAttributes, $product_id = null ): array
+{
+    global $woocommerce, $allAttributes;
+    $updates = [];
+
+    if (!empty($newAttributes['Автори']) || !empty($newAttributes['Автор'])) {
+        $attributeAuthorsID = getAttributeIdByName('Автори');
+        $authorsNames = ensure_terms_and_return_names($attributeAuthorsID, $newAttributes['Автори']);
+        $newAttributes['Автори'] = $authorsNames;
+
+        $attributeAuthorID = getAttributeIdByName('Автор');
+        $attributeAuthorName = normalize_authors($newAttributes['Автор']);
+        $authorName = ensure_terms_and_return_names($attributeAuthorID, array($attributeAuthorName));
+        $newAttributes['Автор'] = $authorName;
+
+        if ($product_id !== null) {
+            $woocommerce->put("products/$product_id", ['attributes' => []]);
+        }
+    }
 
     foreach ( $newAttributes as $name => $value ) {
         if ( $value !== '' ) {
             foreach ( $allAttributes as $key => $attribute ) {
+                is_array($value) ? $options = $value : $options = [ $value ];
                 if ( $attribute->name === $name ) {
-                    $updates[] = [
-                        'id' => $attribute->id,
-                        'name' => $attribute->name,
-                        'slug' => $attribute->slug,
-                        'visible' => true,
-                        'options' => [
-                            $value
-                        ],
-                    ];
+                    if (is_array($value)) {
+
+                        $updates[] = [
+                                'id' => $attribute->id,
+                                "visible" => true,
+                                "variation" => false,
+                                'options' => $options,
+                        ];
+
+                    } else {
+                        $updates[] = [
+                                'id' => $attribute->id,
+                                'name' => $attribute->name,
+                                'slug' => $attribute->slug,
+                                "visible" => true,
+                                'options' => $options
+                        ];
+                    }
+
                 }
             }
         }
@@ -419,7 +441,7 @@ function setSizeProduct( $str ): ?array
  */
 function addProduct ( $product ): array
 {
-    global $imagesDirectory, $imagesDirectoryURL;
+    global $imagesDirectory, $imagesDirectoryURL, $allAttributes;
 
     $data['name'] = $product['Name'];
     $data['sku']  = $product['ISBN'];
@@ -453,22 +475,8 @@ function addProduct ( $product ): array
 
     $data['categories'] = array_merge($data['categories'], $_subcategories);
 
-    $attributesMap = generateAttributes();
-
-    $i = 0;
-    foreach ($attributesMap as $key => $attribute) {
-        if (isset($product[$key])) {
-            $data['attributes'][$i] = [
-                'id' => $attribute['id'],
-                'name' => $attribute['name'],
-                'slug' => $attribute['slug'],
-                'visible' => true,
-                'options' => [$product[$key]]
-            ];
-        }
-
-        $i++;
-    }
+    $attributesMap = generateAttributes( $product );
+    $data['attributes'] = generatedProductAttributes( $attributesMap );
 
     if (isset($product['Foto'])) {
         $i = 0;
@@ -541,8 +549,9 @@ function updateProduct ( $product, $existing_product) {
         $updates['dimensions'] = setSizeProduct($product['Size']);
     }
 
+    $attributesMap = generateAttributes( $product );
+    $attributes = generatedProductAttributes( $attributesMap, $existing_product->id);
 
-    $attributes = compareAndUpdateAttributes($existing_product->attributes, $product);
     if (isset($attributes) && !empty($attributes)) {
         $updates['attributes'] = $attributes;
     }
@@ -551,24 +560,6 @@ function updateProduct ( $product, $existing_product) {
     if (isset($categories) && !empty($categories)) {
         $updates['categories'] = $categories;
     }
-
-//    if (isset($product['Foto'])) {
-//        $i = 0;
-//        foreach ($product['Foto'] as $key => $image) {
-//            if (isset($existing_product->images[$i])) {
-//                $pathInfNew = pathinfo($image);
-//                $pathInfOld = pathinfo($existing_product->images[$i]->name);
-//                $url = $imagesDirectoryURL . $image;
-//
-//                if ($pathInfOld['filename'] !== $pathInfNew['filename']) {
-//                    $updates['images'][$i] =  [ 'src' => $url];
-//                }
-//            } else {
-//                $updates['images'][$i] =  [ 'src' => $url];
-//            }
-//            $i++;
-//        }
-//    }
 
     // Меняем только главную, не трогая галерею
     if (!empty($product['Foto'])) {
@@ -644,6 +635,7 @@ function updateProduct ( $product, $existing_product) {
  * Function for read file with array of products
  * @param $data
  * @return void
+ * @throws Exception
  */
 function loadProductsFile ($data): void
 {
@@ -691,11 +683,25 @@ function loadProductsFile ($data): void
             file_put_contents($file, $log_message, FILE_APPEND);
             flush();
         } catch (Exception $e) {
+            $url     = $e->getRequest()  ? (string)$e->getRequest()->getUrl() : '';
+            $status  = $e->getResponse() ? (int)$e->getResponse()->getCode()  : 0;
+            $bodyRaw = $e->getResponse() ? (string)$e->getResponse()->getBody() : '';
+
+            // Пытаемся красиво распечатать JSON-ответ
+            $pretty = $bodyRaw;
+            $decoded = json_decode($bodyRaw, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $pretty = json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            }
+
+            error_log("HTTP {$status} {$url}");
+            error_log("Body:\n{$pretty}");
 
             $message = "{$index}) - Ошибка для товара '{$product['Name']}', UniID: {$product['UniID']}: {$e->getMessage()} - line: {$e->getLine()} \r\n";
             $log_message = '[' . date('d-m-Y H:i:s') . '] ' . $message . PHP_EOL;
             file_put_contents($file, $log_message, FILE_APPEND);
             flush();
+            throw $e;
         }
     }
 
@@ -884,17 +890,17 @@ function creatFileAllOrders ($orders) {
 }
 
 
-if (isset($_GET['clean'])) {
-    ?>
-    <script>
-        if (window.history.replaceState) {
-            const url = window.location.origin + window.location.pathname; // Убираем параметры
-            window.history.replaceState(null, null, url);
-        }
-
-    </script>
-    <?php
-}
+//if (isset($_GET['clean'])) {
+//    ?>
+<!--    <script>-->
+<!--        if (window.history.replaceState) {-->
+<!--            const url = window.location.origin + window.location.pathname; // Убираем параметры-->
+<!--            window.history.replaceState(null, null, url);-->
+<!--        }-->
+<!---->
+<!--    </script>-->
+<!--    --><?php
+//}
 
 /********************************************
  *  Reading file for loading products
@@ -1009,7 +1015,7 @@ if (isset($_GET['clean'])) {
 
     }
 //}
-
+//
 //if (isset($_GET['orders'])) {
 //    $upTodayOrders = $woocommerce->get('orders', array('per_page' => 10, 'orderby' => 'date'));
 //    creatFileAllOrders($upTodayOrders);

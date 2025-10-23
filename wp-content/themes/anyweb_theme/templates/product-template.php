@@ -159,7 +159,7 @@ get_header();
                                            <div class="book-info">
                                               <div class="book-row">
                                                  <span class="row-title">Автор</span>
-                                                 <span  class="row-value name"><?php echo $product->get_attribute('avtori') ?></span>
+                                                 <span  class="row-value name"><?php echo $product->get_attribute('author-book') ?></span>
                                               </div>
                                            </div>
                                            <div class="product-item-detail-pay-block">
@@ -398,7 +398,9 @@ get_header();
                                                             $attribute_slug = strtolower($attribute->get_name()); // Получаем слаг атрибута в нижнем регистре
                                                         
                                                             // Проверка, что слаг атрибута не равен "korotkij-opis"
-                                                            if ($attribute_slug === 'pa_korotkij-opis' || strpos($attribute_slug, 'pa_kt') === 0) {
+                                                            if ($attribute_slug === 'pa_korotkij-opis'
+                                                                    || strpos($attribute_slug, 'pa_kt') === 0
+                                                                    || $attribute_slug === 'pa_author-book') {
                                                                 continue; // Пропускаем вывод для этого атрибута
                                                             }
                                                         
