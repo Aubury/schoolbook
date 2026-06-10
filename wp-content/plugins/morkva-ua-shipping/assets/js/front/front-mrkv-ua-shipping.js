@@ -38,7 +38,10 @@ jQuery(window).on('load', function()
 	      jQuery('.shipping_method:checked').val() :
 	      jQuery('.shipping_method').val();
 
-	      mrkv_ua_current_shipping = mrkv_ua_current_shipping.replace(/_\d+$/, '');
+	      if(mrkv_ua_current_shipping)
+	      {
+	      	mrkv_ua_current_shipping = mrkv_ua_current_shipping.replace(/_\d+$/, '');
+	      }
 
 	      return mrkv_ua_current_shipping;
  	}

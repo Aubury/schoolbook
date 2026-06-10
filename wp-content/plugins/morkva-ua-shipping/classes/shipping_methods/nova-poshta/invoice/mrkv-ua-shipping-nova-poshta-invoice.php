@@ -171,6 +171,88 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 			# Additional data
 			$order_id = $this->order->get_id();
 
+			# Shipping classes
+			$product_classes_data = [];
+            $classes_enabled = (isset($this->settings_shipping['shipment']['class']['enabled']) && $this->settings_shipping['shipment']['class']['enabled']) ? true : false;
+            $shipment_class_list = (isset($this->settings_shipping['shipment']['class']['list']) && is_array($this->settings_shipping['shipment']['class']['list']) && !empty($this->settings_shipping['shipment']['class']['list'])) ? $this->settings_shipping['shipment']['class']['list'] : [];
+            $has_class_error = false;
+            $cargo_details = [];
+
+            if($classes_enabled)
+            {
+            	foreach ( $this->order->get_items() as $item_id => $item ) 
+            	{
+            		$product = $item->get_product();
+
+				    if ( ! $product ) {
+				        continue;
+				    }
+
+				    $shipping_class_id = (int) $product->get_shipping_class_id();
+				    if ( $shipping_class_id === 0 ) {
+			            $product_classes_data[ $item_id ] = $cargo_type;
+			            continue;
+			        }
+
+			        $matched_cargo_type = null;
+
+			        foreach ( $shipment_class_list as $cargo_type_key => $class_ids ) {
+
+			            if ( in_array( $shipping_class_id, $class_ids, true ) ) {
+			                $matched_cargo_type = $cargo_type_key;
+			                break;
+			            }
+			        }
+
+			        $product_classes_data[ $item_id ] = $matched_cargo_type ?: $cargo_type;
+            	}
+
+            	if(!empty($product_classes_data))
+            	{
+            		$cargo_types = array_unique(array_values($product_classes_data));
+
+                    if (count($cargo_types) === 1) 
+                    {
+                        $cargo_type = reset($cargo_types);
+                    }
+                    else
+                    {
+                    	$has_class_error = false;
+                    }
+            	}
+            }
+
+            if($cargo_type == 'TiresWheels')
+            {
+            	$cargo_details = $this->get_cargo_details();
+
+            	if(empty($cargo_details))
+                {
+                    $has_class_error = true;
+                }
+
+                $cargo_details = array_values( $cargo_details );
+            }
+
+            if($cargo_type == 'Documents')
+            {
+                $cargo_weight = $this->get_cargo_weight_document();
+            }
+
+            if($has_class_error)
+            {
+            	$this->order->add_order_note(__('Error. Check product shipping classes','mrkv-ua-shipping'), $is_customer_note = 0, $added_by_user = false);
+				return array(
+					'status' => 'failed',
+					'message' => __('Error. Check product shipping classes','mrkv-ua-shipping'),
+					'invoice' => '',
+					'arguments' => array(),
+					'print' => '',
+					'form_print' => '',
+					'print_sticker' =>  ''
+				);
+            }
+
 			# Args for query
 			$args = array(
 				"PayerType" => $payer_type,
@@ -196,6 +278,18 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 				"ContactRecipient" => $recipient_contact_ref,
 				"RecipientsPhone" => $recipient_phone
 			);
+
+			if(!empty($cargo_details) && $cargo_type == 'TiresWheels')
+			{
+				$args['CargoDetails'] = $cargo_details; 
+			}
+
+			if($cargo_type == 'Documents')
+			{
+				unset($args['OptionsSeat']);
+			}
+
+
 
 			if($args["Cost"] < 200)
 			{
@@ -467,6 +561,90 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 
 				return max($default_weight, $weight);
 			}
+		}
+
+		private function check_cargo_weight($cargo_type, $cargo_weight)
+		{
+			if($cargo_type == 'Documents')
+			{
+				$cargo_weight = 1;
+			}
+
+			return $cargo_weight;
+		}
+
+		private function get_cargo_details()
+		{
+			$cargo_details = [];
+
+			foreach ( $this->order->get_items() as $item_id => $item ) 
+			{
+			    $product = $item->get_product();
+
+			    if ( ! $product instanceof WC_Product ) {
+			        continue;
+			    }
+
+			    $product_id = $product->get_id();
+			    $quantity   = (int) $item->get_quantity();
+			    $mrkv_tire_type = get_post_meta( $product_id, '_mrkv_tire_type', true );
+
+			    if ( empty( $mrkv_tire_type ) ) {
+			        continue;
+			    }
+
+			    $key = sanitize_text_field( $mrkv_tire_type );
+			    if ( isset( $cargo_details[ $key ] ) ) {
+
+			        $cargo_details[ $key ]['Amount'] += $quantity;
+
+			    } else {
+
+			        $cargo_details[ $key ] = [
+			            'CargoDescription' => $key,
+			            'Amount'           => $quantity,
+			        ];
+			    }
+			}
+
+			return $cargo_details;
+		}
+
+		private function get_cargo_weight_document()
+		{
+			$weight = 0;
+
+			foreach ( $this->order->get_items() as $item_id => $item ) 
+			{
+			    $product = $item->get_product();
+
+			    if ( ! $product instanceof WC_Product ) {
+			        continue;
+			    }
+
+			    $product_id = $product->get_id();
+			    $quantity   = (int) $item->get_quantity();
+			    $_mrkv_document_weight = get_post_meta( $product_id, '_mrkv_document_weight', true );
+
+                if ( empty( $_mrkv_document_weight ) ) 
+                {
+                    $weight += 0.1 * $quantity;
+                }
+                else
+                {
+                    $weight += $_mrkv_document_weight * $quantity;
+                }
+			}
+
+			if($weight > 0.1 && $weight <= 0.5){
+                $weight = 0.5;
+            }
+            elseif($weight > 0.5)
+            {
+                $weight = 1;
+            }
+
+			return $weight;
 		}
 
 		private function get_cargo_length($dimension_unit)

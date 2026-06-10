@@ -2,67 +2,32 @@ jQuery(window).on('load', function()
 {
 	if (jQuery('form[name="checkout"]').length == 0) return;
 
-	var currentLang = jQuery('html').attr('lang');
-
-	if (currentLang === 'uk') 
-	{
-		jQuery.fn.select2.defaults.set("language", {
-		    errorLoading: function () {
-		        return "Пошук...";
-		    },
-		    inputTooLong: function (args) {
-		        var overChars = args.input.length - args.maximum;
-		        return "Будь ласка, видаліть " + overChars + " символ(и/ів).";
-		    },
-		    inputTooShort: function (args) {
-		        return "Будь ласка, введіть ще " + args.minimum + " символ(и/ів).";
-		    },
-		    loadingMore: function () {
-		        return "Завантаження додаткових результатів...";
-		    },
-		    maximumSelected: function (args) {
-		        return "Ви можете вибрати лише " + args.maximum + " елемент(и/ів).";
-		    },
-		    noResults: function () {
-		        return "Нічого не знайдено.";
-		    },
-		    searching: function () {
-		        return "Пошук...";
-		    },
-		    removeAllItems: function () {
-		        return "Видалити всі елементи";
-		    },
-		});
-		if (typeof jQuery.fn.selectWoo !== 'undefined') {
-			jQuery.fn.selectWoo.defaults.set("language", {
-			    errorLoading: function () {
-			        return "Пошук...";
-			    },
-			    inputTooLong: function (args) {
-			        var overChars = args.input.length - args.maximum;
-			        return "Будь ласка, видаліть " + overChars + " символ(и/ів).";
-			    },
-			    inputTooShort: function (args) {
-			        return "Будь ласка, введіть ще " + args.minimum + " символ(и/ів).";
-			    },
-			    loadingMore: function () {
-			        return "Завантаження додаткових результатів...";
-			    },
-			    maximumSelected: function (args) {
-			        return "Ви можете вибрати лише " + args.maximum + " елемент(и/ів).";
-			    },
-			    noResults: function () {
-			        return "Нічого не знайдено.";
-			    },
-			    searching: function () {
-			        return "Пошук...";
-			    },
-			    removeAllItems: function () {
-			        return "Видалити всі елементи";
-			    },
-			});
-		}
-	}
+	var languageTexts = {
+	    errorLoading: function () {
+	        return mrkv_ua_ship_helper.select2_texts.errorLoading;
+	    },
+	    inputTooLong: function (args) {
+	        return mrkv_ua_ship_helper.select2_texts.inputTooLong.replace('%d', args.input.length - args.maximum);
+	    },
+	    inputTooShort: function (args) {
+	        return mrkv_ua_ship_helper.select2_texts.inputTooShort.replace('%d', args.minimum - args.input.length);
+	    },
+	    loadingMore: function () {
+	        return mrkv_ua_ship_helper.select2_texts.loadingMore;
+	    },
+	    maximumSelected: function (args) {
+	        return mrkv_ua_ship_helper.select2_texts.maximumSelected.replace('%d', args.maximum);
+	    },
+	    noResults: function () {
+	        return mrkv_ua_ship_helper.select2_texts.noResults;
+	    },
+	    searching: function () {
+	        return mrkv_ua_ship_helper.select2_texts.searching;
+	    },
+	    removeAllItems: function () {
+	        return mrkv_ua_ship_helper.select2_texts.removeAllItems;
+	    }
+	};
 
 	jQuery.fn.select2.amd.define('select2/data/extended-ajax',['./ajax','../utils','jquery'], function(AjaxAdapter, Utils, $){
 
@@ -108,6 +73,7 @@ jQuery(window).on('load', function()
 			data: default_cities,
 			dataAdapter: jQuery.fn.select2.amd.require('select2/data/extended-ajax'),
 			defaultResults: default_cities,
+			language: languageTexts,
 		minimumInputLength: 3,
 			ajax: {
 				delay: 800,
@@ -209,7 +175,104 @@ jQuery(window).on('load', function()
 	        
 	        if(mrkv_ua_ship_helper.nova_search_by_number == 'yes')
 	        {
-	        	isWarehouseDataLoaded = true;
+	        	jQuery.ajax({
+		            type: 'POST',
+		            url: mrkv_ua_ship_helper.ajax_url,
+		            data: {
+		                action: 'mrkv_ua_ship_nova_poshta_warehouse',
+		                ref: current_option.ref,
+		                warehouse_type: mrkv_ua_ship_helper.nova_warehouse_type,
+		                source_query: 'front',
+		                default_content: 'part',
+		                search_by_number: 'yes',
+		                nonce: mrkv_ua_ship_helper.nonce,
+		            },
+		            beforeSend: function() {
+		                if (jQuery('#mrkv_ua_shipping_nova-poshta_warehouse').length != 0) {
+		                    jQuery('#mrkv_ua_shipping_nova-poshta_warehouse').find('option').remove();
+		                    jQuery('#mrkv_ua_shipping_nova-poshta_warehouse').addClass('mrkv-ua-shipping-loading');
+		                }
+		            },
+		            success: function (json) {
+		                var data = JSON.parse(json);
+
+		               	if(data)
+		               	{
+		               		var default_warehouse = [];
+		               		jQuery.each(data, function(key, value) {
+					                default_warehouse.push({ id: this.label, text: this.label, ref: this.value, number: this.number });
+				            });
+
+	               			let np_settings_warehouse_select_def = {
+				        		data: default_warehouse,
+								dataAdapter: jQuery.fn.select2.amd.require('select2/data/extended-ajax'),
+								defaultResults: default_warehouse,
+				        		language: {
+						            inputTooShort: function () {
+						                return mrkv_ua_ship_helper.enter_search_text;
+						            }
+						        }, 
+								minimumInputLength: 1,
+								ajax: {
+									delay: 800,
+							    	url: mrkv_ua_ship_helper.ajax_url,
+							    	type: "POST",
+								    data: function (params) 
+								    {
+								    	let city_ref = jQuery('#mrkv_ua_shipping_nova-poshta_city_ref').val();
+
+								    	var query = {
+									      	action: 'mrkv_ua_ship_nova_poshta_warehouse',
+									      	ref: city_ref,
+						                	warehouse_type: mrkv_ua_ship_helper.nova_warehouse_type,
+						                	search_by: 'yes',
+						                	source_query: 'front',
+						                	name: params.term,
+						                	nonce: mrkv_ua_ship_helper.nonce,
+									    }
+
+								      return query;
+								    },
+							    processResults: function (json) {
+							    	var data;
+							    
+							    	if(typeof json == 'string')
+							    	{
+							    		data = JSON.parse(json);
+
+							    		return {
+									        results: data.map(function(item) {
+						                        return { id: item.label, text: item.label, ref: item.value, number: item.number };
+						                    })
+									    };
+							    	}
+							    	else
+							    	{
+							    		data = json;
+
+							    		return {
+									        results: default_warehouse
+									    };	
+							    	}
+							    },
+						  	},
+							};
+				        	jQuery('#mrkv_ua_shipping_nova-poshta_warehouse').select2(np_settings_warehouse_select_def);
+		               	}
+
+		               	if(data.length == 1 && data[0].value == 'none')
+		               	{
+		               		jQuery('#mrkv_ua_shipping_nova-poshta_warehouse_field .select2-selection__rendered').hide();
+		               		setTimeout(function(){ 
+		               			jQuery('#mrkv_ua_shipping_nova-poshta_warehouse_field .select2-selection__rendered').text(mrkv_ua_ship_helper.city_text_weight);
+		               			jQuery('#mrkv_ua_shipping_nova-poshta_warehouse_field .select2-selection__rendered').show();
+		               		}, 10);
+		               	}
+
+		               	jQuery('#mrkv_ua_shipping_nova-poshta_warehouse').removeClass('mrkv-ua-shipping-loading');
+		               	isWarehouseDataLoaded = true;
+		            }
+		        });
 	        }
 	        else
 	        {
@@ -294,6 +357,7 @@ jQuery(window).on('load', function()
 		                	search_by: 'yes',
 		                	name: params.term,
 		                	source_query: 'front',
+		                	search_by_number: 'yes',
 		                	nonce: mrkv_ua_ship_helper.nonce,
 					    }
 
@@ -575,64 +639,122 @@ jQuery(window).on('load', function()
 	        jQuery('#mrkv_ua_shipping_nova-poshta_address_house').val('');
 	        jQuery('#mrkv_ua_shipping_nova-poshta_address_flat').val('');
 	    	jQuery(this).removeClass('ui-autocomplete-loading');
-	        mrkvUaShipUpdateCart();
-	       
+	    	mrkvUaShipUpdateCart();
+	        
+	        jQuery.ajax({
+	            type: 'POST',
+	            url: mrkv_ua_ship_helper.ajax_url,
+	            data: {
+	                action: 'mrkv_ua_ship_nova_poshta_street_default',
+	                ref: current_option.ref,
+	                nonce: mrkv_ua_ship_helper.nonce,
+	            },
+	            beforeSend: function() {
+	                if (jQuery('#mrkv_ua_shipping_nova-poshta_address_street').length != 0) {
+	                    jQuery('#mrkv_ua_shipping_nova-poshta_address_street').find('option:not(:first-child)').remove();
+	                    jQuery('#mrkv_ua_shipping_nova-poshta_address_street').addClass('mrkv-ua-shipping-loading');
+	                }
+	            },
+	            success: function (json) {
+	                var data = JSON.parse(json);
+	               	if(data)
+	               	{
+	               		var default_streets = [];
+               			jQuery.each(data, function(key, value) {
+			                default_streets.push({ id: this.label, text: this.label, ref: this.value });
+		              });
+
+               			var np_settings_street_select = { 
+				 			data: default_streets,
+							dataAdapter: jQuery.fn.select2.amd.require('select2/data/extended-ajax'),
+							defaultResults: default_streets,
+							language: languageTexts,
+							minimumInputLength: 3,
+							ajax: {
+								delay: 800,
+						    	url: mrkv_ua_ship_helper.ajax_url,
+						    	type: "POST",
+							    data: function (params) {
+							    	$select = jQuery(this);
+							    	let ref_city = jQuery('#mrkv_ua_shipping_nova-poshta_address_city_ref').val();
+							    	if(params.term && params.term.length > 2)
+							    	{
+							    		var query = {
+									      	action: 'mrkv_ua_ship_nova_poshta_street',
+									        name: params.term,
+									        ref: ref_city,
+									        nonce: mrkv_ua_ship_helper.nonce,
+									    }
+							    	}
+							    	else
+							    	{
+							    		var query = {
+									      	action: 'mrkv_ua_ship_nova_poshta_street',
+									      	nonce: mrkv_ua_ship_helper.nonce,
+									    }
+							    	}
+
+							      return query;
+							    },
+							    beforeSend: function (e) {},
+							    complete: function () {},
+							    processResults: function (json) {
+							    	var data;
+							    
+							    	if(typeof json == 'string')
+							    	{
+							    		data = JSON.parse(json);
+
+							    		return {
+									        results: data.map(function(item) {
+						                        return { id: item.label, text: item.label, ref: item.value };
+						                    })
+									    };
+							    	}
+							    	else
+							    	{
+							    		data = json;
+
+							    		return {
+									        results: default_streets
+									    };	
+							    	}
+							    },
+						  	},
+						};
+
+				 		jQuery('#mrkv_ua_shipping_nova-poshta_address_street').select2(np_settings_street_select);
+	               	}
+
+	               	if(data.length == 1 && data[0].value == 'none')
+	               	{
+	               		jQuery('#mrkv_ua_shipping_nova-poshta_address_street_field .select2-selection__rendered').hide();
+	               		setTimeout(function(){ 
+	               			jQuery('#mrkv_ua_shipping_nova-poshta_address_street_field .select2-selection__rendered').text(mrkv_ua_ship_helper.city_text_weight);
+	               			jQuery('#mrkv_ua_shipping_nova-poshta_address_street_field .select2-selection__rendered').show();
+	               		}, 10);
+	               	}
+
+	               	jQuery('#mrkv_ua_shipping_nova-poshta_address_street').removeClass('mrkv-ua-shipping-loading');
+	            }
+	        });
 		});
  	}
 
  	if(jQuery('#mrkv_ua_shipping_nova-poshta_address_street').length != 0)
  	{
- 		var auto_np_args = {
-			source: function (request, response) {
+ 		jQuery('#mrkv_ua_shipping_nova-poshta_address_street').select2();
 
-				var city_ref = jQuery('#mrkv_ua_shipping_nova-poshta_address_city_ref').val();
-
-		        jQuery.ajax({
-		            type: 'POST',
-		            url: mrkv_ua_ship_helper.ajax_url,
-		            data: {
-		                action: 'mrkv_ua_ship_nova_poshta_street',
-		                name: request.term,
-		                ref: city_ref,
-		                nonce: mrkv_ua_ship_helper.nonce,
-		            },
-		            success: function (json) {
-		                var data = JSON.parse(json);
-		                response(data);
-		                jQuery(this).removeClass('ui-autocomplete-loading');
-		            }
-		        })
-		    },
-		    focus: function (event, ui) {
-		        return false;
-		    },
-		    select: function (event, ui) {
-		    	if(ui.item.value != 'none')
-		    	{
-		    		jQuery(this).val(ui.item.label);
-			    	jQuery('#mrkv_ua_shipping_nova-poshta_address_street_ref').val(ui.item.value);
-			    	jQuery('#mrkv_ua_shipping_nova-poshta_address_house').val('');
-			    	jQuery('#mrkv_ua_shipping_nova-poshta_address_flat').val('');
-			    	jQuery('#mrkv_ua_shipping_nova-poshta_address_address_ref').val('');
-			    	jQuery(this).removeClass('ui-autocomplete-loading');
-		    	}
-
-		        return false;
-		    }
-		};
-		
-		// Check if jQuery UI Autocomplete is available
-        if (typeof jQuery.ui === 'undefined' || typeof jQuery.ui.autocomplete === 'undefined') {
-            // If the .autocomplete function does not exist, load jQuery UI from CDN
-            var script = document.createElement('script');
-            script.src = 'https://code.jquery.com/ui/1.12.1/jquery-ui.min.js'; // URL for jQuery UI
-            script.onload = function() {
-                jQuery('#mrkv_ua_shipping_nova-poshta_address_street').autocomplete(auto_np_args);
-            };
-            document.head.appendChild(script); // Append the script tag to the head
-        } else {
-            jQuery('#mrkv_ua_shipping_nova-poshta_address_street').autocomplete(auto_np_args);
-        }
+ 		jQuery('#mrkv_ua_shipping_nova-poshta_address_street').on('select2:select', function (e) {
+		    let current_option = e.params.data;
+		    jQuery('#mrkv_ua_shipping_nova-poshta_address_street_ref').val(current_option.ref);
+		});
+		jQuery('#mrkv_ua_shipping_nova-poshta_address_street').on('select2:opening', function (e) {
+ 			jQuery(this).data('select2').$dropdown.find(':input.select2-search__field').attr('placeholder', mrkv_ua_ship_helper.city_placeholder);
+ 		});
+ 		jQuery('#mrkv_ua_shipping_nova-poshta_address_street').on('select2:closing', function (e) {
+ 			jQuery(this).data('select2').$dropdown.find(':input.select2-search__field').attr('placeholder', '');
+ 		});
  	}
 
  	if(jQuery('#mrkv_ua_shipping_nova-poshta_address_house').length != 0)
@@ -685,6 +807,83 @@ jQuery(window).on('load', function()
 		        });
 			}
 		}
+ 	}
+
+ 	if(jQuery('#mrkv_ua_shipping_nova-poshta_international_warehouse').length != 0)
+ 	{
+ 		let autoSelectCityPo = function() 
+		{
+		    jQuery('#mrkv_ua_shipping_nova-poshta_international_warehouse').autocomplete({
+
+		    source: function(request, response) { 
+
+		      if(request.term.length > 2){
+		        var country_sender = jQuery('#billing_country').length ? jQuery('#billing_country').val() : 'UA';
+		        jQuery('#mrkv_ua_shipping_nova-poshta_international_warehouse').addClass('ui-autocomplete-loading');
+		        jQuery.ajax({
+		            method: 'POST',
+		            url: mrkv_ua_ship_helper.ajax_url,
+		            dataType: 'json',
+		            data: {
+		              term: request.term,
+		              action: 'mrkv_ua_ship_novapost_divisions',
+		              mrkvup_country_suggestion: country_sender,
+		              nonce: mrkv_ua_ship_helper.nonce,
+		            },
+		            success: function(data) {
+		              if(!Array.isArray(data))
+		              {
+		                response(data.response);
+		              }
+		              else
+		              {
+		                response(data);
+		              }
+
+		              
+		              jQuery('#mrkv_ua_shipping_nova-poshta_international_warehouse').removeClass('ui-autocomplete-loading');
+		            },
+		                error: function(xhr, status, error) {
+		                    
+		                },
+		          });
+		      }
+		    },
+		    select: function(event, ui) {
+		      event.preventDefault();
+		      jQuery(this).val( ui.item.label );
+		      jQuery( "#mrkv_ua_shipping_nova-poshta_international_warehouse_ref" ).val( ui.item.value );
+		      jQuery( "#mrkv_ua_shipping_nova-poshta_international_warehouse_number" ).val( ui.item.number );
+		      jQuery('body').trigger('update_checkout');
+		      },
+		      minLength: 0,
+		      delay: 0,
+		    }).focus(function(){            
+		            jQuery(this).data("uiAutocomplete").search(jQuery(this).val());
+		        });
+		  }
+
+	  autoSelectCityPo();
+ 	}
+
+ 	if(jQuery('#mrkv_ua_shipping_nova-poshta_inter_address_postcode').length != 0)
+ 	{
+ 		let typingTimerNovaPost;
+	    const doneTypingIntervalNovaPost = 3000;
+	    const $input = jQuery('#mrkv_ua_shipping_nova-poshta_inter_address_postcode');
+
+	    $input.on('keyup input', function() {
+	        clearTimeout(typingTimerNovaPost);
+	        typingTimerNovaPost = setTimeout(doneTypingNovaPost, doneTypingIntervalNovaPost);
+	    });
+
+	    $input.on('keydown', function() {
+	        clearTimeout(typingTimerNovaPost);
+	    });
+
+	    function doneTypingNovaPost() {
+	     	mrkvUaShipUpdateCart();   
+	    }
  	}
 
  	if(jQuery('#mrkv_ua_shipping_nova-poshta_address_patronymic_field').length != 0)

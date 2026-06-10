@@ -18,3 +18,58 @@ define('MRKV_UA_SHIPPING_IMG_URL', plugin_dir_url(__FILE__) . 'assets/images');
 # Data
 define('MRKV_UA_SHIPPING_PLUGIN_VERSION', $plugData['Version']);
 define('MRKV_UA_SHIPPING_PLUGIN_TEXT_DOMAIN', 'mrkv-ua-shipping');
+
+# Allow tags 
+define( 'MRKV_UA_SHIPPING_ALLOW_TAGS', array(
+    'label' => array(
+        'for'   => true,
+        'class' => true,
+    ),
+    'input' => array(
+        'type'        => true,
+        'id'          => true,
+        'name'        => true,
+        'value'       => true,
+        'placeholder' => true,
+        'step'        => true,
+        'min'         => true,
+        'max'         => true,
+        'checked'     => true,
+        'disabled'    => true,
+        'readonly'    => true,
+        'multiple'    => true,
+        'onwheel'     => true,
+        'class'       => true,
+    ),
+    'select' => array(
+        'id'       => true,
+        'name'     => true,
+        'multiple' => true,
+        'disabled' => true,
+        'class'    => true,
+    ),
+    'option' => array(
+        'value'    => true,
+        'selected' => true,
+        'class'    => true,
+    ),
+    'textarea' => array(
+        'id'          => true,
+        'name'        => true,
+        'placeholder' => true,
+        'readonly'    => true,
+        'class'       => true,
+        'rows'        => true,
+        'cols'        => true,
+    ),
+    'p' => array(
+        'class' => true,
+    ),
+    'div' => array(
+        'class' => true,
+        'id'    => true,
+    ),
+    'span' => array(
+        'class' => true,
+    ),
+) );

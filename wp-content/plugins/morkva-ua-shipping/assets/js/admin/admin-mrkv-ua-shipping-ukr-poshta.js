@@ -56,6 +56,23 @@ jQuery(window).on('load', function()
         }
     }
 
+    var $enabled  = jQuery('#ukr-poshta_m_ua_settings_checkout_middlename_enabled');
+    var $required = jQuery('#ukr-poshta_m_ua_settings_checkout_middlename_required');
+
+    function toggleRequiredState() {
+        if ($enabled.is(':checked')) {
+            $required.prop('disabled', false);
+        } else {
+            $required.prop('checked', false);
+            $required.prop('disabled', true);
+        }
+    }
+
+    toggleRequiredState();
+    $enabled.on('change', function(){
+        toggleRequiredState();
+    });
+
     jQuery('.adm-textarea-btn').on('click', function() 
     {
          var shotcode = jQuery(this).attr('data-added');

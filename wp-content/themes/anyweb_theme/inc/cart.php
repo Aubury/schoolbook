@@ -50,7 +50,10 @@ add_action('wp_ajax_nopriv_backsjax', 'backsjax' );
 		
 	 }
 	$OneClickRespCart['subtotal'] = WC()->cart->subtotal;
-	  $response = '
+    $OneClickRespCart['discount'] = WC()->cart->get_cart_discount_total();
+    $OneClickRespCart['total']    = WC()->cart->total;
+
+	$response = '
 	  <div class="modal-body modal-body--one-click-thx">
 		  <div class="popup-form-wrap">
 			  <h2 class="h2-title">Дя<span class="color-orange">ку</span>є<span class="color-blue">мо</span>!</h2>
@@ -67,10 +70,14 @@ add_action('wp_ajax_nopriv_backsjax', 'backsjax' );
 
 	foreach ($OneClickRespCart as $key => $value) {
 		if(!empty( $value['product_id'])){
-		$msg .= '[ID ' . $value['product_id'].'] ' . $value['name'] . ' - ' . $value['quantity'] . ' шт. /' . $value['price'] . "грн\r\n" ;
+		    $msg .= '[ID ' . $value['product_id'].'] ' . $value['name'] . ' - ' . $value['quantity'] . ' шт. /' . $value['price'] . "грн\r\n" ;
+	    }
 	}
-	}
-$msg .= 'Загальна сума: ' . $OneClickRespCart['subtotal'] . 'грн'. "\r\n\r\n";
+
+	$msg .= 'Загальна сума: ' . $OneClickRespCart['subtotal'] . 'грн'. "\r\n\r\n";
+    $msg .= 'Знижка: ' . $OneClickRespCart['discount'] . 'грн'. "\r\n\r\n";
+    $msg .= 'Всього: ' . $OneClickRespCart['total'] . 'грн'. "\r\n\r\n";
+
 foreach ($filds as $key => $value) {
 
 	$msg .=$value['value']. "\r\n";

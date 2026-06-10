@@ -126,7 +126,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_AJAX'))
 		        wp_die();
 		    }
 
-		    $current_ship_key = isset($_POST['current_ship_key']) ? sanitize_text_field($_POST['current_ship_key']) : '';
+		    $current_ship_key = isset($_POST['shipping']) ? sanitize_text_field($_POST['shipping']) : '';
 
 			if($current_ship_key)
 			{
@@ -164,20 +164,8 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_AJAX'))
 
 					if($order_data)
 					{
-						$first_name = !empty( $order_data['shipping']['first_name'] )
-				            ? html_entity_decode(esc_html( $order_data['shipping']['first_name'] ), ENT_QUOTES, 'UTF-8')
-				            : html_entity_decode(esc_html( $order_data['billing']['first_name'] ), ENT_QUOTES, 'UTF-8');
-
-			            $last_name = !empty( $order_data['shipping']['last_name'] )
-				            ? html_entity_decode(esc_html( $order_data['shipping']['last_name'] ), ENT_QUOTES, 'UTF-8')
-				            : html_entity_decode(esc_html( $order_data['billing']['last_name'] ), ENT_QUOTES, 'UTF-8');
-
-			            $args = array(
-							'mrkv_ua_ship_invoice_first_name' => $first_name,
-							'mrkv_ua_ship_invoice_last_name' => $last_name,
-						);
-
-			            $keys_shipping = array_keys(MRKV_UA_SHIPPING_LIST);
+						$args = [];
+						$keys_shipping = array_keys(MRKV_UA_SHIPPING_LIST);
 			    		$key = '';
 			    		$current_shipping = '';
 
@@ -199,7 +187,26 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_AJAX'))
 							}
 			            }
 
-			            $args['mrkv_ua_ship_key'] = $key;
+			            $first_name = !empty( $order_data['shipping']['first_name'] )
+				            ? html_entity_decode(esc_html( $order_data['shipping']['first_name'] ), ENT_QUOTES, 'UTF-8')
+				            : html_entity_decode(esc_html( $order_data['billing']['first_name'] ), ENT_QUOTES, 'UTF-8');
+
+			            $last_name = !empty( $order_data['shipping']['last_name'] )
+				            ? html_entity_decode(esc_html( $order_data['shipping']['last_name'] ), ENT_QUOTES, 'UTF-8')
+				            : html_entity_decode(esc_html( $order_data['billing']['last_name'] ), ENT_QUOTES, 'UTF-8');
+
+			            if(MRKV_UA_SHIPPING_LIST[$key]['method'][$current_shipping]['validation_latin'])
+			            {
+			            	$first_name = $this->convert_latin_to_ukrainian($first_name);
+			            	$last_name = $this->convert_latin_to_ukrainian($last_name);
+			            }
+
+			            $args = array(
+							'mrkv_ua_ship_invoice_first_name' => $first_name,
+							'mrkv_ua_ship_invoice_last_name' => $last_name,
+						);
+
+						$args['mrkv_ua_ship_key'] = $key;
 
 			            $area_name = $order->get_billing_state() ? $order->get_billing_state() . ', ' : '';
 		            	$city_name = $order->get_billing_city() ? $order->get_billing_city() . ', ' : '';
@@ -216,6 +223,27 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_AJAX'))
 			            $args['mrkv_ua_ship_invoice_address'] = $address_to;
 
 			            $patronomic = html_entity_decode($order->get_meta($current_shipping . '_patronymic'));
+
+			            if(MRKV_UA_SHIPPING_LIST[$key]['method'][$current_shipping]['validation_latin'])
+			            {
+			            	$patronomic = $this->convert_latin_to_ukrainian($patronomic);
+
+			            	if((bool) preg_match('/[A-Za-z]/', $first_name))
+				            {
+				            	$args['mrkv_ua_ship_validate_latin'][] = 'mrkv_ua_ship_invoice_first_name';
+				            }
+
+				            if((bool) preg_match('/[A-Za-z]/', $last_name))
+				            {
+				            	$args['mrkv_ua_ship_validate_latin'][] = 'mrkv_ua_ship_invoice_last_name';
+				            }
+
+				            if((bool) preg_match('/[A-Za-z]/', $patronomic))
+				            {
+				            	$args['mrkv_ua_ship_validate_latin'][] = 'mrkv_ua_ship_invoice_patronymic';
+				            }
+			            }
+
 			            $phone = ! empty( $order_data['shipping']['phone'] )
 			                ? str_replace( array('+', ' ', '(' , ')', '-'), '', esc_html( $order_data['shipping']['phone'] ) )
 			                : str_replace( array('+', ' ', '(' , ')', '-'), '', esc_html( $order_data['billing']['phone'] ) );
@@ -377,6 +405,49 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_AJAX'))
 
 			wp_die();
 		}
+
+		/**
+		 * Convert Latin lookalike letters to Ukrainian equivalents.
+		 *
+		 * @param string $string Input string to normalize.
+		 * @return string Cleaned string with Ukrainian letters.
+		 */
+		public function convert_latin_to_ukrainian( $string ) {
+		    if ( empty( $string ) ) {
+		        return $string;
+		    }
+		    # Latin → Ukrainian map (similar-looking characters)
+		    $map = [
+		        'A' => 'А',
+		        'B' => 'В',
+		        'C' => 'С',
+		        'E' => 'Е',
+		        'H' => 'Н',
+		        'I' => 'І',
+		        'K' => 'К',
+		        'M' => 'М',
+		        'O' => 'О',
+		        'P' => 'Р',
+		        'T' => 'Т',
+		        'X' => 'Х',
+		        'Y' => 'У',
+
+		        'a' => 'а',
+		        'c' => 'с',
+		        'e' => 'е',
+		        'i' => 'і',
+		        'o' => 'о',
+		        'p' => 'р',
+		        'x' => 'х',
+		        'y' => 'у',
+		    ];
+
+		    # Replace wrong Latin chars with correct Ukrainian
+		    $converted = strtr( $string, $map );
+
+		    return $converted;
+		}
+
 
 		public function convert_description($order, $description) 
 		{
@@ -579,6 +650,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_AJAX'))
 				$order = wc_get_order($order_id);
 				$order->update_meta_data('mrkv_ua_ship_invoice_number', $invoice_data);
 				$order->add_order_note(__('Added invoice number','mrkv-ua-shipping') . ': ' . $invoice_data, $is_customer_note = 0, $added_by_user = false);
+				do_action('mrkv_keycrm_update_invoice_number', $order_id);
 	        	$order->save();
 			}
 
@@ -636,6 +708,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_AJAX'))
 				$order->delete_meta_data('mrkv_ua_ship_invoice_number');
 				$order->delete_meta_data('novaposhta_ttn');
 				$order->delete_meta_data('ukrposhta_ttn');
+				do_action('mrkv_keycrm_remove_invoice_number', $order_id);
 				$order->add_order_note(__('Invoice removed','mrkv-ua-shipping'), $is_customer_note = 0, $added_by_user = false);
 	        	$order->save();
 			}

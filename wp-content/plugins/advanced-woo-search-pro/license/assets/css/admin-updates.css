@@ -1,0 +1,182 @@
+
+/* Box */
+.aws-box-wrap {
+    max-width: 1000px;
+}
+
+.aws-box {
+    margin: 20px 0;
+    background: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    position: relative;
+}
+
+.aws-box .title {
+    border-bottom: 1px solid #EEEEEE;
+    margin: 0;
+    padding: 15px;
+    background: #FFFFFF;
+}
+
+.aws-box .title h3 {
+    font-size: 14px;
+    line-height: 1em;
+    margin: 0;
+    padding: 0;
+}
+
+.aws-box .inner {
+    padding: 15px;
+}
+
+.aws-box .inner input {
+    width: 100%;
+    min-width: 400px;
+}
+
+.aws-box .inner .valid input {
+    background: rgba(0, 128, 0, 0.1);
+}
+
+.aws-box .inner p {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0.5em 0 1em;
+}
+
+.aws-box .inner h4 {
+    margin: 5px 0;
+}
+
+.aws-box .form-table {
+    border: none;
+    margin-bottom: 0;
+}
+
+.aws-box .form-table ul {
+    margin: 10px 0 30px;
+}
+
+.aws-box .license-error {
+    display: none;
+    color: #ff0000;
+}
+
+.aws-box .license-valid {
+    color: #008000;
+    display: none;
+}
+
+.aws-box .invalid .license-error,
+.aws-box .valid .license-valid {
+    display: block;
+}
+
+.aws-box .aws-license-btn-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.aws-box .aws-update {
+    margin-left: 10px;
+    margin-top: -5px;
+}
+
+.aws-box #refresh-plugin-info {
+}
+.aws-box #refresh-plugin-info:before {
+    content: "\f113";
+    font-family: dashicons;
+    line-height: 20px;
+    font-weight: 400;
+    font-style: normal;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.aws-license-notice {
+    background: rgba(255, 0, 0, 0.03);
+    margin: 15px 0;
+    border: 1px solid #c3c4c7;
+    border-left-width: 4px;
+    border-left-color: #ff0000;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 4%);
+    padding: 5px 12px;
+}
+.aws-license-notice .aws-license-notice--content {
+    position: relative;
+    overflow: auto;
+    font-size: 13px;
+    line-height: 1.7;
+}
+.aws-license-notice .aws-license-notice--content h2 {
+    margin: 10px 0;
+    font-size: 15px;
+}
+.aws-license-notice .aws-license-notice--content p {
+    margin: 10px 0;
+    font-size: 13px;
+    color: #333;
+}
+.aws-license-notice .aws-license-notice--content a.button {
+    margin-bottom: 12px;
+}
+
+/* Loader */
+.aws-box .aws-loader,
+.aws-box .aws-loader:after {
+    border-radius: 50% !important;
+    width: 16px;
+    height: 16px;
+}
+
+.aws-box .aws-loader {
+    position: absolute;
+    display: none;
+    right: -32px;
+    top: 50%;
+    z-index: 999;
+    margin: 0;
+    margin-top: -11px;
+    font-size: 10px;
+    text-indent: -9999em;
+    border-top: 3px solid #ededed;
+    border-right: 3px solid #ededed;
+    border-bottom: 3px solid #ededed;
+    border-left: 3px solid #555;
+
+}
+
+.aws-box .aws-processing .aws-loader {
+    display: block;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-animation: load8 0.7s infinite linear;
+    animation: load8 0.7s infinite linear;
+}
+
+@-webkit-keyframes load8 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes load8 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

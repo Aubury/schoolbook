@@ -27,8 +27,54 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 			add_action( 'wp_ajax_mrkv_ua_ship_nova_poshta_street', array($this, 'get_nova_poshta_street') );
 			add_action( 'wp_ajax_nopriv_mrkv_ua_ship_nova_poshta_street', array($this, 'get_nova_poshta_street') );
 
+			add_action( 'wp_ajax_mrkv_ua_ship_nova_poshta_street_default', array($this, 'get_nova_poshta_street_default') );
+			add_action( 'wp_ajax_nopriv_mrkv_ua_ship_nova_poshta_street_default', array($this, 'get_nova_poshta_street_default') );
+
 			add_action( 'wp_ajax_mrkv_ua_ship_nova_poshta_sender_get_address_ref', array($this, 'get_sender_get_address_ref') );
 			add_action( 'wp_ajax_nopriv_mrkv_ua_ship_nova_poshta_sender_get_address_ref', array($this, 'get_sender_get_address_ref') );
+
+			add_action( 'wp_ajax_mrkv_ua_ship_novapost_divisions', array($this, 'get_mrkv_ua_ship_novapost_divisions') );
+			add_action( 'wp_ajax_nopriv_mrkv_ua_ship_novapost_divisions', array($this, 'get_mrkv_ua_ship_novapost_divisions') );
+		}
+
+		public function get_mrkv_ua_ship_novapost_divisions()
+		{
+			if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field( wp_unslash($_POST['nonce'])), 'mrkv_ua_ship_nonce')) {
+		        wp_send_json_error(__('Invalid nonce.', 'mrkv-ua-shipping'), 403);
+		        wp_die();
+		    }
+
+		    $novapost_term_suggestion = isset($_POST['term']) ? sanitize_text_field($_POST['term']) : '';
+		    $mrkvup_country_suggestion = isset($_POST['mrkvup_country_suggestion']) ? sanitize_text_field($_POST['mrkvup_country_suggestion']) : '';
+
+		    require_once MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-api-nova-post.php';
+			$mrkv_object_nova_post = new MRKV_UA_SHIPPING_API_NOVA_POST(get_option('nova-poshta_m_ua_settings'));
+
+			$city_body = $mrkv_object_nova_post->send_post_request([], 'divisions?countryCodes[]=' . $mrkvup_country_suggestion . '&limit=100&textSearch=' . $novapost_term_suggestion, 'GET');
+
+			$city_output = array();
+
+			if(isset($city_body['items']))
+			{
+				foreach($city_body['items'] as $city){
+
+					$label = $city['address'];
+
+					if($mrkvup_country_suggestion == 'UA')
+					{
+						$label = $city['shortName'];
+					}
+
+					$city_output['response'][] = array(
+						"label" => $label,
+						"value" => $city['id'],
+						"number" => $city['number']
+					);
+				}
+			}
+
+			echo wp_json_encode( $city_output );
+			wp_die();
 		}
 
 		/**
@@ -188,6 +234,8 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 			$warehouse_type = isset($_POST['warehouse_type']) ? sanitize_text_field($_POST['warehouse_type']) : '';
 			$search_by = isset($_POST['search_by']) ? sanitize_text_field($_POST['search_by']) : '';
 			$source_query = isset($_POST['source_query']) ? sanitize_text_field($_POST['source_query']) : '';
+			$default_type = isset($_POST['default_content']) ? sanitize_text_field($_POST['default_content']) : '';
+			$search_by_number = isset($_POST['search_by_number']) ? sanitize_text_field($_POST['search_by_number']) : '';
 			$exclude_post = '';
 			
 			if($warehouse_type == 'none'){
@@ -222,6 +270,11 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 	        if($warehouse_type)
 	        {
 	        	$args['methodProperties']['TypeOfWarehouseRef'] = $warehouse_type;
+	        }
+
+	        if($default_type && $default_type == 'part')
+	        {
+	        	$args['methodProperties']['Limit'] = '20';
 	        }
 
 	        # Send request
@@ -266,12 +319,27 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 	        	}
 	        	else
 	        	{
-	        		$areas[] = array(
-	        			'value' => '',
-	        			'label' => __('Choose the warehouse', 'mrkv-ua-shipping'),
-	        			'number' => ''
-	        		);
+	        		if($search_by_number && $search_by_number == 'yes')
+	        		{
+	        			$areas[] = array(
+		        			'value' => '',
+		        			'label' => __('Please enter warehouse number', 'mrkv-ua-shipping'),
+		        			'number' => '',
+		        			'zipcode' => ''
+		        		);
+	        		}
+	        		else
+	        		{
+	        			$areas[] = array(
+		        			'value' => '',
+		        			'label' => __('Choose the warehouse', 'mrkv-ua-shipping'),
+		        			'number' => '',
+		        			'zipcode' => ''
+		        		);
+	        		}
 	        	}
+
+	        	$weight = 0;
 
 	        	if($skip_weight  && $source_query == 'front')
 	        	{
@@ -364,6 +432,63 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 		/**
 		 * Get Nova poshta Street
 		 * */
+		public function get_nova_poshta_street_default()
+		{
+			if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field( wp_unslash($_POST['nonce'])), 'mrkv_ua_ship_nonce')) {
+		        wp_send_json_error(__('Invalid nonce.', 'mrkv-ua-shipping'), 403);
+		        wp_die();
+		    }
+
+			require_once MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-api-nova-poshta.php';
+			$mrkv_object_nova_poshta = new MRKV_UA_SHIPPING_API_NOVA_POSHTA(get_option('nova-poshta_m_ua_settings'));
+
+			$city_ref = isset($_POST['ref']) ? sanitize_text_field($_POST['ref']) : '';
+
+			$args = array(
+	            'apiKey' => $mrkv_object_nova_poshta->get_api_key(),
+	            'modelName' => 'AddressGeneral',
+	            'calledMethod' => 'getStreet',
+            	'methodProperties' => array(
+            		'FindByString' => '',
+            		'CityRef' => $city_ref,
+            		'Limit' => '100'
+            	)
+	        );
+
+	        if ($mrkv_object_nova_poshta->active_api !== true) {
+	        	$args['modelName'] = 'Address';
+	        	unset($args['apiKey']);
+	        }
+
+	        # Send request
+	        $obj = $mrkv_object_nova_poshta->send_post_request( $args );
+
+	        if(isset($obj['data'][0]))
+	        {
+	        	$areas = array();
+
+	        	foreach($obj['data'] as $area)
+	        	{
+	        		$areas[] = array(
+	        			'value' => $area['Ref'],
+	        			'label' => $area['StreetsType'] . ' ' . $area['Description']
+	        		);
+	        	}
+
+	        	# Return object
+	        	echo wp_json_encode($areas);
+	        }
+	        else
+	        {
+	        	echo wp_json_encode(array());
+	        }
+
+			wp_die();
+		}
+
+		/**
+		 * Get Nova poshta Street
+		 * */
 		public function get_nova_poshta_street()
 		{
 			if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field( wp_unslash($_POST['nonce'])), 'mrkv_ua_ship_nonce')) {
@@ -382,7 +507,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 	            'modelName' => 'AddressGeneral',
 	            'calledMethod' => 'getStreet',
             	'methodProperties' => array(
-            		'FindByString' => '%' . $key_search .'%',
+            		'FindByString' => $key_search .'%',
             		'CityRef' => $city_ref,
             		'Limit' => '10'
             	)
@@ -404,7 +529,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_NOVA'))
 	        	{
 	        		$areas[] = array(
 	        			'value' => $area['Ref'],
-	        			'label' => $area['Description']
+	        			'label' => $area['StreetsType'] . ' ' . $area['Description']
 	        		);
 	        	}
 

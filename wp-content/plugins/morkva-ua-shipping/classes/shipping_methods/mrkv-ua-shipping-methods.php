@@ -5,9 +5,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 # Include ajax shipping
 require_once 'mrkv-ua-shipping-methods-ajax.php';
 # Include checkout settings shipping
-require_once 'mrkv-ua-shipping-methods-checkout.php';  
+require_once 'mrkv-ua-shipping-methods-checkout.php';
+# Include shipping cron
+require_once 'mrkv-ua-shipping-methods-cron.php';
 # Include order settings shipping
-require_once 'mrkv-ua-shipping-methods-order.php'; 
+require_once 'mrkv-ua-shipping-methods-order.php';
 
 # Check if class exist
 if (!class_exists('MRKV_UA_SHIPPING_METHODS'))
@@ -46,6 +48,9 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS'))
 					# Setup woo plugin shipping methods order
 					new MRKV_UA_SHIPPING_METHODS_ORDER();
 
+					# Setup woo plugin shipping methods cron
+					new MRKV_UA_SHIPPING_METHODS_CRON();
+
 					break;
 				}
 			}
@@ -66,7 +71,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS'))
 							. '/api/mrkv-ua-shipping-api-' . SETTINGS_MRKV_UA_SHIPPING_SLUG . '.php';
 
 						global $mrkv_global_option_generator;
-						$mrkv_global_option_generator = new MRKV_UA_SHIPPING_OPTION_FILEDS();
+						$mrkv_global_option_generator = new MRKV_UA_SHIPPING_OPTION_FIELDS();
 						define('MRKV_OPTION_OBJECT_NAME', SETTINGS_MRKV_UA_SHIPPING_SLUG . '_m_ua_settings');
 						define('MRKV_SHIPPING_SETTINGS', get_option(MRKV_OPTION_OBJECT_NAME));
 						

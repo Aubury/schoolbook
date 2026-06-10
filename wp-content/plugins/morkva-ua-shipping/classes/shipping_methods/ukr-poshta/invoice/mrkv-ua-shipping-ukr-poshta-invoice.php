@@ -82,6 +82,11 @@ if (!class_exists('MRKV_UA_SHIPPING_UKR_POSHTA_INVOICE'))
 			$height = $this->get_height_shipment('shipment', $dimension_unit);
 			$width = $this->get_width_shipment('shipment', $dimension_unit);
 
+			if($paid_by_recipient)
+			{
+				$receive_type = 'RETURN';
+			}
+
 			$args = array(
 		    	"sender" 			=> array( "uuid" => $sender ),
 		    	"recipient" 		=> array( "uuid" => $recipient ),
@@ -219,6 +224,26 @@ if (!class_exists('MRKV_UA_SHIPPING_UKR_POSHTA_INVOICE'))
 				}
 			}
 
+			if($sender_phone)
+			{
+				# Get current user uuid if exist
+				$obj = $this->shipping_api->send_post_request_curl('ecom/0.0.1/clients/phone', 'GET', array(), '&countryISO3166=UA&phoneNumber=' . $sender_phone);
+
+				if(is_array($obj) && isset($obj[0]['uuid']))
+				{
+					$this->shipping_api->send_post_request_curl('ecom/0.0.1/clients/' . $obj[0]['uuid'], 'PUT', [
+					    'addresses' => [
+					        [
+					            'addressId' => $sender_address_id,
+					            'main' => true,
+					        ],
+					    ],
+					], 'token');
+
+					return $obj[0]['uuid'];
+				}
+			}
+
 			# Send request
 	        $obj = $this->shipping_api->send_post_request_curl('ecom/0.0.1/clients', 'POST', array(
 				"type"			=> $sender_type,
@@ -290,6 +315,27 @@ if (!class_exists('MRKV_UA_SHIPPING_UKR_POSHTA_INVOICE'))
 			if(!$address_id)
 			{
 				$address_id = $this->get_recipient_address_ref();
+			}
+
+			if($recipient_phone)
+			{
+				# Get current user uuid if exist
+				$obj = $this->shipping_api->send_post_request_curl('ecom/0.0.1/clients/phone', 'GET', array(), '&countryISO3166=UA&phoneNumber=' . $recipient_phone);
+
+				if(is_array($obj) && isset($obj[0]['uuid']))
+				{
+					$this->shipping_api->send_post_request_curl('ecom/0.0.1/clients/' . $obj[0]['uuid'], 'PUT', [
+						'middleName' => $recipient_middle_name,
+					    'addresses' => [
+					        [
+					            'addressId' => $address_id,
+					            'main' => true,
+					        ],
+					    ],
+					], 'token');
+
+					return $obj[0]['uuid'];
+				}
 			}
 
 			# Send request

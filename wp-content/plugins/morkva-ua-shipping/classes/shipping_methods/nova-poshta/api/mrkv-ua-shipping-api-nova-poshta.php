@@ -128,7 +128,7 @@ if (!class_exists('MRKV_UA_SHIPPING_API_NOVA_POSHTA'))
 	    		# Send request
 	    		$obj = $this->send_post_request( $args );
 
-	    		if(isset($obj['success']) && $obj['success'] == true)
+	    		if(is_array($obj) && isset($obj['success']) && $obj['success'] == true)
 	    		{
 	    			update_option('mrkv_api_fixed_np', false);
 	    			return true;
@@ -136,7 +136,7 @@ if (!class_exists('MRKV_UA_SHIPPING_API_NOVA_POSHTA'))
 	    		else
 	    		{
 	    			update_option('mrkv_api_fixed_np', true);
-	    			if($obj['errors'][0])
+	    			if(is_array($obj) && isset($obj['errors'][0]) && $obj['errors'][0])
 	    			{
 	    				# Return false
 		    			return $obj['errors'][0];

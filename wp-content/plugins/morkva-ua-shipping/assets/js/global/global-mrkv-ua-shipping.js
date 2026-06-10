@@ -70,6 +70,14 @@ jQuery(window).on('load', function()
 	            				jQuery('[data-ship="' + data.mrkv_ua_ship_key + '"] form [name=' + index + '][value=' + value + ']').attr('checked', 'checked');
 	            			}
 	            		}
+	            		else if(index == 'mrkv_ua_ship_validate_latin')
+	            		{
+	            			jQuery.each(value, function(i, fieldName) {
+						        var input_latin = jQuery('[data-ship="' + data.mrkv_ua_ship_key + '"] form [name=' + fieldName + ']');
+						        jQuery(input_latin).closest('label').append('<span class="mrkv-ua-ship-latin-error">' + mrkv_ua_ship_helper.error_latin_text + '</span>');
+						        jQuery(input_latin).addClass('mrkv-ua-ship-latin-error-input');
+						    });
+	            		}
 	            		else
 	            		{
 	            			if(value)
@@ -81,12 +89,73 @@ jQuery(window).on('load', function()
 				});
 				jQuery('input[name="mrkv_ua_ship_invoice_shipment_volume"]').val(mrkvnpCalcVolumeWeightSettings());
 				jQuery('.mrkv_ua_ship_create_invoice__changed form input[name="order_id"]').val(current_order_id);
+				let desc_symb_amount = jQuery('[data-ship="' + data.mrkv_ua_ship_key + '"] form textarea[name="mrkv_ua_ship_invoice_shipment_description"]').val();
+				let desc_length = desc_symb_amount.length;
+				jQuery('[data-ship="' + data.mrkv_ua_ship_key + '"] form .mrkv-ua-ship-cout-symb').text(desc_length);
+
+				if (length > 100) {
+					jQuery('[data-ship="' + data.mrkv_ua_ship_key + '"] form .mrkv-ua-shipping-desc-validation').addClass('red');
+					let desc_text = jQuery('[data-ship="' + data.mrkv_ua_ship_key + '"] form .mrkv-ua-shipping-desc-validation').attr('data-error');
+				    jQuery('[data-ship="' + data.mrkv_ua_ship_key + '"] form .mrkv-ua-ship-message-symb').text(desc_text);
+				}
+				else
+				{
+					jQuery('[data-ship="' + data.mrkv_ua_ship_key + '"] form .mrkv-ua-shipping-desc-validation').removeClass('red');
+					let desc_text = jQuery('[data-ship="' + data.mrkv_ua_ship_key + '"] form .mrkv-ua-shipping-desc-validation').attr('data-success');
+					jQuery('[data-ship="' + data.mrkv_ua_ship_key + '"] form .mrkv-ua-ship-message-symb').text(desc_text);
+				}
 
                 jQuery('#mrkv_ua_ship_create_invoice').fadeIn(300);
                 jQuery(loader_btn).hide();
                 isProcessingOpenForm = false;
             }
         });
+	});
+
+let latinRegex = /[A-Za-z]/;
+
+    // Selector for all target fields
+    let selector = 'form[data-ship="nova-poshta"] input[name="mrkv_ua_ship_invoice_first_name"],' +
+        'form[data-ship="nova-poshta"] input[name="mrkv_ua_ship_invoice_last_name"],' +
+        'form[data-ship="nova-poshta"] input[name="mrkv_ua_ship_invoice_patronymic"],' +
+        'form[data-ship="ukr-poshta"] input[name="mrkv_ua_ship_invoice_first_name"],' +
+        'form[data-ship="ukr-poshta"] input[name="mrkv_ua_ship_invoice_last_name"],' +
+        'form[data-ship="ukr-poshta"] input[name="mrkv_ua_ship_invoice_patronymic"]';
+
+	jQuery(document).on('keyup', selector, function() {
+        let $input = jQuery(this);
+        let val = $input.val();
+
+        // Remove old error before checking
+        $input.removeClass('mrkv-ua-ship-latin-error-input');
+        $input.closest('.admin_ua_ship_morkva_settings_line').find('label').find('.mrkv-ua-ship-latin-error').remove();
+
+        // If contains Latin letters -> show error
+        if (latinRegex.test(val)) {
+            $input.addClass('mrkv-ua-ship-latin-error-input');
+            $input.closest('.admin_ua_ship_morkva_settings_line').find('label').append(
+                '<span class="mrkv-ua-ship-latin-error">' + mrkv_ua_ship_helper.error_latin_text + '</span>'
+            );
+        }
+    });
+
+    jQuery(document).on('keyup', 'textarea[name="mrkv_ua_ship_invoice_shipment_description"]', function () {
+	    let text = jQuery(this).val();
+	    let length = text.length;
+
+	    let validation_desc = jQuery(this).closest('.admin_ua_ship_morkva_settings_line').find('.mrkv-ua-shipping-desc-validation');
+	    jQuery(validation_desc).find('.mrkv-ua-ship-cout-symb').text(length);
+
+	    if (length > 100) {
+	        jQuery(validation_desc).addClass('red');
+	        let desc_text = jQuery(validation_desc).attr('data-error');
+		    jQuery(validation_desc).find('.mrkv-ua-ship-message-symb').text(desc_text);
+
+	    } else {
+	        jQuery(validation_desc).removeClass('red');
+	        let desc_text = jQuery(validation_desc).attr('data-success');
+		    jQuery(validation_desc).find('.mrkv-ua-ship-message-symb').text(desc_text);
+	    }
 	});
 
 	jQuery('.mrkv_ua_ship_create_invoice__action').click(function()
@@ -146,6 +215,15 @@ jQuery(window).on('load', function()
 	              		{
 	              			jQuery('.print-sticker-mrkv-ua-ship').attr('href', data.print_sticker);
 	              			jQuery('.print-sticker-mrkv-ua-ship').show();
+	              		}
+
+	              		if(current_ship_key == 'ukr-poshta')
+	              		{
+	              			jQuery('.mrkv_orders_list .print-sticker-mrkv-ua-ship').hide();
+	              			jQuery('.mrkv_orders_list .print-ttn-mrkv-ua-ship').hide();
+	              		}
+	              		else{
+	              			jQuery('.mrkv_orders_list .print-ttn-mrkv-ua-ship').show();
 	              		}
 
 	              		jQuery('#mrkv_ua_ship_create_invoice_completed').fadeIn(300);

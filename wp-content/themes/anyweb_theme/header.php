@@ -96,7 +96,7 @@
 								<div id="search-mob" class="bx-searchtitle">
 										<div class="bx-input-group">
 											<span class="clear-search"></span>
-											<?php aws_get_search_form( true ); ?>
+											<?php aws_get_search_form( true, array( 'id' => 1 ) ); ?>
 											<span class="bx-input-group-btn">
 												<button class="btn btn-default" type="submit" name="s"><i class="fa fa-search"></i></button>
 											</span>
@@ -169,7 +169,7 @@ echo
 						
 			<div class="basket-link-wrap">
 				<span class="cart-title">У кошику:</span>
-					<?php echo sprintf(_n('%d овар', '%d товарів', WC()->cart->cart_contents_count, 'store'), WC()->cart->cart_contents_count); ?>
+					<?php echo sprintf(_n('%d товар', '%d товарів', WC()->cart->cart_contents_count, 'store'), WC()->cart->cart_contents_count); ?>
 					<br>
 				<span class="basket-sum">на cуму <strong><?php echo WC()->cart->get_cart_total(); ?></strong></span>
 			</div>
@@ -281,7 +281,7 @@ echo preg_replace('/<ul class="bx_hma_one_lvl-ul">/', '<div class="bx_children_c
 
 					<div id="search" class="bx-searchtitle">
 							<div class="bx-input-group">            
-								<?php aws_get_search_form( true ); ?>
+								<?php aws_get_search_form( true, array( 'id' => 1 ) ); ?>
 								<span class="bx-input-group-btn"><button class="btn btn-default"  name="s"><i class="fa fa-search"></i></button></span>
 							</div>
 					</div>

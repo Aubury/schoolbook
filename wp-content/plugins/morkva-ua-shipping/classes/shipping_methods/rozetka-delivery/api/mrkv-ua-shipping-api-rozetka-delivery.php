@@ -13,7 +13,7 @@ if (!class_exists('MRKV_UA_SHIPPING_API_ROZETKA_DELIVERY'))
 		/**
 		 * @var string API URL
 		 * */
-		private $api_url = 'https://rz-delivery-octopus.rozetka.ua/';
+		private $api_url = 'https://rz-delivery.rozetka.ua/';
 
 	    /**
 	     * @var string $responseTime waiting for response from server, sec.

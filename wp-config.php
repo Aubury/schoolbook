@@ -88,7 +88,7 @@ define( 'AUTOMATIC_UPDATER_DISABLED', true );
 define('WOOCOMMERCE_API_CK', 'ck_bd97b6b54159bd8ca6b76bf879883b0df77d8ed4');
 define('WOOCOMMERCE_API_CS', 'cs_87abd213676549836b1f62d89406daba80975fbd');
 define('WOOCOMMERCE_LOGIN', 'scbook');
-define('WOOCOMMERCE_PASS', '1Gq)j8Gdw*WZ04x#afiQ0aPB');
+define('WOOCOMMERCE_PASS', 'obUy#HiVJ7ATsIB(Z6M2T89w');
 
 
 /* That's all, stop editing! Happy publishing. */

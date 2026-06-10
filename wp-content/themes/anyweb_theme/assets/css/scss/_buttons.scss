@@ -1,0 +1,245 @@
+.btn {
+  &.btn-default {
+    &.product-item-detail-buy-button {
+      font-size: 22px;
+      font-family: "fregatbold", sans-serif;
+      background: var(--aw-orange);
+      border-color: var(--aw-orange);
+      padding: 19px 42px 3px;
+      line-height: 26px;
+      text-transform: none;
+
+      &:hover {
+        background: var(--aw-orange);
+        border-color: var(--aw-orange);
+      }
+
+      &:active {
+        color: var(--aw-white);
+      }
+    }
+  }
+
+  &.product-item-detail-buy-button {
+    display: inline-block;
+    vertical-align: middle;
+
+    span {
+      line-height: 16px;
+      display: inline-block;
+      min-height: 16px;
+      max-width: 100%;
+      white-space: normal;
+      -webkit-transform: translateY(-50%);
+      -moz-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+      -o-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+  }
+
+  &:active,
+  &:focus,
+  &:hover {
+    text-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+    outline: 0 !important;
+  }
+}
+
+.btn-link {
+  color: var(--aw-link-color);
+
+  &:focus,
+  &:hover {
+    color: var(--aw-btn-active);
+    text-decoration: none;
+  }
+
+  &.product-item-detail-buy-button {
+    height: 25px;
+  }
+}
+
+.btn-primary {
+  background-color: var(--aw-blue);
+  border-color: var(--aw-blue);
+
+  &.active,
+  &.focus,
+  &:active,
+  &:focus,
+  &:hover {
+    background-color: var(--aw-btn-active);
+    border-color: var(--aw-btn-active);
+  }
+}
+
+.btn-subscribe {
+  background: 0 0;
+  cursor: pointer;
+  text-align: center;
+  border: none;
+  color: var(--aw-white);
+  font-size: 18px;
+  position: relative;
+  text-transform: uppercase;
+  border-radius: 2px;
+  line-height: 34px;
+  height: 36px;
+  padding: 0;
+  vertical-align: middle;
+  outline: 0;
+  -webkit-transition: width 5s linear;
+  -moz-transition: width 5s linear;
+  -ms-transition: width 5s linear;
+  -o-transition: width 5s linear;
+  transition: width 5s linear;
+
+  &:hover {
+    background: 0 0;
+    color: var(--aw-white);
+  }
+
+  &:active {
+    color: var(--aw-white);
+  }
+
+  span {
+    display: block;
+  }
+
+  &.send {
+    padding: 5px 40px;
+    -webkit-animation-name: MeilSend;
+    animation-name: MeilSend;
+    -webkit-animation-duration: 0.5s;
+    animation-duration: 0.5s;
+    outline: 0;
+    color: var(--aw-white);
+
+    &:before {
+      width: 0;
+      background-position: 100px 50%;
+      -webkit-animation-name: MeilSendButton;
+      animation-name: MeilSendButton;
+      -webkit-animation-duration: 0.5s;
+      animation-duration: 0.5s;
+    }
+  }
+}
+
+.buying-click {
+  color: var(--aw-gray);
+  font: 16px/18px "fregatregular", sans-serif;
+  margin: 0 0 20px 25px;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--aw-border-bottom-color);
+  transition: all 0.3s;
+
+  &:hover {
+    border-color: transparent;
+  }
+}
+
+.product-preorder {
+  &.btn {
+    &.product-item-detail-buy-button {
+      span {
+        display: inline;
+      }
+    }
+  }
+}
+
+.product-item-button-container {
+  .icon-favorites {
+    width: 36px;
+    height: 36px;
+    vertical-align: middle;
+    margin-left: 10px;
+  }
+}
+
+
+@keyframes MeilSend {
+  0% {
+    padding: 5px 60px 5px 20px;
+  }
+
+  100% {
+    padding: 5px 40px;
+  }
+}
+
+@-webkit-keyframes MeilSend {
+  0% {
+    padding: 5px 60px 5px 20px;
+  }
+
+  100% {
+    padding: 5px 40px;
+  }
+}
+
+@keyframes MeilSendSpan {
+  0% {
+    color: transparent;
+  }
+
+  100% {
+    color: var(--aw-white);
+  }
+}
+
+@-webkit-keyframes MeilSendSpan {
+  0% {
+    color: transparent;
+  }
+
+  100% {
+    color: var(--aw-white);
+  }
+}
+
+@keyframes MeilSendButton {
+  0% {
+    width: 40px;
+    background-position: 50%;
+  }
+
+  100% {
+    width: 0;
+    background-position: 100px 50%;
+  }
+}
+
+@-webkit-keyframes MeilSendButton {
+  0% {
+    width: 40px;
+    background-position: 50%;
+  }
+
+  100% {
+    width: 0;
+    background-position: 100px 50%;
+  }
+}
+
+
+@media (max-width: 767px) {
+  .btn {
+    &.btn-default {
+      &.product-item-detail-buy-button {
+        margin: 15px 0;
+      }
+    }
+  }
+
+  .prodct-btn-up.btn-up {
+    bottom: 160px;
+    right: 5px;
+  }
+}

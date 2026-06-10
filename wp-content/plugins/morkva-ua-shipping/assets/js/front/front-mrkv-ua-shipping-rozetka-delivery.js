@@ -2,68 +2,32 @@ jQuery(window).on('load', function()
 {
 	if (jQuery('form[name="checkout"]').length == 0) return;
 
-	var currentLang = jQuery('html').attr('lang');
-
-	if (currentLang === 'uk') 
-	{
-		jQuery.fn.select2.defaults.set("language", {
-		    errorLoading: function () {
-		        return "Пошук...";
-		    },
-		    inputTooLong: function (args) {
-		        var overChars = args.input.length - args.maximum;
-		        return "Будь ласка, видаліть " + overChars + " символ(и/ів).";
-		    },
-		    inputTooShort: function (args) {
-		        return "Будь ласка, введіть ще " + args.minimum + " символ(и/ів).";
-		    },
-		    loadingMore: function () {
-		        return "Завантаження додаткових результатів...";
-		    },
-		    maximumSelected: function (args) {
-		        return "Ви можете вибрати лише " + args.maximum + " елемент(и/ів).";
-		    },
-		    noResults: function () {
-		        return "Нічого не знайдено.";
-		    },
-		    searching: function () {
-		        return "Пошук...";
-		    },
-		    removeAllItems: function () {
-		        return "Видалити всі елементи";
-		    },
-		});
-
-		if (typeof jQuery.fn.selectWoo !== 'undefined') {
-			jQuery.fn.selectWoo.defaults.set("language", {
-			    errorLoading: function () {
-			        return "Пошук...";
-			    },
-			    inputTooLong: function (args) {
-			        var overChars = args.input.length - args.maximum;
-			        return "Будь ласка, видаліть " + overChars + " символ(и/ів).";
-			    },
-			    inputTooShort: function (args) {
-			        return "Будь ласка, введіть ще " + args.minimum + " символ(и/ів).";
-			    },
-			    loadingMore: function () {
-			        return "Завантаження додаткових результатів...";
-			    },
-			    maximumSelected: function (args) {
-			        return "Ви можете вибрати лише " + args.maximum + " елемент(и/ів).";
-			    },
-			    noResults: function () {
-			        return "Нічого не знайдено.";
-			    },
-			    searching: function () {
-			        return "Пошук...";
-			    },
-			    removeAllItems: function () {
-			        return "Видалити всі елементи";
-			    },
-			});
-		}
-	}
+	var languageTexts = {
+	    errorLoading: function () {
+	        return mrkv_ua_ship_helper.select2_texts.errorLoading;
+	    },
+	    inputTooLong: function (args) {
+	        return mrkv_ua_ship_helper.select2_texts.inputTooLong.replace('%d', args.input.length - args.maximum);
+	    },
+	    inputTooShort: function (args) {
+	        return mrkv_ua_ship_helper.select2_texts.inputTooShort.replace('%d', args.minimum - args.input.length);
+	    },
+	    loadingMore: function () {
+	        return mrkv_ua_ship_helper.select2_texts.loadingMore;
+	    },
+	    maximumSelected: function (args) {
+	        return mrkv_ua_ship_helper.select2_texts.maximumSelected.replace('%d', args.maximum);
+	    },
+	    noResults: function () {
+	        return mrkv_ua_ship_helper.select2_texts.noResults;
+	    },
+	    searching: function () {
+	        return mrkv_ua_ship_helper.select2_texts.searching;
+	    },
+	    removeAllItems: function () {
+	        return mrkv_ua_ship_helper.select2_texts.removeAllItems;
+	    }
+	};
 
 	jQuery.fn.select2.amd.define('select2/data/extended-ajax',['./ajax','../utils','jquery'], function(AjaxAdapter, Utils, $){
 
@@ -109,6 +73,7 @@ jQuery(window).on('load', function()
 			data: default_cities,
 			dataAdapter: jQuery.fn.select2.amd.require('select2/data/extended-ajax'),
 			defaultResults: default_cities,
+			language: languageTexts,
 		minimumInputLength: 3,
 			ajax: {
 				delay: 800,

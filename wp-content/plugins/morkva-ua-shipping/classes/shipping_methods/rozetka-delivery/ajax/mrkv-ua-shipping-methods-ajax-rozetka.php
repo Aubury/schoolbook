@@ -34,35 +34,46 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_RZTK'))
 
 			$key_search = isset($_POST['name']) ? sanitize_text_field(wp_unslash($_POST['name'])) : '';
 
-	        # Send request
-	        $obj = $mrkv_object_rztk_delivery->send_post_request('api/city?page=1&limit=50&name=' . $key_search . '&can_receive_tracks=true&sort_by_population=ASC', 'GET');
+			$page  = 1;
+		    $limit = 50;
+		    $cities = [];
 
-	        if(isset($obj['data']) && is_array($obj['data']) && !empty($obj['data']))
-       		{
-       			$cities = array();
+		    do 
+		    {
+		        $obj = $mrkv_object_rztk_delivery->send_post_request(
+		            'api/city?page=' . $page . '&limit=' . $limit . '&name=' . urlencode($key_search) . '&sort_by_population=desc',
+		            'GET'
+		        );
 
-       			foreach($obj['data'] as $entry)
-       			{
-       				$cities[] = array(
-	        			'value' => $entry['id'],
-	        			'label' => $entry['name'] . ', ' . $entry['district_name'] . ' ' . __('district', 'mrkv-ua-shipping'),
-	        			'area' => $entry['region_name'],
-	        			'area_id' => $entry['region_id'],
-	        			'city_label' => $entry['name'],
-	        			'district' => $entry['district_name'] . ' ' . __('district', 'mrkv-ua-shipping'),
-	        			'district_id' => $entry['district_id'],
-	        		);
-       			}
+		        if (
+		            empty($obj['data']) ||
+		            !is_array($obj['data'])
+		        ) {
+		            break;
+		        }
 
-       			# Return object
-	        	echo wp_json_encode($cities);
-       		}
-       		else
-       		{
-       			echo wp_json_encode(array());
-       		}
+		        foreach ($obj['data'] as $entry) {
+		            $cities[] = [
+		                'value'       => $entry['id'],
+		                'label'       => $entry['name'] . ', ' . $entry['district_name'] . ' ' . __('district', 'mrkv-ua-shipping'),
+		                'area'        => $entry['region_name'],
+		                'area_id'     => $entry['region_id'],
+		                'city_label'  => $entry['name'],
+		                'district'    => $entry['district_name'] . ' ' . __('district', 'mrkv-ua-shipping'),
+		                'district_id' => $entry['district_id'],
+		            ];
+		        }
 
-		    wp_die();
+		        $total_pages = isset($obj['pagination']['page_count'])
+		            ? (int) $obj['pagination']['page_count']
+		            : 1;
+
+		        $page++;
+
+		    } while ($page <= $total_pages);
+
+	        echo wp_json_encode($cities);
+    		wp_die();
 		}
 
 		public function get_rozetka_warehouse()
@@ -83,7 +94,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_RZTK'))
 			$has_more = true;
 
 			do {
-			    $endpoint = 'api/department?page=' . $page . '&limit=' . $limit . '&city_id=' . $city_ref . '&can_receive_tracks=true';
+			    $endpoint = 'api/department?page=' . $page . '&limit=' . $limit . '&city_id=' . $city_ref . '';
 			    $response = $mrkv_object_rztk_delivery->send_post_request($endpoint, 'GET');
 
 			    if (isset($response['data']) && !empty($response['data'])) 
@@ -103,7 +114,7 @@ if (!class_exists('MRKV_UA_SHIPPING_AJAX_RZTK'))
 			} while ($has_more);
 
 			# Send request
-	        $obj = $mrkv_object_rztk_delivery->send_post_request('api/department?page=1&limit=100&city_id=' . $city_ref . '&can_receive_tracks=true', 'GET');
+	        $obj = $mrkv_object_rztk_delivery->send_post_request('api/department?page=1&limit=100&city_id=' . $city_ref . '', 'GET');
 
 	        if(!empty($all_departments))
        		{

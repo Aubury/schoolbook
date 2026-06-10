@@ -1,0 +1,98 @@
+input[type="checkbox"],
+input[type="radio"] {
+  & + a,
+  & + span {
+    &:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: calc(50% - 12px);
+      width: 24px;
+      height: 23px;
+      background: url(../image/icons-sprite.png) 0 -251px no-repeat;
+    }
+  }
+}
+
+.checkbox,
+.radio {
+  label {
+    input[type="radio"],
+    input[type="checkbox"] {
+      & + span {
+        padding: 0 0 0 30px;
+      }
+      
+      a,
+      span {
+        &:before {
+          left: -20px;
+        }
+
+      }
+    }
+  }
+}
+
+span {
+  &:before {
+    left: 0 !important;
+  }
+}
+
+.input-holder {
+  textarea {
+    &.input {
+      resize: none;
+      padding-top: 10px;
+      box-shadow: none;
+      -webkit-appearance: none;
+    }
+  }
+}
+
+.review-form-column {
+  .input-holder {
+    textarea {
+      height: 92px;
+      min-height: auto;
+    }
+  }
+}
+
+.rating {
+  input {
+    &.rating__check {
+      display: none;
+    }
+  }
+}
+
+.rating__check {
+  &:checked {
+   & ~ .rating__star {
+      background-position: 0 -21px;
+    }
+  }
+}
+
+.product-item-detail-compare {
+  .checkbox {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.bx-no-touch {
+  input {
+    &.product-item-amount-field {
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
+  }
+}
+
+

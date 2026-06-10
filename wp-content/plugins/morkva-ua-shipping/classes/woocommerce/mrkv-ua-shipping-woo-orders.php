@@ -231,7 +231,7 @@ if (!class_exists('MRKV_UA_SHIPPING_WOO_ORDERS'))
 			            		<?php
 			            	}
 			            }
-			            else{
+			            elseif($current_shipping != 'mrkv_ua_shipping_nova-poshta_international' && $current_shipping != 'mrkv_ua_shipping_nova-poshta_inter_address'){
 			            	?>
 			            	<a>
 			            		<div data-method="<?php echo esc_attr($current_shipping); ?>" data-ship="<?php echo esc_attr($key); ?>" data-order-id="<?php echo esc_attr($the_order->get_id()); ?>" class="mrkv_ua_ship_global_create__invoice">

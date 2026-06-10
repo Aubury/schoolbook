@@ -12,7 +12,7 @@
         <?php 
             require_once MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/settings/global/mrkv-ua-shipping-option-fields.php';
             global $mrkv_global_option_generator;
-            $mrkv_global_option_generator = new MRKV_UA_SHIPPING_OPTION_FILEDS();
+            $mrkv_global_option_generator = new MRKV_UA_SHIPPING_OPTION_FIELDS();
         ?>
         <div class="mrkv_ua_ship_modal-content__inner">
             <?php 
@@ -71,7 +71,15 @@
         </div>
     </div>
 </div>
-<div id="mrkv_ua_ship_create_invoice_completed" class="mrkv_ua_ship_modal">
+<?php
+    $is_order_page = '';
+    global $pagenow;
+    if(is_admin() && $pagenow === 'edit.php' && isset($_GET['post_type']) && $_GET['post_type'] === 'shop_order')
+    {
+        $is_order_page = 'mrkv_orders_list';
+    }
+?>
+<div id="mrkv_ua_ship_create_invoice_completed" class="mrkv_ua_ship_modal <?php echo $is_order_page; ?>">
     <div class="mrkv_ua_ship_modal-content">
         <span class="mrkv_ua_ship_close">
             <img src="<?php echo MRKV_UA_SHIPPING_IMG_URL . '/global'; ?>/close-icon.svg" alt="<?php echo __('Close', 'mrkv-ua-shipping'); ?>" title="<?php echo __('Close', 'mrkv-ua-shipping'); ?>">
@@ -88,7 +96,7 @@
         </div>
         <div class="mrkv_ua_ship_create_invoice__footer">
             <a class="close-error-mrkv-ua-ship"><?php echo __('Turn back', 'mrkv-ua-shipping'); ?></a>
-            <a target="blanc" class="print-ttn-mrkv-ua-ship" data-ship="" data-invoice="" data-form=""><?php echo esc_html__('Print invoice', 'mrkv-ua-shipping'); ?></a>
+            <a style="display:none;" target="blanc" class="print-ttn-mrkv-ua-ship" data-ship="" data-invoice="" data-form=""><?php echo esc_html__('Print invoice', 'mrkv-ua-shipping'); ?></a>
             <a style="display: none;" href="" class="print-sticker-mrkv-ua-ship" target="blanc"><?php echo esc_html__('Print sticker', 'mrkv-ua-shipping'); ?></a>
         </div>
     </div>

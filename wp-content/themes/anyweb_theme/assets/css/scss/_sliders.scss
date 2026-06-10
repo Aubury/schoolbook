@@ -1,0 +1,345 @@
+.promo-slider {
+  width: 100%;
+  height: 443px;
+  position: relative;
+  background: url(../image/bg-main-slider.jpg) 50% 0 no-repeat;
+  margin: -17px 0 0;
+
+  .slick-arrow,
+  .slick-dots li button{
+     &:before {
+       content: "";
+     }
+  }
+
+  .slick-next,
+  .slick-prev {
+    &:hover {
+      &:after {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .slick-arrow {
+    background: url(../image/icons-sprite.png) 0 -75px no-repeat;
+    width: 30px;
+    height: 18px;
+    z-index: 1;
+    margin: -4px 0 0;
+
+    &.slick-next {
+      background: url(../image/icons-sprite.png) 0 -94px no-repeat;
+      width: 36px;
+      margin-left: -5px;
+
+      &:after {
+        left: -2px;
+      }
+
+      &:before {
+        margin-left: 2px;
+      }
+
+    }
+
+    &:before {
+      background: url(../image/bg-slider-arrow.png) no-repeat;
+      width: 3px;
+      height: 270px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin: -128px 0 0 -1px;
+    }
+  }
+
+  .slick-prev {
+    left: 190px;
+  }
+
+  .slick-next {
+    right: 194px;
+  }
+
+  .slick-list {
+    padding: 30px 240px;
+  }
+
+  .slick-next,
+  .slick-prev {
+    &:after {
+      content: "";
+      background: url(../image/bg-arrow.png) no-repeat;
+      display: inline-block;
+      position: absolute;
+      width: 49px;
+      height: 49px;
+      top: -14px;
+      left: -11px;
+      transition: transform 0.5s;
+    }
+  }
+
+  .slick-dots {
+    height: 57px;
+    position: relative;
+    top: 10px;
+    bottom: auto;
+    margin-left: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    li {
+      width: 48px;
+      height: 48px;
+      margin: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      button {
+        color: #333;
+        font: 25px/30px pf_playskool_proregular, sans-serif;
+        width: 100%;
+        height: 100%;
+      }
+
+      &:last-child {
+
+        &:after {
+          content: "";
+          position: absolute;
+          background: url(../image/ice-cream.png) no-repeat;
+          background-size: contain;
+          top: 0;
+          left: 100%;
+          width: 40px;
+          height: 57px;
+        }
+      }
+
+      &:before {
+        content: "";
+        position: absolute;
+        background: url(../image/bg-dots-2.png) no-repeat;
+        background-size: cover;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        height: 4px;
+      }
+    }
+
+    .slick-active {
+      button {
+        background: url(../image/bee.png) no-repeat;
+        width: 48px;
+        height: 38px;
+        text-indent: -9999px;
+      }
+    }
+  }
+
+  .item {
+    height: 383px;
+    float: left;
+  }
+}
+
+.promo-slider-holder {
+  position: relative;
+  margin: 0 0 -43px;
+
+  .pagination-text {
+    position: absolute;
+    bottom: -82px;
+    left: 23%;
+    color: #333;
+    font: 26px/24px pf_playskool_proregular, sans-serif;
+    text-align: center;
+
+    .icon-arrow {
+      background: url(../image/icons-sprite.png) 0 -113px no-repeat;
+      width: 45px;
+      height: 19px;
+      position: absolute;
+      right: -50px;
+      top: 9px;
+    }
+  }
+}
+
+.slick-dotted {
+  &.promo-slider {
+    margin-bottom: 57px;
+  }
+}
+
+/*** Media ***/
+
+@media (max-width: 1399px) {
+  .promo-slider-holder {
+    .pagination-text {
+      left: 14%;
+    }
+  }
+}
+
+@media (max-width: 1320px) {
+  .promo-slider {
+    background-size: contain;
+    height: 390px;
+
+    .item {
+      height: 317px;
+    }
+
+    .slick-dots {
+      top: 20px;
+    }
+  }
+
+  .promo-slider-holder {
+    .pagination-text {
+      left: 14%;
+    }
+  }
+}
+
+@media (max-width: 1199px) {
+  .promo-slider {
+    height: 320px;
+
+    .slick-list {
+      padding: 30px 200px;
+    }
+
+    .item {
+      height: 257px;
+    }
+
+    .slick-prev {
+      left: 150px;
+    }
+
+    .slick-next {
+      right: 150px;
+    }
+
+    .slick-dots {
+      top: 20px;
+    }
+  }
+
+  .promo-slider-holder {
+    .pagination-text {
+      left: 7%;
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  .promo-slider {
+    background: 0 0;
+    height: auto;
+
+    .slick-list {
+      padding: 30px 70px;
+      background: #fff;
+      border-radius: 15px;
+    }
+
+    .item {
+      height: auto;
+    }
+
+    .slick-prev {
+      left: 10px;
+    }
+
+    .slick-next {
+      right: 10px;
+    }
+
+    .slick-dots {
+      top: 70px;
+    }
+  }
+
+  .promo-slider-holder {
+    .pagination-text {
+      left: -7%;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .promo-slider {
+    .slick-dots {
+      li {
+
+      }
+    }
+
+    .slick-list {
+      padding: 0;
+    }
+  }
+
+  .promo-slider-holder {
+    .pagination-text {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .promo-slider {
+    .slick-dots {
+      background-position-x: calc(100% - 10px);
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .promo-slider {
+    .slick-arrow {
+      &:before {
+        display: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 541px) {
+  .promo-slider {
+    .slick-prev,
+    .slick-next {
+      display: none !important;
+    }
+
+    .slick-dots {
+      li {
+        width: 40px;
+        height: 40px;
+      }
+
+      .slick-active {
+        button {
+           width: 40px;
+           height: 40px;
+          background-size: contain;
+          background-position: center bottom;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+
+}

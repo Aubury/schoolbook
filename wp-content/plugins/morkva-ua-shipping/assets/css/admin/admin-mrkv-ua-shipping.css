@@ -1,6 +1,9 @@
 /** ADMIN STYLES **/
 
 /** GLOBAL **/
+.admin_ua_ship_morkva_settings_line .select2-container .select2-selection--multiple .select2-selection__rendered{
+ display: inline-block;
+}
 .mrkv_ua_shipping_email_notify{
 	display: none;
     position: absolute;
@@ -497,7 +500,7 @@
 	transition: all .7s;
 }
 .admin_ua_ship_morkva_settings_line input[type="radio"]:checked + label:before{
-	background-color: #fff;
+	background-color: #ed6230;
 	border-color: #ed6230;
 }
 .mrkv-ua-ship-description{

@@ -2,7 +2,7 @@
 define('MRKV_UA_SHIPPING_LIST', array(
 	'nova-poshta' => array(
 		'name' => __('Nova Poshta', 'mrkv-ua-shipping'),
-		'description' => __('Add shipping method, calculate shipping costs, create and manage shipments, both manually and automatically. Using API 2.0 and connects directly to the Nova Poshta server for fast and secure user experience.', 'mrkv-ua-shipping'),
+		'description' => __('Delivery within Ukraine (to a branch, post office, or address) and abroad (to a Nova Post branch or address). For international delivery, use your current API key.', 'mrkv-ua-shipping'),
 		'invoice_class' => 'MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE',
 		'api_class' => 'MRKV_UA_SHIPPING_API_NOVA_POSHTA',
 		'settings_class' => 'MRKV_UA_SHIPPING_SETTINGS_NOVA_POSHTA',
@@ -26,14 +26,22 @@ define('MRKV_UA_SHIPPING_LIST', array(
 				'class' => 'MRKV_UA_SHIPPING_NOVA_POSHTA',
 				'slug' => 'mrkv_ua_shipping_nova-poshta',
 				'filename' => 'mrkv-ua-shipping-method-nova-poshta',
+				'validation_latin' => true,
 				'checkout_fields' => array(
 					'_city' => array(
 						'type' => 'select',
 						'autocomplete' => 'off',
 						'options' => array('' => __('Choose the city', 'mrkv-ua-shipping')),
 						'required' => true,
-						'label' => __('City', 'mrkv-ua-shipping'),
+						'label' => __('City (settlement)', 'mrkv-ua-shipping'),
 						'replace' => '',
+						'custom_attributes' => array(
+						    'autocomplete' => 'off',
+						    'aria-autocomplete' => 'none',
+						    'data-lpignore' => 'true',
+						    'data-form-type' => 'other',
+						    'readonly' => 'readonly',
+						)
 					),
 					'_city_label' => array(
 						'type' => 'hidden',
@@ -78,14 +86,22 @@ define('MRKV_UA_SHIPPING_LIST', array(
 				'class' => 'MRKV_UA_SHIPPING_NOVA_POSHTA_POSHTAMAT',
 				'slug' => 'mrkv_ua_shipping_nova-poshta_poshtamat',
 				'filename' => 'mrkv-ua-shipping-method-nova-poshta-poshtamat',
+				'validation_latin' => true,
 				'checkout_fields' => array(
 					'_city' => array(
 						'type' => 'select',
 						'autocomplete' => 'off',
 						'options' => array('' => __('Choose the city', 'mrkv-ua-shipping')),
 						'required' => true,
-						'label' => __('City', 'mrkv-ua-shipping'),
+						'label' => __('City (settlement)', 'mrkv-ua-shipping'),
 						'replace' => '',
+						'custom_attributes' => array(
+						    'autocomplete' => 'off',
+						    'aria-autocomplete' => 'none',
+						    'data-lpignore' => 'true',
+						    'data-form-type' => 'other',
+						    'readonly' => 'readonly',
+						)
 					),
 					'_city_label' => array(
 						'type' => 'hidden',
@@ -130,6 +146,7 @@ define('MRKV_UA_SHIPPING_LIST', array(
 				'class' => 'MRKV_UA_SHIPPING_NOVA_POSHTA_ADDRESS',
 				'slug' => 'mrkv_ua_shipping_nova-poshta_address',
 				'filename' => 'mrkv-ua-shipping-method-nova-poshta-address',
+				'validation_latin' => true,
 				'checkout_fields' => array(
 					'_patronymic' => array(
 						'type' => 'text',
@@ -150,8 +167,15 @@ define('MRKV_UA_SHIPPING_LIST', array(
 						'autocomplete' => 'off',
 						'options' => array('' => __('Choose the city', 'mrkv-ua-shipping')),
 						'required' => true,
-						'label' => __('City', 'mrkv-ua-shipping'),
+						'label' => __('City (settlement)', 'mrkv-ua-shipping'),
 						'replace' => '',
+						'custom_attributes' => array(
+						    'autocomplete' => 'off',
+						    'aria-autocomplete' => 'none',
+						    'data-lpignore' => 'true',
+						    'data-form-type' => 'other',
+						    'readonly' => 'readonly',
+						)
 					),
 					'_city_label' => array(
 						'type' => 'hidden',
@@ -170,12 +194,12 @@ define('MRKV_UA_SHIPPING_LIST', array(
 						'replace' => '_state'
 					),
 					'_street' => array(
-						'type' => 'text',
+						'type' => 'select',
 						'autocomplete' => 'off',
+						'options' => array('' => __('Choose the street', 'mrkv-ua-shipping')),
 						'required' => true,
 						'label' => __('Street', 'mrkv-ua-shipping'),
-						'placeholder' => __('Enter the street...', 'mrkv-ua-shipping'),
-						'replace' => '_address_1'
+						'replace' => '_address_1',
 					),
 					'_street_ref' => array(
 						'type' => 'hidden',
@@ -205,7 +229,93 @@ define('MRKV_UA_SHIPPING_LIST', array(
 						'replace' => '_address_ref'
 					)
 				)
-			)
+			),
+			'mrkv_ua_shipping_nova-poshta_international' => array(
+				'class' => 'MRKV_UA_SHIPPING_NOVA_POSHTA_INTERNATIONAL',
+				'slug' => 'mrkv_ua_shipping_nova-poshta_international',
+				'filename' => 'mrkv-ua-shipping-method-nova-poshta-international',
+				'validation_latin' => false,
+				'checkout_fields' => array(
+					'_warehouse' => array(
+						'type' => 'text',
+						'required' => true,
+						'label' => __('Warehouse', 'mrkv-ua-shipping'),
+						'replace' => '_address_1',
+						'placeholder' => __('Find nearest warehouse', 'mrkv-ua-shipping'),
+						'autocomplete' => 'new-password',
+					),
+					'_warehouse_ref' => array(
+						'type' => 'hidden',
+						'autocomplete' => 'off',
+						'replace' => '_warehouse_ref',
+						'old_slug' => 'np_warehouse_ref',
+						'required' => true,
+						'label' => __('Warehouse/poshtomat', 'mrkv-ua-shipping'),
+					),
+					'_warehouse_number' => array(
+						'type' => 'hidden',
+						'autocomplete' => 'off',
+						'replace' => '_postcode'
+					)
+				)
+			),
+			/*'mrkv_ua_shipping_nova-poshta_inter_address' => array(
+				'class' => 'MRKV_UA_SHIPPING_NOVA_POSHTA_INTER_ADDRESS',
+				'slug' => 'mrkv_ua_shipping_nova-poshta_inter_address',
+				'filename' => 'mrkv-ua-shipping-method-nova-poshta-inter-address',
+				'validation_latin' => false,
+				'checkout_fields' => array(
+					'_postcode' => array(
+						'type' => 'text',
+						'autocomplete' => 'new-password',
+						'required' => true,
+						'label' => __('Postal code', 'mrkv-ua-shipping'),
+						'placeholder' => __('Enter the postal code', 'mrkv-ua-shipping'),
+						'replace' => '_postcode'
+					),
+					'_region' => array(
+						'type' => 'text',
+						'autocomplete' => 'new-password',
+						'required' => true,
+						'label' => __('Region', 'mrkv-ua-shipping'),
+						'placeholder' => __('Enter the region', 'mrkv-ua-shipping'),
+						'replace' => '_state'
+					),
+					'_city' => array(
+						'type' => 'text',
+						'autocomplete' => 'new-password',
+						'required' => true,
+						'label' => __('City', 'mrkv-ua-shipping'),
+						'placeholder' => __('Enter the city', 'mrkv-ua-shipping'),
+						'replace' => '_city'
+					),
+					'_street' => array(
+						'type' => 'text',
+						'autocomplete' => 'new-password',
+						'required' => true,
+						'label' => __('Street', 'mrkv-ua-shipping'),
+						'placeholder' => __('Enter the street', 'mrkv-ua-shipping'),
+						'replace' => '_address_1'
+					),
+					'_house' => array(
+						'type' => 'text',
+						'required' => true,
+						'label' => __('House', 'mrkv-ua-shipping'),
+						'placeholder' => __('Number of house', 'mrkv-ua-shipping'),
+						'replace' => '_address_2',
+						'autocomplete' => 'new-password',
+					),
+					'_flat' => array(
+						'type' => 'text',
+						'required' => false,
+						'label' => __('Flat', 'mrkv-ua-shipping'),
+						'placeholder' => __('Number of flat', 'mrkv-ua-shipping'),
+						'replace' => '_flat',
+						'order_edit' => true,
+						'autocomplete' => 'new-password',
+					),
+				)
+			)*/
 		)
 	),
 	'ukr-poshta' => array(
@@ -232,6 +342,7 @@ define('MRKV_UA_SHIPPING_LIST', array(
 				'class' => 'MRKV_UA_SHIPPING_UKR_POSHTA',
 				'slug' => 'mrkv_ua_shipping_ukr-poshta',
 				'filename' => 'mrkv-ua-shipping-method-ukr-poshta',
+				'validation_latin' => true,
 				'checkout_fields' => array(
 					'_patronymic' => array(
 						'type' => 'text',
@@ -242,6 +353,7 @@ define('MRKV_UA_SHIPPING_LIST', array(
 						'order_edit' => true,
 						'exclude' => true,
 						'autocomplete' => 'off',
+						'cod_validation' => true
 					),
 					'_patronymic_enabled' => array(
 						'type' => 'hidden',
@@ -252,8 +364,15 @@ define('MRKV_UA_SHIPPING_LIST', array(
 						'autocomplete' => 'off',
 						'options' => array('' => __('Choose the city', 'mrkv-ua-shipping')),
 						'required' => true,
-						'label' => __('City', 'mrkv-ua-shipping'),
+						'label' => __('City (settlement)', 'mrkv-ua-shipping'),
 						'replace' => '_city',
+						'custom_attributes' => array(
+						    'autocomplete' => 'off',
+						    'aria-autocomplete' => 'none',
+						    'data-lpignore' => 'true',
+						    'data-form-type' => 'other',
+						    'readonly' => 'readonly',
+						)
 					),
 					'_city_ref' => array(
 						'type' => 'hidden',
@@ -291,6 +410,7 @@ define('MRKV_UA_SHIPPING_LIST', array(
 				'class' => 'MRKV_UA_SHIPPING_UKR_POSHTA_ADDRESS',
 				'slug' => 'mrkv_ua_shipping_ukr-poshta_address',
 				'filename' => 'mrkv-ua-shipping-method-ukr-poshta-address',
+				'validation_latin' => true,
 				'checkout_fields' => array(
 					'_patronymic' => array(
 						'type' => 'text',
@@ -306,8 +426,15 @@ define('MRKV_UA_SHIPPING_LIST', array(
 						'autocomplete' => 'off',
 						'options' => array('' => __('Choose the city', 'mrkv-ua-shipping')),
 						'required' => true,
-						'label' => __('City', 'mrkv-ua-shipping'),
+						'label' => __('City (settlement)', 'mrkv-ua-shipping'),
 						'replace' => '_city',
+						'custom_attributes' => array(
+						    'autocomplete' => 'off',
+						    'aria-autocomplete' => 'none',
+						    'data-lpignore' => 'true',
+						    'data-form-type' => 'other',
+						    'readonly' => 'readonly',
+						)
 					),
 					'_city_ref' => array(
 						'type' => 'hidden',
@@ -388,14 +515,22 @@ define('MRKV_UA_SHIPPING_LIST', array(
 				'class' => 'MRKV_UA_SHIPPING_ROZETKA_DELIVERY',
 				'slug' => 'mrkv_ua_shipping_rozetka-delivery',
 				'filename' => 'mrkv-ua-shipping-method-rozetka-delivery',
+				'validation_latin' => true,
 				'checkout_fields' => array(
 					'_city' => array(
 						'type' => 'select',
 						'autocomplete' => 'off',
 						'options' => array('' => __('Choose the city', 'mrkv-ua-shipping')),
 						'required' => true,
-						'label' => __('City', 'mrkv-ua-shipping'),
+						'label' => __('City (settlement)', 'mrkv-ua-shipping'),
 						'replace' => '',
+						'custom_attributes' => array(
+						    'autocomplete' => 'off',
+						    'aria-autocomplete' => 'none',
+						    'data-lpignore' => 'true',
+						    'data-form-type' => 'other',
+						    'readonly' => 'readonly',
+						)
 					),
 					'_city_label' => array(
 						'type' => 'hidden',
@@ -448,7 +583,7 @@ define('MRKV_UA_SHIPPING_LIST', array(
 	),
 	'nova-global' => array(
 		'name' => __('Nova Global', 'mrkv-ua-shipping'),
-		'description' => __('Nova Global is a logistics company specializing in cross-border delivery solutions for eCommerce businesses and marketplaces. Their services encompass customs clearance and international shipping across 243 countries and territories, facilitating seamless global trade for both businesses and individuals.', 'mrkv-ua-shipping'),
+		'description' => __('Part of the Nova group of companies. Requires its own API key. Only international delivery to the address.', 'mrkv-ua-shipping'),
 		'api_class' => 'MRKV_UA_SHIPPING_API_NOVA_GLOBAL',
 		'invoice_class' => '',
 		'settings_class' => 'MRKV_UA_SHIPPING_SETTINGS_NOVA_GLOBAL',
@@ -461,6 +596,7 @@ define('MRKV_UA_SHIPPING_LIST', array(
 				'class' => 'MRKV_UA_SHIPPING_NOVA_GLOBAL_ADDRESS',
 				'slug' => 'mrkv_ua_shipping_nova-global_address',
 				'filename' => 'mrkv-ua-shipping-method-nova-global-address',
+				'validation_latin' => false,
 				'checkout_fields' => array(
 					'_postcode' => array(
 						'type' => 'text',
@@ -482,7 +618,7 @@ define('MRKV_UA_SHIPPING_LIST', array(
 						'type' => 'text',
 						'autocomplete' => 'off',
 						'required' => true,
-						'label' => __('City', 'mrkv-ua-shipping'),
+						'label' => __('City (settlement)', 'mrkv-ua-shipping'),
 						'placeholder' => __('Enter the city', 'mrkv-ua-shipping'),
 						'replace' => '_city'
 					),

@@ -1,3 +1,33 @@
+.mrkv-ua-ship-description{
+    display: inline-block;
+}
+.mrkv-ua-shipping-desc-validation{
+    display: inline-block;
+    margin-left: 20px;
+    background: #baefba;
+    padding: 3px 20px;
+    border-radius: 10px;
+    font-weight: 400;
+    width: max-content;
+    font-size: 11px;
+}
+.mrkv-ua-shipping-desc-validation.red{
+    background: #efbdba;
+}
+.mrkv-ua-ship-latin-error{
+    color: red;
+    padding-left: 10px;
+    font-size: 11px;
+}
+.mrkv-ua-ship-latin-error:before{
+    content: '(';
+}
+.mrkv-ua-ship-latin-error:after{
+    content: ')';
+}
+.mrkv-ua-ship-latin-error-input{
+    background: #ffb6b6 !important;
+}
 .mrkv_ua_ship_ttn_copy{
     display: flex;
     align-items: center;
@@ -58,6 +88,11 @@
     text-align: center;
     margin-top: 15px !important;
     position: relative;
+}
+.mrkv-ua-shupping-change-method.button.disabled{
+    background-color: #0000004a !important;
+    cursor: not-allowed;
+    color: #000 !important;
 }
 .mrkv-ua-shipping-line-choose-method > .select2{
     width: 100% !important;

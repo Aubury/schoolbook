@@ -19,6 +19,7 @@ function anyweb_styles() {
 	wp_enqueue_style("slick-theme",get_bloginfo('stylesheet_directory').'/assets/css/slick-theme.css');
 	wp_enqueue_style("slick",get_bloginfo('stylesheet_directory').'/assets/css/slick.css');
 	wp_enqueue_style("template_styles",get_bloginfo('stylesheet_directory').'/assets/css/template_styles.css');
+    wp_enqueue_style("anyweb-style-scss",get_bloginfo('stylesheet_directory').'/assets/css/scss-style.min.css');
 	// wp_enqueue_style("owl_carousel_min",get_stylesheet_directory_uri() ."/assets/css/owl.carousel.min.css");
 	// wp_enqueue_style("owl_theme_default_min",get_stylesheet_directory_uri() ."//assets/css/owl.theme.default.min.css");
 }
@@ -212,7 +213,7 @@ function redirect_to_liqpay_for_prepayment($order_id) {
     $order = wc_get_order($order_id);
     $total = $order->get_total();
 
-    if ($total > 300 && isset($_POST['payment_method']) && $_POST['payment_method'] === 'cod') {
+    if ($total >= 300 && isset($_POST['payment_method']) && $_POST['payment_method'] === 'cod') {
         $prepayment = 200;
 
         $gateway_morkva_liqpay = new WC_Gateway_Morkva_Liqpay();
@@ -343,7 +344,7 @@ function add_prepayment_info_to_order_meta($order_id) {
     $order = wc_get_order($order_id);
     $total = $order->get_total();
 
-    if ($total > 300 && isset($_POST['payment_method']) && $_POST['payment_method'] === 'cod') {
+    if ($total >= 300 && isset($_POST['payment_method']) && $_POST['payment_method'] === 'cod') {
 
         update_post_meta($order_id, '_prepayment_amount', $prepayment);
         update_post_meta($order_id, '_prepayment_status', $payment_status);
@@ -362,20 +363,20 @@ function display_prepayment_info_in_admin_order($order) {
     $payment_method = $order->get_payment_method();
     $payment_status === 'Сплачено' ? $color = 'green' : $color = 'red';
 
-    if ($total > 300 && $payment_method === 'cod') {
+    if ($total >= 300 && $payment_method === 'cod') {
         echo '<p class="mt-2 form-field form-field-wide" style="color: ' . $color . '"><strong>Передплата: </strong>' . wc_price($prepayment) . '</p>';
         echo '<p class="form-field form-field-wide" style="color: ' . $color . '"><strong>Статус передоплати: </strong>' . esc_html($payment_status) . '</p>';
     }
 }
 
 // Обновляем Статус передоплати после успешной оплаты
-add_action('woocommerce_order_status_processing ', 'update_prepayment_status');
+add_action('woocommerce_order_status_processing', 'update_prepayment_status');
 function update_prepayment_status($order_id) {
     $order = wc_get_order($order_id);
     $total = $order->get_total();
     $payment_method = $order->get_payment_method();
 
-    if ($total > 300 && $payment_method === 'cod') {
+    if ($total >= 300 && $payment_method === 'cod') {
         update_post_meta($order_id, '_prepayment_status', 'Сплачено');
     }
 }
@@ -386,7 +387,7 @@ function update_prepayment_status($order_id) {
 //    $total = $order->get_total();
 //    $payment_method = $order->get_payment_method();
 //
-//    if ($total > 300 && $payment_method === 'cod') {
+//    if ($total = 300 && $payment_method === 'cod') {
 //        $prepayment = get_post_meta($order->get_id(), '_prepayment_amount', true);
 //        $payment_status = get_post_meta($order->get_id(), '_prepayment_status', true);
 //        ($payment_status === 'Сплачено' || $payment_status === 'Оплачено') ? $color = 'green' : $color = 'red';
@@ -401,7 +402,7 @@ function display_prepayment_info_after_order_table($order) {
     $total = $order->get_total();
     $payment_method = $order->get_payment_method();
 
-    if ($total > 300 && $payment_method === 'cod') {
+    if ($total >= 300 && $payment_method === 'cod') {
         $prepayment = get_post_meta($order->get_id(), '_prepayment_amount', true);
         $payment_status = get_post_meta($order->get_id(), '_prepayment_status', true);
         $color = ($payment_status === 'Сплачено' || $payment_status === 'Оплачено') ? 'green' : 'red';
@@ -444,7 +445,7 @@ function display_prepayment_in_order_details($order) {
 
     ($_payment_status === 'Сплачено' || $_payment_status === 'Оплачено') ? $payment = '200' : $payment = '0';
 
-    if ($total > 300 && isset($_POST['payment_method']) && $_POST['payment_method'] === 'cod') {
+    if ($total >= 300 && isset($_POST['payment_method']) && $_POST['payment_method'] === 'cod') {
          echo '<p><strong>' . __('Передплата', 'woocommerce') . ':</strong> ' . wc_price($payment) . '</p>';
          echo $_payment_status;
     }

@@ -2812,7 +2812,8 @@ span.rur span {
 }
 
 .woocommerce table.shop_table {
-  border: 3px solid #d0f3ff;
+  border: 2px solid #d0f3ff;
+  border-bottom: none;
   background: #f5f5f5;
   margin: 0 -1px 24px 0;
   text-align: left;
@@ -2823,6 +2824,18 @@ span.rur span {
 .woocommerce table.shop_table th,
 .woocommerce table.shop_table td {
   border-bottom: 1px solid #a0e1fd;
+}
+
+.woocommerce table.shop_table td {
+    border-top: none !important;
+}
+
+#coupon_code {
+    width: 100px;
+}
+
+#coupon_code::placeholder {
+   text-align: center;
 }
 
 .woocommerce-cart .wc-proceed-to-checkout a.checkout-button {
@@ -3105,4 +3118,90 @@ footer .bx-block-title{
 .pswp__icn-shadow { display: none }
 button.pswp__button {
   background-image: unset !important;
+}
+
+.woosw-item--stock {
+    display: none !important;
+}
+
+.aws-container .aws-search-form {
+	background: transparent;
+}
+
+.aws-container .aws-search-form .aws-form-btn {
+	display: none;
+}
+
+.aws-search-result .aws_result_image img {
+    width: auto;
+    height: 100%;
+    box-shadow: none;
+}
+
+.aws-search-result {
+	line-height: normal;
+}
+
+.aws-search-result .aws_result_head {
+    font-size: 16px;
+	align-items: center;
+}
+
+.aws-search-result .aws_result_price del {
+	text-decoration: none !important;
+}
+
+.aws-search-result .aws_result_image {
+	width: 150px;
+}
+
+@media (max-width: 520px) {
+  .aws-search-result .aws_result_image {
+    width: 100px;
+  }
+}
+
+.bg-error {
+	background-color: red;
+	color: #ffffff;
+	
+}
+
+.navigation.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination .nav-links {
+  display: flex;
+  gap: 8px;
+}
+
+.page-numbers:not(.prev):not(.next) {
+  padding: 5px 10px;
+  color: black;
+  font-family: "fregatregular", "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  border: 1px solid #11aee8;
+  border-radius: 3px;
+}
+
+.page-numbers.current {
+  padding: 5px;
+  background-color: #11aee8;
+  color: #ffffff !important;
+}
+
+.page-numbers.prev,
+.page-numbers.next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Скрывает калькулятор доставки в корзине */
+.woocommerce-shipping-calculator,
+.woocommerce-shipping-destination {
+    display: none !important;
 }

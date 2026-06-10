@@ -195,6 +195,12 @@ jQuery(window).on('load', function()
                 .val(mrkvnpCalcVolumeWeightSettings());
     });
 
+    jQuery('#nova-poshta_m_ua_settings_inter_length, #nova-poshta_m_ua_settings_inter_width, #nova-poshta_m_ua_settings_inter_height, #nova-poshta_m_ua_settings_inter_weight')
+        .on('keyup', function() {
+            jQuery('#nova-poshta_m_ua_settings_inter_volume')
+                .val(mrkvnpCalcVolumeWeightSettingsInternal());
+    });
+
     jQuery('.adm-textarea-btn').on('click', function() 
     {
          var shotcode = jQuery(this).attr('data-added');
@@ -264,6 +270,59 @@ jQuery(window).on('load', function()
 		}
 	}
 
+	let autoSelectCityPo = function() 
+	{
+	    jQuery('#nova-poshta_m_ua_settings_inter_division_address').autocomplete({
+
+	    source: function(request, response) { 
+
+	      if(request.term.length > 2){
+	        var country_sender = 'UA';
+	        jQuery('#nova-poshta_m_ua_settings_inter_division_address').addClass('ui-autocomplete-loading');
+	        jQuery.ajax({
+	            method: 'POST',
+	            url: mrkv_ua_ship_helper.ajax_url,
+	            dataType: 'json',
+	            data: {
+	              term: request.term,
+	              action: 'mrkv_ua_ship_novapost_divisions',
+	              mrkvup_country_suggestion: country_sender,
+	              nonce: mrkv_ua_ship_helper.nonce,
+	            },
+	            success: function(data) {
+	              if(!Array.isArray(data))
+	              {
+	                response(data.response);
+	              }
+	              else
+	              {
+	                response(data);
+	              }
+
+	              
+	              jQuery('#nova-poshta_m_ua_settings_inter_division_address').removeClass('ui-autocomplete-loading');
+	            },
+	                error: function(xhr, status, error) {
+	                    
+	                },
+	          });
+	      }
+	    },
+	    select: function(event, ui) {
+	      event.preventDefault();
+	      jQuery(this).val( ui.item.label );
+	      jQuery( "#nova-poshta_m_ua_settings_inter_division_id" ).val( ui.item.value );
+	      jQuery( "#nova-poshta_m_ua_settings_inter_division_number" ).val( ui.item.number );
+	      },
+	      minLength: 0,
+	      delay: 0,
+	    }).focus(function(){            
+	            jQuery(this).data("uiAutocomplete").search(jQuery(this).val());
+	        });
+	  }
+
+	  autoSelectCityPo();
+
 	function mrkvUaShipNpClearCity()
 	{
 		jQuery('#nova-poshta_m_ua_settings_sender_city_name').val('');
@@ -286,6 +345,19 @@ jQuery(window).on('load', function()
 	    let width = jQuery('#nova-poshta_m_ua_settings_shipment_width').val();
 	    let height = jQuery('#nova-poshta_m_ua_settings_shipment_height').val();
 	    let weight = jQuery('#nova-poshta_m_ua_settings_shipment_weight').val();
+	    let volumeWeight = length * width * height / 4000;
+	    if (volumeWeight > weight) {
+	        return volumeWeight;
+	    } else {
+	        return weight;
+	    }
+	}
+
+	function mrkvnpCalcVolumeWeightSettingsInternal() {
+	    let length = jQuery('#nova-poshta_m_ua_settings_inter_length').val();
+	    let width = jQuery('#nova-poshta_m_ua_settings_inter_width').val();
+	    let height = jQuery('#nova-poshta_m_ua_settings_inter_height').val();
+	    let weight = jQuery('#nova-poshta_m_ua_settings_inter_weight').val();
 	    let volumeWeight = length * width * height / 4000;
 	    if (volumeWeight > weight) {
 	        return volumeWeight;

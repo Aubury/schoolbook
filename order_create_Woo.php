@@ -57,7 +57,10 @@ function creatFileAllOrders ($order) {
     $_update['first_name']          = $order['billing']['first_name'];
     $_update['last_name']           = $order['billing']['last_name'];
     $_update['patronymic']          = $patronymic;
+    $_update['subtotal']            = array_sum(array_map(fn($i) => (float)$i['subtotal'], $order['line_items']));
+    $_update['discount']            = '-' . $order['coupon_lines'][0]['discount'];
     $_update['SummaZakaza']         = $order['total'];
+    $_update['coupon']              = $order['coupon_lines'];
     $_update['Valuta']              = $order['currency'];
     $_update['date_created']        = $order['date_created'];
     $_update['payment_method']      = $order['payment_method'];

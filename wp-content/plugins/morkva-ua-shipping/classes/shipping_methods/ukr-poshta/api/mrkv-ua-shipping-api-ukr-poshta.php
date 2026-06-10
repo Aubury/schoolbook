@@ -74,7 +74,6 @@ if (!class_exists('MRKV_UA_SHIPPING_API_UKR_POSHTA'))
 				'httpversion' => '1.0',
 				'blocking' => true,
 				'headers' => array( 
-					"Сontent-type" => "application/json, charset=utf-8",
 					'Accept' => 'application/json',
 		      		'Authorization' => 'Bearer ' . $this->get_production_bearer_ecom($api_token_type),
 				),
@@ -137,11 +136,6 @@ if (!class_exists('MRKV_UA_SHIPPING_API_UKR_POSHTA'))
 	    	# Get required URL
 	        $url = $this->api_url . $model;
 
-	        if($add == 'token')
-	        {
-	        	$url .= '?token=' . $this->get_production_cp_token();
-	        }
-
 	        # Save to log
 			$this->debug_log->add_data_request(\wp_json_encode( $params ));
 
@@ -149,8 +143,16 @@ if (!class_exists('MRKV_UA_SHIPPING_API_UKR_POSHTA'))
 
 		    $header = array('Content-Type: application/json' , $authorization );
 
-			if($add == 'tracking'){
+			if($add == 'token')
+	        {
+	        	$url .= '?token=' . $this->get_production_cp_token();
+	        }
+			elseif($add == 'tracking'){
 				$header[] = "Tracking: Bearer " . $this->get_production_bearer_status_tracking();
+			}
+			elseif($add)
+			{
+				$url .= '?token=' . $this->get_production_cp_token() . $add;
 			}
 
 		    $ch = curl_init($url);
@@ -158,6 +160,11 @@ if (!class_exists('MRKV_UA_SHIPPING_API_UKR_POSHTA'))
 		    if($method == 'POST')
 		    {
 		    	curl_setopt($ch, CURLOPT_POSTFIELDS, \wp_json_encode( $params ));
+		    }
+		    elseif($method == 'PUT')
+		    {
+		    	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+            	curl_setopt($ch, CURLOPT_POSTFIELDS, \wp_json_encode($params));
 		    }
 		    else
 		    {

@@ -86,7 +86,18 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CHECKOUT'))
 
 	        $args = array(
 	        	'ajax_url' => admin_url( 'admin-ajax.php' ),
-	        	'nonce'    => wp_create_nonce('mrkv_ua_ship_nonce'));
+	        	'nonce'    => wp_create_nonce('mrkv_ua_ship_nonce'),
+	        	'select2_texts' => array(
+			        'errorLoading'   => __('Error loading results.', 'mrkv-ua-shipping'),
+			        'inputTooLong'   => __('Please delete %d character(s).', 'mrkv-ua-shipping'),
+			        'inputTooShort'  => __('Please enter %d more character(s).', 'mrkv-ua-shipping'),
+			        'loadingMore'    => __('Loading more results...', 'mrkv-ua-shipping'),
+			        'maximumSelected'=> __('You can only select %d item(s).', 'mrkv-ua-shipping'),
+			        'noResults'      => __('No results found.', 'mrkv-ua-shipping'),
+			        'searching'      => __('Searching...', 'mrkv-ua-shipping'),
+			        'removeAllItems' => __('Remove all items', 'mrkv-ua-shipping'),
+			    )
+	        );
 
 	        if(!empty($this->active_shipping))
 	        {

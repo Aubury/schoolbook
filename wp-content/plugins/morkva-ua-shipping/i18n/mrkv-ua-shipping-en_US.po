@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Morkva UA Shipping\n"
 "POT-Creation-Date: 2024-10-01 09:03+0300\n"
-"PO-Revision-Date: 2025-05-19 11:29+0000\n"
+"PO-Revision-Date: 2026-03-04 09:47+0000\n"
 "Last-Translator: \n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -21,7 +21,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:290
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:357
 msgid " Number of positions"
 msgstr " Number of positions"
 
@@ -29,9 +29,35 @@ msgstr " Number of positions"
 msgid "\">the settings</a>."
 msgstr "\">the settings</a>."
 
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:24
+msgid ""
+"(only to countries where Nova Post operates: Poland, Moldova, Czech Republic,"
+" Romania, Germany, Slovakia, Estonia, Latvia, Hungary, Italy, United Kingdom,"
+" Spain, France, Austria, Netherlands)"
+msgstr ""
+"(only to countries where Nova Post operates: Poland, Moldova, Czech Republic,"
+" Romania, Germany, Slovakia, Estonia, Latvia, Hungary, Italy, United Kingdom,"
+" Spain, France, Austria, Netherlands)"
+
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:551
 msgid "(temporarily unavailable)"
 msgstr "(temporarily unavailable)"
+
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:297
+msgid "(this feature is only available if the sender pays for delivery)"
+msgstr "(this feature is only available if the sender pays for delivery)"
+
+#: classes/shipping_methods/nova-poshta/product/mrkv-ua-shipping-product.php:49
+msgid "0.1 kg"
+msgstr "0.1 kg"
+
+#: classes/shipping_methods/nova-poshta/product/mrkv-ua-shipping-product.php:50
+msgid "0.5 kg"
+msgstr "0.5 kg"
+
+#: classes/shipping_methods/nova-poshta/product/mrkv-ua-shipping-product.php:51
+msgid "1 kg"
+msgstr "1 kg"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:288
 msgid "100*100 mm"
@@ -57,14 +83,14 @@ msgstr ""
 msgid "2022-05-17 06:50:02 (UTC)"
 msgstr "2022-05-17 06:50:02 (UTC)"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:606
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:644
 msgid "A shipment will be created after the order is placed"
 msgstr "A shipment will be created after the order is placed"
 
 #: templates/settings/template-mrkv-ua-shipping-about-us.php:10
 #: templates/elements/template-mrkv-ua-shipping-header.php:20
-#: classes/settings/admin/mrkv-ua-shipping-menu.php:55
-#: classes/settings/admin/mrkv-ua-shipping-menu.php:55
+#: classes/settings/admin/mrkv-ua-shipping-menu.php:58
+#: classes/settings/admin/mrkv-ua-shipping-menu.php:58
 msgid "About us"
 msgstr "About us"
 
@@ -76,7 +102,6 @@ msgstr ""
 "Activate a shipping method of your choice from the list below. Then go to "
 "settings and set them up."
 
-#: constants-mrkv-ua-shipping-methods.php:5
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:6
 msgid ""
 "Add shipping method, calculate shipping costs, create and manage shipments, "
@@ -87,46 +112,46 @@ msgstr ""
 "both manually and automatically. Using API 2.0 and connects directly to the "
 "Nova Poshta server for fast and secure user experience."
 
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:569
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:652
 msgid "Added invoice number"
 msgstr "Added invoice number"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:259
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:260
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:278
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:278
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:279
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:261
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:262
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:282
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:282
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:283
 msgid "Additional services"
 msgstr "Additional services"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:54
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:94
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:98
 msgid "Address from"
 msgstr "Address from"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:102
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:106
 msgid "Address Ref Incorrect"
 msgstr "Address Ref Incorrect"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:133
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:154
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:158
 msgid "Address to"
 msgstr "Address to"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:621
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:659
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:16
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:379
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:774
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:126
 msgid "After Payment data"
 msgstr "After Payment data"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:660
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:418
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:698
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:813
 msgid "After the first name"
 msgstr "After the first name"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:659
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:417
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:697
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:812
 msgid "After the last name"
 msgstr "After the last name"
 
@@ -143,41 +168,44 @@ msgid "Apartment / Office"
 msgstr "Apartment / Office"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:7
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:381
 msgid "API Key"
 msgstr "API Key"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:17
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:392
 msgid "API key correct"
 msgstr "API key correct"
 
+#: classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-api-nova-post.php:159
 #: classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-api-nova-poshta.php:147
 msgid "API key incorrect"
 msgstr "API key incorrect"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:603
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:641
 msgid "Auto-creation of a shipment"
 msgstr "Auto-creation of a shipment"
 
-#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:127
-#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:230
+#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:134
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:326
 msgid "Automatic created invoice"
 msgstr "Automatic created invoice"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:364
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:593
 msgid "Automatically change order status"
 msgstr "Automatically change order status"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:357
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:583
 msgid "Automatically create shipments"
 msgstr "Automatically create shipments"
 
-#: classes/shipping_methods/ukr-poshta/settings/mrkv-ua-shipping-settings-ukr-poshta.php:27
-#: classes/shipping_methods/nova-poshta/settings/mrkv-ua-shipping-settings-nova-poshta.php:68
+#: classes/shipping_methods/ukr-poshta/settings/mrkv-ua-shipping-settings-ukr-poshta.php:28
+#: classes/shipping_methods/nova-poshta/settings/mrkv-ua-shipping-settings-nova-poshta.php:69
 msgid "Automation"
 msgstr "Automation"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:595
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:333
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:633
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:559
 msgid "Automation Settings"
 msgstr "Automation Settings"
 
@@ -195,9 +223,9 @@ msgstr "Basic"
 msgid "Basic settings"
 msgstr "Basic settings"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:622
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:660
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:17
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:380
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:775
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:127
 msgid "Before Notes to orders"
 msgstr "Before Notes to orders"
@@ -206,19 +234,19 @@ msgstr "Before Notes to orders"
 msgid "Bulky parcel"
 msgstr "Bulky parcel"
 
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:74
-msgid "Cargo depot"
-msgstr "Cargo depot"
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:201
+msgid "Cargo Type"
+msgstr "Cargo Type"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:193
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:260
 msgid "Cash"
 msgstr "Cash"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:260
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:264
 msgid "Cash on delivery, UAH"
 msgstr "Cash on delivery, UAH"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:195
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:262
 msgid ""
 "Cashless payment for the sender is available only if the contract is signed."
 msgstr ""
@@ -228,20 +256,20 @@ msgstr ""
 msgid "Category of shipment"
 msgstr "Category of shipment"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:270
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:280
 msgid "Change address"
 msgstr "Change address"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:109
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:112
 msgid "Change method"
 msgstr "Change method"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:93
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:96
 msgid "Change shipping method"
 msgstr "Change shipping method"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:144
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:165
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:169
 msgid "Check the correctness of the shipment data, or fill in if necessary"
 msgstr "Check the correctness of the shipment data, or fill in if necessary"
 
@@ -255,15 +283,15 @@ msgid "Check the necessary fields that will be used to create the invoice"
 msgstr "Check the necessary fields that will be used to create the invoice"
 
 #: classes/shipping_methods/nova-global/settings/mrkv-ua-shipping-settings-nova-global.php:26
-#: classes/shipping_methods/ukr-poshta/settings/mrkv-ua-shipping-settings-ukr-poshta.php:28
+#: classes/shipping_methods/ukr-poshta/settings/mrkv-ua-shipping-settings-ukr-poshta.php:29
 #: classes/shipping_methods/rozetka-delivery/settings/mrkv-ua-shipping-settings-rozetka-delivery.php:25
-#: classes/shipping_methods/nova-poshta/settings/mrkv-ua-shipping-settings-nova-poshta.php:69
+#: classes/shipping_methods/nova-poshta/settings/mrkv-ua-shipping-settings-nova-poshta.php:70
 msgid "Checkout"
 msgstr "Checkout"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:612
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:650
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:7
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:370
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:765
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:117
 msgid "Checkout settings"
 msgstr "Checkout settings"
@@ -299,7 +327,8 @@ msgid "Chernivtsi, Chernivtsi district"
 msgstr "Chernivtsi, Chernivtsi district"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:306
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:269
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:336
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:423
 msgid "Choose a cart cost"
 msgstr "Choose a cart cost"
 
@@ -307,11 +336,19 @@ msgstr "Choose a cart cost"
 msgid "Choose a category"
 msgstr "Choose a category"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:627
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:703
+msgid "Choose a order status"
+msgstr "Choose a order status"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:758
+msgid "Choose a period"
+msgstr "Choose a period"
+
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:665
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:703
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:22
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:385
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:423
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:780
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:818
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:132
 msgid "Choose a position"
 msgstr "Choose a position"
@@ -320,6 +357,15 @@ msgstr "Choose a position"
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:44
 msgid "Choose a sender"
 msgstr "Choose a sender"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:611
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:622
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:633
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:644
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:655
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:666
+msgid "Choose a status"
+msgstr "Choose a status"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:124
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:455
@@ -330,106 +376,128 @@ msgstr "Choose a type"
 msgid "Choose an attribute"
 msgstr "Choose an attribute"
 
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:214
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:225
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:236
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:247
+msgid "Choose classes"
+msgstr "Choose classes"
+
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:304
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:267
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:334
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:421
 msgid "Choose how much the shipping cost will be calculated"
 msgstr "Choose how much the shipping cost will be calculated"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:96
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:99
 msgid "Choose method"
 msgstr "Choose method"
 
-#: constants-mrkv-ua-shipping-methods.php:33
-#: constants-mrkv-ua-shipping-methods.php:85
-#: constants-mrkv-ua-shipping-methods.php:151
-#: constants-mrkv-ua-shipping-methods.php:253
-#: constants-mrkv-ua-shipping-methods.php:307
-#: constants-mrkv-ua-shipping-methods.php:395
+#: constants-mrkv-ua-shipping-methods.php:34
+#: constants-mrkv-ua-shipping-methods.php:94
+#: constants-mrkv-ua-shipping-methods.php:168
+#: constants-mrkv-ua-shipping-methods.php:365
+#: constants-mrkv-ua-shipping-methods.php:427
+#: constants-mrkv-ua-shipping-methods.php:523
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:33
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:85
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:151
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:253
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:307
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:395
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:339
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:393
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:481
 msgid "Choose the city"
 msgstr "Choose the city"
 
-#: constants-mrkv-ua-shipping-methods.php:348
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:348
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:751
+msgid "Choose the frequency of execution wp cron event"
+msgstr "Choose the frequency of execution wp cron event"
+
+#: constants-mrkv-ua-shipping-methods.php:475
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:434
 msgid "Choose the house"
 msgstr "Choose the house"
 
-#: constants-mrkv-ua-shipping-methods.php:109
+#: constants-mrkv-ua-shipping-methods.php:125
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:109
-#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:205
+#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:316
 msgid "Choose the poshtomat"
 msgstr "Choose the poshtomat"
 
-#: constants-mrkv-ua-shipping-methods.php:335
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:335
+#: constants-mrkv-ua-shipping-methods.php:199
+#: constants-mrkv-ua-shipping-methods.php:462
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:175
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:421
 msgid "Choose the street"
 msgstr "Choose the street"
 
-#: constants-mrkv-ua-shipping-methods.php:57
-#: constants-mrkv-ua-shipping-methods.php:271
-#: constants-mrkv-ua-shipping-methods.php:433
+#: constants-mrkv-ua-shipping-methods.php:65
+#: constants-mrkv-ua-shipping-methods.php:390
+#: constants-mrkv-ua-shipping-methods.php:568
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:57
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:271
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:433
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:468
-#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:102
-#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:213
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:357
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:519
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:554
+#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:99
+#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:335
 msgid "Choose the warehouse"
 msgstr "Choose the warehouse"
 
-#: constants-mrkv-ua-shipping-methods.php:35
-#: constants-mrkv-ua-shipping-methods.php:87
-#: constants-mrkv-ua-shipping-methods.php:153
-#: constants-mrkv-ua-shipping-methods.php:255
-#: constants-mrkv-ua-shipping-methods.php:309
-#: constants-mrkv-ua-shipping-methods.php:397
-#: constants-mrkv-ua-shipping-methods.php:527
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:35
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:87
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:153
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:255
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:309
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:397
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:527
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:364
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:71
 msgid "City"
 msgstr "City"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:709
+#: constants-mrkv-ua-shipping-methods.php:36
+#: constants-mrkv-ua-shipping-methods.php:96
+#: constants-mrkv-ua-shipping-methods.php:170
+#: constants-mrkv-ua-shipping-methods.php:367
+#: constants-mrkv-ua-shipping-methods.php:429
+#: constants-mrkv-ua-shipping-methods.php:525
+#: constants-mrkv-ua-shipping-methods.php:621
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:35
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:87
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:153
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:264
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:341
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:395
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:483
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:613
+msgid "City (settlement)"
+msgstr "City (settlement)"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:747
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:70
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:467
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:862
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:180
 msgid "Clear log"
 msgstr "Clear log"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:284
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:351
 msgid "Click to insert the shortcode:"
 msgstr "Click to insert the shortcode:"
 
 #: templates/orders/mrkv-ua-ship-popup.php:4
 #: templates/orders/mrkv-ua-ship-popup.php:57
 #: templates/orders/mrkv-ua-ship-popup.php:57
-#: templates/orders/mrkv-ua-ship-popup.php:77
-#: templates/orders/mrkv-ua-ship-popup.php:77
+#: templates/orders/mrkv-ua-ship-popup.php:85
+#: templates/orders/mrkv-ua-ship-popup.php:85
 msgid "Close"
 msgstr "Close"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:596
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:334
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:634
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:560
 msgid "Connect automation when working with shipments"
 msgstr "Connect automation when working with shipments"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:191
-#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:115
-#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:115
-#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:218
-#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:218
+#: classes/settings/admin/mrkv-ua-shipping-admin-assets.php:40
+msgid "contains Latin characters"
+msgstr "contains Latin characters"
+
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:201
+#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:122
+#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:122
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:314
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:314
 msgid "Copy invoice"
 msgstr "Copy invoice"
 
@@ -451,16 +519,25 @@ msgstr "Covering address form (cp71)"
 #: templates/orders/mrkv-ua-ship-popup.php:44
 #: templates/orders/mrkv-ua-ship-popup.php:60
 #: templates/orders/mrkv-ua-ship-popup.php:60
-#: templates/orders/mrkv-ua-ship-popup.php:80
-#: templates/orders/mrkv-ua-ship-popup.php:80
+#: templates/orders/mrkv-ua-ship-popup.php:88
+#: templates/orders/mrkv-ua-ship-popup.php:88
 msgid "Create"
 msgstr "Create"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:296
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:692
+msgid ""
+"Create a cron on the server to this link and set it to execute at your "
+"discretion. Recommended for every 2 minutes"
+msgstr ""
+"Create a cron on the server to this link and set it to execute at your "
+"discretion. Recommended for every 2 minutes"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:596
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:522
 msgid "Create a custom message that will be sent after creating the shipment"
 msgstr "Create a custom message that will be sent after creating the shipment"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:247
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:257
 msgid "Create Invoice"
 msgstr "Create Invoice"
 
@@ -468,7 +545,7 @@ msgstr "Create Invoice"
 msgid "Create invoice by Order"
 msgstr "Create invoice by Order"
 
-#: templates/orders/mrkv-ua-ship-popup.php:81
+#: templates/orders/mrkv-ua-ship-popup.php:89
 msgid "Create invoice Completed by Order"
 msgstr "Create invoice Completed by Order"
 
@@ -476,7 +553,23 @@ msgstr "Create invoice Completed by Order"
 msgid "Create invoice Failed by Order"
 msgstr "Create invoice Failed by Order"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:259
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:587
+msgid "Cron Automation settings"
+msgstr "Cron Automation settings"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:703
+msgid "Cron order status check"
+msgstr "Cron order status check"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:675
+msgid "Cron type"
+msgstr "Cron type"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:433
+msgid "Currently, only shipping from the branch is supported."
+msgstr "Currently, only shipping from the branch is supported."
+
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:269
 msgid "Custom Invoice number"
 msgstr "Custom Invoice number"
 
@@ -484,9 +577,9 @@ msgstr "Custom Invoice number"
 msgid "Customize international shipping to your needs"
 msgstr "Customize international shipping to your needs"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:613
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:651
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:8
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:371
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:766
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:118
 msgid "Customize the output of the plugin fields in relation to your theme"
 msgstr "Customize the output of the plugin fields in relation to your theme"
@@ -499,23 +592,24 @@ msgstr "Customs declaration form (cn22)"
 msgid "Data is used in case of missing values when creating a shipment"
 msgstr "Data is used in case of missing values when creating a shipment"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:681
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:719
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:42
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:439
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:834
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:152
 msgid "Debug Log"
 msgstr "Debug Log"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:250
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:254
 msgid "Declared cost"
 msgstr "Declared cost"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:658
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:416
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:696
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:811
 msgid "Default"
 msgstr "Default"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:328
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:628
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:554
 msgid "Default email template"
 msgstr "Default email template"
 
@@ -526,8 +620,17 @@ msgstr "Default email template"
 msgid "Default values"
 msgstr "Default values"
 
+#: constants-mrkv-ua-shipping-methods.php:5
+msgid ""
+"Delivery within Ukraine (to a branch, post office, or address) and abroad "
+"(to a Nova Post branch or address). For international delivery, use your "
+"current API key."
+msgstr ""
+"Delivery within Ukraine (to a branch, post office, or address) and abroad "
+"(to a Nova Post branch or address). For international delivery, use your "
+"current API key."
+
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:120
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:132
 msgid "Description"
 msgstr "Description"
 
@@ -535,32 +638,33 @@ msgstr "Description"
 msgid "Description of an international shipment (Latin)"
 msgstr "Description of an international shipment (Latin)"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:254
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:273
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:256
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:277
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:318
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:281
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:348
 msgid "Description of the shipment"
 msgstr "Description of the shipment"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:293
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:297
 msgid "Destroy the shipment"
 msgstr "Destroy the shipment"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:191
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:212
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:193
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:216
 msgid "Dimensions of the shipment, cm"
 msgstr "Dimensions of the shipment, cm"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:250
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:215
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:282
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:477
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:73
 msgid "Dimensions, cm"
 msgstr "Dimensions, cm"
 
 #: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:60
-#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:150
-#: classes/shipping_methods/rozetka-delivery/ajax/mrkv-ua-shipping-methods-ajax-rozetka.php:48
-#: classes/shipping_methods/rozetka-delivery/ajax/mrkv-ua-shipping-methods-ajax-rozetka.php:52
+#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:144
+#: classes/shipping_methods/rozetka-delivery/ajax/mrkv-ua-shipping-methods-ajax-rozetka.php:58
+#: classes/shipping_methods/rozetka-delivery/ajax/mrkv-ua-shipping-methods-ajax-rozetka.php:62
 msgid "district"
 msgstr "district"
 
@@ -575,9 +679,19 @@ msgid "Dnipro, Dniprovskyi district"
 msgstr "Dnipro, Dniprovskyi district"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:75
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:87
 msgid "Document"
 msgstr "Document"
+
+#: classes/shipping_methods/nova-poshta/product/mrkv-ua-shipping-product.php:59
+msgid "Document weight"
+msgstr "Document weight"
+
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:156
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:181
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:231
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:456
+msgid "Documents"
+msgstr "Documents"
 
 #: classes/shipping_methods/ukr-poshta/settings/mrkv-ua-shipping-settings-ukr-poshta.php:25
 msgid "Domestic"
@@ -587,11 +701,20 @@ msgstr "Domestic"
 msgid "Domestic settings"
 msgstr "Domestic settings"
 
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:395
+msgid ""
+"During the registration process, you will receive an API access key. Make "
+"sure to store this information in a secure place."
+msgstr ""
+"During the registration process, you will receive an API access key. Make "
+"sure to store this information in a secure place."
+
 #: templates/elements/template-mrkv-ua-shipping-support.php:4
 msgid "E-mail"
 msgstr "E-mail"
 
-#: classes/shipping_methods/nova-poshta/settings/mrkv-ua-shipping-settings-nova-poshta.php:67
+#: classes/shipping_methods/ukr-poshta/settings/mrkv-ua-shipping-settings-ukr-poshta.php:27
+#: classes/shipping_methods/nova-poshta/settings/mrkv-ua-shipping-settings-nova-poshta.php:68
 msgid "Email"
 msgstr "Email"
 
@@ -599,15 +722,18 @@ msgstr "Email"
 msgid "Email sent"
 msgstr "Email sent"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:295
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:595
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:521
 msgid "Email settings"
 msgstr "Email settings"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:305
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:605
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:531
 msgid "Email subject"
 msgstr "Email subject"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:325
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:625
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:551
 msgid "Email text"
 msgstr "Email text"
 
@@ -615,63 +741,71 @@ msgstr "Email text"
 msgid "Empty data"
 msgstr "Empty data"
 
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:481
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:564
 msgid "Empty order data"
 msgstr "Empty order data"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:689
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:727
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:50
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:447
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:842
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:160
 msgid "Enable debug log"
 msgstr "Enable debug log"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:698
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:736
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:59
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:456
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:851
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:169
 msgid "Enable debug query"
 msgstr "Enable debug query"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:86
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:98
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:82
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:89
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:69
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:82
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:82
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-address.php:69
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-poshtamat.php:69
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta.php:69
 msgid "Enable Fixed Price for Delivery"
 msgstr "Enable Fixed Price for Delivery"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:316
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:197
+msgid "Enable if you need to use cargo types for product classes"
+msgstr "Enable if you need to use cargo types for product classes"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:616
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:542
 msgid ""
 "Enable if you want to send an email automatically after a shipment is created"
 msgstr ""
 "Enable if you want to send an email automatically after a shipment is created"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:100
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:112
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:96
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:103
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:83
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:96
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:96
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-address.php:83
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-poshtamat.php:83
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta.php:83
 msgid "Enable Minimum amount for free shipping"
 msgstr "Enable Minimum amount for free shipping"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:395
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:790
 msgid "Enable patronymic"
 msgstr "Enable patronymic"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:637
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:675
 msgid "Enable patronymic (Warehouse)"
 msgstr "Enable patronymic (Warehouse)"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:79
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:91
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:82
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:75
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:75
 msgid "Enable Price for Delivery"
 msgstr "Enable Price for Delivery"
 
@@ -679,23 +813,23 @@ msgstr "Enable Price for Delivery"
 msgid "Enable Search by warehouse number"
 msgstr "Enable Search by warehouse number"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:691
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:729
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:52
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:449
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:844
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:162
 msgid "Enable to receive request error logs"
 msgstr "Enable to receive request error logs"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:700
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:738
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:61
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:458
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:853
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:171
 msgid "Enable to receive request logs in order notes and log file"
 msgstr "Enable to receive request logs in order notes and log file"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:675
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:713
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:34
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:433
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:828
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:144
 msgid ""
 "Enable to store selected delivery city and warehouse/postamat in session "
@@ -704,8 +838,11 @@ msgstr ""
 "Enable to store selected delivery city and warehouse/postamat in session "
 "cookies (may not work if privacy settings enabled in user’s browser)"
 
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:189
+msgid "Enabled classes support"
+msgstr "Enabled classes support"
+
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:122
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:134
 msgid ""
 "Enter a description for this shipping method to display on the cart and "
 "checkout pages."
@@ -713,16 +850,22 @@ msgstr ""
 "Enter a description for this shipping method to display on the cart and "
 "checkout pages."
 
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:435
+msgid "Enter the address..."
+msgstr "Enter the address..."
+
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:95
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:109
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:107
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:121
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:91
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:105
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:98
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:112
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:78
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:92
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:91
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:105
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:91
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:105
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-address.php:78
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-address.php:92
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-poshtamat.php:78
@@ -732,8 +875,9 @@ msgstr ""
 msgid "Enter the amount in numbers"
 msgstr "Enter the amount in numbers"
 
-#: constants-mrkv-ua-shipping-methods.php:528
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:528
+#: constants-mrkv-ua-shipping-methods.php:622
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:265
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:614
 msgid "Enter the city"
 msgstr "Enter the city"
 
@@ -742,7 +886,8 @@ msgstr "Enter the city"
 msgid "Enter the city..."
 msgstr "Enter the city..."
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:325
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:625
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:551
 msgid "Enter the email..."
 msgstr "Enter the email..."
 
@@ -758,7 +903,7 @@ msgid "Enter the first 3 letters"
 msgstr "Enter the first 3 letters"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:101
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:122
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:126
 msgid "Enter the Firstname"
 msgstr "Enter the Firstname"
 
@@ -785,11 +930,12 @@ msgstr "Enter the index..."
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:61
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:70
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:22
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:397
 msgid "Enter the key..."
 msgstr "Enter the key..."
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:108
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:129
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:133
 msgid "Enter the Lastname"
 msgstr "Enter the Lastname"
 
@@ -813,21 +959,21 @@ msgid "Enter the password..."
 msgstr "Enter the password..."
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:117
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:138
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:142
 msgid "Enter the Patronymic"
 msgstr "Enter the Patronymic"
 
-#: constants-mrkv-ua-shipping-methods.php:138
-#: constants-mrkv-ua-shipping-methods.php:240
-#: constants-mrkv-ua-shipping-methods.php:299
+#: constants-mrkv-ua-shipping-methods.php:155
+#: constants-mrkv-ua-shipping-methods.php:351
+#: constants-mrkv-ua-shipping-methods.php:419
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:138
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:240
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:299
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:326
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:385
 msgid "Enter the patronymic"
 msgstr "Enter the patronymic"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:124
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:145
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:149
 msgid "Enter the Phone"
 msgstr "Enter the Phone"
 
@@ -836,8 +982,9 @@ msgstr "Enter the Phone"
 msgid "Enter the phone..."
 msgstr "Enter the phone..."
 
-#: constants-mrkv-ua-shipping-methods.php:512
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:512
+#: constants-mrkv-ua-shipping-methods.php:606
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:249
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:598
 msgid "Enter the postal code"
 msgstr "Enter the postal code"
 
@@ -845,24 +992,25 @@ msgstr "Enter the postal code"
 msgid "Enter the postal index..."
 msgstr "Enter the postal index..."
 
-#: constants-mrkv-ua-shipping-methods.php:520
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:520
+#: constants-mrkv-ua-shipping-methods.php:614
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:257
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:606
 msgid "Enter the region"
 msgstr "Enter the region"
 
-#: constants-mrkv-ua-shipping-methods.php:536
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:536
+#: constants-mrkv-ua-shipping-methods.php:630
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:273
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:622
 msgid "Enter the street"
 msgstr "Enter the street"
 
-#: constants-mrkv-ua-shipping-methods.php:177
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:177
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:373
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:106
 msgid "Enter the street..."
 msgstr "Enter the street..."
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:305
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:605
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:531
 msgid "Enter the subject..."
 msgstr "Enter the subject..."
 
@@ -875,14 +1023,19 @@ msgstr "Enter the username..."
 msgid "Enter the warehouse..."
 msgstr "Enter the warehouse..."
 
-#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:151
-#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:253
+#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:158
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:349
 msgid "Error create invoice"
 msgstr "Error create invoice"
 
-#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:146
-#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:249
-#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:250
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout.php:91
+#: classes/settings/admin/mrkv-ua-shipping-admin-assets.php:81
+msgid "Error loading results."
+msgstr "Error loading results."
+
+#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:153
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:345
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:346
 msgid "Error with create invoice"
 msgstr "Error with create invoice"
 
@@ -900,12 +1053,12 @@ msgstr "Error with Recipient Lastname. Contains latin letters"
 msgid "Error with Recipient Ref"
 msgstr "Error with Recipient Ref"
 
-#: classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-recipient-nova-poshta.php:110
-#: classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-recipient-nova-poshta.php:200
+#: classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-recipient-nova-poshta.php:116
+#: classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-recipient-nova-poshta.php:206
 msgid "Error with Recipient Street Ref"
 msgstr "Error with Recipient Street Ref"
 
-#: classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-recipient-nova-poshta.php:262
+#: classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-recipient-nova-poshta.php:268
 msgid "Error with Recipient Warehouse Ref"
 msgstr "Error with Recipient Warehouse Ref"
 
@@ -914,15 +1067,21 @@ msgstr "Error with Recipient Warehouse Ref"
 msgid "Error with Sender Counterparties Ref"
 msgstr "Error with Sender Counterparties Ref"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:176
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:244
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:247
+msgid "Error. Check product shipping classes"
+msgstr "Error. Check product shipping classes"
+
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:180
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:78
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:78
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:229
 msgid "EXPRESS"
 msgstr "EXPRESS"
 
-#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout-validation.php:121
-#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout-validation.php:140
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout-validation.php:117
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout-validation.php:129
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout-validation.php:148
 msgid "Field"
 msgstr "Field"
 
@@ -936,8 +1095,13 @@ msgstr "Fill in the default shipping data for the international invoice"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:219
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:172
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:445
 msgid "Fill in the default shipping data for the shipment"
 msgstr "Fill in the default shipping data for the shipment"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:401
+msgid "Fill in the default shipping data sender"
+msgstr "Fill in the default shipping data sender"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:10
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:23
@@ -948,28 +1112,35 @@ msgstr "Fill in the default shipping data for the shipment"
 msgid "Find it in an email from your Ukrposhta customer manager"
 msgstr "Find it in an email from your Ukrposhta customer manager"
 
+#: constants-mrkv-ua-shipping-methods.php:244
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:219
+msgid "Find nearest warehouse"
+msgstr "Find nearest warehouse"
+
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:101
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:122
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:126
 msgid "Firstname"
 msgstr "Firstname"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:93
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:105
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:89
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:96
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:76
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:89
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:89
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-address.php:76
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-poshtamat.php:76
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta.php:76
 msgid "Fixed shipping price"
 msgstr "Fixed shipping price"
 
-#: constants-mrkv-ua-shipping-methods.php:196
-#: constants-mrkv-ua-shipping-methods.php:361
-#: constants-mrkv-ua-shipping-methods.php:550
+#: constants-mrkv-ua-shipping-methods.php:220
+#: constants-mrkv-ua-shipping-methods.php:488
+#: constants-mrkv-ua-shipping-methods.php:644
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:196
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:361
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:550
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:287
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:447
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:636
 msgid "Flat"
 msgstr "Flat"
 
@@ -977,11 +1148,11 @@ msgstr "Flat"
 msgid "flat/office"
 msgstr "flat/office"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:254
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:273
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:256
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:277
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:318
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:583
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:281
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:348
 msgid "For example, products for children..."
 msgstr "For example, products for children..."
 
@@ -1006,13 +1177,10 @@ msgid "Form for sending cash on delivery (tfp3)"
 msgstr "Form for sending cash on delivery (tfp3)"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:306
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:269
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:336
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:423
 msgid "Free shipping calculation"
 msgstr "Free shipping calculation"
-
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:128
-msgid "FREE to Nova Global"
-msgstr "FREE to Nova Global"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:116
 msgid "FREE to Nova Global Address"
@@ -1030,6 +1198,11 @@ msgstr "FREE to Nova Poshta Poshtamat"
 msgid "FREE to Nova Poshta Warehouse"
 msgstr "FREE to Nova Poshta Warehouse"
 
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:112
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:112
+msgid "FREE to Nova Post"
+msgstr "FREE to Nova Post"
+
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:99
 msgid "FREE to Rozetka Delivery"
 msgstr "FREE to Rozetka Delivery"
@@ -1042,13 +1215,17 @@ msgstr "FREE to UkrPoshta Address"
 msgid "FREE to UkrPoshta Warehouse"
 msgstr "FREE to UkrPoshta Warehouse"
 
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:758
+msgid "Frequency of execution (WP Cron)"
+msgstr "Frequency of execution (WP Cron)"
+
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:300
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:263
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:330
 msgid "From the intermediate cost of the order (excluding promotional codes)"
 msgstr "From the intermediate cost of the order (excluding promotional codes)"
 
-#: constants-mrkv-ua-shipping-methods.php:378
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:378
+#: constants-mrkv-ua-shipping-methods.php:505
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:464
 msgid ""
 "Get the opportunity to deliver a parcel to any ROZETKA warehouse. You save "
 "your own time on order picking and shipping, as these processes are handled "
@@ -1061,6 +1238,10 @@ msgstr ""
 #: templates/elements/template-mrkv-ua-shipping-header.php:11
 msgid "Global"
 msgstr "Global"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:175
+msgid "Global Cargo Type"
+msgstr "Global Cargo Type"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:503
 msgid "Global HS code"
@@ -1077,10 +1258,11 @@ msgid ""
 msgstr ""
 "Having trouble creating a shipment? Feel free to contact our support team."
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:215
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:236
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:217
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:240
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:273
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:238
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:305
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:500
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:96
 msgid "Height"
 msgstr "Height"
@@ -1089,12 +1271,13 @@ msgstr "Height"
 msgid "Hint: the main format is 0987654321 (without +38)"
 msgstr "Hint: the main format is 0987654321 (without +38)"
 
-#: constants-mrkv-ua-shipping-methods.php:188
-#: constants-mrkv-ua-shipping-methods.php:350
-#: constants-mrkv-ua-shipping-methods.php:542
+#: constants-mrkv-ua-shipping-methods.php:212
+#: constants-mrkv-ua-shipping-methods.php:477
+#: constants-mrkv-ua-shipping-methods.php:636
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:188
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:350
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:542
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:279
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:436
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:628
 msgid "House"
 msgstr "House"
 
@@ -1111,10 +1294,11 @@ msgid "https://morkva.co.ua/product-category/plugins/"
 msgstr "https://morkva.co.ua/product-category/plugins/"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:87
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:99
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:83
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:90
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:70
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:83
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:83
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-address.php:70
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-poshtamat.php:70
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta.php:70
@@ -1122,10 +1306,11 @@ msgid "If checked, fixed price will be set for delivery"
 msgstr "If checked, fixed price will be set for delivery"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:101
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:113
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:97
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:104
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:84
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:97
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:97
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-address.php:84
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-poshtamat.php:84
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta.php:84
@@ -1133,8 +1318,9 @@ msgid "If checked, Minimum amount for free shipping will be set for delivery"
 msgstr "If checked, Minimum amount for free shipping will be set for delivery"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:80
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:92
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:83
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:76
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:76
 msgid "If checked, shipping price will be add for delivery"
 msgstr "If checked, shipping price will be add for delivery"
 
@@ -1150,7 +1336,17 @@ msgstr ""
 msgid "If selected, the poshtomat will be excluded from the list"
 msgstr "If selected, the poshtomat will be excluded from the list"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:286
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:677
+msgid ""
+"If the buyer has chosen cash on delivery, the \"middle name\" field will be "
+"displayed automatically, regardless of this setting (requirement of "
+"Ukrposhta API)."
+msgstr ""
+"If the buyer has chosen cash on delivery, the \"middle name\" field will be "
+"displayed automatically, regardless of this setting (requirement of "
+"Ukrposhta API)."
+
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:290
 msgid "In case of failure to deliver"
 msgstr "In case of failure to deliver"
 
@@ -1158,7 +1354,7 @@ msgstr "In case of failure to deliver"
 msgid "in the Woocommerce settings"
 msgstr "in the Woocommerce settings"
 
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:208
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:215
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:393
 msgid "Index"
 msgstr "Index"
@@ -1168,35 +1364,39 @@ msgid "Insert the shortcode:"
 msgstr "Insert the shortcode:"
 
 #: classes/shipping_methods/ukr-poshta/settings/mrkv-ua-shipping-settings-ukr-poshta.php:26
+#: classes/shipping_methods/nova-poshta/settings/mrkv-ua-shipping-settings-nova-poshta.php:67
 msgid "International"
 msgstr "International"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:334
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:362
 msgid "International shipping settings"
 msgstr "International shipping settings"
 
 #: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:67
 #: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:125
 #: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:150
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:443
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:490
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:557
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:579
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:637
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:526
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:573
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:640
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:663
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:722
 #: classes/shipping_methods/nova-global/ajax/mrkv-ua-shipping-methods-ajax-nova-global.php:25
 #: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:40
-#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:84
-#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:130
-#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:171
-#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:213
-#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:236
+#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:81
+#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:124
+#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:162
+#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:201
+#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:224
 #: classes/shipping_methods/rozetka-delivery/ajax/mrkv-ua-shipping-methods-ajax-rozetka.php:28
-#: classes/shipping_methods/rozetka-delivery/ajax/mrkv-ua-shipping-methods-ajax-rozetka.php:74
-#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:40
-#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:94
-#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:150
-#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:304
-#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:360
+#: classes/shipping_methods/rozetka-delivery/ajax/mrkv-ua-shipping-methods-ajax-rozetka.php:82
+#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:43
+#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:86
+#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:142
+#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:224
+#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:438
+#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:495
+#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:553
 msgid "Invalid nonce."
 msgstr "Invalid nonce."
 
@@ -1205,16 +1405,16 @@ msgstr "Invalid nonce."
 msgid "Invoice"
 msgstr "Invoice"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:193
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:203
 msgid "Invoice action"
 msgstr "Invoice action"
 
-#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:115
-#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:218
+#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:122
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:314
 msgid "Invoice created"
 msgstr "Invoice created"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:190
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:200
 msgid "Invoice number"
 msgstr "Invoice number"
 
@@ -1223,16 +1423,18 @@ msgstr "Invoice number"
 msgid "invoice number"
 msgstr "invoice number"
 
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:627
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:712
 msgid "Invoice removed"
 msgstr "Invoice removed"
 
-#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout-validation.php:121
-#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout-validation.php:140
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout-validation.php:117
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout-validation.php:129
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout-validation.php:148
 msgid "is required"
 msgstr "is required"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:251
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:318
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:513
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:109
 msgid ""
 "It is calculated automatically according to the dimensions in the settings."
@@ -1309,16 +1511,17 @@ msgid "Last status update"
 msgstr "Last status update"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:108
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:129
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:133
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:157
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:353
 msgid "Lastname"
 msgstr "Lastname"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:195
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:216
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:197
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:220
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:253
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:218
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:285
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:480
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:76
 msgid "Length"
 msgstr "Length"
@@ -1328,27 +1531,32 @@ msgid "Length of shipment, cm"
 msgstr "Length of shipment, cm"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:326
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:288
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:355
 msgid "List of articles with quantity"
 msgstr "List of articles with quantity"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:325
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:287
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:354
 msgid "List of goods (with articles and quantity)"
 msgstr "List of goods (with articles and quantity)"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:324
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:286
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:353
 msgid "List of products"
 msgstr "List of products"
 
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout.php:94
+#: classes/settings/admin/mrkv-ua-shipping-admin-assets.php:84
+msgid "Loading more results..."
+msgstr "Loading more results..."
+
 #: classes/shipping_methods/nova-global/settings/mrkv-ua-shipping-settings-nova-global.php:27
-#: classes/shipping_methods/ukr-poshta/settings/mrkv-ua-shipping-settings-ukr-poshta.php:29
+#: classes/shipping_methods/ukr-poshta/settings/mrkv-ua-shipping-settings-ukr-poshta.php:30
 #: classes/shipping_methods/rozetka-delivery/settings/mrkv-ua-shipping-settings-rozetka-delivery.php:26
-#: classes/shipping_methods/nova-poshta/settings/mrkv-ua-shipping-settings-nova-poshta.php:70
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:705
+#: classes/shipping_methods/nova-poshta/settings/mrkv-ua-shipping-settings-nova-poshta.php:71
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:743
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:66
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:463
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:858
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:176
 msgid "Log"
 msgstr "Log"
@@ -1381,18 +1589,18 @@ msgstr "Lviv"
 msgid "Lviv, Lviv district"
 msgstr "Lviv, Lviv district"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:406
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:801
 msgid "Make the middle name field mandatory"
 msgstr "Make the middle name field mandatory"
 
-#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:123
-#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:226
+#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:130
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:322
 msgid "Manually created invoice"
 msgstr "Manually created invoice"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:252
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:271
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:279
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:254
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:275
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:346
 msgid "Maximum number of characters:"
 msgstr "Maximum number of characters:"
 
@@ -1401,17 +1609,18 @@ msgid "Middlename"
 msgstr "Middlename"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:107
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:119
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:103
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:110
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:90
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:103
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:103
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-address.php:90
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-poshtamat.php:90
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta.php:90
 msgid "Minimum amount for free shipping"
 msgstr "Minimum amount for free shipping"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:267
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:269
 msgid "Money transfer"
 msgstr "Money transfer"
 
@@ -1423,6 +1632,8 @@ msgstr "MORKVA"
 msgid "Morkva UA Shipping"
 msgstr "Morkva UA Shipping"
 
+#: classes/woocommerce/mrkv-ua-shipping-woo-product.php:29
+#: classes/woocommerce/mrkv-ua-shipping-woo-product.php:46
 #: classes/woocommerce/mrkv-ua-shipping-woo-order.php:76
 #: classes/settings/admin/mrkv-ua-shipping-menu.php:34
 #: classes/settings/admin/mrkv-ua-shipping-menu.php:34
@@ -1430,9 +1641,9 @@ msgid "MRKV UA Shipping"
 msgstr "MRKV UA Shipping"
 
 #: constants-mrkv-ua-shipping-methods.php:10
-#: constants-mrkv-ua-shipping-methods.php:218
+#: constants-mrkv-ua-shipping-methods.php:328
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:11
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:218
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:304
 #: templates/settings/methods/invoices/mrkv-ua-shipping-ukr-poshta.php:4
 #: templates/settings/methods/invoices/mrkv-ua-shipping-nova-poshta.php:4
 msgid "My shipments"
@@ -1452,20 +1663,15 @@ msgid "Name"
 msgstr "Name"
 
 #: classes/shipping_methods/nova-global/ajax/mrkv-ua-shipping-methods-ajax-nova-global.php:74
-#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:74
-#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:120
-#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:161
-#: classes/shipping_methods/ukr-poshta/ajax/mrkv-ua-shipping-methods-ajax-ukr.php:203
-#: classes/shipping_methods/rozetka-delivery/ajax/mrkv-ua-shipping-methods-ajax-rozetka.php:64
-#: classes/shipping_methods/rozetka-delivery/ajax/mrkv-ua-shipping-methods-ajax-rozetka.php:105
-#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:81
-#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:137
-#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:291
-#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:347
 msgid "No results for your request"
 msgstr "No results for your request"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:195
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout.php:96
+#: classes/settings/admin/mrkv-ua-shipping-admin-assets.php:86
+msgid "No results found."
+msgstr "No results found."
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:262
 msgid "NonCash"
 msgstr "NonCash"
 
@@ -1473,10 +1679,8 @@ msgstr "NonCash"
 msgid "Not sure where to get the key? Take a look"
 msgstr "Not sure where to get the key? Take a look"
 
-#: constants-mrkv-ua-shipping-methods.php:450
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:450
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:21
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:66
+#: constants-mrkv-ua-shipping-methods.php:585
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:536
 msgid "Nova Global"
 msgstr "Nova Global"
 
@@ -1485,8 +1689,7 @@ msgstr "Nova Global"
 msgid "Nova Global Address"
 msgstr "Nova Global Address"
 
-#: constants-mrkv-ua-shipping-methods.php:451
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:451
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:537
 msgid ""
 "Nova Global is a logistics company specializing in cross-border delivery "
 "solutions for eCommerce businesses and marketplaces. Their services "
@@ -1502,6 +1705,8 @@ msgstr ""
 
 #: constants-mrkv-ua-shipping-methods.php:4
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:5
+#: classes/shipping_methods/nova-poshta/product/mrkv-ua-shipping-product.php:30
+#: classes/shipping_methods/nova-poshta/product/mrkv-ua-shipping-product.php:57
 msgid "Nova Poshta"
 msgstr "Nova Poshta"
 
@@ -1509,6 +1714,10 @@ msgstr "Nova Poshta"
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-address.php:66
 msgid "Nova Poshta Address"
 msgstr "Nova Poshta Address"
+
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:23
+msgid "Nova Poshta Address International"
+msgstr "Nova Poshta Address International"
 
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-poshtamat.php:21
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-poshtamat.php:66
@@ -1520,29 +1729,48 @@ msgstr "Nova Poshta Poshtamat"
 msgid "Nova Poshta Warehouse"
 msgstr "Nova Poshta Warehouse"
 
-#: constants-mrkv-ua-shipping-methods.php:197
-#: constants-mrkv-ua-shipping-methods.php:362
-#: constants-mrkv-ua-shipping-methods.php:551
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:23
+msgid "Nova Poshta Warehouse International"
+msgstr "Nova Poshta Warehouse International"
+
+#: constants-mrkv-ua-shipping-methods.php:221
+#: constants-mrkv-ua-shipping-methods.php:489
+#: constants-mrkv-ua-shipping-methods.php:645
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:197
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:362
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:551
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:288
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:448
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:637
 msgid "Number of flat"
 msgstr "Number of flat"
 
-#: constants-mrkv-ua-shipping-methods.php:189
-#: constants-mrkv-ua-shipping-methods.php:543
+#: constants-mrkv-ua-shipping-methods.php:213
+#: constants-mrkv-ua-shipping-methods.php:637
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:189
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:543
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:280
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:629
 msgid "Number of house"
 msgstr "Number of house"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:712
+msgid "Number of orders to check"
+msgstr "Number of orders to check"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:328
 msgid "Number of positions"
 msgstr "Number of positions"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:241
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:732
+msgid "Number of processing of the CTD in one step"
+msgstr "Number of processing of the CTD in one step"
+
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:243
 msgid "Number of seats"
 msgstr "Number of seats"
+
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:254
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:275
+msgid "Number of symbols:"
+msgstr "Number of symbols:"
 
 #: classes/shipping_methods/rozetka-delivery/checkout/mrkv-ua-shipping-checkout.php:12
 #: classes/shipping_methods/nova-poshta/checkout/mrkv-ua-shipping-checkout.php:61
@@ -1555,11 +1783,11 @@ msgid "Odesa, Odesa district"
 msgstr "Odesa, Odesa district"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:301
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:264
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:331
 msgid "Of the total cost of the order (including promotional codes)"
 msgstr "Of the total cost of the order (including promotional codes)"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:269
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:271
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:207
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:343
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:352
@@ -1580,15 +1808,17 @@ msgstr "Of the total cost of the order (including promotional codes)"
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:532
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:565
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:581
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:605
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:603
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:615
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:623
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:643
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:152
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:166
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:303
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:315
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:323
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:341
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:359
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:366
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:529
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:541
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:549
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:567
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:585
 #: templates/settings/methods/invoices/mrkv-ua-shipping-ukr-poshta.php:53
 #: templates/settings/methods/invoices/mrkv-ua-shipping-nova-poshta.php:62
 msgid "Only in the Pro version"
@@ -1603,10 +1833,11 @@ msgstr ""
 "specified "
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:323
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:285
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:352
 msgid "Order number"
 msgstr "Order number"
 
+#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:415
 #: classes/shipping_methods/nova-poshta/checkout/mrkv-ua-shipping-checkout.php:48
 msgid ""
 "Order products don't match weight and dimensions criteria, try another method"
@@ -1618,55 +1849,57 @@ msgid "Pages:"
 msgstr "Pages:"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:155
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:182
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:180
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:220
 msgid "Pallet"
 msgstr "Pallet"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:141
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:142
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:162
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:162
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:163
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:166
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:166
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:167
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:531
 msgid "Parameters of the shipment"
 msgstr "Parameters of the shipment"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:154
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:74
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:86
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:181
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:179
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:209
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:454
 msgid "Parcel"
 msgstr "Parcel"
 
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:75
-msgid "Parcel depot"
-msgstr "Parcel depot"
-
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:77
-msgid "Parcel shop"
-msgstr "Parcel shop"
+#: constants-mrkv-ua-shipping-methods.php:586
+msgid ""
+"Part of the Nova group of companies. Requires its own API key. Only "
+"international delivery to the address."
+msgstr ""
+"Part of the Nova group of companies. Requires its own API key. Only "
+"international delivery to the address."
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:25
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:50
 msgid "Password"
 msgstr "Password"
 
-#: constants-mrkv-ua-shipping-methods.php:137
-#: constants-mrkv-ua-shipping-methods.php:239
-#: constants-mrkv-ua-shipping-methods.php:298
+#: constants-mrkv-ua-shipping-methods.php:154
+#: constants-mrkv-ua-shipping-methods.php:350
+#: constants-mrkv-ua-shipping-methods.php:418
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:137
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:239
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:298
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:325
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:384
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:117
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:138
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:142
 msgid "Patronymic"
 msgstr "Patronymic"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:404
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:799
 msgid "Patronymic is required"
 msgstr "Patronymic is required"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:646
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:684
 msgid "Patronymic is required (Warehouse)"
 msgstr "Patronymic is required (Warehouse)"
 
@@ -1681,42 +1914,55 @@ msgstr "Payer"
 msgid "Payer for the cash on delivery function"
 msgstr "Payer for the cash on delivery function"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:163
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:184
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:165
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:188
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:194
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:417
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:139
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:367
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:406
 msgid "Payer of delivery"
 msgstr "Payer of delivery"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:339
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:565
 msgid "Payment control"
 msgstr "Payment control"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:189
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:256
 msgid "Payment type (Sender-related)"
 msgstr "Payment type (Sender-related)"
 
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:381
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:396
-#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:411
-#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:593
-#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:608
-#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:623
-#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:618
-#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:633
-#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:648
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:464
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:479
+#: classes/shipping_methods/mrkv-ua-shipping-methods-ajax.php:494
+#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:642
+#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:657
+#: classes/shipping_methods/ukr-poshta/invoice/mrkv-ua-shipping-ukr-poshta-invoice.php:672
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:808
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:823
+#: classes/shipping_methods/nova-poshta/invoice/mrkv-ua-shipping-nova-poshta-invoice.php:838
 msgid "pcs."
 msgstr "pcs."
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:124
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:78
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:145
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:82
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:149
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:181
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:404
 msgid "Phone"
 msgstr "Phone"
 
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout.php:92
+#: classes/settings/admin/mrkv-ua-shipping-admin-assets.php:82
+msgid "Please delete %d character(s)."
+msgstr "Please delete %d character(s)."
+
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout.php:93
+#: classes/settings/admin/mrkv-ua-shipping-admin-assets.php:83
+msgid "Please enter %d more character(s)."
+msgstr "Please enter %d more character(s)."
+
+#: classes/shipping_methods/nova-poshta/ajax/mrkv-ua-shipping-methods-ajax-nova.php:326
 #: classes/shipping_methods/nova-poshta/checkout/mrkv-ua-shipping-checkout.php:43
 msgid "Please enter warehouse number"
 msgstr "Please enter warehouse number"
@@ -1731,22 +1977,21 @@ msgstr "Poltava"
 msgid "Poltava, Poltava district"
 msgstr "Poltava, Poltava district"
 
-#: constants-mrkv-ua-shipping-methods.php:111
-#: constants-mrkv-ua-shipping-methods.php:120
+#: constants-mrkv-ua-shipping-methods.php:127
+#: constants-mrkv-ua-shipping-methods.php:136
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:111
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:120
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:76
 msgid "Poshtomat"
 msgstr "Poshtomat"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:665
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:423
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:703
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:818
 msgid "Position of middlename in Checkout"
 msgstr "Position of middlename in Checkout"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:627
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:665
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:22
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:385
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:780
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:132
 msgid "Position of plugin fields in Checkout"
 msgstr "Position of plugin fields in Checkout"
@@ -1755,8 +2000,9 @@ msgstr "Position of plugin fields in Checkout"
 msgid "Post-it note (100mm x 100mm)"
 msgstr "Post-it note (100mm x 100mm)"
 
-#: constants-mrkv-ua-shipping-methods.php:511
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:511
+#: constants-mrkv-ua-shipping-methods.php:605
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:248
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:597
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:131
 msgid "Postal code"
 msgstr "Postal code"
@@ -1770,15 +2016,15 @@ msgstr "Prepayment"
 msgid "Print"
 msgstr "Print"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:202
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:203
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:216
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:216
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:217
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:225
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:225
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:212
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:213
 #: classes/woocommerce/mrkv-ua-shipping-woo-order.php:226
-#: templates/orders/mrkv-ua-ship-popup.php:91
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:226
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:227
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:235
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:235
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:236
+#: templates/orders/mrkv-ua-ship-popup.php:99
 #: templates/settings/methods/invoices/mrkv-ua-shipping-ukr-poshta.php:24
 #: templates/settings/methods/invoices/mrkv-ua-shipping-ukr-poshta.php:24
 #: templates/settings/methods/invoices/mrkv-ua-shipping-nova-poshta.php:23
@@ -1786,9 +2032,9 @@ msgstr "Print"
 msgid "Print invoice"
 msgstr "Print invoice"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:206
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:207
-#: templates/orders/mrkv-ua-ship-popup.php:92
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:216
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:217
+#: templates/orders/mrkv-ua-ship-popup.php:100
 #: templates/settings/methods/invoices/mrkv-ua-shipping-nova-poshta.php:27
 #: templates/settings/methods/invoices/mrkv-ua-shipping-nova-poshta.php:27
 #: templates/settings/methods/invoices/mrkv-ua-shipping-nova-poshta.php:28
@@ -1799,12 +2045,20 @@ msgstr "Print sticker"
 msgid "PROD_COUNTERPARTY TOKEN"
 msgstr "PROD_COUNTERPARTY TOKEN"
 
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:204
+msgid "Product classes"
+msgstr "Product classes"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:371
+msgid "Production"
+msgstr "Production"
+
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:11
 msgid "PRODUCTION BEARER eCom"
 msgstr "PRODUCTION BEARER eCom"
 
-#: classes/shipping_methods/ukr-poshta/api/mrkv-ua-shipping-api-ukr-poshta.php:211
-#: classes/shipping_methods/ukr-poshta/api/mrkv-ua-shipping-api-ukr-poshta.php:247
+#: classes/shipping_methods/ukr-poshta/api/mrkv-ua-shipping-api-ukr-poshta.php:218
+#: classes/shipping_methods/ukr-poshta/api/mrkv-ua-shipping-api-ukr-poshta.php:254
 msgid "PRODUCTION BEARER eCom incorrect"
 msgstr "PRODUCTION BEARER eCom incorrect"
 
@@ -1813,31 +2067,42 @@ msgid "PRODUCTION BEARER StatusTracking"
 msgstr "PRODUCTION BEARER StatusTracking"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:327
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:289
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:356
 msgid "Quantity of goods"
 msgstr "Quantity of goods"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:92
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:168
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:113
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:113
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:189
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:170
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:117
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:117
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:193
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:198
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:211
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:422
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:435
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:143
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:156
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:410
 msgid "Recipient"
 msgstr "Recipient"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:93
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:114
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:118
 msgid "Recipient's data"
 msgstr "Recipient's data"
 
-#: constants-mrkv-ua-shipping-methods.php:519
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:519
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:639
+msgid "Recipient's refusal to receive"
+msgstr "Recipient's refusal to receive"
+
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:254
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:275
+msgid "Reduce the number of characters."
+msgstr "Reduce the number of characters."
+
+#: constants-mrkv-ua-shipping-methods.php:613
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:256
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:605
 msgid "Region"
 msgstr "Region"
 
@@ -1846,13 +2111,17 @@ msgstr "Region"
 msgid "Remove"
 msgstr "Remove"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:639
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:397
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout.php:98
+#: classes/settings/admin/mrkv-ua-shipping-admin-assets.php:88
+msgid "Remove all items"
+msgstr "Remove all items"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:792
 msgid "Remove the patronymic field from the checkout page"
 msgstr "Remove the patronymic field from the checkout page"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:234
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:235
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:244
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:245
 #: templates/settings/methods/invoices/mrkv-ua-shipping-ukr-poshta.php:28
 #: templates/settings/methods/invoices/mrkv-ua-shipping-ukr-poshta.php:28
 #: templates/settings/methods/invoices/mrkv-ua-shipping-nova-poshta.php:37
@@ -1860,15 +2129,11 @@ msgstr "Remove the patronymic field from the checkout page"
 msgid "Remove ttn"
 msgstr "Remove ttn"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:292
-msgid ""
-"Return the shipment after the expiration of the free storage period (5 "
-"working days)"
-msgstr ""
-"Return the shipment after the expiration of the free storage period (5 "
-"working days)"
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:723
+msgid "Request frequency (minutes)"
+msgstr "Request frequency (minutes)"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:291
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:295
 msgid "Return to the sender in 14 calendar days"
 msgstr "Return to the sender in 14 calendar days"
 
@@ -1882,8 +2147,8 @@ msgstr "Rivne"
 msgid "Rivne, Rivne district"
 msgstr "Rivne, Rivne district"
 
-#: constants-mrkv-ua-shipping-methods.php:377
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:377
+#: constants-mrkv-ua-shipping-methods.php:504
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:463
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:21
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:66
 msgid "Rozetka Delivery"
@@ -1892,6 +2157,10 @@ msgstr "Rozetka Delivery"
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:70
 msgid "SAND_COUNTERPARTY TOKEN"
 msgstr "SAND_COUNTERPARTY TOKEN"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:372
+msgid "Sandbox"
+msgstr "Sandbox"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:52
 msgid "SANDBOX BEARER eCom"
@@ -1906,18 +2175,18 @@ msgstr "SANDBOX BEARER StatusTracking"
 msgid "Save"
 msgstr "Save"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:673
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:711
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:32
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:431
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:826
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:142
 msgid "Save customer selected fields"
 msgstr "Save customer selected fields"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:328
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:338
 msgid "Save Field"
 msgstr "Save Field"
 
-#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:262
+#: classes/woocommerce/mrkv-ua-shipping-woo-order.php:272
 msgid "Save Invoice"
 msgstr "Save Invoice"
 
@@ -1930,23 +2199,53 @@ msgstr "Save Invoice"
 msgid "Search"
 msgstr "Search"
 
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout.php:97
+#: classes/settings/admin/mrkv-ua-shipping-admin-assets.php:87
+msgid "Searching..."
+msgstr "Searching..."
+
+#: classes/shipping_methods/nova-poshta/product/mrkv-ua-shipping-product.php:61
+msgid "Select Document Weight"
+msgstr "Select Document Weight"
+
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:147
 msgid "Select Sender represents to continue filling in the data"
 msgstr "Select Sender represents to continue filling in the data"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:663
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:421
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:701
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:816
 msgid "Select the middlename field position on the checkout page"
 msgstr "Select the middlename field position on the checkout page"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:625
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:701
+msgid "Select the order status for which the bill of lading will be checked"
+msgstr "Select the order status for which the bill of lading will be checked"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:663
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:20
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:383
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:778
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:130
 msgid "Select the position of the delivery method fields on the checkout page"
 msgstr "Select the position of the delivery method fields on the checkout page"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:313
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:684
+msgid "Select the type of crown that you will use to update order statuses"
+msgstr "Select the type of crown that you will use to update order statuses"
+
+#: classes/shipping_methods/nova-poshta/product/mrkv-ua-shipping-product.php:41
+msgid "Select the type of tire for this product."
+msgstr "Select the type of tire for this product."
+
+#: classes/shipping_methods/nova-poshta/product/mrkv-ua-shipping-product.php:68
+msgid "Select the weight of document for this product."
+msgstr "Select the weight of document for this product."
+
+#: classes/shipping_methods/nova-poshta/product/mrkv-ua-shipping-product.php:34
+msgid "Select Tire Type"
+msgstr "Select Tire Type"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:613
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:539
 msgid "Send automatically"
 msgstr "Send automatically"
 
@@ -1956,10 +2255,10 @@ msgid "Send email"
 msgstr "Send email"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:9
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:169
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:171
 #: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:9
 #: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:9
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:190
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:194
 #: classes/shipping_methods/nova-poshta/settings/mrkv-ua-shipping-settings-nova-poshta.php:65
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:199
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:212
@@ -1968,6 +2267,7 @@ msgstr "Send email"
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:33
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:144
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:157
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:411
 msgid "Sender"
 msgstr "Sender"
 
@@ -1980,9 +2280,13 @@ msgstr "Sender address"
 msgid "Sender contact person"
 msgstr "Sender contact person"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:68
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:72
 msgid "Sender Data Incorrect"
 msgstr "Sender Data Incorrect"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:431
+msgid "Sender division"
+msgstr "Sender division"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:37
 msgid "Sender list empty"
@@ -1992,7 +2296,7 @@ msgstr "Sender list empty"
 msgid "Sender list loaded"
 msgstr "Sender list loaded"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:83
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:87
 msgid "Sender Phone Incorrect"
 msgstr "Sender Phone Incorrect"
 
@@ -2006,6 +2310,7 @@ msgstr "Sender Settings"
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:81
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:337
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:400
 msgid "Sender settings"
 msgstr "Sender settings"
 
@@ -2022,6 +2327,18 @@ msgstr "Sending from a branch"
 msgid "Sending from the address"
 msgstr "Sending from the address"
 
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:680
+msgid "Server Cron"
+msgstr "Server Cron"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:690
+msgid "Server Cron URL"
+msgstr "Server Cron URL"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:588
+msgid "Set up a cron task to change order statuses by TTN status"
+msgstr "Set up a cron task to change order statuses by TTN status"
+
 #: templates/elements/template-mrkv-ua-shipping-tabs.php:7
 #: templates/elements/template-mrkv-ua-shipping-links.php:7
 msgid "Settings"
@@ -2030,6 +2347,7 @@ msgstr "Settings"
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:218
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:442
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:171
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:444
 msgid "Shipment"
 msgstr "Shipment"
 
@@ -2042,7 +2360,6 @@ msgid "Shipping methods"
 msgstr "Shipping methods"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:69
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:81
 msgid "Shipping type"
 msgstr "Shipping type"
 
@@ -2058,7 +2375,7 @@ msgstr "SMS notification upon arrival"
 msgid "Specify the sender's address from which the goods will be sent"
 msgstr "Specify the sender's address from which the goods will be sent"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:175
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:179
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:77
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:77
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:228
@@ -2074,12 +2391,13 @@ msgstr "Statistics of shipments"
 msgid "Sticker format"
 msgstr "Sticker format"
 
-#: constants-mrkv-ua-shipping-methods.php:176
-#: constants-mrkv-ua-shipping-methods.php:337
-#: constants-mrkv-ua-shipping-methods.php:535
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:176
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:337
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:535
+#: constants-mrkv-ua-shipping-methods.php:201
+#: constants-mrkv-ua-shipping-methods.php:464
+#: constants-mrkv-ua-shipping-methods.php:629
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:177
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:272
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:423
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:621
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:373
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:106
 msgid "Street"
@@ -2117,10 +2435,11 @@ msgid "Test mode"
 msgstr "Test mode"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:114
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:126
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:110
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:117
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:97
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-inter-address.php:110
+#: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-international.php:110
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-address.php:97
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta-poshtamat.php:97
 #: classes/shipping_methods/nova-poshta/woocommerce/mrkv-ua-shipping-method-nova-poshta.php:97
@@ -2171,7 +2490,11 @@ msgstr ""
 msgid "The index consists of five numbers"
 msgstr "The index consists of five numbers"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:648
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:628
+msgid "The money transfer is issued to the recipient"
+msgstr "The money transfer is issued to the recipient"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:686
 msgid ""
 "The patronymic is required if the sender is an individual. For sole "
 "proprietors and LLCs, this field is not required when creating a waybill."
@@ -2183,9 +2506,25 @@ msgstr ""
 msgid "The sender represents"
 msgstr "The sender represents"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:229
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:606
+msgid "The shipment has been received"
+msgstr "The shipment has been received"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:661
+msgid "The shipment is sent to.."
+msgstr "The shipment is sent to.."
+
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:231
 msgid "The total weight of the shipment"
 msgstr "The total weight of the shipment"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:617
+msgid ""
+"The transfer has been received. Within a day you will receive an SMS message "
+"about the receipt of the money transfer."
+msgstr ""
+"The transfer has been received. Within a day you will receive an SMS message "
+"about the receipt of the money transfer."
 
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:492
 msgid ""
@@ -2216,7 +2555,8 @@ msgstr ""
 "There are currently no settings. The delivery method works without entering "
 "API keys."
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:255
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:322
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:517
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:113
 msgid ""
 "These standard weight and dimensions apply when products do not have ones of "
@@ -2226,7 +2566,6 @@ msgstr ""
 "their own"
 
 #: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global-address.php:63
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:63
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:66
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:66
 #: classes/shipping_methods/rozetka-delivery/woocommerce/mrkv-ua-shipping-method-rozetka-delivery.php:63
@@ -2240,15 +2579,29 @@ msgstr "This controls the title which the user sees during checkout"
 msgid "this video"
 msgstr "this video"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:682
+#: classes/shipping_methods/nova-poshta/product/mrkv-ua-shipping-product.php:32
+msgid "Tire Type"
+msgstr "Tire Type"
+
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:157
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:182
+msgid "Tires"
+msgstr "Tires"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:242
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:457
+msgid "TiresWheels"
+msgstr "TiresWheels"
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:720
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-rozetka-delivery.php:43
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:440
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:835
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:153
 msgid "To keep an error log, enable it in the settings"
 msgstr "To keep an error log, enable it in the settings"
 
-#: classes/shipping_methods/ukr-poshta/api/mrkv-ua-shipping-api-ukr-poshta.php:217
-#: classes/shipping_methods/ukr-poshta/api/mrkv-ua-shipping-api-ukr-poshta.php:253
+#: classes/shipping_methods/ukr-poshta/api/mrkv-ua-shipping-api-ukr-poshta.php:224
+#: classes/shipping_methods/ukr-poshta/api/mrkv-ua-shipping-api-ukr-poshta.php:260
 msgid "Token incorrect"
 msgstr "Token incorrect"
 
@@ -2260,8 +2613,12 @@ msgstr "Total invoices"
 msgid "Track a Banderole?"
 msgstr "Track a Banderole?"
 
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:598
+msgid "Tracking status of Nova Poshta"
+msgstr "Tracking status of Nova Poshta"
+
 #: templates/orders/mrkv-ua-ship-popup.php:70
-#: templates/orders/mrkv-ua-ship-popup.php:90
+#: templates/orders/mrkv-ua-ship-popup.php:98
 msgid "Turn back"
 msgstr "Turn back"
 
@@ -2269,7 +2626,7 @@ msgstr "Turn back"
 msgid "Turn on if you need to track a Banderole in international delivery"
 msgstr "Turn on if you need to track a Banderole in international delivery"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:177
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:450
 msgid "Type"
 msgstr "Type"
 
@@ -2278,7 +2635,7 @@ msgid "Type of international shipment"
 msgstr "Type of international shipment"
 
 #: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:149
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:170
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:174
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta.php:72
 #: classes/shipping_methods/ukr-poshta/woocommerce/mrkv-ua-shipping-method-ukr-poshta-address.php:72
 msgid "Type of shipment"
@@ -2288,8 +2645,8 @@ msgstr "Type of shipment"
 msgid "Type of shipment (Default value)"
 msgstr "Type of shipment (Default value)"
 
-#: constants-mrkv-ua-shipping-methods.php:212
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:212
+#: constants-mrkv-ua-shipping-methods.php:322
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:298
 msgid "UkrPoshta"
 msgstr "UkrPoshta"
 
@@ -2303,12 +2660,20 @@ msgstr "UkrPoshta Address"
 msgid "UkrPoshta Warehouse"
 msgstr "UkrPoshta Warehouse"
 
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:650
+msgid ""
+"Unsuccessful delivery attempt due to the Recipient's absence at the address "
+"or lack of communication with him/her"
+msgstr ""
+"Unsuccessful delivery attempt due to the Recipient's absence at the address "
+"or lack of communication with him/her"
+
 #: templates/settings/methods/invoices/mrkv-ua-shipping-sidebar.php:13
 msgid "Update now"
 msgstr "Update now"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:262
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:281
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:264
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:285
 msgid "Use additional services as needed"
 msgstr "Use additional services as needed"
 
@@ -2340,6 +2705,10 @@ msgstr ""
 "Values of shortcodes that are added to the end of the text field when the "
 "buttons are pressed"
 
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:743
+msgid "Verification period (days)"
+msgstr "Verification period (days)"
+
 #: classes/shipping_methods/rozetka-delivery/checkout/mrkv-ua-shipping-checkout.php:3
 #: classes/shipping_methods/nova-poshta/checkout/mrkv-ua-shipping-checkout.php:51
 #: classes/shipping_methods/nova-poshta/checkout/mrkv-ua-shipping-checkout.php:51
@@ -2350,21 +2719,24 @@ msgstr "Vinnytsia"
 msgid "Vinnytsia, Vinnytsia district"
 msgstr "Vinnytsia, Vinnytsia district"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:253
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:320
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:515
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:111
 msgid "Volumetric weight"
 msgstr "Volumetric weight"
 
-#: constants-mrkv-ua-shipping-methods.php:273
-#: constants-mrkv-ua-shipping-methods.php:281
-#: constants-mrkv-ua-shipping-methods.php:435
-#: constants-mrkv-ua-shipping-methods.php:443
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:273
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:281
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:435
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:443
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:470
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:478
+#: constants-mrkv-ua-shipping-methods.php:242
+#: constants-mrkv-ua-shipping-methods.php:392
+#: constants-mrkv-ua-shipping-methods.php:400
+#: constants-mrkv-ua-shipping-methods.php:570
+#: constants-mrkv-ua-shipping-methods.php:578
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:218
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:359
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:367
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:521
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:529
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:556
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:564
 #: classes/shipping_methods/nova-poshta/checkout/mrkv-ua-shipping-checkout.php:16
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:90
 msgid "Warehouse"
@@ -2374,42 +2746,51 @@ msgstr "Warehouse"
 msgid "Warehouse Ref Incorrect"
 msgstr "Warehouse Ref Incorrect"
 
-#: classes/shipping_methods/nova-global/woocommerce/mrkv-ua-shipping-method-nova-global.php:69
-msgid "Warehouse type"
-msgstr "Warehouse type"
-
-#: constants-mrkv-ua-shipping-methods.php:59
-#: constants-mrkv-ua-shipping-methods.php:68
+#: constants-mrkv-ua-shipping-methods.php:67
+#: constants-mrkv-ua-shipping-methods.php:76
+#: constants-mrkv-ua-shipping-methods.php:253
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:59
 #: classes/shipping_methods/mrkv_ua_shipping_translate.php:68
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:229
 msgid "Warehouse/poshtomat"
 msgstr "Warehouse/poshtomat"
 
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:200
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:204
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:240
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:476
 msgid "Weight of the shipment, g"
 msgstr "Weight of the shipment, g"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:179
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:181
 msgid "Weight of the shipment, kg"
 msgstr "Weight of the shipment, kg"
 
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:205
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:272
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:467
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:63
 msgid "Weight, kg"
 msgstr "Weight, kg"
 
-#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:205
-#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:226
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:207
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:230
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-ukr-poshta.php:263
-#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:228
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:295
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:490
 #: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-global.php:86
 msgid "Width"
 msgstr "Width"
 
-#: constants-mrkv-ua-shipping-methods.php:213
-#: classes/shipping_methods/mrkv_ua_shipping_translate.php:213
+#: templates/orders/mrkv-ua-ship-popup-nova-poshta.php:254
+#: templates/orders/mrkv-ua-ship-popup-ukr-poshta.php:275
+msgid "Within acceptable limits."
+msgstr "Within acceptable limits."
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:601
+msgid "WooCommerce order status"
+msgstr "WooCommerce order status"
+
+#: constants-mrkv-ua-shipping-methods.php:323
+#: classes/shipping_methods/mrkv_ua_shipping_translate.php:299
 msgid ""
 "Works with both domestic and international shipments. Add shipping method, "
 "calculate shipping costs, create and manage shipments, both manually and "
@@ -2418,6 +2799,15 @@ msgstr ""
 "Works with both domestic and international shipments. Add shipping method, "
 "calculate shipping costs, create and manage shipments, both manually and "
 "automatically. Get 10% off when creating shipments with our plugin."
+
+#: templates/settings/methods/shipping_fields/mrkv-ua-shipping-nova-poshta.php:679
+msgid "WP Cron"
+msgstr "WP Cron"
+
+#: classes/shipping_methods/mrkv-ua-shipping-methods-checkout.php:95
+#: classes/settings/admin/mrkv-ua-shipping-admin-assets.php:85
+msgid "You can only select %d item(s)."
+msgstr "You can only select %d item(s)."
 
 #: classes/settings/admin/mrkv-ua-shipping-notification.php:64
 msgid ""

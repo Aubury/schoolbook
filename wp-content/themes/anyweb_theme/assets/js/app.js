@@ -1,8 +1,7 @@
 var btn = $('#bcktotop');
 
 
-
-$(window).scroll(function() {
+ $(window).scroll(function() {
 
   if ($(window).scrollTop() > 300) {
 
@@ -149,8 +148,30 @@ if (typeof first_lid_grab_time == 'undefined') {
 // 	    theme: 'light-3'
 // 	});
 
+function position_pagination_text () {
+    var pagination_text = $('.pagination-text');
+    var slick_dots = $('.slick-dots');
+
+    if (slick_dots) {
+        var li_array = $('.slick-dots li');
+        var position = li_array[0].offsetLeft;
+        var next_pos = position - 200;
+
+        pagination_text.css('left', next_pos + 'px');
+    }
+}
+
+function videonews_border_none() {
+	console.log('click');
+	$('.videonews').css('border', 'none');
+}
 
 $(document).ready(function () {
+
+
+    $(document).ready(function() {
+        setTimeout(position_pagination_text, 100);
+    });
 
 	$('.books-button').on('click', function() {
 		if($(this).parents('.books-menu').hasClass('opened')) {
@@ -159,8 +180,7 @@ $(document).ready(function () {
 			$(this).parents('.books-menu').addClass('opened');
 		}
 	});
-
-
+	
    $(function() {
         $('.show_sitemap').click(function(event) {
 			if ( $(this).hasClass('fa-plus-circle') ) {
@@ -595,10 +615,11 @@ $(document).on('click', '.bx-searchtitle button', function(e) {
 	if($(this).parents('.bx-searchtitle').hasClass('opened')) {
 		$(this).parents('.bx-searchtitle').removeClass('opened');
 		$('.bx-video').removeClass('hiddenVideo');
-		
+		$('.videonews').css('border', 'dashed 2.5px white');
 	} else {
 		$(this).parents('.bx-searchtitle').addClass('opened');
 		$('.bx-video').addClass('hiddenVideo');
+		$('.videonews').css('border', 'none');
 		
 
 			if($(this).parents(".header-top-r").find(".bx-basket.bx-opener").hasClass("opened-basket")){
@@ -1265,3 +1286,45 @@ lightbox.addFilter('itemData', (itemData, index) => {
 
 
 lightbox.init();
+
+
+/////////////////////////////////
+function checkDelivery() {
+    const deliveryMethods = document.getElementsByName('delivery');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const warningMsg = document.getElementById('warning-msg');
+    const addressInput = document.getElementById('user-address');
+    const addressDetails = document.getElementById('address-details');
+
+    let isMethodSelected = false;
+    let selectedValue = "";
+
+    // 1. Проверяем, выбран ли хоть один Radio Button
+    for (const method of deliveryMethods) {
+        if (method.checked) {
+            isMethodSelected = true;
+            selectedValue = method.value;
+            break;
+        }
+    }
+
+    // Показываем поле ввода адреса, если метод выбран
+    if (isMethodSelected) {
+        addressDetails.style.display = "block";
+    }
+
+    // 2. Условие разблокировки: выбран метод И введен адрес (текст)
+    if (isMethodSelected && addressInput.value.length > 3) {
+        checkoutBtn.disabled = false;
+        checkoutBtn.style.backgroundColor = "#ff5722"; // Оранжевый как на скрине
+        checkoutBtn.style.cursor = "pointer";
+        warningMsg.style.display = "none";
+    } else {
+        // Если что-то не заполнено — блокируем обратно
+        checkoutBtn.disabled = true;
+        checkoutBtn.style.backgroundColor = "grey";
+        checkoutBtn.style.cursor = "not-allowed";
+        warningMsg.style.display = "block";
+    }
+}
+

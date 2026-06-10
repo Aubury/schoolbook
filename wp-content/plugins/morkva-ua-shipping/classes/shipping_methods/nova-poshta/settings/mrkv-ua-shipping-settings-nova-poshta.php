@@ -64,6 +64,7 @@ if (!class_exists('MRKV_UA_SHIPPING_SETTINGS_NOVA_POSHTA'))
 				'basic_settings' => __('Basic', 'mrkv-ua-shipping'),
 				'sender_settings' => __('Sender', 'mrkv-ua-shipping'),
 				'default_settings' => __('Default values', 'mrkv-ua-shipping'),
+				'international_settings' => __('International', 'mrkv-ua-shipping'),
 				'email_settings' => __('Email', 'mrkv-ua-shipping'),
 				'automation_settings' => __('Automation', 'mrkv-ua-shipping'),
 				'checkout_settings' => __('Checkout', 'mrkv-ua-shipping'),

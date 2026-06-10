@@ -36,7 +36,7 @@ get_header();
 					</div>
 
 					<div class="pagination-text">
-						<div class="text">Рухай бджілку <br>та відкривай нове</div>
+						<div class="text">Тисни на цифри - <br>гортай сторінки</div>
 						<i class="icon-arrow"></i>
 					</div>
 				</div>

@@ -41,7 +41,10 @@ Container::make("post_meta", "Слайдер")
     
     ->add_fields( array(
         
-        Field::make( 'complex', 'first_slider', 'максимум 5шт' )->set_layout( 'tabbed-horizontal' )->set_max( 5 )->set_width( 80 )
+        Field::make( 'complex', 'first_slider', 'максимум 5шт' )
+          ->set_layout( 'tabbed-horizontal' )
+          ->set_max( 10 )
+          ->set_width( 80 )
         ->add_fields( array(
         Field::make( 'image', 'img', __(' изображение' ))->set_width( 10 ),
         Field::make( 'text', 'link', __( ' Ссылка блока' ))->set_width( 10 ),
@@ -303,4 +306,3 @@ Container::make("post_meta", "Заголовок cторінки")
 //     Field::make( 'text', 'contact_form', __( ' contact form 7 shortcode' ))->set_width(100 ),
 
 // ) );
-

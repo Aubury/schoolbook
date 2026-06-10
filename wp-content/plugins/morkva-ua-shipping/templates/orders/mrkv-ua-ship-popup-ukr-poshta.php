@@ -20,6 +20,8 @@
 						$fullname = '';
 						$middlename = '';
 						$phone = '';
+						$lastname = '';
+						$name = '';
 
 						if($sender_type == 'INDIVIDUAL')
 						{
@@ -270,7 +272,7 @@
 	<div class="admin_ua_ship_morkva_settings_line">
 		<?php
 			$data = isset($mrk_ua_ship_ukr_settings['shipment']['description']) ? $mrk_ua_ship_ukr_settings['shipment']['description'] : '';
-			$description = __('Maximum number of characters:', 'mrkv-ua-shipping') . ' 100';
+			$description = __('Maximum number of characters:', 'mrkv-ua-shipping') . ' 100' . '<div class="mrkv-ua-shipping-desc-validation" data-success="' . __('Within acceptable limits.', 'mrkv-ua-shipping') . '" data-error="' . __('Reduce the number of characters.', 'mrkv-ua-shipping') . '">' . __('Number of symbols:', 'mrkv-ua-shipping') . ' <span class="mrkv-ua-ship-cout-symb"></span>. <span class="mrkv-ua-ship-message-symb"></span>' . '</div>';
 
 			echo $mrkv_global_option_generator->get_textarea(__('Description of the shipment', 'mrkv-ua-shipping'), 'mrkv_ua_ship_invoice_shipment_description', $data, $shipping_slug_option . 'mrkv_ua_ship_invoice_shipment_description' , '', __('For example, products for children...', 'mrkv-ua-shipping'), $description);
 		?>
@@ -289,10 +291,10 @@
 				</label>
 				<div class="admin_ua_ship_morkva_settings_row admin_ua_ship_morkva_settings_row-col">
 					<?php
-						$data = 'RETURN_AFTER_7_DAYS';
+						$data = 'RETURN';
 						echo $mrkv_global_option_generator->get_input_radio(__('Return to the sender in 14 calendar days', 'mrkv-ua-shipping'), 'mrkv_ua_ship_invoice_return', 'RETURN', $data, $shipping_slug_option . '_mrkv_ua_ship_invoice_return_return', 'RETURN_AFTER_7_DAYS');
-						echo $mrkv_global_option_generator->get_input_radio(__('Return the shipment after the expiration of the free storage period (5 working days)', 'mrkv-ua-shipping'), 'mrkv_ua_ship_invoice_return', 'RETURN_AFTER_7_DAYS', $data, $shipping_slug_option . '_mrkv_ua_ship_invoice_return_seven', 'RETURN_AFTER_7_DAYS');
-						echo $mrkv_global_option_generator->get_input_radio(__('Destroy the shipment', 'mrkv-ua-shipping'), 'mrkv_ua_ship_invoice_return', 'PROCESS_AS_REFUSAL', $data, $shipping_slug_option . '_mrkv_ua_ship_invoice_return_process', 'RETURN_AFTER_7_DAYS');
+						/*echo $mrkv_global_option_generator->get_input_radio(__('Return the shipment after the expiration of the free storage period (5 working days)', 'mrkv-ua-shipping'), 'mrkv_ua_ship_invoice_return', 'RETURN_AFTER_7_DAYS', $data, $shipping_slug_option . '_mrkv_ua_ship_invoice_return_seven', 'RETURN_AFTER_7_DAYS');*/
+						echo $mrkv_global_option_generator->get_input_radio(__('Destroy the shipment', 'mrkv-ua-shipping') . ' ' . __('(this feature is only available if the sender pays for delivery)', 'mrkv-ua-shipping'), 'mrkv_ua_ship_invoice_return', 'PROCESS_AS_REFUSAL', $data, $shipping_slug_option . '_mrkv_ua_ship_invoice_return_process', 'RETURN');
 					?>
 				</div>
 			</div>
@@ -312,31 +314,34 @@
 
         $order = wc_get_order($order_id);
 
-        $mrkv_ua_ship_invoice = $order->get_meta('mrkv_ua_ship_invoice_number');
-
-        if($mrkv_ua_ship_invoice)
+        if($order)
         {
-        	$sticker_default = isset($mrk_ua_ship_ukr_settings['shipment']['sticker']) ? $mrk_ua_ship_ukr_settings['shipment']['sticker'] : '';
-        	$production_bearer_ecom = isset($mrk_ua_ship_ukr_settings['production_bearer_ecom']) ? $mrk_ua_ship_ukr_settings['production_bearer_ecom'] : '';
-        	$production_cp_token = isset($mrk_ua_ship_ukr_settings['production_cp_token']) ? $mrk_ua_ship_ukr_settings['production_cp_token'] : '';
-        	$sticker_default_inter = isset($mrk_ua_ship_ukr_settings['international']['sticker']) ? $mrk_ua_ship_ukr_settings['international']['sticker'] : '';
-        	?>
-        		<form class="form-ukr-poshta-ttn" action="<?php echo MRKV_UA_SHIPPING_PLUGIN_DIR . 'templates/orders/mrkv-ua-ship-ukr-poshta-pdf.php'; ?>" method="post" target="_blank" style="display: none;">
-					<input type="hidden" name="invoice_number" value="<?php echo $mrkv_ua_ship_invoice; ?>">
-					<input type="hidden" name="type" value="<?php echo $sticker_default; ?>">
-					<input type="hidden" name="bearer" value="<?php echo $production_bearer_ecom; ?>">
-					<input type="hidden" name="cp_token" value="<?php echo $production_cp_token; ?>">
-					<input type="submit">
-				</form>
-				<form class="form-ukr-poshta-ttn-international" action="<?php echo MRKV_UA_SHIPPING_PLUGIN_DIR . 'templates/orders/mrkv-ua-ship-ukr-poshta-pdf.php'; ?>" method="post" target="_blank" style="display: none;">
-					<input type="hidden" name="invoice_number" value="<?php echo $mrkv_ua_ship_invoice; ?>">
-					<input type="hidden" name="fs1" value="<?php echo $sticker_default_inter; ?>">
-					<input type="hidden" name="bearer" value="<?php echo $production_bearer_ecom; ?>">
-					<input type="hidden" name="cp_token" value="<?php echo $production_cp_token; ?>">
-					<input type="hidden" name="type" value="<?php echo $sticker_default; ?>">
-					<input type="submit">
-				</form>
-        	<?php
+        	$mrkv_ua_ship_invoice = $order->get_meta('mrkv_ua_ship_invoice_number');
+
+	        if($mrkv_ua_ship_invoice)
+	        {
+	        	$sticker_default = isset($mrk_ua_ship_ukr_settings['shipment']['sticker']) ? $mrk_ua_ship_ukr_settings['shipment']['sticker'] : '';
+	        	$production_bearer_ecom = isset($mrk_ua_ship_ukr_settings['production_bearer_ecom']) ? $mrk_ua_ship_ukr_settings['production_bearer_ecom'] : '';
+	        	$production_cp_token = isset($mrk_ua_ship_ukr_settings['production_cp_token']) ? $mrk_ua_ship_ukr_settings['production_cp_token'] : '';
+	        	$sticker_default_inter = isset($mrk_ua_ship_ukr_settings['international']['sticker']) ? $mrk_ua_ship_ukr_settings['international']['sticker'] : '';
+	        	?>
+	        		<form class="form-ukr-poshta-ttn" action="<?php echo MRKV_UA_SHIPPING_PLUGIN_DIR . 'templates/orders/mrkv-ua-ship-ukr-poshta-pdf.php'; ?>" method="post" target="_blank" style="display: none;">
+						<input type="hidden" name="invoice_number" value="<?php echo $mrkv_ua_ship_invoice; ?>">
+						<input type="hidden" name="type" value="<?php echo $sticker_default; ?>">
+						<input type="hidden" name="bearer" value="<?php echo $production_bearer_ecom; ?>">
+						<input type="hidden" name="cp_token" value="<?php echo $production_cp_token; ?>">
+						<input type="submit">
+					</form>
+					<form class="form-ukr-poshta-ttn-international" action="<?php echo MRKV_UA_SHIPPING_PLUGIN_DIR . 'templates/orders/mrkv-ua-ship-ukr-poshta-pdf.php'; ?>" method="post" target="_blank" style="display: none;">
+						<input type="hidden" name="invoice_number" value="<?php echo $mrkv_ua_ship_invoice; ?>">
+						<input type="hidden" name="fs1" value="<?php echo $sticker_default_inter; ?>">
+						<input type="hidden" name="bearer" value="<?php echo $production_bearer_ecom; ?>">
+						<input type="hidden" name="cp_token" value="<?php echo $production_cp_token; ?>">
+						<input type="hidden" name="type" value="<?php echo $sticker_default; ?>">
+						<input type="submit">
+					</form>
+	        	<?php
+	        }
         }
     }
 ?>

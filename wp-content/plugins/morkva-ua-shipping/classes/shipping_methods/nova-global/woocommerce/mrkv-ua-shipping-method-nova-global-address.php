@@ -32,10 +32,10 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_GLOBAL_ADDRESS'))
 
             # Get setting values
             $this->title = $this->get_option( 'title' );
-            $this->enabled = true;
-
-            # Set enabled
-            $this->enabled = $this->get_option( 'enabled' );
+            $this->enabled = $this->get_option('enabled');
+            if (empty($this->enabled)) {
+                $this->enabled = 'yes';
+            }
         }
 
         /**
@@ -213,7 +213,7 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_GLOBAL_ADDRESS'))
                     if(isset(MRKV_UA_SHIPPING_GLOBAL_EXCLUDE[$country]['costs'][$shipping_type]))
                     {
                         $price_range = MRKV_UA_SHIPPING_GLOBAL_EXCLUDE[$country]['costs'][$shipping_type];
-                        $new_cost = $this->getShippingCost($weight, $price_range);
+                        $new_cost = intval($this->getShippingCost($weight, $price_range));
                     }
                 }
                 else
@@ -223,7 +223,7 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_GLOBAL_ADDRESS'))
                     if($zoneId)
                     {
                         $price_range = MRKV_UA_SHIPPING_GLOBAL_SHIPPING_ZONE[$zoneId]['costs'][$shipping_type];
-                        $new_cost = $this->getShippingCost($weight, $price_range);
+                        $new_cost = intval($this->getShippingCost($weight, $price_range));
                     }
                 }
 
@@ -232,12 +232,12 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_GLOBAL_ADDRESS'))
                     if($weight > 30)
                     {
                         $range = ceil($weight / 100);
-                        $new_cost += $range * MRKV_UA_SHIPPING_GLOBAL_ADDRESS['costs']['30+'];
+                        $new_cost += $range * intval(MRKV_UA_SHIPPING_GLOBAL_ADDRESS['costs']['30+']);
 
                     }
                     else
                     {
-                        $new_cost += MRKV_UA_SHIPPING_GLOBAL_ADDRESS['costs']['30'];
+                        $new_cost += intval(MRKV_UA_SHIPPING_GLOBAL_ADDRESS['costs']['30']);
                     }
                 }
 

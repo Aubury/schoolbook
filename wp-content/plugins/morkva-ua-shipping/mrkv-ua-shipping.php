@@ -3,11 +3,11 @@
  * Plugin Name: Morkva UA Shipping
  * Plugin URI: https://morkva.co.ua/product-category/plugins/
  * Description: 2-in-1: Nova Poshta and Ukrposhta delivery services. Create shipping methods and shipments easily
- * Version: 1.6.2
+ * Version: 1.8.3
  * Author: MORKVA
  * Text Domain: mrkv-ua-shipping
  * Domain Path: /i18n/
- * Tested up to: 6.8
+ * Tested up to: 6.9
  * Requires at least: 5.0
  * WC requires at least: 3.8
  * WC tested up to: 10.0

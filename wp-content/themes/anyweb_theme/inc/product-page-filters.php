@@ -186,7 +186,7 @@ function get_cookie_products_filters () {
 
     if ($raw === null || $raw === '') {
         // Для отладки можно посмотреть, что реально приходит в PHP
-        error_log('products_filters cookie is missing. $_COOKIE keys: ' . implode(', ', array_keys($_COOKIE)));
+        //error_log('products_filters cookie is missing. $_COOKIE keys: ' . implode(', ', array_keys($_COOKIE)));
         $products_filters = null;
     } else {
         // 2) Разкодируем URL-процентную запись (%7B...%7D -> {...})
@@ -535,12 +535,14 @@ function ss_woocommerce_wrapper_before(){
                       <div class="sorting">
                         <span class="sorting-title">Сортувати за:</span>
                         <ul class="sorting-list">
-                          <li class="label-container">
-                            <label for="popularity">
-                               <span>популярністю</span>
+						
+                         <li class="label-container active">
+                            <label for="news">
+                               <span>новинками</span>
                               </a>
                             </label>
                           </li>
+
                           <li class="label-container">
                             <label for="price_down">
                                <span>ціною</span>
@@ -548,6 +550,7 @@ function ss_woocommerce_wrapper_before(){
                               </a>
                             </label>
                           </li>
+                          
                           <li class="label-container">
                             <label for="price_up">
                                <span>ціною</span>
@@ -555,12 +558,7 @@ function ss_woocommerce_wrapper_before(){
                               </a>
                             </label>
                           </li>
-                          <li class="label-container active">
-                            <label for="news">
-                               <span>новинками</span>
-                              </a>
-                            </label>
-                          </li>
+						  
                         </ul>
                       </div>
                     </div>
@@ -825,7 +823,3 @@ add_filter('woocommerce_shortcode_products_query', function(array $args, $atts) 
 
     return $args;
 }, 10, 2);
-
-
-
-

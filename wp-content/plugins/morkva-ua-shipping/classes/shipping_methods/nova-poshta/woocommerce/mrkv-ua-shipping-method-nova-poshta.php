@@ -32,10 +32,10 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA'))
 
             # Get setting values
             $this->title = $this->get_option( 'title' );
-            $this->enabled = true;
-
-            # Set enabled
-            $this->enabled = $this->get_option( 'enabled' );
+            $this->enabled = $this->get_option('enabled');
+            if (empty($this->enabled)) {
+                $this->enabled = 'yes';
+            }
         }
 
         /**

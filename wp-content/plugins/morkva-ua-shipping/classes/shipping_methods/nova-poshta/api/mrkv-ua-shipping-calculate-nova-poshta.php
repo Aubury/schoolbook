@@ -59,5 +59,36 @@ if (!class_exists('MRKV_UA_SHIPPING_CALCULATE_NOVA_POSHTA'))
 	        	return '';
 	        }
 	    }
+
+	    public function get_tiregroup_list()
+	    {
+	    	# Set arguments
+	        $args = array(
+	            "apiKey" => $this->nova_poshta_api->get_api_key(),
+	            "modelName" => "CommonGeneral",
+	            "calledMethod" => "getTiresWheelsList",
+	            "methodProperties" => null,
+	        );
+
+	        # Send request
+	        $obj = $this->nova_poshta_api->send_post_request( $args );
+
+	        if(isset($obj['data']))
+	        {
+	        	$tires = [];
+
+	        	foreach($obj['data'] as $tire)
+	        	{
+	        		$tires[$tire['Ref']] = $tire['Description'];
+	        	}
+
+	        	# Return object
+	        	return $tires;
+	        }
+	        else
+	        {
+	        	return [];
+	        }
+	    }
 	}
 }

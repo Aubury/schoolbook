@@ -1,0 +1,128 @@
+.modal-img-bottom {
+  padding: 25px 0 0 0;
+  margin-bottom: -40px;
+  text-align: center;
+}
+
+.modal-backdrop {
+  background-color: var(--aw-dark-blue);
+}
+
+.modal-form {
+  max-width: 274px;
+  margin: 0 auto;
+}
+
+#modal-main {
+  display: block !important;
+  z-index: -1;
+  pointer-events: none;
+
+  &.in {
+    z-index: 1050;
+    pointer-events: inherit;
+  }
+
+  .thx-text {
+    font: 18px/22px fregatbold, sans-serif;
+    color: var(--aw-gray);
+    text-align: center;
+
+    p {
+      font: 18px/22px fregatbold, sans-serif;
+      margin: 0;
+    }
+  }
+
+  .modal-dialog {
+    width: auto;
+    margin: auto;
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .modal-content {
+    border-style: solid;
+    border-color: var(--aw-orange);
+    border-width: 2px 3px;
+    border-radius: 5px 10px 16px 6px;
+    width: 490px;
+  }
+
+  .modal-body {
+    padding: 30px 15px 40px;
+  }
+
+  .popup-title-thx {
+    display: block;
+    font: 26px/30px fregatbold, sans-serif;
+    margin: 0 0 20px;
+    text-align: center;
+  }
+}
+
+
+
+.popup-title {
+  color: var(--aw-gray);
+  text-align: center;
+  display: block;
+  font: 20px/26px fregatbold, sans-serif;
+  margin: 0 0 25px;
+}
+
+.popup-window {
+   &.popup-window-with-titlebar {
+     border-style: solid;
+     border-color: var(--aw-orange);
+     border-width: 2px 3px;
+     border-radius: 5px 10px 16px 6px;
+     width: 400px;
+     padding: 30px 15px 40px;
+
+     .btn-primary {
+       width: 100%;
+       max-width: 270px;
+       border: none;
+
+       &:active,
+       &:hover {
+         opacity: 0.85;
+         background: var(--aw-orange);
+       }
+     }
+   }
+}
+
+.popup-window-overlay {
+  background-color: var(--aw-dark-blue);
+}
+
+.popup-window-titlebar-text {
+  font-size: 20px;
+  color: var(--aw-gray);
+  text-align: center;
+  width: 100%;
+}
+
+.popup-window-titlebar-close-icon {
+  top: -27px;
+  left: 100%;
+  opacity: 1;
+
+  &:after {
+    width: 15px;
+    height: 14px;
+    background: url(../image/icons-sprite.png) -54px -24px no-repeat;
+  }
+}
+
+
+.close-modal {
+   position: absolute;
+   background: url(../image/icons-sprite.png) -54px -24px no-repeat;
+   width: 15px;
+   height: 14px;
+   top: -15px;
+   right: -30px;
+ }

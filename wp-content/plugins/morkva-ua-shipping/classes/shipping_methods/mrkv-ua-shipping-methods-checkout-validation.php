@@ -111,6 +111,14 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CHECKOUT_VALIDATION'))
 		    		$options_data_loader = $translate_labels[$this->current_shipping_global]['method'][$this->current_shipping]['checkout_fields'][$field_id]['options'][''];
 		    	}
 
+		    	if ( isset($_POST['payment_method']) && sanitize_text_field( $_POST['payment_method'] ) == 'cod' && '_patronymic' == $field_id && isset($field_val['cod_validation']) && (!isset($_POST[$this->current_shipping . $field_id]) || $_POST[$this->current_shipping . $field_id] == '')) 
+				{
+					$translated_field_val = $translate_labels[$this->current_shipping_global]['method'][$this->current_shipping]['checkout_fields'][$field_id]['label'];
+					wc_add_notice(__('Field', 'mrkv-ua-shipping') . ' ' . $translated_field_val . ' ' . __('is required', 'mrkv-ua-shipping'), 'error');
+
+		    			return;	
+				}
+
 		    	if(!isset($_POST[$this->current_shipping . $field_id]) || $_POST[$this->current_shipping . $field_id] == ''
 		    		|| ($options_data_loader && $_POST[$this->current_shipping . $field_id] == $options_data_loader))
 		    	{

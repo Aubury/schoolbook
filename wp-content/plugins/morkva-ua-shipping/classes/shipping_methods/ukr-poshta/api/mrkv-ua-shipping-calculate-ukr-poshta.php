@@ -32,7 +32,7 @@ if (!class_exists('MRKV_UA_SHIPPING_CALCULATE_UKR_POSHTA'))
 	    {
 	    	# Set arguments
 	        $args = array(
-	            "weight" => $weight,
+	            "weight" => intval($weight),
 		        "length" => $length,
 		        "addressFrom" => array(
 		            "postcode"  => $address_from
@@ -45,7 +45,7 @@ if (!class_exists('MRKV_UA_SHIPPING_CALCULATE_UKR_POSHTA'))
 		        "declaredPrice" => $cost,
 		        "validate" => 'true',
 		        "parcels"			=> array( array(
-		    		"weight"			=> $weight,
+		    		"weight"			=> intval($weight),
 		    		"length"			=> $length,
 		    		"height"			=> $max_height,
 		    		"width"			=> $max_width,

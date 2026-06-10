@@ -36,7 +36,8 @@ if (!class_exists('MRKV_UA_SHIPPING_ADMIN_ASSETS'))
 
     			wp_localize_script('global-mrkv-ua-shipping', 'mrkv_ua_ship_helper', [
 	            	'ajax_url' => admin_url( "admin-ajax.php" ),
-	            	'nonce'    => wp_create_nonce('mrkv_ua_ship_nonce')
+	            	'nonce'    => wp_create_nonce('mrkv_ua_ship_nonce'),
+	            	'error_latin_text'    => __('contains Latin characters', 'mrkv-ua-shipping')
 	        	]);
 
 	        	if(isset($_GET['action']) && $_GET['action'] == 'edit' && (isset($_GET['id']) || isset($_GET['post'])))
@@ -73,12 +74,27 @@ if (!class_exists('MRKV_UA_SHIPPING_ADMIN_ASSETS'))
 
 		            if($key)
 		            {
+		            	$args = array(
+				        	'ajax_url' => admin_url( 'admin-ajax.php' ), 
+				        	'nonce'    => wp_create_nonce('mrkv_ua_ship_nonce'),
+				        	'select2_texts' => array(
+						        'errorLoading'   => __('Error loading results.', 'mrkv-ua-shipping'),
+						        'inputTooLong'   => __('Please delete %d character(s).', 'mrkv-ua-shipping'),
+						        'inputTooShort'  => __('Please enter %d more character(s).', 'mrkv-ua-shipping'),
+						        'loadingMore'    => __('Loading more results...', 'mrkv-ua-shipping'),
+						        'maximumSelected'=> __('You can only select %d item(s).', 'mrkv-ua-shipping'),
+						        'noResults'      => __('No results found.', 'mrkv-ua-shipping'),
+						        'searching'      => __('Searching...', 'mrkv-ua-shipping'),
+						        'removeAllItems' => __('Remove all items', 'mrkv-ua-shipping'),
+						    )
+				        );
+
+		            	# Include settings checkout by shipping
+						include MRKV_UA_SHIPPING_PLUGIN_PATH_SHIP .'/' . $key . '/checkout/mrkv-ua-shipping-checkout.php';
+
 		            	wp_enqueue_script('global-mrkv-ua-shipping' . $key, MRKV_UA_SHIPPING_ASSETS_URL . '/js/global/global-mrkv-ua-shipping-' . $key . '.js', array('jquery', 'jquery-ui-autocomplete'), MRKV_UA_SHIPPING_PLUGIN_VERSION, true);
 
-		    			wp_localize_script('global-mrkv-ua-shipping' . $key, 'mrkv_ua_ship_helper', [
-			            	'ajax_url' => admin_url( "admin-ajax.php" ),
-			            	'nonce'    => wp_create_nonce('mrkv_ua_ship_nonce')
-			        	]);
+		    			wp_localize_script('global-mrkv-ua-shipping' . $key, 'mrkv_ua_ship_helper', $args);
 		            }
 	        	}
 	    	}

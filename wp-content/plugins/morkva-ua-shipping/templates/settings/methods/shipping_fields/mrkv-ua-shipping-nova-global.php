@@ -13,7 +13,7 @@
 					global $mrkv_global_option_generator;
 					global $mrkv_global_shipping_object;
 
-					echo $mrkv_global_option_generator->get_input_text($label, MRKV_OPTION_OBJECT_NAME . '[production_username]', $data, MRKV_OPTION_OBJECT_NAME. '_production_username' , '', __('Enter the username...', 'mrkv-ua-shipping'), $description);
+					echo wp_kses( $mrkv_global_option_generator->get_input_text($label, MRKV_OPTION_OBJECT_NAME . '[production_username]', $data, MRKV_OPTION_OBJECT_NAME. '_production_username' , '', __('Enter the username...', 'mrkv-ua-shipping'), $description), MRKV_UA_SHIPPING_ALLOW_TAGS);
 				?>
 			</div>
 		</div>
@@ -22,7 +22,7 @@
 				<?php 
 					$data = isset(MRKV_SHIPPING_SETTINGS['production_password']) ? MRKV_SHIPPING_SETTINGS['production_password'] : '';
 					$description = __('It`s issued to the partner after signing the cooperation agreement', 'mrkv-ua-shipping');
-					echo $mrkv_global_option_generator->get_input_text(__('Password', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[production_password]', $data, MRKV_OPTION_OBJECT_NAME. '_production_password' , '', __('Enter the password...', 'mrkv-ua-shipping'), $description);
+					echo wp_kses( $mrkv_global_option_generator->get_input_text(__('Password', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[production_password]', $data, MRKV_OPTION_OBJECT_NAME. '_production_password' , '', __('Enter the password...', 'mrkv-ua-shipping'), $description), MRKV_UA_SHIPPING_ALLOW_TAGS);
 				?>
 			</div>
 		</div>
@@ -30,7 +30,7 @@
 	<div class="admin_ua_ship_morkva_settings_line">
 		<?php
 			$data = isset(MRKV_SHIPPING_SETTINGS['test_mode']) ? MRKV_SHIPPING_SETTINGS['test_mode'] : '';
-			echo $mrkv_global_option_generator->get_input_checkbox(__('Test mode', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[test_mode]', $data, MRKV_OPTION_OBJECT_NAME . '_test_mode', );
+			echo wp_kses( $mrkv_global_option_generator->get_input_checkbox(__('Test mode', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[test_mode]', $data, MRKV_OPTION_OBJECT_NAME . '_test_mode', ), MRKV_UA_SHIPPING_ALLOW_TAGS);
 		?>
 		<div class="admin_ua_ship_morkva_settings_line__inner">
 			<div class="admin_ua_ship_morkva_settings_row">
@@ -40,14 +40,14 @@
 						$description = __('It`s issued to the partner after signing the cooperation agreement', 'mrkv-ua-shipping');
 						$label = __('Username / Login', 'mrkv-ua-shipping');
 
-						echo $mrkv_global_option_generator->get_input_text($label, MRKV_OPTION_OBJECT_NAME . '[test_username]', $data, MRKV_OPTION_OBJECT_NAME. '_test_username' , '', __('Enter the username...', 'mrkv-ua-shipping'), $description);
+						echo wp_kses( $mrkv_global_option_generator->get_input_text($label, MRKV_OPTION_OBJECT_NAME . '[test_username]', $data, MRKV_OPTION_OBJECT_NAME. '_test_username' , '', __('Enter the username...', 'mrkv-ua-shipping'), $description), MRKV_UA_SHIPPING_ALLOW_TAGS);
 					?>
 				</div>
 				<div class="col-mrkv-5">
 					<?php 
 					$data = isset(MRKV_SHIPPING_SETTINGS['test_password']) ? MRKV_SHIPPING_SETTINGS['test_password'] : '';
 					$description = __('It`s issued to the partner after signing the cooperation agreement', 'mrkv-ua-shipping');
-					echo $mrkv_global_option_generator->get_input_text(__('Password', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[test_password]', $data, MRKV_OPTION_OBJECT_NAME. '_test_password' , '', __('Enter the password...', 'mrkv-ua-shipping'), $description);
+					echo wp_kses( $mrkv_global_option_generator->get_input_text(__('Password', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[test_password]', $data, MRKV_OPTION_OBJECT_NAME. '_test_password' , '', __('Enter the password...', 'mrkv-ua-shipping'), $description), MRKV_UA_SHIPPING_ALLOW_TAGS);
 				?>
 				</div>
 			</div>
@@ -64,7 +64,7 @@
 				<?php 
 					$data = isset(MRKV_SHIPPING_SETTINGS['shipment']['weight']) ? MRKV_SHIPPING_SETTINGS['shipment']['weight'] : '';
 
-					echo $mrkv_global_option_generator->get_input_number('', MRKV_OPTION_OBJECT_NAME . '[shipment][weight]', $data, MRKV_OPTION_OBJECT_NAME. '_shipment_weight' , '', '', '');
+					echo wp_kses( $mrkv_global_option_generator->get_input_number('', MRKV_OPTION_OBJECT_NAME . '[shipment][weight]', $data, MRKV_OPTION_OBJECT_NAME. '_shipment_weight' , '', '', ''), MRKV_UA_SHIPPING_ALLOW_TAGS);
 				?>
 			</div>
 		</div>
@@ -76,7 +76,7 @@
 						<span><?php echo __('Length', 'mrkv-ua-shipping'); ?></span>
 						<?php 
 							$data = isset(MRKV_SHIPPING_SETTINGS['shipment']['length']) ? MRKV_SHIPPING_SETTINGS['shipment']['length'] : '';
-							echo $mrkv_global_option_generator->get_input_number('', MRKV_OPTION_OBJECT_NAME . '[shipment][length]', $data, MRKV_OPTION_OBJECT_NAME. '_shipment_length' , '', '', '');
+							echo wp_kses( $mrkv_global_option_generator->get_input_number('', MRKV_OPTION_OBJECT_NAME . '[shipment][length]', $data, MRKV_OPTION_OBJECT_NAME. '_shipment_length' , '', '', ''), MRKV_UA_SHIPPING_ALLOW_TAGS);
 						?>
 					</div>
 					<span>
@@ -86,7 +86,7 @@
 						<span><?php echo __('Width', 'mrkv-ua-shipping'); ?></span>
 						<?php 
 							$data = isset(MRKV_SHIPPING_SETTINGS['shipment']['width']) ? MRKV_SHIPPING_SETTINGS['shipment']['width'] : '';
-							echo $mrkv_global_option_generator->get_input_number('', MRKV_OPTION_OBJECT_NAME . '[shipment][width]', $data, MRKV_OPTION_OBJECT_NAME. '_shipment_width' , '', '', '');
+							echo wp_kses( $mrkv_global_option_generator->get_input_number('', MRKV_OPTION_OBJECT_NAME . '[shipment][width]', $data, MRKV_OPTION_OBJECT_NAME. '_shipment_width' , '', '', ''), MRKV_UA_SHIPPING_ALLOW_TAGS);
 						?>
 					</div>
 					<span>
@@ -96,7 +96,7 @@
 						<span><?php echo __('Height', 'mrkv-ua-shipping'); ?></span>
 						<?php 
 							$data = isset(MRKV_SHIPPING_SETTINGS['shipment']['height']) ? MRKV_SHIPPING_SETTINGS['shipment']['height'] : '';
-							echo $mrkv_global_option_generator->get_input_number('', MRKV_OPTION_OBJECT_NAME . '[shipment][height]', $data, MRKV_OPTION_OBJECT_NAME. '_shipment_height' , '', '', '');
+							echo wp_kses( $mrkv_global_option_generator->get_input_number('', MRKV_OPTION_OBJECT_NAME . '[shipment][height]', $data, MRKV_OPTION_OBJECT_NAME. '_shipment_height' , '', '', ''), MRKV_UA_SHIPPING_ALLOW_TAGS);
 						?>
 					</div>
 				</div>
@@ -108,7 +108,7 @@
 			$data = isset(MRKV_SHIPPING_SETTINGS['shipment']['volume']) ? MRKV_SHIPPING_SETTINGS['shipment']['volume'] : '';
 			$description = __('It is calculated automatically according to the dimensions in the settings.', 'mrkv-ua-shipping');
 
-			echo $mrkv_global_option_generator->get_input_number(__('Volumetric weight', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[shipment][volume]', $data, MRKV_OPTION_OBJECT_NAME. '_shipment_volume' , '', '', $description, 'readonly');
+			echo wp_kses( $mrkv_global_option_generator->get_input_number(__('Volumetric weight', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[shipment][volume]', $data, MRKV_OPTION_OBJECT_NAME. '_shipment_volume' , '', '', $description, 'readonly'), MRKV_UA_SHIPPING_ALLOW_TAGS);
 		?>
 		<p><strong><?php echo __('These standard weight and dimensions apply when products do not have ones of their own', 'mrkv-ua-shipping'); ?></strong></p>
 	</div>
@@ -129,7 +129,7 @@
 
 					$description = __('Select the position of the delivery method fields on the checkout page', 'mrkv-ua-shipping');
 
-					echo $mrkv_global_option_generator->get_select_simple(__('Position of plugin fields in Checkout', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][position]', $senders_type_list, $data, MRKV_OPTION_OBJECT_NAME . '_checkout_position' , __('Choose a position', 'mrkv-ua-shipping'), $description);
+					echo wp_kses( $mrkv_global_option_generator->get_select_simple(__('Position of plugin fields in Checkout', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][position]', $senders_type_list, $data, MRKV_OPTION_OBJECT_NAME . '_checkout_position' , __('Choose a position', 'mrkv-ua-shipping'), $description), MRKV_UA_SHIPPING_ALLOW_TAGS);
 				?>
 			</div>
 		</div>
@@ -139,7 +139,7 @@
 			<div class="admin_ua_ship_morkva_settings_line">
 				<?php
 					$data = isset(MRKV_SHIPPING_SETTINGS['checkout']['hide_saving_data']) ? MRKV_SHIPPING_SETTINGS['checkout']['hide_saving_data'] : '';
-					echo $mrkv_global_option_generator->get_input_checkbox(__('Save customer selected fields', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][hide_saving_data]', $data, MRKV_OPTION_OBJECT_NAME . '_checkout_hide_saving_data', );
+					echo wp_kses( $mrkv_global_option_generator->get_input_checkbox(__('Save customer selected fields', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][hide_saving_data]', $data, MRKV_OPTION_OBJECT_NAME . '_checkout_hide_saving_data', ), MRKV_UA_SHIPPING_ALLOW_TAGS);
 				?>
 				<?php echo '<p class="mrkv-ua-ship-description">' . __('Enable to store selected delivery city and warehouse/postamat in session cookies (may not work if privacy settings enabled in user’s browser)', 'mrkv-ua-shipping') . '</p>'; ?>
 			</div>
@@ -157,7 +157,7 @@
 			<div class="admin_ua_ship_morkva_settings_line">
 				<?php
 					$data = isset(MRKV_SHIPPING_SETTINGS['debug']['log']) ? MRKV_SHIPPING_SETTINGS['debug']['log'] : '';
-					echo $mrkv_global_option_generator->get_input_checkbox(__('Enable debug log', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[debug][log]', $data, MRKV_OPTION_OBJECT_NAME . '_debug_log', );
+					echo wp_kses( $mrkv_global_option_generator->get_input_checkbox(__('Enable debug log', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[debug][log]', $data, MRKV_OPTION_OBJECT_NAME . '_debug_log', ), MRKV_UA_SHIPPING_ALLOW_TAGS);
 				?>
 				<?php echo '<p class="mrkv-ua-ship-description">' . __('Enable to receive request error logs', 'mrkv-ua-shipping') . '</p>'; ?>
 			</div>
@@ -166,7 +166,7 @@
 			<div class="admin_ua_ship_morkva_settings_line">
 				<?php
 					$data = isset(MRKV_SHIPPING_SETTINGS['debug']['query']) ? MRKV_SHIPPING_SETTINGS['debug']['query'] : '';
-					echo $mrkv_global_option_generator->get_input_checkbox(__('Enable debug query', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[debug][query]', $data, MRKV_OPTION_OBJECT_NAME . '_debug_query', );
+					echo wp_kses( $mrkv_global_option_generator->get_input_checkbox(__('Enable debug query', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[debug][query]', $data, MRKV_OPTION_OBJECT_NAME . '_debug_query', ), MRKV_UA_SHIPPING_ALLOW_TAGS);
 				?>
 				<?php echo '<p class="mrkv-ua-ship-description">' . __('Enable to receive request logs in order notes and log file', 'mrkv-ua-shipping') . '</p>'; ?>
 			</div>

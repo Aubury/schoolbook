@@ -153,6 +153,8 @@
 						$data = isset($mrk_ua_ship_nova_settings['shipment']['type']) ? $mrk_ua_ship_nova_settings['shipment']['type'] : '';
 						echo $mrkv_global_option_generator->get_input_radio(__('Parcel', 'mrkv-ua-shipping'), 'mrkv_ua_ship_invoice_shipment_type', 'Parcel', $data, $shipping_slug_option . '_mrkv_ua_ship_invoice_shipment_type_parcel', 'Parcel');
 						echo $mrkv_global_option_generator->get_input_radio(__('Pallet', 'mrkv-ua-shipping'), 'mrkv_ua_ship_invoice_shipment_type', 'Pallet', $data, $shipping_slug_option . '_mrkv_ua_ship_invoice_shipment_type_pallet', 'Parcel');
+						echo $mrkv_global_option_generator->get_input_radio(__('Documents', 'mrkv-ua-shipping'), 'mrkv_ua_ship_invoice_shipment_type', 'Documents', $data, $shipping_slug_option . '_mrkv_ua_ship_invoice_shipment_type_documents', 'Parcel');
+						echo $mrkv_global_option_generator->get_input_radio(__('Tires', 'mrkv-ua-shipping'), 'mrkv_ua_ship_invoice_shipment_type', 'TiresWheels', $data, $shipping_slug_option . '_mrkv_ua_ship_invoice_shipment_type_tires', 'Parcel');
 					?>
 				</div>
 			</div>
@@ -249,7 +251,7 @@
 	<div class="admin_ua_ship_morkva_settings_line">
 		<?php
 			$data = isset($mrk_ua_ship_nova_settings['shipment']['description']) ? $mrk_ua_ship_nova_settings['shipment']['description'] : '';
-			$description = __('Maximum number of characters:', 'mrkv-ua-shipping') . ' 100';
+			$description = __('Maximum number of characters:', 'mrkv-ua-shipping') . ' 100' . '<div class="mrkv-ua-shipping-desc-validation" data-success="' . __('Within acceptable limits.', 'mrkv-ua-shipping') . '" data-error="' . __('Reduce the number of characters.', 'mrkv-ua-shipping') . '">' . __('Number of symbols:', 'mrkv-ua-shipping') . ' <span class="mrkv-ua-ship-cout-symb"></span>. <span class="mrkv-ua-ship-message-symb"></span>' . '</div>';
 
 			echo $mrkv_global_option_generator->get_textarea(__('Description of the shipment', 'mrkv-ua-shipping'), 'mrkv_ua_ship_invoice_shipment_description', $data, $shipping_slug_option . 'mrkv_ua_ship_invoice_shipment_description' , '', __('For example, products for children...', 'mrkv-ua-shipping'), $description);
 		?>
