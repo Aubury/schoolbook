@@ -26,6 +26,11 @@
 	<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Skip to content', 'anyweb' ); ?></a>
 
     <header class="bx-header">
+        <div class="header-section">
+            <div class="container flex-row align-items-center justify-content-between">
+                <p>menu</p>
+            </div>
+        </div>
 		<div class="bx-header-section">
 			<div class="header-top">
 				<div class="container">
