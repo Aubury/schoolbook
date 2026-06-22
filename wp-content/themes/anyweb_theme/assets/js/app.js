@@ -370,7 +370,7 @@ $(document).ready(function () {
     $('.form_validate').formValidation();
     //$('.validate_phone').mask('+380999999999');
 
-
+/////////////////////////////////////////////////////////////////
 
     $(function() {
 	$('.promo-slider').not('.slick-initialized').slick({

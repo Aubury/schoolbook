@@ -323,26 +323,31 @@
 
   &:before {
     content: '';
-    background: url("../image/Верхня лінія + клітинка (над банером).png") no-repeat center top;
-    background-size: cover;
+    background: url("../image/Верхня лінія + клітинка.png") no-repeat center top;
+    background-size: 100% 20px;
     width: 100%;
     height: 29px;
     position: absolute;
     left: 0;
     top: -28px;
-    z-index: -1;
+    z-index: 1;
+
+    @include down(#{$bp-md}) {
+      background-size: auto 40px;
+      top: -20px;
+    }
   }
 
   &:after {
     content: '';
-    background: url("../image/Нижня зелена лінія.png") no-repeat center bottom;
+    background: url("../image/Нижня лінія.png") no-repeat center bottom;
     background-size: cover;
     width: 100%;
     height: 20px;
     position: absolute;
     left: 0;
     bottom: -16px;
-    z-index: -1;
+    z-index: 1;
   }
 
 }
@@ -357,14 +362,13 @@
     display: inline-block;
     position: absolute;
     z-index: 1;
-    top: -20px;
+    top: -16px;
     right: -9999px;
     animation: ladybug 11s 0.2s linear forwards;
 
     @include down(#{$bp-md}) {
       width: 24px;
       height: 12px;
-      //top: -13px;
     }
   }
 }

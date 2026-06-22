@@ -6,42 +6,37 @@ Template Name: front page
 get_header();
 ?>
 
+<div class="banner-wrap">
+    <div class="banner">
+        <div class="container">
+            <div class="promo-slider-wrap">
+                <div class="promo-slider-holder">
+                <div class="promo-slider">
+                    <?php
+                        $first_slider = carbon_get_post_meta( $post->ID, 'first_slider' );
+                        if ( ! empty( $first_slider ) ):
+                            foreach ( $first_slider as $cnt => $item ):
 
-
+                                echo '<div class="item">
+                                        <a href="'.$item['link'].'">'.
+                                                wp_get_attachment_image($item['img'], 'post-thumbnail', 'true', array( 'class' => 'desktop__img')).
+                                                '<span class="mobile__img" 
+                                                style="background-image: url(' . wp_get_attachment_image_url( $item['img'], 'full' ) .')"></span>
+                                        </a>
     
-<!--<div class="header-bottom">-->
-<!--			<div class="container">-->
-<!--				<div class="promo-slider-holder">-->
-<!--					<div class="promo-slider">-->
-<!---->
-<!---->
-<?php
-//						$first_slider = carbon_get_post_meta( $post->ID, 'first_slider' );
-//						if ( ! empty( $first_slider ) ):
-//						foreach ( $first_slider as $cnt => $item ):
-//
-//						echo '<div class="item">
-//						<a href="'.$item['link'].'">'.
-//						 wp_get_attachment_image($item['img'], 'post-thumbnail', 'true', array( 'class' => 'desktop__img')).
-//						'<span class="mobile__img" style="background-image: url(' . wp_get_attachment_image_url( $item['img'], 'full' ) .')"></span>
-//						</a>
-//
-//						 </div>';
-//
-//						endforeach;
-//						endif;
-//?>
-<!---->
-<!---->
-<!--					</div>-->
-<!---->
-<!--					<div class="pagination-text">-->
-<!--						<div class="text">Тисни на цифри - <br>гортай сторінки</div>-->
-<!--						<i class="icon-arrow"></i>-->
-<!--					</div>-->
-<!--				</div>-->
-<!--			</div>-->
-<!--		</div>-->
+                             </div>';
+
+                            endforeach;
+                        endif;
+                    ?>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--///////////////////////////////////////////////-->
 
         <main id="primary" class="site-main">
 			<div class="container">
