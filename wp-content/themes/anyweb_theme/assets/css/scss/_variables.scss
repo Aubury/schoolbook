@@ -1,0 +1,32 @@
+/* ==================================================
+   BREAKPOINTS
+================================================== */
+
+$bp-xxl: 1400px;
+$bp-xl: 1200px;
+$bp-lg: 1030px;
+$bp-md: 992px;
+$bp-sm: 768px;
+$bp-xs: 576px;
+$bp-xxs: 430px;
+
+:root {
+  /* ---------- FONT FAMILIES ---------- */
+  --fm-base: 'Roboto', sans-serif;
+  --fm-medium: 'Roboto-Medium', sans-serif;
+  --fm-heading: 'PF Playskool Pro';
+  --fs-base: 16px;
+  --fw-base: 400;
+
+  --color-base: #333;
+  --color-white: #fff;
+  --color-gray: #525252;
+
+  --brand-green-prymary: #00B0A8;
+  --brand-green-dark:    #009E97;
+  --brand-orange:        #EA5100;
+  --color-link:          #00B0A8;
+  --color-link-active:   #EA5100;
+  --gray-light:          #989898;
+}
+

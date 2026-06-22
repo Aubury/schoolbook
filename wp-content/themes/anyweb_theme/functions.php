@@ -1788,6 +1788,24 @@ function prevent_checkout_without_shipping() {
     }
 }
 
+function any_web_theme_has_woocommerce(): bool {
+    return class_exists('WooCommerce');
+}
+
+function any_web_theme_account_url(): string {
+    if ( any_web_theme_has_woocommerce() && function_exists('wc_get_page_permalink') ) {
+        $url = wc_get_page_permalink('myaccount');
+        if ( $url ) return $url;
+    }
+    return home_url('/'); // fallback (или wp_login_url())
+}
+
+function any_web_theme_cart_url(): string {
+    return ( any_web_theme_has_woocommerce() && function_exists('wc_get_cart_url') )
+        ? wc_get_cart_url()
+        : home_url('/');
+}
+
 
 // add_action( 'woocommerce_before_cart', function () {
 
@@ -1799,3 +1817,4 @@ function prevent_checkout_without_shipping() {
 //     }
 
 // });
+

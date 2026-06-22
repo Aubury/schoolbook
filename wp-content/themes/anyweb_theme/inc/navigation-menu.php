@@ -14,7 +14,6 @@ function theme_register_nav_menu() {
 	register_nav_menu( 'two_column_menu', 'two_column_menu' );
 	register_nav_menu( 'top_two_column_menu', 'top two_column_menu' );
 	register_nav_menu( 'wishlist', 'wishlist' );
-
 }
 
 
@@ -41,7 +40,7 @@ function filter_wp_menu_args_primary( $args ) {
 	if ( $args['theme_location'] === 'primary' ) {
 		$args['container']  = false;
 		$args['items_wrap'] = '<ul id="%2$s">%3$s</ul>';
-		$args['menu_class'] = 'horizontal-multilevel-menu';
+//		$args['menu_class'] = 'horizontal-multilevel-menu';
 	}
 	return $args;
 }

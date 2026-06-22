@@ -1,0 +1,97 @@
+/* ==================================================
+   FLEX
+================================================== */
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-evenly {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+/* ==================================================
+   ACCESSIBILITY
+================================================== */
+
+.visually-hidden{
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+
+/* ==================================================
+   DISPLAY
+================================================== */
+
+.d-none{ display: none !important; }
+.d-block{ display: block !important; }
+.d-flex{ display: flex !important; }
+
+
+/* ==================================================
+   TEXT ALIGN
+================================================== */
+
+.text-center{ text-align: center; }
+.text-left{ text-align: left; }
+.text-right{ text-align: right; }
+
+
+/* ==================================================
+   POSITION
+================================================== */
+
+.relative{ position: relative; }
+.absolute{ position: absolute; }
+
+
+/* ==================================================
+   OVERFLOW
+================================================== */
+
+.overflow-hidden{ overflow: hidden; }
+
+
+/* ==================================================
+   WIDTH
+================================================== */
+
+.w-100{ width: 100%; }
+.w-auto { width: auto; }
+
+
+/* ==================================================
+   RESPONSIVE HELPERS
+================================================== */
+
+/* скрыть на мобилке */
+@include down($bp-sm){
+  .d-mobile-none{ display: none !important; }
+}
+
+/* скрыть на десктопе */
+@include up($bp-md){
+  .d-desktop-none{ display: none !important; }
+}

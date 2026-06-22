@@ -12,16 +12,16 @@ use Carbon_Fields\Field;
 
 Container::make( 'theme_options', __( 'SchoolBook settings' ) )
     ->add_fields( array(
+        Field::make( 'text', 'video_link', __( ' Відео-новини' ) )->set_width(50 ),
 
-        Field::make( 'text', 'price_link', __( ' Ссылка на прайс' ) )->set_width(33 ),
-        Field::make( 'text', 'phone1', __( ' Телефон1' ) )->set_width( 33 ),
-        Field::make( 'text', 'phone2', __( ' Телефон2' ) )->set_width( 33 ),
-        Field::make( 'rich_text', 'footer_contacts', __( ' Контакти Футер' ) )->set_width( 100 ),
+        Field::make( 'text', 'price_link', __( ' Ссылка на прайс' ) )->set_width(50 ),
+        Field::make( 'text', 'phone1', __( ' Телефон1' ) )->set_width( 50 ),
+        Field::make( 'text', 'phone2', __( ' Телефон2' ) )->set_width( 50 ),
 
         Field::make( 'text', 'fb', __( ' facebook' ))->set_width( 50 ),
         Field::make( 'text', 'inst', __( ' instagramm' ))->set_width( 50 ),
 
-
+        Field::make( 'rich_text', 'footer_contacts', __( ' Контакти Футер' ) )->set_width( 100 ),
     ) );
 
 
