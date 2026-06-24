@@ -707,6 +707,7 @@ function so_render_product_image($product_id)
 function so_render_product($product_id){
 
     $product = wc_get_product($product_id);
+
     if ($product) {
         $data = (object) [
             "permalink" => esc_url($product->get_permalink()),
@@ -714,46 +715,103 @@ function so_render_product($product_id){
             "second_image" => $product->get_gallery_image_ids(),
             "price" => $product->get_price_html(),
             "title" => $product->get_name(),
+            "authors" => implode(', ', wc_get_product_terms($product_id, 'pa_avtori', ['fields' => 'names'])),
+            "author" => implode(', ', wc_get_product_terms($product_id, 'pa_author-book', ['fields' => 'names'])),
+            "age" => implode(', ', wc_get_product_terms($product_id, 'pa_vik', ['fields' => 'names'])),
             "is_new" => get_post_meta($product_id, '_is_new', true),
             "custom_preorder" => get_post_meta($product_id, '_custom_preorder', true)
         ];
-        if(!empty($data->second_image[0])){
+
+        $in_cart = WC()->cart &&
+            WC()->cart->find_product_in_cart(
+                WC()->cart->generate_cart_id($product_id)
+         );
+
+        if (!empty($data->second_image[0])) {
             $second_image = wp_get_attachment_image($data->second_image[0], 'woocommerce_single', 'true');
-        }else{
+        } else {
             $second_image = $data->image;
         }
+
         $preorder = '';
         $isnew = '';
         $price = '<div class="price"><span class="num">' . $data->price . '</span></div>';
 
         $current_date = date('Y-m-d');
-        if ($data->custom_preorder > $current_date ) {
+
+        if ( $data->custom_preorder > $current_date ) {
             $preorder = '<span class="preorder">Передзамовлення</span>';
-        } else{
+        } else {
 
             if($data->is_new){
                 $isnew = '<span class="new_book">new</span>';
-            }}
+            }
+        }
+
         $issale = '';
         if ($product->is_on_sale()) {
             $regular_price = $product->get_regular_price();
             $sale_price = $product->get_sale_price();
-
             $discount_percentage = round((($regular_price - $sale_price) / $regular_price) * 100);
-
             $issale = '<span class="sale_book">-' . $discount_percentage . '<span class="percent">%</span></span>';
-
         }
+
+        $_author = $data->authors ?? $data->author;
+
+        $author_html = '';
+
+        if (!empty($_author)) {
+            $author_html = "<p>{$_author}</p>";
+        }
+
+        $basketHTML= '<span class="text-block">До кошика</span>';
+
+        if ($in_cart) {
+            $basketHTML= '<span class="text-block">У кошику</span><span class="icon-block icon-red-backed"></span>';
+        } else {
+            $basketHTML= '<span class="text-block">До кошика</span><span class="icon-block"></span>';
+        }
+
+        $shortcode = do_shortcode( '[woosw id=' . $product_id . ']' );
         return "
-            <div class=\"item\" style=\"width: 290px;\"><span class=\"pr-info\">{$preorder}{$isnew}{$issale}</span>			
-                <div class=\"img\">
-                <a href=\"{$data->permalink}\" class=\"so_product-link\">
-                        <span class=\"img-front\">{$data->image}</span>
-                        <span class=\"img-hover\">{$second_image}</span>
-                    </a>
+            <div class=\"item\"> 
+            
+               <div class=\"product-card\">
+        
+                    <span class=\"pr-info\">{$preorder}{$isnew}{$issale}</span>			
+                    <a href=\"{$data->permalink}\" class=\"so_product-link\">
+                        <div class=\"img\">
+                           <span class=\"img-front\">{$data->image}</span>
+                           <span class=\"img-hover\">{$second_image}</span>
+                        </div>
+                    
+                        <div class=\"product-title\">
+                           
+                                <h3>{$data->title}</h3>
+                                  {$author_html} 
+                                <p>{$data->age}</p>
+                            
+                         </div> 
+                     </a>
+                    {$price}
+                    <div class='favorite-basket-block'>
+                        <div class=\"favorite-box\">
+                               <span id=\"favorite_17177\" class=\"favorites-link bx-catalog-subscribe-button\">
+                                  <i class=\"icon-favorite\">
+                                      {$shortcode}                   
+                                  </i>
+                                  </span>
+                               </div>
+                       
+                        <div class=\"button-to-buy\">
+                             <a class=\"add_to_cart_ajx\" id=\"{$product_id}\">
+                                {$basketHTML}
+                             </a>
+                        </div>
+                    </div>
+                     
+                 
                 </div>
-                <div class=\"product-title\"><a href=\"{$data->permalink}\">{$data->title}</a></div>
-                {$price}
             </div>						
             ";
     } else {

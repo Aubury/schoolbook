@@ -4,10 +4,11 @@
   height: auto;
   background: var(--brand-green-prymary);
   padding-top: 20px;
+  margin-bottom: 250px;
 
   &::after {
     content: '';
-    background: url("../image/Клітинка (під банером).png") no-repeat center bottom;
+    background: url("../image/cell_under_banner.png") no-repeat center bottom;
     background-size: cover;
     width: 100%;
     height: 80px;
@@ -22,8 +23,12 @@
     }
   }
 
-  @include down(#{$bp-xxs}) {
-    padding-top: 7px;
+  @include down(#{$bp-lg}) {
+    margin-bottom: 150px;
+  }
+
+  @include down(#{$bp-xs}) {
+    margin-bottom: 75px;
   }
 }
 
@@ -39,14 +44,14 @@
     bottom: -16px;
     width: 100%;
     height: 20px;
-    background: url("../image/Нижня лінія.png") no-repeat center bottom;
+    background: url("../image/bottom_line.png") no-repeat center bottom;
     background-size: cover;
     z-index: 1;
     pointer-events: none;
   }
 
   @include down(#{$bp-xxs}) {
-    background: url('../image/Baner.png') no-repeat 50% 0;
+    background: url('../image/banner.png') no-repeat 50% 0;
     background-size: auto 98%;
     padding: 2px 0;
   }
@@ -109,6 +114,10 @@
 
     &.slick-next {
       background: url('../image/arrow-left-slider.svg') no-repeat center center;
+
+      &::before {
+        content: unset;
+      }
     }
 
     &:before {
@@ -226,6 +235,10 @@
       top: 40px;
     }
 
+    @include down(#{$bp-xxs}) {
+      top: 45px;
+    }
+
   }
 
   .item {
@@ -326,3 +339,231 @@
     }
   }
 }
+
+/////////////////////////////////
+
+.new-product {
+  position: relative;
+  padding: 73px 0;
+  width: 100%;
+
+  @include down(#{$bp-xl}) {
+    padding: 73px 0 0;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 25px;
+    right: 25px;
+    top: 70px;
+    height: 50%;
+    background: url('../image/top-line-dash.svg') no-repeat center top;
+    background-size: 100%;
+    z-index: -1;
+
+    @include down(#{$bp-xl}) {
+      background-size: 1300px;
+    }
+
+    @include down(#{$bp-md}) {
+      content: unset;
+    }
+
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 25px;
+    right: 25px;
+    bottom: 0;
+    height: 50%;
+    background: url('../image/bottom-line-dash.svg') no-repeat center bottom;
+    background-size: 100%;
+    z-index: -1;
+
+    @include down(#{$bp-xl}) {
+      background-size: 1300px;
+    }
+
+    @include down(#{$bp-md}) {
+      background-size: 800px;
+    }
+
+    @include down(#{$bp-xs}) {
+      content: unset;
+    }
+  }
+
+  h2 {
+    font-family: var(--fm-heading);
+    font-weight: 400;
+    font-size: 70px;
+    line-height: 75px;
+    letter-spacing: 0;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    top: -35px;
+    overflow-wrap: break-word; /* Розриває занадто довгі слова, якщо вони не вміщаються */
+    word-wrap: break-word;     /* Застарілий синтаксис для сумісності зі старими браузерами */
+    word-break: normal;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: 15%;
+      top: -1px;
+      height: 33px;
+      width: 50px;
+      background: url('../image/worm.svg') no-repeat center;
+      background-size: cover;
+      z-index: 1;
+      -webkit-animation: worm_book 0.9s 0.3s ease-in forwards;
+      -moz-animation: worm_book 0.9s 0.3s ease-in forwards;
+      animation: worm_book 0.9s 0.3s ease-in forwards;
+
+      @include down(#{$bp-xl}) {
+        right: 25%;
+      }
+
+      @include down(#{$bp-lg}) {
+        right: 15%;
+      }
+
+      @include down(#{$bp-xmd}) {
+       content: unset;
+      }
+    }
+
+    @include down(#{$bp-md}) {
+      margin: 0 70px;
+      horiz-align: center;
+    }
+
+    @include down(#{$bp-xs}) {
+      font-size: 42px;
+      line-height: 32px;
+      horiz-align: center;
+    }
+  }
+
+  .slider {
+    margin: 0 75px;
+
+    @include down(#{$bp-md}) {
+      margin: 0 50px;
+    }
+
+    @include down(#{$bp-xs}) {
+      margin: 0;
+    }
+  }
+
+  .slick-arrow {
+    width: 49px;
+    height: 49px;
+    z-index: 1;
+    @include flex-center;
+    background: url('../image/arrow-red-slider.svg') no-repeat center center;
+
+
+    &.slick-next {
+      background: url('../image/arrow-left-slider.svg') no-repeat center center;
+      right: -70px;
+
+      @include down(#{$bp-md}) {
+        right: -50px;
+        background-size: 19px 14px;
+      }
+
+      @include down(#{$bp-xs}) {
+        right: 0;
+      }
+
+      &::before {
+        content: unset;
+      }
+    }
+
+    &.slick-prev {
+      left: -70px;
+
+      @include down(#{$bp-md}) {
+        left: -50px;
+        background-size: 19px 14px;
+      }
+
+      @include down(#{$bp-xs}) {
+        left: 0;
+      }
+
+      &::before {
+        content: unset;
+      }
+    }
+
+    &:after {
+      content: "";
+      background: url('../image/color-stroke.svg') no-repeat;
+      background-size: contain;
+      display: inline-block;
+      position: absolute;
+      width: 72px;
+      height: 72px;
+      transition: transform 0.3s ease-in-out;
+
+      @include down(#{$bp-md}) {
+        width: 50px;
+        height: 50px;
+      }
+
+      @include down(#{$bp-xs}) {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    @include down(#{$bp-md}) {
+      top: -75px;
+    }
+
+    @include down(#{$bp-xs}) {
+      top: -45px;
+    }
+
+    @include down(#{$bp-xsl}) {
+      top: -65px;
+    }
+  }
+
+  .slick-next,
+  .slick-prev {
+    @include down(#{$bp-md}) {
+      background-size: 19px 14px;
+    }
+
+    &:hover {
+      &:after {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .item {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@keyframes worm_book {
+  0% {
+    top: -40px;
+  }
+  100% {
+    top: -1px;
+  }
+}
+

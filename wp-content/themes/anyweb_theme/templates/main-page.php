@@ -36,12 +36,51 @@ get_header();
     </div>
 </div>
 
-<!--///////////////////////////////////////////////-->
+<main id="primary" class="site-main">
+<!--/////////////// Нові надходження ////////////////////////////////-->
+        <?php
+            function get_products_with_new_checkbox() {
+                global $wpdb;
+                // Получаем ID всех товаров с метаполем '_is_new' установленным в '1'
+                $product_ids = $wpdb->get_col("
+                                        SELECT post_id 
+                                        FROM $wpdb->postmeta 
+                                        WHERE meta_key = '_is_new' 
+                                        AND meta_value = '1'
+                                    ");
 
-        <main id="primary" class="site-main">
-			<div class="container">
-				<div class="row">
-				<div class="bx-content ">
+                return $product_ids;
+            }
+
+            // Использование функции для получения массива ID товаров
+            $product_ids_with_new_checkbox = get_products_with_new_checkbox();
+
+            if ( ! empty( $product_ids_with_new_checkbox ) ):
+
+            ?>
+            <div class="section">
+                <div class="container">
+                    <div class="new-product">
+                        <h2>Но<span class="color-blue">в</span>і надход<span class="color-orange">ж</span>ення</h2>
+                        <div class="slider slick-slider">
+                            <?php
+
+                            foreach ( $product_ids_with_new_checkbox as $cnt => $item ):
+                                echo so_render_product($item);
+                            endforeach;
+
+
+                            ?>
+                        </div>
+                    </div> <!-- end .new-product -->
+                </div> <!-- end .container -->
+            </div> <!-- end .section -->
+
+            <?php endif; ?>
+<!--/////////////////////////////////////////////////////////////////////    -->
+
+            <div class="container">
+
 <?php
 				$slider = get_products_with_preorder_date();
 						if(!empty($slider)):
@@ -60,38 +99,7 @@ get_header();
 	<?php
 		endif;
 	?>
-				
-				<div class="new-books-slider anim-bug">
-        		    <p class="h2-title">Но<span class="color-blue">в</span>і надход<span class="color-orange">ж</span>ення</p>
-        		<div class="slider slick-slider">
-					<?php
 
-
-				function get_products_with_new_checkbox() {
-					global $wpdb;
-
-					// Получаем ID всех товаров с метаполем '_is_new' установленным в '1'
-					$product_ids = $wpdb->get_col("
-						SELECT post_id 
-						FROM $wpdb->postmeta 
-						WHERE meta_key = '_is_new' 
-						AND meta_value = '1'
-					");
-
-					return $product_ids;
-				}
-
-				// Использование функции для получения массива ID товаров
-				$product_ids_with_new_checkbox = get_products_with_new_checkbox();
-
-
-
-
-							foreach ( $product_ids_with_new_checkbox as $cnt => $item ): 
-							echo so_render_product_image($item);
-							endforeach;
-
-					?>
 
 			</div>											
 	</div>

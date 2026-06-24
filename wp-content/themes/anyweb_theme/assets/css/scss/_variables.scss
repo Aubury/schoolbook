@@ -7,14 +7,16 @@ $bp-xl: 1200px;
 $bp-lg: 1030px;
 $bp-md: 992px;
 $bp-xmd: 821px;
-$bp-sm: 768px;
+$bp-sm: 769px;
 $bp-xs: 576px;
 $bp-xxs: 431px;
+$bp-xsl: 391px;
 
 :root {
   /* ---------- FONT FAMILIES ---------- */
   --fm-base: 'Roboto', sans-serif;
   --fm-medium: 'Roboto-Medium', sans-serif;
+  --fm-bold: 'Roboto-Semi-Bold', sans-serif;
   --fm-heading: 'PF Playskool Pro';
   --fs-base: 16px;
   --fw-base: 400;

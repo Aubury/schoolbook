@@ -25,36 +25,41 @@ btn.on('click', function(e) {
 
 });
 
+///////////////////////// BASKET ///////////////////////////////////////////
 
+ let bubble =  document.querySelector(".bubble"),
+  basket_link_wrap = document.querySelector(".basket-link-wrap"),
+  add_to_cart_ajx = document.querySelectorAll(".add_to_cart_ajx");
+  add_to_cart_ajx.forEach(element => {
+	element.addEventListener("click", function(e){
+		e.preventDefault();
+		jQuery(document).ready( function( jQuery ){
+		  var jqXHR = {
+				action:'backsjax',
+				nonce_code: soJsLet.nonce,
+				id: element.id
+		  }
+			jQuery.post( soJsLet.ajaxurl, jqXHR, function( response ){
 
+		let backResponse = JSON.parse(response);
+		let basketHTML = '';
 
+		if (window.innerWidth > 541) {
+			basketHTML =  '<span>У кошику<span>';
+		} else {
+			basketHTML =  '<span class="icon-block icon-red-backed"><span>';
+		}
 
-         let bubble =  document.querySelector(".bubble"),
-		  basket_link_wrap = document.querySelector(".basket-link-wrap"),
-          add_to_cart_ajx = document.querySelectorAll(".add_to_cart_ajx");
-          add_to_cart_ajx.forEach(element => {
-            element.addEventListener("click", function(e){
-				e.preventDefault();
-				jQuery(document).ready( function( jQuery ){
-				  var jqXHR = {
-						action:'backsjax',
-						nonce_code: soJsLet.nonce,
-						id: element.id
-				  }
-					jQuery.post( soJsLet.ajaxurl, jqXHR, function( response ){
-				
-				let backResponse = JSON.parse(response);
+		$(element).hasClass('product-preorder') ? element.innerHTML = '<span>Перейти до кошика<span>' : element.innerHTML = basketHTML;
 
-				$(element).hasClass('product-preorder') ? element.innerHTML = '<span>Перейти до кошика<span>' : element.innerHTML = '<span>У кошику<span>';
-				
-				// element.innerHTML = '<span>У кошику<span>'
-				bubble.innerHTML = backResponse[0]
-				basket_link_wrap.innerHTML = backResponse[1]
-				element.href = "/cart"
-					} );
-				  } );   
-			}, { once: true })
-          });
+		// element.innerHTML = '<span>У кошику<span>'
+		bubble.innerHTML = backResponse[0]
+		basket_link_wrap.innerHTML = backResponse[1]
+		element.href = "/cart"
+			} );
+		  } );
+	}, { once: true })
+  });
 
 // *************************************************************
 
@@ -392,6 +397,41 @@ $(document).ready(function () {
 	});
 })
 
+	$(function() {
+		$('.new-product .slider').not('.slick-initialized').slick({
+			slidesToShow: 3,
+			arrows: true,
+			infinite: false,
+			responsive: [
+				{
+					breakpoint: 1200,
+					settings: {
+						slidesToShow: 2,
+						slidesToScroll: 2
+					}
+				},
+				{
+					breakpoint: 992,
+					settings: {
+						slidesToShow: 2,
+						slidesToScroll: 2
+					}
+				},
+				{
+					breakpoint: 641,
+					settings: {
+						arrows: true,
+						slidesToShow: 2,
+						slidesToScroll: 1,
+						autoplay: false,
+						autoplaySpeed: 2000,
+					}
+				}]
+		});
+
+	})
+
+
 $(function() {
 	$('.new-books-slider .slider').not('.slick-initialized').slick({
 		slidesToShow: 3,
@@ -489,6 +529,7 @@ $(function() {
 		}]
 	});
 })
+
 $(function() {
 	$('.product-item-detail-slider-images-container').slick({
 		rows: 0,

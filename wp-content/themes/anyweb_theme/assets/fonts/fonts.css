@@ -46,3 +46,9 @@
     src: url('Roboto-Medium.ttf') format('truetype');
     font-style: normal;
 }
+
+@font-face {
+    font-family: 'Roboto-Semi-Bold';
+    src: url('Roboto_SemiCondensed-SemiBold.ttf') format('truetype');
+    font-style: normal;
+}

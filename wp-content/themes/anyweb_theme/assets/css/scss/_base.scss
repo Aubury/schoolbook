@@ -69,3 +69,62 @@ a {
   transition: color 0.3s ease, background-color 0.3s ease,
   border-color 0.3s ease;
 }
+
+.color-blue {
+  color: var(--brand-green-prymary);
+}
+
+.color-orange {
+  color: var(--brand-orange);
+}
+
+.section {
+  margin: 100px 0;
+}
+
+.pr-info {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.sale_book {
+  background: url('../image/bg-discount.svg') no-repeat center;
+  background-size: contain;
+  float: none;
+  width: 55px;
+  height: 55px;
+  text-align: center;
+  color: var(--color-white);
+  z-index: 999;
+  font-family: var(--fm-heading);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 120%;
+  @include flex-center;
+}
+
+.percent {
+  color: var(--color-white);
+  z-index: 999;
+  font-family: var(--fm-heading);
+  font-size: 32px;
+  line-height: 120%;
+}
+
+.vidosik {
+  font-family: var(--fm-heading);
+  font-weight: normal;
+  color: white;
+  background-image: url(../image/cloud-big_new.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+  line-height: 21px;
+  text-align: center;
+  padding: 15px;
+}
