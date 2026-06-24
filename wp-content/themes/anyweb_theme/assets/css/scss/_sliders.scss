@@ -114,10 +114,6 @@
 
     &.slick-next {
       background: url('../image/arrow-left-slider.svg') no-repeat center center;
-
-      &::before {
-        content: unset;
-      }
     }
 
     &:before {
@@ -342,14 +338,11 @@
 
 /////////////////////////////////
 
-.new-product {
+.new-product,
+.recommendations {
   position: relative;
   padding: 73px 0;
   width: 100%;
-
-  @include down(#{$bp-xl}) {
-    padding: 73px 0 0;
-  }
 
   &::before {
     content: '';
@@ -449,6 +442,12 @@
     }
   }
 
+  .so_product-link {
+    @include flex-column;
+    gap: 24px;
+    position: relative;
+  }
+
   .slider {
     margin: 0 75px;
 
@@ -507,7 +506,7 @@
     &:after {
       content: "";
       background: url('../image/color-stroke.svg') no-repeat;
-      background-size: contain;
+      background-size: cover;
       display: inline-block;
       position: absolute;
       width: 72px;
@@ -547,6 +546,7 @@
     &:hover {
       &:after {
         transform: rotate(180deg);
+        background-size: cover;
       }
     }
   }
@@ -567,3 +567,10 @@
   }
 }
 
+.recommendations {
+  h2 {
+    &:after {
+      content: unset !important;
+    }
+  }
+}

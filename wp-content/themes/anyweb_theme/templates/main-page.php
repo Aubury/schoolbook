@@ -37,6 +37,7 @@ get_header();
 </div>
 
 <main id="primary" class="site-main">
+    <div class="anm-lady"></div>
 <!--/////////////// Нові надходження ////////////////////////////////-->
         <?php
             function get_products_with_new_checkbox() {
@@ -79,6 +80,30 @@ get_header();
             <?php endif; ?>
 <!--/////////////////////////////////////////////////////////////////////    -->
 
+<!--///////////////////////// Наші рекомендації /////////////////////////    -->
+
+    <?php
+    $slider = carbon_get_post_meta( $post->ID, 'rcmnd_slider' );
+    if ( ! empty( $slider ) ): ?>
+        <div class="section">
+            <div class="container">
+                <div class="recommendations">
+                    <h2>На<span class="color-blue">ш</span>і рекоменд<span class="color-orange">а</span>ції</h2>
+                    <div class="slider slick-slider">
+                        <?php
+                            foreach ( $slider as $cnt => $item ):
+                                echo so_render_product($item['rcmnd_product_id']);
+                            endforeach;
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+<!--/////////////////////////////////////////////////////////////////////-->
+
+
             <div class="container">
 
 <?php
@@ -105,20 +130,7 @@ get_header();
 	</div>
 
  
-	<div class="recommendations">
-		<p class="h2-title">На<span class="color-blue">ш</span>і рекоменд<span class="color-orange">а</span>ції</p>
-          			<div class="slider slick-slider">
-					<?php
-							$slider = carbon_get_post_meta( $post->ID, 'rcmnd_slider' );
-							if ( ! empty( $slider ) ):
-							foreach ( $slider as $cnt => $item ): 
-							echo so_render_product($item['rcmnd_product_id']);
-							endforeach;
-							endif;
-					?>  						
 
-					</div>
-	</div>
 	</div>
 			</div>
 				</div>

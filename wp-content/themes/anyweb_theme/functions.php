@@ -778,21 +778,21 @@ function so_render_product($product_id){
             
                <div class=\"product-card\">
         
-                    <span class=\"pr-info\">{$preorder}{$isnew}{$issale}</span>			
                     <a href=\"{$data->permalink}\" class=\"so_product-link\">
+                        <span class=\"pr-info\">{$preorder}{$issale}</span>	
+                        <span class='pr-info-new'>{$isnew}</span>	
                         <div class=\"img\">
-                           <span class=\"img-front\">{$data->image}</span>
-                           <span class=\"img-hover\">{$second_image}</span>
+                           {$data->image}
                         </div>
-                    
-                        <div class=\"product-title\">
-                           
-                                <h3>{$data->title}</h3>
-                                  {$author_html} 
-                                <p>{$data->age}</p>
-                            
-                         </div> 
-                     </a>
+                    </a>
+                    <div class=\"product-title\">
+                       
+                            <h3>{$data->title}</h3>
+                              {$author_html} 
+                            <p>{$data->age}</p>
+                        
+                     </div> 
+                     
                     {$price}
                     <div class='favorite-basket-block'>
                         <div class=\"favorite-box\">

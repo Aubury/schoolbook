@@ -16,28 +16,6 @@
     }
   }
 
-  .img-front {
-    opacity: 1;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    transition: all 0.3s;
-    width: 100%;
-  }
-
-  .img-hover {
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    transition: all 0.3s;
-    width: 100%;
-  }
-
   .num {
     @include flex-center;
     gap: 12px;

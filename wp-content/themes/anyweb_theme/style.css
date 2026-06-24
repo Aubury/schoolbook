@@ -2264,11 +2264,6 @@ div.menu-clear-left {
   visibility: visible;
 }
 
-@media (min-width: 500px) {
-  /* #bcktotop {
-	  margin: 30px;
-	} */
-}
 
 /* slider */
 .slide1 {
@@ -2397,10 +2392,7 @@ span.rur span {
 .news_slide img {
   max-height: 300px;
 }
-.site-main {
-  /* padding-bottom: 100px; */
-  padding-bottom: 300px;
-}
+
 
 .term-description {
   display: none;
@@ -2658,7 +2650,7 @@ footer .bx-block-title{
   margin: 0 5px !important;
 }
 
-.catalog-section-holder .recommendations, .recommendations {
+.catalog-section-holder .recommendations {
   margin: 0 5px !important;
   padding: 0  !important;
 }
@@ -2666,9 +2658,7 @@ footer .bx-block-title{
 .new-books-slider a {
   max-width: 89% !important;
 }
-.site-main {
-  padding-bottom: 30px;
-}
+
 
   .woocommerce .cart-collaterals .cart_totals,
   .woocommerce-page .cart-collaterals .cart_totals {

@@ -78,6 +78,10 @@ a {
   color: var(--brand-orange);
 }
 
+.site-main {
+ position: relative;
+}
+
 .section {
   margin: 100px 0;
 }
@@ -90,6 +94,35 @@ a {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+}
+
+.pr-info-new {
+  position: absolute;
+  left: 15px;
+  bottom: 10px;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.new_book {
+  background: url('../image/bg-new.svg') no-repeat center;
+  background-size: contain;
+  float: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--color-white);
+  z-index: 999;
+  margin-bottom: -15px;
+  font-family: var(--fm-heading);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 120%;
+  @include flex-center;
 }
 
 .sale_book {
@@ -120,11 +153,46 @@ a {
   font-family: var(--fm-heading);
   font-weight: normal;
   color: white;
-  background-image: url(../image/cloud-big_new.png);
+  background-image: url('../image/cloud-big_new.png');
   background-repeat: no-repeat;
   background-size: contain;
   display: inline-block;
   line-height: 21px;
   text-align: center;
   padding: 15px;
+}
+
+.anm-lady {
+  position: absolute;
+  width: 43px;
+  height: 46px;
+  background: url("../image/сонечко.svg") no-repeat center;
+  background-size: contain;
+  top: 50%;
+  left: 30%;
+  @include flex-center;
+  z-index: 100;
+}
+
+.btn-up {
+  width: 40px;
+  height: 40px;
+  @include flex-center;
+  background: url("../image/button-up-gray.svg") no-repeat;
+  background-size: cover;
+  z-index: 1000;
+  position: fixed;
+  bottom: 250px;
+  right: 50px;
+
+  &:hover {
+    background: url("../image/button-up-black.svg") no-repeat;
+    background-size: cover;
+  }
+
+  .fixed {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
 }

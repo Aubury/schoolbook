@@ -433,33 +433,6 @@ $(document).ready(function () {
 
 
 $(function() {
-	$('.new-books-slider .slider').not('.slick-initialized').slick({
-		slidesToShow: 3,
-		arrows: true,
-		infinite: false,
-		responsive: [
-		{
-			breakpoint: 992,
-			settings: {
-				slidesToShow: 2,
-        		slidesToScroll: 2
-			}
-		},
-		{
-			breakpoint: 641,
-			settings: {
-				slidesToShow: 2,
-				slidesToScroll: 1,
-				arrows: false,
-				autoplay: true,
-				autoplaySpeed: 2000,
-			}
-		}]
-	});
-
-})
-
-$(function() {
 	$('.viewed_products .slider').not('.slick-initialized').slick({
 		slidesToShow: 4,
 		arrows: true,
@@ -510,6 +483,13 @@ $(function() {
 		arrows: true,
 		infinite: false,
 		responsive: [
+			{
+				breakpoint: 1030,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 2
+				}
+			},
 		{
 			breakpoint: 992,
 			settings: {
@@ -520,10 +500,10 @@ $(function() {
 		{
 			breakpoint: 641,
 			settings: {
-				arrows: false,
+				arrows: true,
 				slidesToShow: 2,
     			slidesToScroll: 1,
-				autoplay: true,
+				autoplay: false,
 				autoplaySpeed: 2000,
 			}
 		}]
