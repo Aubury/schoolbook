@@ -434,6 +434,7 @@
    background-image: url("../image/bg-catalog-menu-button.svg");
    background-size: 100% 100%;
    cursor: pointer;
+   z-index: 10;
 
   @include down(#{$bp-md}) {
     width: 222px;

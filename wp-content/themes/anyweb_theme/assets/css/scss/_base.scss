@@ -57,7 +57,44 @@ button {
   border: unset;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: var(--fm-heading);
+  font-weight: 500;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+h6 {
+  font-family: var(--fm-medium);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 18px;
+  letter-spacing: 0;
+  vertical-align: middle;
+
+}
+
+p {
+  font-family: var(--fm-base);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+
+  a {
+    color: inherit;
+  }
+}
+
 a {
+  font-size: inherit;
+  color: inherit;
+  text-decoration: none;
   -webkit-transition: color 0.3s ease, background-color 0.3s ease,
   border-color 0.3s ease;
   -moz-transition: color 0.3s ease, background-color 0.3s ease,
@@ -68,6 +105,21 @@ a {
   border-color 0.3s ease;
   transition: color 0.3s ease, background-color 0.3s ease,
   border-color 0.3s ease;
+
+  &:hover {
+    color: inherit;
+  }
+
+  &:active,
+  &:focus,
+  &:hover {
+    border-color: transparent;
+    text-decoration: none;
+  }
+}
+
+.opacity-8 {
+  opacity: 0.8;
 }
 
 .color-blue {
@@ -182,8 +234,8 @@ a {
   background-size: cover;
   z-index: 1000;
   position: fixed;
-  bottom: 250px;
-  right: 50px;
+  bottom: 20px;
+  right: 20px;
 
   &:hover {
     background: url("../image/button-up-black.svg") no-repeat;
@@ -195,4 +247,28 @@ a {
     pointer-events: auto;
   }
 
+}
+
+/**/
+.bg-primary {
+  background: #60aadb !important;
+  color: #fff;
+}
+
+.bg-success {
+  background: #64ba4e !important;
+  color: #fff;
+}
+
+.bg-info {
+  background: #9bc6dd !important;
+  color: #fff;
+}
+
+.bg-warning {
+  background: #fec139 !important;
+  color: #fff;
+}
+
+.bg-danger {
 }

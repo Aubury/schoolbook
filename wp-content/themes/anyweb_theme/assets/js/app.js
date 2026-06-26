@@ -1,21 +1,11 @@
 var btn = $('#bcktotop');
-
-
  $(window).scroll(function() {
-
   if ($(window).scrollTop() > 300) {
-
     btn.addClass('fixed');
-
   } else {
-
     btn.removeClass('fixed');
-
   }
-
 });
-
-
 
 btn.on('click', function(e) {
 
@@ -62,10 +52,6 @@ btn.on('click', function(e) {
   });
 
 // *************************************************************
-
-
-
-
 
 
 function getCookie(name) {
@@ -299,6 +285,14 @@ $(document).ready(function () {
 		}
 	});
 
+	$('.footer-column').on('click', function() {
+		if($(this).hasClass('opened')) {
+			$(this).removeClass('opened');
+		} else {
+			$(this).addClass('opened');
+		}
+	});
+
 	//////////////////////////////////////////////////////////
 	
    $(function() {
@@ -484,12 +478,20 @@ $(function() {
 		infinite: false,
 		responsive: [
 			{
-				breakpoint: 1030,
+				breakpoint: 1210,
 				settings: {
-					slidesToShow: 2,
-					slidesToScroll: 2
+					slidesToShow: 3,
+					slidesToScroll: 3
 				}
 			},
+			{
+				breakpoint: 1030,
+				settings: {
+					slidesToShow: 3,
+					slidesToScroll: 3
+				}
+			},
+
 		{
 			breakpoint: 992,
 			settings: {
@@ -677,6 +679,8 @@ if(popupClose){
 			$(this).find('span').text('Згорнути');
 		}
 	});
+
+/////////////////////////////////////////////////////////////////
 
 	$('.burger-menu').on('click', function() {
 		if($(this).hasClass('opened')) {
@@ -946,9 +950,7 @@ function centerModal(modalBox) {
 	});
 };
 
-
-
-
+////////////////////// Анимация Footer //////////////////////////////
 
 $(window).scroll(function() {
 	if ($(window).width() > 991){
@@ -975,6 +977,8 @@ $(window).scroll(function() {
 		$(".blog-items").addClass("anim-img");
 	}
 });
+
+///////////////////////////////////////////////////////////////
 
 // popup add to favorites
 jQuery(function($){

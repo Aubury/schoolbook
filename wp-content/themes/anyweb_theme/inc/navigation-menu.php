@@ -14,6 +14,9 @@ function theme_register_nav_menu() {
 	register_nav_menu( 'two_column_menu', 'two_column_menu' );
 	register_nav_menu( 'top_two_column_menu', 'top two_column_menu' );
 	register_nav_menu( 'wishlist', 'wishlist' );
+    register_nav_menu( 'footer__copy_col-1', 'Footer site copy - 1' );
+    register_nav_menu( 'footer__copy_col-2', 'Footer site copy - 2' );
+    register_nav_menu( 'footer__copy_col-3', 'Footer site copy - 3' );
 }
 
 
