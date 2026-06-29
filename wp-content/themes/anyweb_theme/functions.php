@@ -1865,6 +1865,7 @@ function any_web_theme_cart_url(): string {
 }
 
 
+
 // add_action( 'woocommerce_before_cart', function () {
 
 //     if ( WC()->cart->get_cart_contents_count() > 0 ) {

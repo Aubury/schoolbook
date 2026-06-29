@@ -353,24 +353,22 @@
 }
 
 .ladybug {
-  &:after {
-    content: '';
-    width: 28px;
-    height: 15px;
-    background: url('../image/ladybug.png') no-repeat;
-    background-size: contain;
-    display: inline-block;
-    position: absolute;
-    z-index: 1;
-    top: -20px;
-    right: -9999px;
-    animation: ladybug 11s 0.2s linear forwards;
+  width: 28px;
+  height: 15px;
+  @include flex-center;
+  background: url('../image/ladybug.png') no-repeat;
+  background-size: contain;
+  display: inline-block;
+  position: absolute;
+  z-index: 1;
+  top: -18px;
+  right: -9999px;
+  animation: ladybug 11s 0.2s linear forwards;
 
-    @include down(#{$bp-md}) {
-      width: 24px;
-      height: 12px;
-      top: -18px;
-    }
+  @include down(#{$bp-md}) {
+    width: 24px;
+    height: 12px;
+    top: -16px;
   }
 }
 

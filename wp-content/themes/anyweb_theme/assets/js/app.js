@@ -478,17 +478,19 @@ $(function() {
 		infinite: false,
 		responsive: [
 			{
-				breakpoint: 1210,
+				breakpoint: 1300,
 				settings: {
 					slidesToShow: 3,
-					slidesToScroll: 3
+					slidesToScroll: 3,
+					gap: 32
 				}
 			},
 			{
 				breakpoint: 1030,
 				settings: {
 					slidesToShow: 3,
-					slidesToScroll: 3
+					slidesToScroll: 3,
+					gap: 24
 				}
 			},
 
@@ -592,62 +594,48 @@ if(popupClose){
 	});
 }
 });
-	function reinitAJAX(){
-		if($(!'.slider-block .slider,.slick-initialized').length){
-			$('.slider-block .slider').slick({
-				slidesToShow: 4,
-				arrows: true,
-				infinite: false,
-				responsive: [
+function reinitAJAX(){
+	if($(!'.slider-block .slider,.slick-initialized').length){
+		$('.slider-block .slider').slick({
+			slidesToShow: 4,
+			arrows: true,
+			infinite: false,
+			responsive: [
+			{
+				breakpoint: 992,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 2
+				}
+			},
+			{
+				breakpoint: 641,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1
+				}
+			}]
+		});
+	}
+
+	if($(!'.recommendations .slider,.slick-initialized').length){
+		$('.recommendations .slider').slick({
+			slidesToShow: 4,
+			arrows: true,
+			infinite: false,
+			responsive: [
 				{
-					breakpoint: 992,
+					breakpoint: 1300,
 					settings: {
-						slidesToShow: 2,
-		    			slidesToScroll: 2
+						slidesToShow: 3,
+						slidesToScroll: 3
 					}
 				},
 				{
-					breakpoint: 641,
-					settings: {
-						slidesToShow: 1,
-		    			slidesToScroll: 1
-					}
-				}]
-			});
-		}
-		if($(!'.recommendations .slider,.slick-initialized').length){
-			$('.recommendations .slider').slick({
-				slidesToShow: 4,
-				arrows: true,
-				infinite: false,
-				responsive: [
-				{
 					breakpoint: 992,
 					settings: {
 						slidesToShow: 2,
-		    			slidesToScroll: 2
-					}
-				},
-				{
-					breakpoint: 641,
-					settings: {
-						slidesToShow: 1,
-		    			slidesToScroll: 1
-					}
-				}]
-			});
-		}
-		if($(!'.new-books-slider .slider,.slick-initialized').length){
-			$('.new-books-slider .slider').slick({
-				slidesToShow: 3,
-				arrows: true,
-				infinite: false,
-				responsive: [
-				{
-					breakpoint: 992,
-					settings: {
-						slidesToShow: 2,
-		        		slidesToScroll: 2
+						slidesToScroll: 2
 					}
 				},
 				{
@@ -656,10 +644,33 @@ if(popupClose){
 						slidesToShow: 1,
 						slidesToScroll: 1
 					}
-				}]
-			});
-		}
-	};
+			}]
+		});
+	}
+
+	if($(!'.new-books-slider .slider,.slick-initialized').length){
+		$('.new-books-slider .slider').slick({
+			slidesToShow: 3,
+			arrows: true,
+			infinite: false,
+			responsive: [
+			{
+				breakpoint: 992,
+				settings: {
+					slidesToShow: 2,
+					slidesToScroll: 2
+				}
+			},
+			{
+				breakpoint: 641,
+				settings: {
+					slidesToShow: 1,
+					slidesToScroll: 1
+				}
+			}]
+		});
+	}
+};
 	// BX.addCustomEvent('onAjaxSuccessFinish',reinitAJAX);
 
 	var textMore = '';

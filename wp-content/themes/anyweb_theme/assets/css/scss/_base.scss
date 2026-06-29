@@ -130,12 +130,32 @@ a {
   color: var(--brand-orange);
 }
 
+.color-white {
+  color: var(--color-white);
+}
+
 .site-main {
  position: relative;
 }
 
-.section {
-  margin: 100px 0;
+main {
+  & > .section {
+    margin: 100px 0 0;
+    position: relative;
+
+    @include down(#{$bp-xs}) {
+      margin-top: 50px;
+    }
+  }
+
+  & > .section:first-of-type {
+    margin-top: 175px;
+    position: relative;
+
+    @include down(#{$bp-xs}) {
+      margin-top: 150px;
+    }
+  }
 }
 
 .pr-info {
@@ -220,7 +240,7 @@ a {
   height: 46px;
   background: url("../image/сонечко.svg") no-repeat center;
   background-size: contain;
-  top: 50%;
+  top: -44px;
   left: 30%;
   @include flex-center;
   z-index: 100;
@@ -271,4 +291,291 @@ a {
 }
 
 .bg-danger {
+}
+
+.flex-two-column {
+  display: flex;
+  justify-content: center;
+}
+
+.preparing-wrap {
+  position: relative;
+  background-image: url('../image/stroke-preparing.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 20px 0;
+  @include flex-center;
+
+  @include down(#{$bp-xl}) {
+    background-size: 1200px 100%;
+  }
+
+  @include down(#{$bp-sm}) {
+    background: unset;
+  }
+
+  &::before {
+    content: '';
+    background: url("../image/preparing-dog.png") no-repeat center;
+    background-size: contain;
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    left: calc(50% - 100px);
+    bottom: 15px;
+    @include flex-center;
+
+    @include down(#{$bp-sm}) {
+      display: none;
+    }
+  }
+
+  &::after {
+    content: '';
+    background: url("../image/preparing-fox.png") no-repeat center;
+    background-size: contain;
+    width: 300px;
+    height: 300px;
+    position: absolute;
+    right: -15px;
+    bottom: 25px;
+    @include flex-center;
+
+    @include down(#{$bp-md}) {
+      display: none;
+    }
+  }
+}
+
+.preparing-slider {
+  position: relative;
+  background-image: url('../image/stroke-preparing.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  padding: 20px 0;
+  @include flex-center;
+
+  @include down(#{$bp-lg}) {
+    background: unset;
+    padding-bottom: 0;
+  }
+}
+
+.preparing {
+  padding-top: 0;
+  @include flex-column;
+
+  &.recommendations {
+    padding-top: 0;
+
+    &::before,
+    &::after {
+      content: unset;
+    }
+  }
+
+  @include down(#{$bp-sm}) {
+    padding-bottom: 0;
+  }
+
+  &::before,
+  &::after {
+    content: unset;
+  }
+
+  .flex-two-column {
+    gap: 170px;
+
+    @include down(#{$bp-xl}) {
+      gap: 100px;
+    }
+
+    @include down(#{$bp-sm}) {
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .arrow-point-right {
+      width: 150px;
+      height: 100px;
+      background: url("../image/preparing-arrow-green.png") no-repeat center;
+      background-size: contain;
+      position: absolute;
+      right: -60%;
+      bottom: 30%;
+
+      @include down(#{$bp-xl}) {
+        width: 100px;
+        height: 100px;
+        right: -40%;
+      }
+
+      @include down(#{$bp-sm}) {
+        display: none;
+      }
+    }
+  }
+
+  .arrow-preparing-up {
+    width: 100px;
+    height: 150px;
+    background: url("../image/preparing-arrow-red.png") no-repeat center;
+    background-size: contain;
+    position: absolute;
+    right: 200px;
+    bottom: 10px;
+
+    @include down(#{$bp-xl}) {
+      width: 80px;
+      height: 100px;
+      right: 250px;
+      bottom: 15px;
+    }
+
+    @include down(#{$bp-md}) {
+      display: none;
+    }
+  }
+
+  .column {
+    position: relative;
+    max-width: fit-content;
+
+    @include down(#{$bp-sm}) {
+      @include flex-center;
+      width: 100%;
+    }
+  }
+
+  .column-auto {
+    @include flex-column;
+    align-items: center;
+    justify-content: start;
+    gap: 12px;
+    flex: 1;
+    max-width: 500px;
+  }
+
+  h3 {
+    font-family: var(--fm-heading);
+    font-weight: 400;
+    font-size: 54px;
+    line-height: 120%;
+    letter-spacing: 0;
+    text-align: center;
+    vertical-align: middle;
+    text-transform: uppercase;
+    color: var(--brand-orange);
+
+    @include down(#{$bp-sm}) {
+      font-size: 34px;
+    }
+  }
+}
+
+.preorder-red-stroke {
+  background: url("../image/preparing-red-stroke.png") no-repeat center;
+  background-size: 100% 100%;
+  width: 360px;
+
+  @include down(#{$bp-md}) {
+    width: 309px;
+  }
+
+  .animation-stroke {
+    background: url("../image/animation-stroke.gif") no-repeat center;
+    background-size: 100% 100%;
+    margin: 10px;
+    padding: 2px;
+  }
+}
+
+.preorder-text {
+  font-family: var(--fm-bold);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 130%;
+  letter-spacing: 0;
+  text-align: center;
+  vertical-align: middle;
+  text-transform: uppercase;
+  color: var(--color-base);
+  @include flex-column;
+  gap: 6px;
+  margin: 30px;
+
+  @include down(#{$bp-sm}) {
+    font-size: 16px;
+  }
+
+
+  span {
+    display: block;
+  }
+
+  .color-blue,
+  .color-orange {
+    font-size: 21px;
+  }
+
+}
+
+.preparing-timer {
+  background: url("../image/bg-preparing-timer.svg") no-repeat center;
+  background-size: 100% 100%;
+  font-family: var(--fm-bold);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 120%;
+  letter-spacing: 0;
+  text-align: center;
+  vertical-align: middle;
+  color: #000000;
+  width: 405px;
+  height: 92px;
+  @include flex-column;
+  align-items: center;
+  justify-content: center;
+
+  @include down(#{$bp-md}) {
+    width: 309px;
+  }
+
+  @include down(#{$bp-sm}) {
+    font-size: 16pxpx;
+  }
+
+  span {
+    display: block;
+  }
+}
+
+.fox-display {
+  .slick-track {
+    min-width: 1088px;
+    @include flex-evenly-start-align;
+
+    @include down(#{$bp-xl}) {
+      min-width: unset;
+    }
+  }
+
+  &::after {
+    content: '';
+    background: url("../image/preparing-fox.png") no-repeat center;
+    background-size: contain;
+    width: 300px;
+    height: 300px;
+    position: absolute;
+    right: -15px;
+    bottom: 25px;
+    @include flex-center;
+
+    @include down(#{$bp-lg}) {
+      display: none;
+    }
+  }
 }

@@ -20,6 +20,12 @@
   justify-content: space-evenly;
 }
 
+.flex-evenly-start-align {
+  display: flex;
+  align-items: start;
+  justify-content: space-evenly;
+}
+
 .flex-column {
   display: flex;
   flex-direction: column;

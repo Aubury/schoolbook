@@ -290,19 +290,6 @@
   width: 100%;
   height: auto;
 
-  //&::after {
-  //  content: '';
-  //  position: absolute;
-  //  left: 0;
-  //  bottom: -16px;
-  //  width: 100%;
-  //  height: 20px;
-  //  background: url("../image/bottom_line.png") no-repeat center bottom;
-  //  background-size: cover;
-  //  z-index: 1;
-  //  pointer-events: none;
-  //}
-
   @include down(#{$bp-xxs}) {
     background: url('../image/banner.png') no-repeat 50% 0;
     background-size: auto 98%;
@@ -525,6 +512,10 @@
   padding: 73px 0;
   width: 100%;
 
+  @include down(#{$bp-lg}) {
+    padding-bottom: 0;
+  }
+
   &::before {
     content: '';
     position: absolute;
@@ -536,11 +527,7 @@
     background-size: 100%;
     z-index: -1;
 
-    @include down(#{$bp-xl}) {
-      background-size: 1300px;
-    }
-
-    @include down(#{$bp-md}) {
+    @include down(#{$bp-lg}) {
       content: unset;
     }
 
@@ -557,15 +544,7 @@
     background-size: 100%;
     z-index: -1;
 
-    @include down(#{$bp-xl}) {
-      background-size: 1300px;
-    }
-
-    @include down(#{$bp-md}) {
-      background-size: 800px;
-    }
-
-    @include down(#{$bp-xs}) {
+    @include down(#{$bp-lg}) {
       content: unset;
     }
   }
@@ -603,11 +582,7 @@
       }
 
       @include down(#{$bp-lg}) {
-        right: 15%;
-      }
-
-      @include down(#{$bp-xmd}) {
-       content: unset;
+        content: unset;
       }
     }
 
@@ -705,7 +680,7 @@
       }
     }
 
-    @include down(#{$bp-md}) {
+    @include down(#{$bp-lg}) {
       top: -75px;
     }
 
@@ -755,3 +730,106 @@
     }
   }
 }
+
+.preparing-slider {
+  position: relative;
+  width: 100%;
+
+  @include down(#{$bp-xs}) {
+    padding-bottom: 0;
+    padding-right: var(--bs-gutter-x, .75rem);
+    padding-left: var(--bs-gutter-x, .75rem);
+  }
+
+  .slider {
+    margin: 0 0;
+  }
+
+  .slick-arrow {
+    &.slick-next {
+      right: -70px;
+
+      @include down(#{$bp-md}) {
+        right: 0;
+      }
+
+      @include down(#{$bp-xs}) {
+        right: 0;
+      }
+
+      &::before {
+        content: unset;
+      }
+    }
+
+    &.slick-prev {
+      left: -70px;
+
+      @include down(#{$bp-md}) {
+        left: 0;
+      }
+
+      @include down(#{$bp-xs}) {
+        left: 0;
+      }
+
+      &::before {
+        content: unset;
+      }
+    }
+
+    &:after {
+      content: "";
+      background: url('../image/color-stroke.svg') no-repeat;
+      background-size: cover;
+      display: inline-block;
+      position: absolute;
+      width: 72px;
+      height: 72px;
+      transition: transform 0.3s ease-in-out;
+
+      @include down(#{$bp-md}) {
+        width: 50px;
+        height: 50px;
+      }
+
+      @include down(#{$bp-xs}) {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    @include down(#{$bp-md}) {
+      top: -75px;
+    }
+
+    @include down(#{$bp-xs}) {
+      top: -45px;
+    }
+
+    @include down(#{$bp-xsl}) {
+      top: -65px;
+    }
+  }
+
+  .slick-next,
+  .slick-prev {
+    @include down(#{$bp-md}) {
+      background-size: 19px 14px;
+    }
+
+    &:hover {
+      &:after {
+        transform: rotate(180deg);
+        background-size: cover;
+      }
+    }
+  }
+
+  .item {
+    display: flex !important;
+    align-items: start;
+    justify-content: center;
+  }
+}
+

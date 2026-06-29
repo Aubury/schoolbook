@@ -28,10 +28,10 @@
       letter-spacing: 0;
       vertical-align: middle;
       color: var(--color-gray);
+      text-decoration: line-through;
 
       @include down(#{$bp-xs}) {
         font-size: 14px;
-        text-decoration: line-through;
       }
     }
 

@@ -38,7 +38,127 @@ get_header();
 </div>
 
 <main id="primary" class="site-main">
-    <div class="anm-lady"></div>
+
+<!--////////////////////// Предзамовлення /////////////////////////-->
+
+    <?php
+        $slider = get_products_with_preorder_date();
+        $length = count($slider);
+        $preparing_class_slider = '';
+        $length > 1 ? $preparing_class_slider = 'preparing-slider' : $preparing_class_slider = 'preparing-wrap';
+        $length === 2 ? $preparing_fox = 'fox-display' : $preparing_fox = '';
+        if ( !empty($slider) ) :
+    ?>
+    <div class="section">
+        <div class="container <?php echo $preparing_class_slider . ' ' . $preparing_fox ?>">
+            <div class="recommendations preparing">
+                    <h2>Пер<span class="color-blue">е</span>дзамо<span class="color-orange">в</span>лення</h2>
+
+                    <?php
+                    $length = count($slider);
+                    if ( $length === 1 ) :
+                        $productID = $slider[0];?>
+                         <div class="flex-two-column">
+                             <div class="column">
+                                 <?php
+                                    echo so_render_product($productID);
+                                ?>
+                                 <div class="arrow-point-right"></div>
+                             </div>
+                             <div class="column-auto">
+                                 <?php
+                                 $custom_royalty = get_post_meta($productID, '_custom_royalty', true);
+                                 $custom_preorder = get_post_meta($productID, '_custom_preorder', true);
+                                 $custom_preorder_countdown = get_post_meta($productID, '_custom_preorder_countdown', true);
+                                 $current_date = date('Y-m-d');
+
+                                 function display_countdown_timer() {
+                                     // Установим дату окончания акции (формат: год-месяц-день час:мин:сек)
+                                     global $custom_preorder_countdown;
+                                     $end_date = $custom_preorder_countdown;
+
+                                     // Преобразуем дату в формат для JavaScript
+                                     $end_date_js = date('Y-m-d H:i:s', strtotime($end_date));
+
+                                     // Передаем дату в JavaScript
+                                     echo "<script type='text/javascript'>
+                                              var endDate = new Date('{$end_date_js}').getTime();
+                                           </script>";
+                                 }
+
+                                 add_action('wp_footer', 'display_countdown_timer');
+
+                                if ($custom_preorder_countdown > $current_date ) {
+                                    echo '<div class="preorder-red-stroke">
+                                                <div class="animation-stroke">
+                                                    <div class="preorder-text">
+                                                        <span class="color-orange">Унікальна</span>
+                                                         <span class="color-blue">можливість</span>
+                                                         <span class="color-orange">придбати книгу</span>
+                                                          до офіційного  початку розпродажу 
+                                                    </div>
+                                                </div>
+                                           </div>
+                                           <h3>
+                                                <span class="color-blue">Акція діє до: </span>'
+                                                . date("d.m.Y", strtotime($custom_preorder_countdown)) .
+                                           '</h3>
+                                                
+                                           <div class="preparing-timer">
+                                                До закінчення акціі залишилось:
+                                                <span id="countdown" class="color-white"></span>
+                                           </div>
+                                           
+                                        <script type="text/javascript">
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            // Обновляем таймер каждую секунду
+                                            var x = setInterval(function() {
+                                                var now = new Date().getTime();
+                                                var distance = endDate - now;
+        
+                                                // Расчет дней, часов, минут и секунд
+                                                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+                                                // Отображение результата
+                                                document.getElementById("countdown").innerHTML = days + " дн. " + hours + " год. "
+                                                    + minutes + " хв. " + seconds + " сек.";
+        
+                                                // Если обратный отсчет закончился
+                                                if (distance < 0) {
+                                                    clearInterval(x);
+                                                    document.getElementById("countdown").innerHTML = "Акцію завершено!";
+                                                }
+                                            }, 1000);
+                                        });
+                                        </script>';
+
+                        } else {
+
+                        }
+                                 ?>
+
+                                 <div class="arrow-preparing-up"></div>
+                             </div>
+
+                         </div>
+                    <?php else: ?>
+                       <div class="slider slick-slider">
+                           <?php
+                           foreach ( $slider as $cnt => $item ):
+                               echo so_render_product($item);
+                           endforeach;
+                           ?>
+                       </div><!-- end .slider -->
+                    <?php endif; ?>
+
+                </div><!-- end .recommendations preparing -->
+        </div><!-- end .container -->
+    </div>
+   <?php endif; ?>
+
 <!--/////////////// Нові надходження ////////////////////////////////-->
         <?php
             function get_products_with_new_checkbox() {
@@ -79,7 +199,6 @@ get_header();
             </div> <!-- end .section -->
 
             <?php endif; ?>
-<!--/////////////////////////////////////////////////////////////////////    -->
 
 <!--///////////////////////// Наші рекомендації /////////////////////////    -->
 
@@ -87,6 +206,7 @@ get_header();
     $slider = carbon_get_post_meta( $post->ID, 'rcmnd_slider' );
     if ( ! empty( $slider ) ): ?>
         <div class="section">
+            <div class="anm-lady"></div>
             <div class="container">
                 <div class="recommendations">
                     <h2>На<span class="color-blue">ш</span>і рекоменд<span class="color-orange">а</span>ції</h2>
@@ -102,24 +222,6 @@ get_header();
         </div>
     <?php endif; ?>
 
-<!--/////////////////////////////////////////////////////////////////////-->
-
-    <div class="container">
-        <?php
-            $slider = get_products_with_preorder_date();
-            if ( !empty($slider) ) :?>
-            <div class="recommendations preparing">
-                <p class="h2-title">Пер<span class="color-blue">е</span>дзамо<span class="color-orange">в</span>лення</p>
-                <div class="slider slick-slider">
-                    <?php
-                        foreach ( $slider as $cnt => $item ):
-                            echo so_render_product($item);
-                        endforeach;
-                    ?>
-                </div><!-- end .slider -->
-            </div><!-- end .recommendations preparing -->
-        <?php endif; ?>
-    </div><!-- end .container -->
 
 <!-- ///////////////////////////////////////   -->
     <?php
@@ -180,48 +282,7 @@ get_header();
             </div><!-- end .blog-bckgr-->
     <?php endif ?>
 
-    <div class="container">
-        <div class="row">
-             <div class="bx-content ">
-                <div class="desc-section">
-                    <p class="desc-title">
-                        <?php
-                            $btm_title = carbon_get_post_meta( $post->ID, 'btm_title' );
-                            if ( ! empty( $btm_title ) ):
-                                echo  $btm_title;
-                            endif;
-                        ?>
-                    </p>
-                    <div class="desc-text-holder">
-                            <div class="desc-text">
-                                <?php
-                                    $btm_txt = carbon_get_post_meta( $post->ID, 'btm_txt' );
-                                    if ( ! empty( $btm_txt ) ):
-                                        echo  $btm_txt;
-                                    endif;
-                                 ?>
-                            </div><!-- end .desc-text -->
 
-                            <div class="expanded">
-                                <?php
-                                    $btm_txt_hide = carbon_get_post_meta( $post->ID, 'btm_txt_hide' );
-                                    if ( ! empty( $btm_txt_hide ) ):
-                                        echo  $btm_txt_hide;
-                                    endif;
-                                ?>
-                            </div><!-- end .expanded -->
-
-                            <?php
-                                if ( $btm_txt_hide ) :
-                                    echo '<a href="javascript:void(0)" class="more-text"><span>Детальніше</span><i class="icon-arrow"></i></a>';
-                                endif;
-                            ?>
-                        </div><!-- end .desc-text-holder -->
-                </div><!-- end .desc-section -->
-                <br>
-		     </div><!-- end .bx-content-->
-		</div><!-- end .row-->
-	</div><!-- end .container-->
 
     <div class="container">
         <?php
@@ -241,5 +302,7 @@ get_header();
 </main> <!-- #main -->
 
 <?php
+
+
 get_sidebar();
 get_footer();

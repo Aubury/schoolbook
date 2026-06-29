@@ -208,6 +208,9 @@ get_header();
 
                                                     <?php
                                                     $custom_royalty = get_post_meta($productID, '_custom_royalty', true);
+                                                    $custom_preorder = get_post_meta($productID, '_custom_preorder', true);
+                                                    $custom_preorder_countdown = get_post_meta($productID, '_custom_preorder_countdown', true);
+                                                    $current_date = date('Y-m-d');
 
                                                     // Если флажок "роялти" установлен, выводим текст из поля "статус"
                                                     if ($custom_royalty === 'yes' && !$product->is_on_backorder()) {
@@ -216,10 +219,6 @@ get_header();
                                                         // Выводим текст статуса
                                                         echo '<div class="availability"><span class="available"> ' . esc_html($custom_status) . '</span></div>';
                                                     } else {
-
-                                                        $custom_preorder = get_post_meta($productID, '_custom_preorder', true);
-                                                        $custom_preorder_countdown = get_post_meta($productID, '_custom_preorder_countdown', true);
-                                                        $current_date = date('Y-m-d');
 
                                                         function display_countdown_timer() {
                                                             // Установим дату окончания акции (формат: год-месяц-день час:мин:сек)

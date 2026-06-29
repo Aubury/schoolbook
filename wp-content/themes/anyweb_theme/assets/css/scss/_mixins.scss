@@ -20,6 +20,12 @@
   justify-content: space-evenly;
 }
 
+@mixin flex-evenly-start-align {
+  display: flex;
+  align-items: start;
+  justify-content: space-evenly;
+}
+
 @mixin flex-column{
   display: flex;
   flex-direction: column;
