@@ -308,6 +308,14 @@ a:active, a:focus, a:hover {
   position: relative;
 }
 
+main {
+  padding-bottom: 75px;
+}
+@media (max-width: 576px) {
+  main {
+    padding-bottom: 25px;
+  }
+}
 main > .section {
   margin: 100px 0 0;
   position: relative;
@@ -3189,6 +3197,7 @@ main > .section:first-of-type {
   display: flex;
   justify-content: space-between;
   color: var(--color-white);
+  margin-top: 150px;
 }
 @media (max-width: 992px) {
   .footer {

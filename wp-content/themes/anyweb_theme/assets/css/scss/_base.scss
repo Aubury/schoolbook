@@ -139,6 +139,12 @@ a {
 }
 
 main {
+  padding-bottom: 75px;
+
+  @include down(#{$bp-xs}) {
+    padding-bottom: 25px;
+  }
+
   & > .section {
     margin: 100px 0 0;
     position: relative;
