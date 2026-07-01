@@ -57,6 +57,7 @@ if ( class_exists( 'WooCommerce' ) ) {
 add_action( 'carbon_fields_register_fields', 'so_register_custom_fields' );
 function so_register_custom_fields() {
     require get_template_directory() . '/inc/metabox/metabox.php';
+    require get_template_directory() . '/inc/metabox/catalog-mane-page.php';
 }
 
 add_action( 'after_setup_theme', 'crb_load' );
@@ -740,11 +741,11 @@ function so_render_product($product_id){
         $current_date = date('Y-m-d');
 
         if ( $data->custom_preorder > $current_date ) {
-            $preorder = '<span class="preorder">Передзамовлення</span>';
+            $preorder = '<span class="preorder-book">Передзамовлення</span>';
         } else {
 
             if($data->is_new){
-                $isnew = '<span class="new_book">new</span>';
+                $isnew = '<span class="new_book"></span>';
             }
         }
 

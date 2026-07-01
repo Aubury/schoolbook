@@ -150,16 +150,20 @@ main {
     position: relative;
 
     @include down(#{$bp-xs}) {
-      margin-top: 50px;
+      margin-top: 75px;
     }
   }
 
   & > .section:first-of-type {
-    margin-top: 175px;
+    margin-top: 275px;
     position: relative;
 
     @include down(#{$bp-xs}) {
-      margin-top: 150px;
+      margin-top: 200px;
+    }
+
+    @include down(#{$bp-xxs}) {
+      margin-top: 175px;
     }
   }
 }
@@ -172,35 +176,49 @@ main {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  z-index: 999;
 }
 
 .pr-info-new {
   position: absolute;
-  left: 15px;
-  bottom: 10px;
+  right: 65px;
+  top: 0;
   height: fit-content;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+
+  @include down(#{$bp-xs}) {
+    right: 45px;
+  }
+}
+
+.preorder-book {
+  background: var(--brand-green-prymary);
+  text-transform: lowercase;
+  float: none;
+  line-height: 37px;
+  border-radius: 14px;
+  color: var(--color-white);
+  z-index: 999;
+  margin-bottom: -15px;
+  padding: 0 5px;
 }
 
 .new_book {
-  background: url('../image/bg-new.svg') no-repeat center;
+  background: url('../image/new.svg') no-repeat center;
   background-size: contain;
   float: none;
   width: 50px;
   height: 50px;
-  border-radius: 50%;
-  text-align: center;
-  text-transform: uppercase;
-  color: var(--color-white);
-  z-index: 999;
+  z-index: 900;
   margin-bottom: -15px;
-  font-family: var(--fm-heading);
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 120%;
   @include flex-center;
+
+  @include down(#{$bp-xs}) {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 .sale_book {
@@ -217,6 +235,12 @@ main {
   font-weight: 500;
   line-height: 120%;
   @include flex-center;
+
+  @include down(#{$bp-xs}) {
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+  }
 }
 
 .percent {
@@ -238,6 +262,7 @@ main {
   line-height: 21px;
   text-align: center;
   padding: 15px;
+  width: 160px;
 }
 
 .anm-lady {
@@ -313,12 +338,32 @@ main {
   padding: 20px 0;
   @include flex-center;
 
-  @include down(#{$bp-xl}) {
-    background-size: 1200px 100%;
+  @include down(#{$bp-lg}) {
+    background-image: unset;
   }
 
-  @include down(#{$bp-sm}) {
+  @include down(#{$bp-md}) {
     background: unset;
+  }
+
+  .bg-preparing-wrap {
+    display: none;
+
+    @include down(#{$bp-lg}) {
+      display: block;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 30%;
+      height: 25px;
+      overflow: hidden;
+      background: url('../image/stroke-preparing-bottom-line.png') no-repeat bottom right;
+      background-size: cover;
+    }
+
+    @include down(#{$bp-md}) {
+      display: none;
+    }
   }
 
   &::before {
@@ -332,7 +377,7 @@ main {
     bottom: 15px;
     @include flex-center;
 
-    @include down(#{$bp-sm}) {
+    @include down(#{$bp-lg}) {
       display: none;
     }
   }
@@ -347,6 +392,12 @@ main {
     right: -15px;
     bottom: 25px;
     @include flex-center;
+
+    @include down(#{$bp-lg}) {
+      width: 250px;
+      height: 250px;
+      bottom: 0;
+    }
 
     @include down(#{$bp-md}) {
       display: none;
@@ -366,6 +417,10 @@ main {
   @include down(#{$bp-lg}) {
     background: unset;
     padding-bottom: 0;
+  }
+
+  .bg-preparing-wrap {
+    display: none;
   }
 }
 
@@ -438,10 +493,10 @@ main {
       width: 80px;
       height: 100px;
       right: 250px;
-      bottom: 15px;
+      bottom: 20px;
     }
 
-    @include down(#{$bp-md}) {
+    @include down(#{$bp-lg}) {
       display: none;
     }
   }
@@ -582,6 +637,47 @@ main {
 
     @include down(#{$bp-lg}) {
       display: none;
+    }
+  }
+}
+
+.favorite_categories {
+  @include flex-column;
+  align-items: center;
+  gap: 44px;
+
+  @include down(#{$bp-lg}) {
+    gap: 40px;
+  }
+
+  h2 {
+    font-family: var(--fm-heading);
+    font-weight: 400;
+    font-size: 70px;
+    line-height: 75px;
+    letter-spacing: 0;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    overflow-wrap: break-word; /* Розриває занадто довгі слова, якщо вони не вміщаються */
+    word-wrap: break-word;     /* Застарілий синтаксис для сумісності зі старими браузерами */
+    word-break: normal;
+
+    @include down(#{$bp-xs}) {
+      font-size: 42px;
+      line-height: 32px;
+      horiz-align: center;
+    }
+  }
+
+  .flex-evenly-start-align {
+    flex-wrap: wrap;
+    row-gap: 60px;
+    column-gap: 25px;
+
+    @include down(#{$bp-lg}) {
+      row-gap: 40px;
+      column-gap: 18px;
     }
   }
 }

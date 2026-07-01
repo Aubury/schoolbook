@@ -155,6 +155,7 @@ get_header();
                     <?php endif; ?>
 
                 </div><!-- end .recommendations preparing -->
+            <div class="bg-preparing-wrap"></div>
         </div><!-- end .container -->
     </div>
    <?php endif; ?>
@@ -222,6 +223,53 @@ get_header();
         </div>
     <?php endif; ?>
 
+<!--///////////////////////// Ваші улюблені категорії /////////////////////////    -->
+    <?php
+    $favorite_categories = carbon_get_post_meta( $post->ID, 'crb_your_favorite_categories' );
+    $favorite_categories_title = carbon_get_post_meta( $post->ID, 'crb_your_favorite_categories_title' );
+    if ( ! empty( $favorite_categories ) ): ?>
+        <div class="section">
+            <div class="container">
+                <div class="favorite_categories">
+                    <?php
+                        if ( ! empty( $favorite_categories_title ) ):
+                            echo wpautop( $favorite_categories_title );
+                    endif; ?>
+
+                    <div class="flex-evenly-start-align">
+                        <?php
+                        foreach ( $favorite_categories as $cnt => $item ): ?>
+                            <div class="product-card">
+                                <div class="tow-image">
+                                    <div class="first-image">
+                                        <?php echo wp_get_attachment_image( $item['crb_image_first'], 'full' ); ?>
+                                    </div>
+                                    <div class="second-image">
+                                        <?php echo wp_get_attachment_image( $item['crb_image_second'], 'full' ); ?>
+                                    </div>
+                                </div>
+                                <div class="product-title">
+                                    <h3>
+                                        <?php echo $item['crb_title']; ?>
+                                    </h3>
+                                    <p><?php echo $item['crb_age']; ?></p>
+                                </div>
+                                <div class="button-to-buy">
+                                    <?php $link = home_url() .  $item['crb_link']; ?>
+                                    <a href="<?php echo esc_url($link);?>">
+                                        <div class="text-block">
+                                            Переглянути
+                                            <span class="arrow-button-to-buy"></span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 
 <!-- ///////////////////////////////////////   -->
     <?php

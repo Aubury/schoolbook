@@ -63,8 +63,9 @@ function anyweb_scripts() {
     wp_enqueue_script( 'slickjs', get_stylesheet_directory_uri() . '/assets/js/slick.js', array('jqur', 'migrate'), null, true );
     wp_enqueue_script( 'mCustomScrollbar', get_stylesheet_directory_uri() . '/assets/js/mCustomScrollbar/jquery.mCustomScrollbar.js', array('jqur', 'migrate'), null, true );
 	wp_enqueue_script( 'formstyler', get_stylesheet_directory_uri() . '/assets/js/formstyler/jquery.formstyler.js', array('jqur', 'migrate', 'mCustomScrollbar'), null, true );
+    wp_enqueue_script("so-sliders",get_template_directory_uri() . "/assets/js/sliders.js",array('jqur', 'migrate'),_S_VERSION, true);
 
-	$data = [
+    $data = [
 		'directory_uri' => get_stylesheet_directory_uri()
 	];
 	

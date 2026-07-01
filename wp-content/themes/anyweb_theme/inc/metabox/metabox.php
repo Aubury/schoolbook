@@ -7,9 +7,6 @@ use Carbon_Fields\Container;
 use Carbon_Fields\Field;
 
 
-
-
-
 Container::make( 'theme_options', __( 'SchoolBook settings' ) )
     ->add_fields( array(
         Field::make( 'text', 'video_link', __( ' Відео-новини' ) )->set_width(50 ),
@@ -34,6 +31,7 @@ Container::make("post_meta", "Раздел Блог")
         
         Field::make( 'checkbox', 'visible_blog', 'Отображать блог?' ),
     ) );
+
 Container::make("post_meta", "Слайдер")
      
     ->show_on_template("templates/main-page.php")
