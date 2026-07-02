@@ -267,6 +267,10 @@
     margin-bottom: 100px;
   }
 
+  @include down(#{$bp-xxs}) {
+    margin-bottom: 60px;
+  }
+
   .bottom-line-cell {
     position: absolute;
     left: 0;
@@ -291,7 +295,7 @@
   height: auto;
 
   @include down(#{$bp-xxs}) {
-    background: url('../image/banner.png') no-repeat 50% 0;
+    background: url('../image/banner.svg') no-repeat 50% 0;
     background-size: auto 98%;
     padding: 2px 0;
   }
@@ -302,7 +306,7 @@
 .promo-slider-wrap {
   width: 100%;
   height: auto;
-  background: url('../image/Baner.png') no-repeat 50% 0;
+  background: url('../image/banner.png') no-repeat 50% 0;
   background-size: 100% 100%;
 
   @include down(#{$bp-xs}) {
@@ -508,11 +512,16 @@
 .new-product,
 .recommendations {
   position: relative;
-  padding: 42px 0;
+  padding-bottom: 75px;
+  //padding: 42px 0;
   width: 100%;
 
   @include down(#{$bp-lg}) {
     padding-bottom: 0;
+  }
+
+  @include down(#{$bp-xs}) {
+    margin-top: 42px;
   }
 
   &::before {
@@ -520,7 +529,7 @@
     position: absolute;
     left: 25px;
     right: 25px;
-    top: 70px;
+    top: 0;
     height: 50%;
     background: url('../image/top-line-dash.svg') no-repeat center top;
     background-size: 100%;
@@ -605,13 +614,18 @@
 
   .slider {
     margin: 0 75px;
+    padding-bottom: 42px;
+
+    @include down(#{$bp-lg}) {
+      padding-bottom: 0;
+    }
 
     @include down(#{$bp-md}) {
       margin: 0 50px;
     }
 
-    @include down(#{$bp-xs}) {
-      margin: 0;
+    @include down(#{$bp-xxs}) {
+      margin: 0 0;
     }
   }
 

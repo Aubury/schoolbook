@@ -317,26 +317,20 @@ main {
   }
 }
 main > .section {
-  margin: 100px 0 0;
   position: relative;
 }
-@media (max-width: 576px) {
-  main > .section {
-    margin-top: 75px;
-  }
-}
-main > .section:first-of-type {
-  margin-top: 275px;
+
+.main-page {
   position: relative;
+  padding-top: 132px;
+  display: flex;
+  flex-direction: column;
+  gap: 132px;
 }
 @media (max-width: 576px) {
-  main > .section:first-of-type {
-    margin-top: 200px;
-  }
-}
-@media (max-width: 431px) {
-  main > .section:first-of-type {
-    margin-top: 175px;
+  .main-page {
+    padding-top: 88px;
+    gap: 88px;
   }
 }
 
@@ -450,7 +444,7 @@ main > .section:first-of-type {
   height: 46px;
   background: url("../image/сонечко.svg") no-repeat center;
   background-size: contain;
-  top: -44px;
+  top: -80px;
   left: 30%;
   display: flex;
   align-items: center;
@@ -525,6 +519,11 @@ main > .section:first-of-type {
 @media (max-width: 992px) {
   .preparing-wrap {
     background: unset;
+  }
+}
+@media (max-width: 431px) {
+  .preparing-wrap {
+    padding: 32px 0 0;
   }
 }
 .preparing-wrap .bg-preparing-wrap {
@@ -624,6 +623,11 @@ main > .section:first-of-type {
 .preparing.recommendations::before, .preparing.recommendations::after {
   content: unset;
 }
+@media (max-width: 431px) {
+  .preparing.recommendations {
+    margin-top: 0;
+  }
+}
 @media (max-width: 769px) {
   .preparing {
     padding-bottom: 0;
@@ -638,6 +642,16 @@ main > .section:first-of-type {
 @media (max-width: 1281px) {
   .preparing .flex-two-column {
     gap: 100px;
+  }
+}
+@media (max-width: 1030px) {
+  .preparing .flex-two-column {
+    padding-bottom: 50px;
+  }
+}
+@media (max-width: 821px) {
+  .preparing .flex-two-column {
+    padding-bottom: 0;
   }
 }
 @media (max-width: 769px) {
@@ -2414,6 +2428,11 @@ main > .section:first-of-type {
     margin-bottom: 100px;
   }
 }
+@media (max-width: 431px) {
+  .banner-wrap {
+    margin-bottom: 60px;
+  }
+}
 .banner-wrap .bottom-line-cell {
   position: absolute;
   left: 0;
@@ -2439,7 +2458,7 @@ main > .section:first-of-type {
 }
 @media (max-width: 431px) {
   .banner {
-    background: url("../image/banner.png") no-repeat 50% 0;
+    background: url("../image/banner.svg") no-repeat 50% 0;
     background-size: auto 98%;
     padding: 2px 0;
   }
@@ -2448,7 +2467,7 @@ main > .section:first-of-type {
 .promo-slider-wrap {
   width: 100%;
   height: auto;
-  background: url("../image/Baner.png") no-repeat 50% 0;
+  background: url("../image/banner.png") no-repeat 50% 0;
   background-size: 100% 100%;
 }
 @media (max-width: 576px) {
@@ -2649,7 +2668,7 @@ main > .section:first-of-type {
 .new-product,
 .recommendations {
   position: relative;
-  padding: 42px 0;
+  padding-bottom: 75px;
   width: 100%;
 }
 @media (max-width: 1030px) {
@@ -2658,13 +2677,19 @@ main > .section:first-of-type {
     padding-bottom: 0;
   }
 }
+@media (max-width: 576px) {
+  .new-product,
+  .recommendations {
+    margin-top: 42px;
+  }
+}
 .new-product::before,
 .recommendations::before {
   content: "";
   position: absolute;
   left: 25px;
   right: 25px;
-  top: 70px;
+  top: 0;
   height: 50%;
   background: url("../image/top-line-dash.svg") no-repeat center top;
   background-size: 100%;
@@ -2761,6 +2786,13 @@ main > .section:first-of-type {
 .new-product .slider,
 .recommendations .slider {
   margin: 0 75px;
+  padding-bottom: 42px;
+}
+@media (max-width: 1030px) {
+  .new-product .slider,
+  .recommendations .slider {
+    padding-bottom: 0;
+  }
 }
 @media (max-width: 992px) {
   .new-product .slider,
@@ -2768,10 +2800,10 @@ main > .section:first-of-type {
     margin: 0 50px;
   }
 }
-@media (max-width: 576px) {
+@media (max-width: 431px) {
   .new-product .slider,
   .recommendations .slider {
-    margin: 0;
+    margin: 0 0;
   }
 }
 .new-product .slick-arrow,

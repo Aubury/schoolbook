@@ -146,25 +146,19 @@ main {
   }
 
   & > .section {
-    margin: 100px 0 0;
     position: relative;
-
-    @include down(#{$bp-xs}) {
-      margin-top: 75px;
-    }
   }
+}
 
-  & > .section:first-of-type {
-    margin-top: 275px;
-    position: relative;
+.main-page {
+  position: relative;
+  padding-top: 132px;
+  @include flex-column;
+  gap: 132px;
 
-    @include down(#{$bp-xs}) {
-      margin-top: 200px;
-    }
-
-    @include down(#{$bp-xxs}) {
-      margin-top: 175px;
-    }
+  @include down(#{$bp-xs}) {
+    padding-top: 88px;
+    gap: 88px;
   }
 }
 
@@ -271,7 +265,7 @@ main {
   height: 46px;
   background: url("../image/сонечко.svg") no-repeat center;
   background-size: contain;
-  top: -44px;
+  top: -80px;
   left: 30%;
   @include flex-center;
   z-index: 100;
@@ -344,6 +338,10 @@ main {
 
   @include down(#{$bp-md}) {
     background: unset;
+  }
+
+  @include down(#{$bp-xxs}) {
+    padding: 32px 0 0;
   }
 
   .bg-preparing-wrap {
@@ -435,6 +433,10 @@ main {
     &::after {
       content: unset;
     }
+
+    @include down(#{$bp-xxs}) {
+      margin-top: 0;
+    }
   }
 
   @include down(#{$bp-sm}) {
@@ -451,6 +453,14 @@ main {
 
     @include down(#{$bp-xl}) {
       gap: 100px;
+    }
+
+    @include down(#{$bp-lg}) {
+      padding-bottom: 50px;
+    }
+
+    @include down(#{$bp-xmd}) {
+      padding-bottom: 0;
     }
 
     @include down(#{$bp-sm}) {

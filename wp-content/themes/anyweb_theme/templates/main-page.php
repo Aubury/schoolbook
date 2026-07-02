@@ -37,7 +37,7 @@ get_header();
     <div class="bottom-line-cell"></div>
 </div>
 
-<main id="primary" class="site-main">
+<main id="primary" class="site-main main-page">
 
 <!--////////////////////// Предзамовлення /////////////////////////-->
 
@@ -200,29 +200,6 @@ get_header();
             </div> <!-- end .section -->
 
             <?php endif; ?>
-
-<!--///////////////////////// Наші рекомендації /////////////////////////    -->
-
-    <?php
-    $slider = carbon_get_post_meta( $post->ID, 'rcmnd_slider' );
-    if ( ! empty( $slider ) ): ?>
-        <div class="section">
-            <div class="anm-lady"></div>
-            <div class="container">
-                <div class="recommendations">
-                    <h2>На<span class="color-blue">ш</span>і рекоменд<span class="color-orange">а</span>ції</h2>
-                    <div class="slider slick-slider">
-                        <?php
-                            foreach ( $slider as $cnt => $item ):
-                                echo so_render_product($item['rcmnd_product_id']);
-                            endforeach;
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-
 <!--///////////////////////// Ваші улюблені категорії /////////////////////////    -->
     <?php
     $favorite_categories = carbon_get_post_meta( $post->ID, 'crb_your_favorite_categories' );
@@ -232,8 +209,8 @@ get_header();
             <div class="container">
                 <div class="favorite_categories">
                     <?php
-                        if ( ! empty( $favorite_categories_title ) ):
-                            echo wpautop( $favorite_categories_title );
+                    if ( ! empty( $favorite_categories_title ) ):
+                        echo wpautop( $favorite_categories_title );
                     endif; ?>
 
                     <div class="flex-evenly-start-align">
@@ -265,6 +242,28 @@ get_header();
                                 </div>
                             </div>
                         <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+<!--///////////////////////// Наші рекомендації /////////////////////////    -->
+
+    <?php
+    $slider = carbon_get_post_meta( $post->ID, 'rcmnd_slider' );
+    if ( ! empty( $slider ) ): ?>
+        <div class="section">
+            <div class="anm-lady"></div>
+            <div class="container">
+                <div class="recommendations">
+                    <h2>На<span class="color-blue">ш</span>і рекоменд<span class="color-orange">а</span>ції</h2>
+                    <div class="slider slick-slider">
+                        <?php
+                            foreach ( $slider as $cnt => $item ):
+                                echo so_render_product($item['rcmnd_product_id']);
+                            endforeach;
+                        ?>
                     </div>
                 </div>
             </div>
@@ -331,22 +330,23 @@ get_header();
     <?php endif ?>
 
 
+    <?php if (have_posts()) : ?>
+        <div class="container">
+            <?php
+                while ( have_posts() ) :
+                    the_post();
 
-    <div class="container">
-        <?php
-            while ( have_posts() ) :
-                the_post();
+                    get_template_part( 'template-parts/content', 'page' );
 
-                get_template_part( 'template-parts/content', 'page' );
+                    // If comments are open or we have at least one comment, load up the comment template.
+                    if ( comments_open() || get_comments_number() ) :
+                        comments_template();
+                    endif;
 
-                // If comments are open or we have at least one comment, load up the comment template.
-                if ( comments_open() || get_comments_number() ) :
-                    comments_template();
-                endif;
-
-            endwhile; // End of the loop.
-            ?>
-    </div><!-- end .container -->
+                endwhile; // End of the loop.
+                ?>
+        </div><!-- end .container -->
+    <?php endif; ?>
 </main> <!-- #main -->
 
 <?php
