@@ -164,7 +164,6 @@ if ( ! class_exists( 'AWS_Admin_Filters_Helpers' ) ) :
                 'id' => 'aws_any',
                 'text' => __( "Any product", "advanced-woo-search" )
             );
-
             $include_variations = false;
             $limit = 30;
 
@@ -1027,10 +1026,23 @@ if ( ! class_exists( 'AWS_Admin_Filters_Helpers' ) ) :
                 ),
             );
 
+            $lists = array(
+                array(
+                    "name" => __( "in list", "advanced-woo-search" ),
+                    "id"   => "in_list",
+                ),
+                array(
+                    "name" => __( "not in list", "advanced-woo-search" ),
+                    "id"   => "not_in_list",
+                ),
+            );
+
             $operators['equals'] = $equals;
             $operators['equals_compare'] = array_merge( $equals, $compare );
             $operators['equals_contains'] = array_merge( $equals, $contains );
             $operators['equals_contains_compare'] = array_merge( $equals, $compare, $contains );
+
+            $operators['lists'] = $lists;
 
             return $operators[$name];
 

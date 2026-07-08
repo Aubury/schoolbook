@@ -29,7 +29,7 @@ class SettingsSyncController extends BaseController {
 	protected $settings;
 
 	/**
-	 * BaseController constructor.
+	 * SettingsSyncController constructor.
 	 *
 	 * @param RESTServer $server
 	 * @param Settings   $settings
@@ -61,7 +61,7 @@ class SettingsSyncController extends BaseController {
 	 * @return callable
 	 */
 	protected function get_sync_endpoint_callback(): callable {
-		return function ( Request $request ) {
+		return function ( Request $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
 			try {
 				$this->settings->sync_taxes();
 				$this->settings->sync_shipping();

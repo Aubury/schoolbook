@@ -92,7 +92,7 @@ class AbstractBlock implements BlockInterface {
 	 * @throws \ValueError If the block configuration is invalid.
 	 * @throws \ValueError If the parent block container does not belong to the same template as the block.
 	 */
-	public function __construct( array $config, BlockTemplateInterface &$root_template, ContainerInterface &$parent = null ) {
+	public function __construct( array $config, BlockTemplateInterface &$root_template, ?ContainerInterface &$parent = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.parentFound
 		$this->validate( $config, $root_template, $parent );
 
 		$this->root_template = $root_template;
@@ -137,7 +137,7 @@ class AbstractBlock implements BlockInterface {
 	 * @throws \ValueError If the block configuration is invalid.
 	 * @throws \ValueError If the parent block container does not belong to the same template as the block.
 	 */
-	protected function validate( array $config, BlockTemplateInterface &$root_template, ContainerInterface &$parent = null ) {
+	protected function validate( array $config, BlockTemplateInterface &$root_template, ?ContainerInterface &$parent = null ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.parentFound
 		if ( isset( $parent ) && ( $parent->get_root_template() !== $root_template ) ) {
 			throw new \ValueError( 'The parent block must belong to the same template as the block.' );
 		}
@@ -268,8 +268,15 @@ class AbstractBlock implements BlockInterface {
 		 * @param BlockInterface $block The block.
 		 *
 		 * @since 8.4.0
+		 * @deprecated 10.9.0 This hook will be removed in WooCommerce 11.0.
 		 */
-		do_action( 'woocommerce_block_template_after_add_hide_condition', $this );
+		wc_do_deprecated_action(
+			'woocommerce_block_template_after_add_hide_condition',
+			array( $this ),
+			'10.9.0',
+			null,
+			'This block template hook will be removed in WooCommerce 11.0.'
+		);
 
 		return $key;
 	}
@@ -288,8 +295,15 @@ class AbstractBlock implements BlockInterface {
 		 * @param BlockInterface $block The block.
 		 *
 		 * @since 8.4.0
+		 * @deprecated 10.9.0 This hook will be removed in WooCommerce 11.0.
 		 */
-		do_action( 'woocommerce_block_template_after_remove_hide_condition', $this );
+		wc_do_deprecated_action(
+			'woocommerce_block_template_after_remove_hide_condition',
+			array( $this ),
+			'10.9.0',
+			null,
+			'This block template hook will be removed in WooCommerce 11.0.'
+		);
 	}
 
 	/**

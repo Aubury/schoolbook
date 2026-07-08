@@ -2,8 +2,8 @@
 
 namespace EasyWPSMTP\Admin;
 
-use EasyWPSMTP\Admin\Pages\TestTab;
 use EasyWPSMTP\Connect;
+use EasyWPSMTP\TestEmail\TestEmail;
 use EasyWPSMTP\Helpers\Helpers;
 use EasyWPSMTP\Options;
 use EasyWPSMTP\UsageTracking\UsageTracking;
@@ -79,7 +79,7 @@ class SetupWizard {
 				isset( $_GET['page'] ) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				Area::SLUG . '-setup-wizard' === $_GET['page'] && // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$this->should_setup_wizard_load() &&
-				current_user_can( easy_wp_smtp()->get_capability_manage_options() )
+				current_user_can( easy_wp_smtp()->get_capability_manage_global_options() )
 			)
 		) {
 			return;
@@ -109,6 +109,10 @@ class SetupWizard {
 	 */
 	public function maybe_redirect_after_activation() { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.TooHigh
 
+		if ( ! current_user_can( 'activate_plugins' ) ) {
+			return;
+		}
+
 		if ( wp_doing_ajax() || wp_doing_cron() ) {
 			return;
 		}
@@ -126,7 +130,7 @@ class SetupWizard {
 		}
 
 		// Only do this for single site installs.
-		if ( isset( $_GET['activate-multi'] ) || is_network_admin() ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_GET['activate-multi'] ) || is_network_admin() || WP::use_global_plugin_settings() ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			return;
 		}
 
@@ -157,7 +161,7 @@ class SetupWizard {
 			return;
 		}
 
-		add_submenu_page( '', '', '', easy_wp_smtp()->get_capability_manage_options(), Area::SLUG . '-setup-wizard', '' );
+		add_submenu_page( '', '', '', easy_wp_smtp()->get_capability_manage_global_options(), Area::SLUG . '-setup-wizard', '' );
 	}
 
 	/**
@@ -225,15 +229,19 @@ class SetupWizard {
 				'plugin_version'     => EasyWPSMTP_PLUGIN_VERSION,
 				'mailer_options'     => $this->prepare_mailer_options(),
 				'defined_constants'  => $this->prepare_defined_constants(),
-				'upgrade_link'       => easy_wp_smtp()->get_upgrade_link( 'setup-wizard' ),
+				'upgrade_link'       => easy_wp_smtp()->get_upgrade_link( [ 'medium' => 'setup-wizard' ] ),
 				'versions'           => $this->prepare_versions_data(),
 				'public_url'         => easy_wp_smtp()->assets_url . '/vue/',
 				'current_user_email' => wp_get_current_user()->user_email,
 				'completed_time'     => self::get_stats()['completed_time'],
+				'sendlayer'          => [
+					'connect_nonce' => wp_create_nonce( 'easy-wp-smtp-sendlayer-connect' ),
+					'return_url'    => self::get_site_url() . '#/step/configure_mailer/sendlayer',
+				],
 				'education'          => [
 					'upgrade_text'        => esc_html__( 'Sorry, but the %mailer% mailer isn’t available in the lite version. Please upgrade to PRO to unlock this mailer and much more.', 'easy-wp-smtp' ),
 					'upgrade_button'      => esc_html__( 'Upgrade to PRO', 'easy-wp-smtp' ),
-					'upgrade_url'         => add_query_arg( 'discount', 'SMTPLITEUPGRADE', easy_wp_smtp()->get_upgrade_link( '' ) ),
+					'upgrade_url'         => add_query_arg( 'discount', 'SMTPLITEUPGRADE', easy_wp_smtp()->get_upgrade_link( [ 'medium' => 'setup-wizard' ] ) ),
 					'upgrade_bonus_short' => sprintf(
 						wp_kses( /* Translators: %s - discount value 50%. */
 							__( '<b>%s OFF</b> for Easy WP SMTP users, applied at checkout.', 'easy-wp-smtp' ),
@@ -557,7 +565,7 @@ class SetupWizard {
 
 		check_ajax_referer( 'easywpsmtp-admin-nonce', 'nonce' );
 
-		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_options() ) ) {
+		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_global_options() ) ) {
 			wp_send_json_error( esc_html__( 'You don\'t have permission to change options for this WP site!', 'easy-wp-smtp' ) );
 		}
 
@@ -575,7 +583,7 @@ class SetupWizard {
 
 		check_ajax_referer( 'easywpsmtp-admin-nonce', 'nonce' );
 
-		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_options() ) ) {
+		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_global_options() ) ) {
 			wp_send_json_error( esc_html__( 'You don\'t have permission to change options for this WP site!', 'easy-wp-smtp' ) );
 		}
 
@@ -597,7 +605,7 @@ class SetupWizard {
 
 		check_ajax_referer( 'easywpsmtp-admin-nonce', 'nonce' );
 
-		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_options() ) ) {
+		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_global_options() ) ) {
 			wp_send_json_error();
 		}
 
@@ -665,7 +673,7 @@ class SetupWizard {
 
 		check_ajax_referer( 'easywpsmtp-admin-nonce', 'nonce' );
 
-		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_options() ) ) {
+		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_global_options() ) ) {
 			wp_send_json_error();
 		}
 
@@ -698,7 +706,7 @@ class SetupWizard {
 
 		check_ajax_referer( 'easywpsmtp-admin-nonce', 'nonce' );
 
-		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_options() ) ) {
+		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_global_options() ) ) {
 			wp_send_json_error();
 		}
 
@@ -713,7 +721,7 @@ class SetupWizard {
 
 		foreach ( $old_opt[ $mailer ] as $key => $value ) {
 			// Unset everything except Client ID, Client Secret and Domain.
-			if ( ! in_array( $key, array( 'domain', 'client_id', 'client_secret' ), true ) ) {
+			if ( ! in_array( $key, [ 'domain', 'client_id', 'client_secret' ], true ) ) {
 				unset( $old_opt[ $mailer ][ $key ] );
 			}
 		}
@@ -752,7 +760,7 @@ class SetupWizard {
 			wp_send_json_error( esc_html__( 'Could not install the plugin. Plugin is not whitelisted.', 'easy-wp-smtp' ) );
 		}
 
-		$url   = esc_url_raw( WP::admin_url( 'admin.php?page=' . Area::SLUG . '-setup-wizard' ) );
+		$url = esc_url_raw( WP::admin_url( 'admin.php?page=' . Area::SLUG . '-setup-wizard' ) );
 
 		/*
 		 * The `request_filesystem_credentials` function will output a credentials form in case of failure.
@@ -865,6 +873,10 @@ class SetupWizard {
 
 		check_ajax_referer( 'easywpsmtp-admin-nonce', 'nonce' );
 
+		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_global_options() ) ) {
+			wp_send_json_error( esc_html__( 'You don\'t have the permission to perform this action.', 'easy-wp-smtp' ) );
+		}
+
 		$contact_form_plugin_already_installed = false;
 
 		$contact_form_basenames = [
@@ -906,6 +918,10 @@ class SetupWizard {
 	public function subscribe_to_newsletter() {
 
 		check_ajax_referer( 'easywpsmtp-admin-nonce', 'nonce' );
+
+		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_global_options() ) ) {
+			wp_send_json_error( esc_html__( 'You don\'t have the permission to perform this action.', 'easy-wp-smtp' ) );
+		}
 
 		$email = ! empty( $_POST['email'] ) ? filter_var( wp_unslash( $_POST['email'] ), FILTER_VALIDATE_EMAIL ) : '';
 
@@ -1003,23 +1019,26 @@ class SetupWizard {
 
 		check_ajax_referer( 'easywpsmtp-admin-nonce', 'nonce' );
 
+		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_global_options() ) ) {
+			wp_send_json_error( esc_html__( 'You don\'t have the permission to perform this action.', 'easy-wp-smtp' ) );
+		}
+
 		$options = Options::init();
 		$mailer  = $options->get( 'mail', 'mailer' );
 		$email   = $options->get( 'mail', 'from_email' );
 		$domain  = '';
 
-		// Send the test mail.
-		$result = wp_mail(
-			$email,
-			'Easy WP SMTP Automatic Email Test',
-			TestTab::get_email_message_text(),
-			array(
-				'X-Mailer-Type:EasyWPSMTP/Admin/SetupWizard/Test',
-			)
-		);
+		// Send the test mail. Domain check runs below with its own (warnings-tolerated)
+		// threshold, so we opt out of TestEmail's stricter no_issues() check.
+		$test_email = ( new TestEmail() )
+			->with_context( TestEmail::CONTEXT_SETUP_WIZARD )
+			->as_html( false )
+			->with_domain_check( false );
 
-		if ( ! $result ) {
-			$this->update_completed_stat( false );
+		$test_email->send( $email );
+
+		if ( ! $test_email->is_successful() ) {
+			$this->update_completed_stat( false, $mailer );
 
 			( new UsageTracking() )->send_failed_setup_wizard_usage_tracking_data();
 
@@ -1035,14 +1054,14 @@ class SetupWizard {
 		$domain_checker = new DomainChecker( $mailer, $email, $domain );
 
 		if ( $domain_checker->has_errors() ) {
-			$this->update_completed_stat( false );
+			$this->update_completed_stat( false, $mailer );
 
 			( new UsageTracking() )->send_failed_setup_wizard_usage_tracking_data( $domain_checker );
 
 			wp_send_json_error();
 		}
 
-		$this->update_completed_stat( true );
+		$this->update_completed_stat( true, $mailer );
 
 		wp_send_json_success();
 	}
@@ -1055,6 +1074,10 @@ class SetupWizard {
 	public function send_feedback() {
 
 		check_ajax_referer( 'easywpsmtp-admin-nonce', 'nonce' );
+
+		if ( ! current_user_can( easy_wp_smtp()->get_capability_manage_global_options() ) ) {
+			wp_send_json_error();
+		}
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$data = ! empty( $_POST['data'] ) ? json_decode( wp_unslash( $_POST['data'] ), true ) : [];
@@ -1135,9 +1158,10 @@ class SetupWizard {
 
 	/**
 	 * Get the Setup Wizard stats.
-	 * - launched_time  -> when the Setup Wizard was last launched.
-	 * - completed_time -> when the Setup Wizard was last completed.
-	 * - was_successful -> if the Setup Wizard was completed successfully.
+	 * - launched_time     -> when the Setup Wizard was last launched.
+	 * - completed_time    -> when the Setup Wizard was last completed.
+	 * - was_successful    -> if the Setup Wizard was completed successfully.
+	 * - mailer            -> mailer slug configured in the Setup Wizard on its last completion attempt.
 	 *
 	 * @since 2.1.0
 	 *
@@ -1149,6 +1173,7 @@ class SetupWizard {
 			'launched_time'  => 0,
 			'completed_time' => 0,
 			'was_successful' => false,
+			'mailer'         => '',
 		];
 
 		return get_option( self::STATS_OPTION_KEY, $defaults );
@@ -1171,14 +1196,16 @@ class SetupWizard {
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param bool $was_successful If the Setup Wizard was completed successfully.
+	 * @param bool   $was_successful If the Setup Wizard was completed successfully.
+	 * @param string $mailer         Mailer slug configured in the Setup Wizard.
 	 */
-	private function update_completed_stat( $was_successful ) {
+	private function update_completed_stat( $was_successful, $mailer = '' ) {
 
 		self::update_stats(
 			[
 				'completed_time' => time(),
 				'was_successful' => $was_successful,
+				'mailer'         => $mailer,
 			]
 		);
 	}
@@ -1200,38 +1227,42 @@ class SetupWizard {
 		}
 
 		$constants = [
-			'EasyWPSMTP_MAIL_FROM'                     => [ 'mail', 'from_email' ],
-			'EasyWPSMTP_MAIL_FROM_FORCE'               => [ 'mail', 'from_email_force' ],
-			'EasyWPSMTP_MAIL_FROM_NAME'                => [ 'mail', 'from_name' ],
-			'EasyWPSMTP_MAIL_FROM_NAME_FORCE'          => [ 'mail', 'from_name_force' ],
-			'EasyWPSMTP_MAILER'                        => [ 'mail', 'mailer' ],
-			'EasyWPSMTP_SMTPCOM_API_KEY'               => [ 'smtpcom', 'api_key' ],
-			'EasyWPSMTP_SMTPCOM_CHANNEL'               => [ 'smtpcom', 'channel' ],
-			'EasyWPSMTP_SENDINBLUE_API_KEY'            => [ 'sendinblue', 'api_key' ],
-			'EasyWPSMTP_SENDINBLUE_DOMAIN'             => [ 'sendinblue', 'domain' ],
-			'EasyWPSMTP_AMAZONSES_CLIENT_ID'           => [ 'amazonses', 'client_id' ],
-			'EasyWPSMTP_AMAZONSES_CLIENT_SECRET'       => [ 'amazonses', 'client_secret' ],
-			'EasyWPSMTP_AMAZONSES_REGION'              => [ 'amazonses', 'region' ],
-			'EasyWPSMTP_MAILGUN_API_KEY'               => [ 'mailgun', 'api_key' ],
-			'EasyWPSMTP_MAILGUN_DOMAIN'                => [ 'mailgun', 'domain' ],
-			'EasyWPSMTP_MAILGUN_REGION'                => [ 'mailgun', 'region' ],
-			'EasyWPSMTP_OUTLOOK_CLIENT_ID'             => [ 'outlook', 'client_id' ],
-			'EasyWPSMTP_OUTLOOK_CLIENT_SECRET'         => [ 'outlook', 'client_secret' ],
-			'EasyWPSMTP_SENDGRID_API_KEY'              => [ 'sendgrid', 'api_key' ],
-			'EasyWPSMTP_SENDGRID_DOMAIN'               => [ 'sendgrid', 'domain' ],
-			'EasyWPSMTP_POSTMARK_SERVER_API_TOKEN'     => [ 'postmark', 'server_api_token' ],
-			'EasyWPSMTP_POSTMARK_MESSAGE_STREAM'       => [ 'postmark', 'message_stream' ],
-			'EasyWPSMTP_SPARKPOST_API_KEY'             => [ 'sparkpost', 'api_key' ],
-			'EasyWPSMTP_SPARKPOST_REGION'              => [ 'sparkpost', 'region' ],
-			'EasyWPSMTP_SMTP_HOST'                     => [ 'smtp', 'host' ],
-			'EasyWPSMTP_SMTP_PORT'                     => [ 'smtp', 'port' ],
-			'EasyWPSMTP_SSL'                           => [ 'smtp', 'encryption' ],
-			'EasyWPSMTP_SMTP_AUTH'                     => [ 'smtp', 'auth' ],
-			'EasyWPSMTP_SMTP_AUTOTLS'                  => [ 'smtp', 'autotls' ],
-			'EasyWPSMTP_SMTP_USER'                     => [ 'smtp', 'user' ],
-			'EasyWPSMTP_SMTP_PASS'                     => [ 'smtp', 'pass' ],
-			'EasyWPSMTP_LOGS_ENABLED'                  => [ 'logs', 'enabled' ],
-			'EasyWPSMTP_SUMMARY_REPORT_EMAIL_DISABLED' => [ 'general', SummaryReportEmail::SETTINGS_SLUG ],
+			'EASY_WP_SMTP_MAIL_FROM'                     => [ 'mail', 'from_email' ],
+			'EASY_WP_SMTP_MAIL_FROM_FORCE'               => [ 'mail', 'from_email_force' ],
+			'EASY_WP_SMTP_MAIL_FROM_NAME'                => [ 'mail', 'from_name' ],
+			'EASY_WP_SMTP_MAIL_FROM_NAME_FORCE'          => [ 'mail', 'from_name_force' ],
+			'EASY_WP_SMTP_MAILER'                        => [ 'mail', 'mailer' ],
+			'EASY_WP_SMTP_SMTPCOM_API_KEY'               => [ 'smtpcom', 'api_key' ],
+			'EASY_WP_SMTP_SMTPCOM_CHANNEL'               => [ 'smtpcom', 'channel' ],
+			'EASY_WP_SMTP_SENDINBLUE_API_KEY'            => [ 'sendinblue', 'api_key' ],
+			'EASY_WP_SMTP_SENDINBLUE_DOMAIN'             => [ 'sendinblue', 'domain' ],
+			'EASY_WP_SMTP_AMAZONSES_CLIENT_ID'           => [ 'amazonses', 'client_id' ],
+			'EASY_WP_SMTP_AMAZONSES_CLIENT_SECRET'       => [ 'amazonses', 'client_secret' ],
+			'EASY_WP_SMTP_AMAZONSES_REGION'              => [ 'amazonses', 'region' ],
+			'EASY_WP_SMTP_MAILGUN_API_KEY'               => [ 'mailgun', 'api_key' ],
+			'EASY_WP_SMTP_MAILGUN_DOMAIN'                => [ 'mailgun', 'domain' ],
+			'EASY_WP_SMTP_MAILGUN_REGION'                => [ 'mailgun', 'region' ],
+			'EASY_WP_SMTP_OUTLOOK_CLIENT_ID'             => [ 'outlook', 'client_id' ],
+			'EASY_WP_SMTP_OUTLOOK_CLIENT_SECRET'         => [ 'outlook', 'client_secret' ],
+			'EASY_WP_SMTP_SENDGRID_API_KEY'              => [ 'sendgrid', 'api_key' ],
+			'EASY_WP_SMTP_SENDGRID_DOMAIN'               => [ 'sendgrid', 'domain' ],
+			'EASY_WP_SMTP_POSTMARK_SERVER_API_TOKEN'     => [ 'postmark', 'server_api_token' ],
+			'EASY_WP_SMTP_POSTMARK_MESSAGE_STREAM'       => [ 'postmark', 'message_stream' ],
+			'EASY_WP_SMTP_SPARKPOST_API_KEY'             => [ 'sparkpost', 'api_key' ],
+			'EASY_WP_SMTP_SPARKPOST_REGION'              => [ 'sparkpost', 'region' ],
+			'EASY_WP_SMTP_ZOHO_DOMAIN'                   => [ 'zoho', 'domain' ],
+			'EASY_WP_SMTP_ZOHO_CLIENT_ID'                => [ 'zoho', 'client_id' ],
+			'EASY_WP_SMTP_ZOHO_CLIENT_SECRET'            => [ 'zoho', 'client_secret' ],
+			'EASY_WP_SMTP_RESEND_API_KEY'                => [ 'resend', 'api_key' ],
+			'EASY_WP_SMTP_SMTP_HOST'                     => [ 'smtp', 'host' ],
+			'EASY_WP_SMTP_SMTP_PORT'                     => [ 'smtp', 'port' ],
+			'EASY_WP_SMTP_SSL'                           => [ 'smtp', 'encryption' ],
+			'EASY_WP_SMTP_SMTP_AUTH'                     => [ 'smtp', 'auth' ],
+			'EASY_WP_SMTP_SMTP_AUTOTLS'                  => [ 'smtp', 'autotls' ],
+			'EASY_WP_SMTP_SMTP_USER'                     => [ 'smtp', 'user' ],
+			'EASY_WP_SMTP_SMTP_PASS'                     => [ 'smtp', 'pass' ],
+			'EASY_WP_SMTP_LOGS_ENABLED'                  => [ 'logs', 'enabled' ],
+			'EASY_WP_SMTP_SUMMARY_REPORT_EMAIL_DISABLED' => [ 'general', SummaryReportEmail::SETTINGS_SLUG ],
 		];
 
 		$defined = [];

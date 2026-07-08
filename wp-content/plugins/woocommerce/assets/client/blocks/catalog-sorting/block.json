@@ -1,11 +1,11 @@
 {
 	"name": "woocommerce/catalog-sorting",
-	"version": "1.0.0",
 	"title": "Catalog Sorting",
 	"description": "Enable customers to change the sorting order of the products.",
 	"category": "woocommerce",
 	"keywords": [ "WooCommerce" ],
 	"supports": {
+		"interactivity": true,
 		"color": {
 			"text": true,
 			"background": false
@@ -14,13 +14,18 @@
 			"fontSize": true
 		}
 	},
+	"viewScriptModule": "woocommerce/catalog-sorting",
 	"attributes": {
 		"fontSize": {
 			"type": "string",
 			"default": "small"
+		},
+		"useLabel": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"textdomain": "woocommerce",
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"$schema": "https://schemas.wp.org/trunk/block.json"
 }

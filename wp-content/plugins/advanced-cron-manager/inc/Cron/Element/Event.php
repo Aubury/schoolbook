@@ -78,13 +78,14 @@ class Event {
 	 * @param integer $interval  Interval.
 	 * @param array   $args      Arguments.
 	 * @param integer $next_call Next call timestamp.
-	 * @param boolean $protected If protected.
+	 * @param boolean $is_protected If protected.
 	 * @param boolean $paused    If paused.
+	 * @throws \InvalidArgumentException When hook is empty.
 	 */
-	public function __construct( $hook = null, $schedule = '', $interval = 0, $args = array(), $next_call = 0, $protected = false, $paused = false ) {
+	public function __construct( $hook = null, $schedule = '', $interval = 0, $args = array(), $next_call = 0, $is_protected = false, $paused = false ) {
 
 		if ( empty( $hook ) ) {
-			trigger_error( 'Hook cannot be empty', E_USER_ERROR );
+			throw new \InvalidArgumentException( 'Hook cannot be empty' );
 		}
 
 		$this->hook      = $hook;
@@ -92,12 +93,11 @@ class Event {
 		$this->interval  = $interval;
 		$this->args      = $args;
 		$this->next_call = $next_call;
-		$this->protected = $protected;
+		$this->protected = $is_protected;
 		$this->paused    = $paused;
 
 		// phpcs:ignore
-		$this->hash = substr( md5( $this->hook . $this->schedule . $this->next_call . serialize( $this->args ) ), 0, 8 );
-
+		$this->hash = substr( md5( $this->hook . $this->schedule . serialize( $this->args ) ), 0, 8 );
 	}
 
 	/**
@@ -123,18 +123,20 @@ class Event {
 		}
 		$arguments = empty( $arguments ) ? '' : ' ' . implode( ', ', $arguments ) . ' ';
 
-		$function_name = 'cron_' . $this->hook . '_' . $this->hash;
+		$hook_escaped      = esc_html( $this->hook );
+		$function_name     = esc_html( 'cron_' . $this->hook . '_' . $this->hash );
+		$arguments_escaped = esc_html( $arguments );
 
 		$imp = '';
 
-		$imp .= 'function ' . $function_name . '(' . $arguments . ') {<br>';
-		$imp .= '&nbsp;&nbsp;&nbsp;&nbsp;// do stuff<br>';
-		$imp .= '}<br>';
-		$imp .= '<br>';
-		$imp .= "add_action( '" . $this->hook . "',  '" . $function_name . "', 10, " . count( $this->args ) . ' );';
+		$imp       .= 'function ' . $function_name . '(' . $arguments_escaped . ') {<br>';
+		$imp       .= '&nbsp;&nbsp;&nbsp;&nbsp;// do stuff<br>';
+		$imp       .= '}<br>';
+		$imp       .= '<br>';
+		$args_count = is_array( $this->args ) ? count( $this->args ) : 0;
+		$imp       .= "add_action( '" . $hook_escaped . "',  '" . $function_name . "', 10, " . $args_count . ' );';
 
 		return $imp;
-
 	}
 
 	/**
@@ -146,5 +148,4 @@ class Event {
 	public function nonce( $action = '' ) {
 		return esc_attr( wp_create_nonce( 'acm/event/' . $action . '/' . $this->hash ) );
 	}
-
 }

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'bracketspace/advanced-cron-manager',
-        'pretty_version' => '2.5.10',
-        'version' => '2.5.10.0',
-        'reference' => 'ea164a52de8deea8ec8ae6072933a6df911c8c84',
+        'pretty_version' => '2.7.0',
+        'version' => '2.7.0.0',
+        'reference' => 'af582be6bbd7aff0e527826929900d1f46b0a2e2',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'bracketspace/advanced-cron-manager' => array(
-            'pretty_version' => '2.5.10',
-            'version' => '2.5.10.0',
-            'reference' => 'ea164a52de8deea8ec8ae6072933a6df911c8c84',
+            'pretty_version' => '2.7.0',
+            'version' => '2.7.0.0',
+            'reference' => 'af582be6bbd7aff0e527826929900d1f46b0a2e2',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

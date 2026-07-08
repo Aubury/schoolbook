@@ -7,14 +7,20 @@ use WP_Upgrader;
 
 /**
  * PTKPatterns class.
+ *
+ * @internal
  */
 class PTKPatternsStore {
-	const TRANSIENT_NAME = 'ptk_patterns';
+	const OPTION_NAME = 'ptk_patterns';
 
-	// Some patterns need to be excluded because they have dependencies which
-	// are not installed by default (like Jetpack). Otherwise, the user
-	// would see an error when trying to insert them in the editor.
-	const EXCLUDED_PATTERNS = array( '13923', '14781', '14779', '13666', '13664', '13660', '13588', '14922', '14880', '13596', '13967', '13958', '15050', '15027' );
+	/**
+	 * Hook and action name used to trigger fetching patterns.
+	 */
+	const FETCH_PATTERNS_ACTION = 'fetch_patterns';
+
+	const CATEGORY_MAPPING = array(
+		'testimonials' => 'reviews',
+	);
 
 	/**
 	 * PatternsToolkit instance.
@@ -45,9 +51,10 @@ class PTKPatternsStore {
 			add_action( 'update_option_woocommerce_allow_tracking', array( $this, 'flush_or_fetch_patterns' ), 10, 2 );
 			add_action( 'deactivated_plugin', array( $this, 'flush_cached_patterns' ), 10, 2 );
 			add_action( 'upgrader_process_complete', array( $this, 'fetch_patterns_on_plugin_update' ), 10, 2 );
+			add_action( 'action_scheduler_ensure_recurring_actions', array( $this, 'ensure_recurring_fetch_patterns_if_enabled' ) );
 
 			// This is the scheduled action that takes care of flushing and re-fetching the patterns from the PTK API.
-			add_action( 'fetch_patterns', array( $this, 'fetch_patterns' ) );
+			add_action( self::FETCH_PATTERNS_ACTION, array( $this, 'fetch_patterns' ) );
 		}
 	}
 
@@ -74,15 +81,29 @@ class PTKPatternsStore {
 	 */
 	private function schedule_fetch_patterns() {
 		if ( did_action( 'action_scheduler_init' ) ) {
-			$this->schedule_action_if_not_pending( 'fetch_patterns' );
+			$this->schedule_action_if_not_pending( self::FETCH_PATTERNS_ACTION );
 		} else {
 			add_action(
 				'action_scheduler_init',
 				function () {
-					$this->schedule_action_if_not_pending( 'fetch_patterns' );
+					$this->schedule_action_if_not_pending( self::FETCH_PATTERNS_ACTION );
 				}
 			);
 		}
+	}
+
+	/**
+	 * Ensure a recurring fetch patterns action is scheduled.
+	 * This is called by the `action_scheduler_ensure_recurring_actions` hook.
+	 *
+	 * @return void
+	 */
+	public function ensure_recurring_fetch_patterns_if_enabled() {
+		if ( ! $this->allowed_tracking_is_enabled() ) {
+			return;
+		}
+
+		$this->schedule_action_if_not_pending( self::FETCH_PATTERNS_ACTION );
 	}
 
 	/**
@@ -92,11 +113,11 @@ class PTKPatternsStore {
 	 * @return void
 	 */
 	private function schedule_action_if_not_pending( $action ) {
-		if ( as_has_scheduled_action( $action ) ) {
+		if ( as_has_scheduled_action( $action, array(), 'woocommerce' ) ) {
 			return;
 		}
 
-		as_schedule_single_action( time(), $action );
+		as_schedule_recurring_action( time(), DAY_IN_SECONDS, $action, array(), 'woocommerce' );
 	}
 
 	/**
@@ -105,10 +126,10 @@ class PTKPatternsStore {
 	 * @return array
 	 */
 	public function get_patterns() {
-		$patterns = get_transient( self::TRANSIENT_NAME );
+		$patterns = get_option( self::OPTION_NAME );
 
-		// Only if the transient is not set, we schedule fetching the patterns from the PTK.
-		if ( false === $patterns ) {
+		// If the current data doesn't exist or is invalid, schedule fetching the patterns from the PTK.
+		if ( false === $patterns || ! $this->ptk_client->is_valid_schema( $patterns ) ) {
 			$this->schedule_fetch_patterns();
 			return array();
 		}
@@ -117,26 +138,31 @@ class PTKPatternsStore {
 	}
 
 	/**
-	 * Filter patterns to exclude those with the given IDs.
+	 * Filter the patterns that have external dependencies.
 	 *
 	 * @param array $patterns The patterns to filter.
-	 * @param array $pattern_ids The pattern IDs to exclude.
 	 * @return array
 	 */
-	private function filter_patterns( array $patterns, array $pattern_ids ) {
-		return array_filter(
-			$patterns,
-			function ( $pattern ) use ( $pattern_ids ) {
-				if ( ! isset( $pattern['ID'] ) ) {
+	private function filter_patterns( array $patterns ) {
+		return array_values(
+			array_filter(
+				$patterns,
+				function ( $pattern ) {
+					if ( ! isset( $pattern['ID'] ) ) {
+						return true;
+					}
+
+					if ( isset( $pattern['post_type'] ) && 'wp_block' !== $pattern['post_type'] ) {
+						return false;
+					}
+
+					if ( $this->has_external_dependencies( $pattern ) ) {
+						return false;
+					}
+
 					return true;
 				}
-
-				if ( isset( $pattern['post_type'] ) && 'wp_block' !== $pattern['post_type'] ) {
-					return false;
-				}
-
-				return ! in_array( (string) $pattern['ID'], $pattern_ids, true );
-			}
+			)
 		);
 	}
 
@@ -161,10 +187,28 @@ class PTKPatternsStore {
 	/**
 	 * Reset the cached patterns to fetch them again from the PTK.
 	 *
+	 * @since 10.4.1 Unscheduling is deferred if Action Scheduler hasn't initialized yet.
 	 * @return void
 	 */
 	public function flush_cached_patterns() {
-		delete_transient( self::TRANSIENT_NAME );
+		delete_option( self::OPTION_NAME );
+
+		if ( ! function_exists( 'as_unschedule_all_actions' ) ) {
+			return;
+		}
+
+		// Unschedule any existing fetch_patterns actions.
+		// Defer unscheduling until Action Scheduler is ready to avoid errors during early initialization.
+		if ( did_action( 'action_scheduler_init' ) ) {
+			as_unschedule_all_actions( self::FETCH_PATTERNS_ACTION, array(), 'woocommerce' );
+		} else {
+			add_action(
+				'action_scheduler_init',
+				function () {
+					as_unschedule_all_actions( self::FETCH_PATTERNS_ACTION, array(), 'woocommerce' );
+				}
+			);
+		}
 	}
 
 	/**
@@ -177,11 +221,22 @@ class PTKPatternsStore {
 			return;
 		}
 
-		$this->flush_cached_patterns();
-
 		$patterns = $this->ptk_client->fetch_patterns(
 			array(
-				'categories' => array( 'intro', 'about', 'services', 'testimonials' ),
+				// This is the site where the patterns are stored. Despite the 'wpcomstaging.com' domain suggesting a staging environment, this URL points to the production environment where stable versions of the patterns are maintained.
+				'site'       => 'wooblockpatterns.wpcomstaging.com',
+				'categories' => array(
+					'_woo_intro',
+					'_woo_featured_selling',
+					'_woo_about',
+					'_woo_reviews',
+					'_woo_social_media',
+					'_woo_woocommerce',
+					'_dotcom_imported_intro',
+					'_dotcom_imported_about',
+					'_dotcom_imported_services',
+					'_dotcom_imported_reviews',
+				),
 			)
 		);
 
@@ -189,16 +244,17 @@ class PTKPatternsStore {
 			wc_get_logger()->warning(
 				sprintf(
 				// translators: %s is a generated error message.
-					__( 'Failed to get the patterns from the PTK: "%s"', 'woocommerce' ),
+					__( 'Failed to get WooCommerce patterns from the PTK: "%s"', 'woocommerce' ),
 					$patterns->get_error_message()
 				),
 			);
 			return;
 		}
 
-		$patterns = $this->filter_patterns( $patterns, self::EXCLUDED_PATTERNS );
+		$patterns = $this->filter_patterns( $patterns );
+		$patterns = $this->map_categories( $patterns );
 
-		set_transient( self::TRANSIENT_NAME, $patterns );
+		update_option( self::OPTION_NAME, $patterns, false );
 	}
 
 	/**
@@ -208,5 +264,52 @@ class PTKPatternsStore {
 	 */
 	private function allowed_tracking_is_enabled(): bool {
 		return 'yes' === get_option( 'woocommerce_allow_tracking' );
+	}
+
+	/**
+	 * Change the categories of the patterns to match the ones used in the CYS flow
+	 *
+	 * @param array $patterns The patterns to map categories for.
+	 * @return array The patterns with the categories mapped.
+	 */
+	private function map_categories( array $patterns ) {
+		return array_map(
+			function ( $pattern ) {
+				if ( isset( $pattern['categories'] ) ) {
+					foreach ( $pattern['categories'] as $key => $category ) {
+						if ( isset( $category['slug'] ) && isset( self::CATEGORY_MAPPING[ $key ] ) ) {
+							$new_category = self::CATEGORY_MAPPING[ $key ];
+							unset( $pattern['categories'][ $key ] );
+							$pattern['categories'][ $new_category ]['slug']  = $new_category;
+							$pattern['categories'][ $new_category ]['title'] = ucfirst( $new_category );
+						}
+					}
+				}
+
+				return $pattern;
+			},
+			$patterns
+		);
+	}
+
+	/**
+	 * Check if the pattern has external dependencies.
+	 *
+	 * @param array $pattern The pattern to check.
+	 *
+	 * @return bool
+	 */
+	private function has_external_dependencies( $pattern ) {
+		if ( ! isset( $pattern['dependencies'] ) || ! is_array( $pattern['dependencies'] ) ) {
+			return false;
+		}
+
+		foreach ( $pattern['dependencies'] as $dependency ) {
+			if ( 'woocommerce' !== $dependency ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: Easy WP SMTP
- * Version: 2.4.1
- * Requires at least: 5.2
- * Requires PHP: 7.2
+ * Version: 2.15.0
+ * Requires at least: 5.5
+ * Requires PHP: 7.4
  * Plugin URI: https://easywpsmtp.com/
  * Author: Easy WP SMTP
  * Author URI: https://easywpsmtp.com/
@@ -13,13 +13,13 @@
  */
 
 if ( ! defined( 'EasyWPSMTP_PLUGIN_VERSION' ) ) {
-	define( 'EasyWPSMTP_PLUGIN_VERSION', '2.4.1' );
+	define( 'EasyWPSMTP_PLUGIN_VERSION', '2.15.0' );
 }
 if ( ! defined( 'EasyWPSMTP_PHP_VERSION' ) ) {
-	define( 'EasyWPSMTP_PHP_VERSION', '7.2' );
+	define( 'EasyWPSMTP_PHP_VERSION', '7.4' );
 }
 if ( ! defined( 'EasyWPSMTP_WP_VERSION' ) ) {
-	define( 'EasyWPSMTP_WP_VERSION', '5.2' );
+	define( 'EasyWPSMTP_WP_VERSION', '5.5' );
 }
 if ( ! defined( 'EasyWPSMTP_PLUGIN_FILE' ) ) {
 	define( 'EasyWPSMTP_PLUGIN_FILE', __FILE__ );
@@ -121,7 +121,7 @@ if ( function_exists( 'easy_wp_smtp' ) || class_exists( 'EasyWPSMTP' ) ) {
 
 			// Currently tried to activate Lite with Pro still active, so display the message.
 			printf(
-				'<div class="notice notice-warning">
+				'<div class="notice notice-warning easy-wp-smtp-notice">
 					<p>%1$s</p>
 					<p>%2$s</p>
 				</div>',
@@ -151,7 +151,7 @@ if ( ! function_exists( 'easy_wp_smtp_insecure_php_version_notice' ) ) {
 	function easy_wp_smtp_insecure_php_version_notice() {
 
 		?>
-		<div class="notice notice-error">
+		<div class="notice notice-error easy-wp-smtp-notice">
 			<p>
 				<?php
 				printf(
@@ -218,7 +218,7 @@ if ( ! function_exists( 'easy_wp_smtp_unsupported_wp_version_notice' ) ) {
 	function easy_wp_smtp_unsupported_wp_version_notice() {
 
 		?>
-		<div class="notice notice-error">
+		<div class="notice notice-error easy-wp-smtp-notice">
 			<p>
 				<?php
 				printf(
@@ -274,6 +274,8 @@ if ( version_compare( get_bloginfo( 'version' ), EasyWPSMTP_WP_VERSION, '<' ) ) 
 
 	return;
 }
+
+require_once __DIR__ . '/polyfills.php';
 
 /**
  * Autoloader. We need it being separate and not using Composer autoloader because of the vendor libs,

@@ -524,6 +524,20 @@
     background-position: 1px -1px;
 }
 
+.elfinder-navbar-root-flysystem .elfinder-cwd-icon,
+.elfinder-cwd .elfinder-navbar-root-flysystem.elfinder-droppable-active .elfinder-cwd-icon,
+.elfinder-cwd-view-list .elfinder-navbar-root-flysystem td .elfinder-cwd-icon {
+    background-image: url("../img/volume_icon_googlecloud.svg") !important;
+    background-image: url("../img/volume_icon_googlecloud.png") \9 !important;
+    background-position: 0 0 !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+}
+
+.elfinder-cwd .elfinder-navbar-root-flysystem.elfinder-droppable-active .elfinder-cwd-icon {
+    background-position: 1px -1px !important;
+}
+
 /* type badge in "icons" view */
 .elfinder-cwd-icon:before {
     content: none;

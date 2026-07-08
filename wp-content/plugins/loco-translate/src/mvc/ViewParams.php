@@ -18,9 +18,8 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
      * format integer as string date, including time according to user settings
      * @param int $u unix timestamp
      * @param string|null $f date format
-     * @return string
      */
-     public static function date_i18n( $u, $f = null ){
+     public static function date_i18n( int $u, ?string $f = null ):string {
         static $tf, $df, $tz;
         if( is_null($f) ){
             if( is_null($tf) ){
@@ -51,10 +50,8 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
 
     /**
      * Wrapper for sprintf so we can handle PHP 8 exceptions
-     * @param string $format
-     * @return string
      */
-    public static function format( $format, array $args ){
+    public static function format( string $format, array $args ):string {
         try {
             return vsprintf($format,$args);
         }
@@ -68,21 +65,26 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
 
     /**
      * @internal
-     * @param string $p property name
      * @return mixed
      */
-    public function __get( $p ){
+    public function __get( string $p ){
         return $this->offsetExists($p) ? $this->offsetGet($p) : null;
     }
 
 
     /**
      * Test if a property exists, even if null
-     * @param string $p property name
-     * @return bool
      */
-    public function has( $p ){
+    public function has( string  $p ):bool {
         return $this->offsetExists($p);
+    }
+
+
+    /**
+     * Test if a property exists and is truthy
+     */
+    public function truthy( string $p ):bool {
+        return $this->offsetExists($p) && $this->offsetGet($p);
     }
 
 
@@ -91,7 +93,7 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
      * @param string $p property key
      * @return string empty string
      */
-    public function e( $p ){
+    public function e( string $p ):string {
         $text = $this->__get($p);
         echo $this->escape( $text );
         return '';
@@ -101,10 +103,10 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
     /**
      * Print property as string date, including time
      * @param string $p property name
-     * @param string $f date format
+     * @param string|null $f date format
      * @return string empty string
      */ 
-    public function date( $p, $f = null ){
+    public function date( string $p, ?string $f = null ):string {
         $u = (int) $this->__get($p);
         if( $u > 0 ){
             echo $this->escape( self::date_i18n($u,$f) );
@@ -119,7 +121,7 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
      * @param int $dp optional decimal places
      * @return string empty string
      */
-    public function n( $p, $dp = 0 ){
+    public function n( string $p, int $dp = 0 ):string {
         // number_format_i18n is pre-escaped for HTML
         echo number_format_i18n( $this->__get($p), $dp );
         return '';
@@ -133,7 +135,7 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
      * @param string $f formatting string
      * @return string empty string
      */
-    public function f( $p, $f = '%s' ){
+    public function f( string $p, string $f = '%s' ):string {
         echo $this->escape( self::format( $f, [$this->__get($p)] ) );
         return '';
     }
@@ -144,7 +146,7 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
      * @param string $p property name
      * @return string empty string
      */
-    public function j( $p ){
+    public function j( string $p ):string {
         echo json_encode($this->__get($p) );
         return '';
     }
@@ -161,18 +163,16 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
     
     /**
      * Fetch whole object as JSON
-     * @return string
      */
-    public function exportJson(){
+    public function exportJson():string {
         return json_encode( $this->jsonSerialize() );
     }
     
     
     /**
      * Merge parameters into ours
-     * @return Loco_mvc_ViewParams
      */
-    public function concat( ArrayObject $more ){
+    public function concat( ArrayObject $more ):self {
         foreach( $more as $name => $value ){
             $this[$name] = $value;
         }
@@ -184,7 +184,7 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
      * Debugging function
      * @codeCoverageIgnore
      */
-    public function dump(){
+    public function dump():void {
         echo '<pre>',$this->escape( json_encode( $this->getArrayCopy(),JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE ) ),'</pre>';
     }
 
@@ -193,7 +193,7 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
      * @param callable $callback
      * @return Loco_mvc_ViewParams
      */
-    public function sort( $callback ){
+    public function sort( $callback ):self {
         $raw = $this->getArrayCopy();
         uasort( $raw, $callback );
         $this->exchangeArray( $raw );

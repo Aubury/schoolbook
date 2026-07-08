@@ -45,7 +45,7 @@ abstract class AbstractProductSyncerBatchedJob extends AbstractBatchedActionSche
 	protected $merchant_statuses;
 
 	/**
-	 * SyncProducts constructor.
+	 * AbstractProductSyncerBatchedJob constructor.
 	 *
 	 * @param ActionSchedulerInterface  $action_scheduler
 	 * @param ActionSchedulerJobMonitor $monitor
@@ -80,6 +80,6 @@ abstract class AbstractProductSyncerBatchedJob extends AbstractBatchedActionSche
 	 * @return bool Returns true if the job can be scheduled.
 	 */
 	public function can_schedule( $args = [] ): bool {
-		return ! $this->is_running( $args ) && $this->merchant_center->should_push();
+		return ! $this->is_running( $args ) && $this->merchant_center->is_ready_for_syncing();
 	}
 }

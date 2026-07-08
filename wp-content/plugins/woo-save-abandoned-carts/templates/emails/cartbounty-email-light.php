@@ -12,7 +12,7 @@
 
  * @package    CartBounty - Save and recover abandoned carts for WooCommerce/Templates
  * @author     Streamline.lv
- * @version    7.1.2.3
+ * @version    8.9
  */
 
 if (!defined( 'ABSPATH' )){ //Don't allow direct access
@@ -35,6 +35,10 @@ if (!defined( 'ABSPATH' )){ //Don't allow direct access
 		}
 
 		@media only screen and (max-width: 650px) {
+			.cartbounty-email-image{
+				width: 100% !important;
+			}
+
 			.cartbounty-email-footer,
 			.cartbounty-email-unsubscribe{
 				font-size: 14px !important;
@@ -56,6 +60,19 @@ if (!defined( 'ABSPATH' )){ //Don't allow direct access
 		<tr>
 			<td style="padding: 30px 10px 20px; margin: 0; width: 100%; height: 100%;">
 				<table cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+					<?php if( $args['include_image'] ):?>
+					<tr>
+						<td valign="top">
+							<table cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-top-left-radius: 6px;border-top-right-radius: 6px; border-bottom-right-radius: 0; border-bottom-left-radius: 0;">
+								<tr>
+									<td valign="top" width="650">
+										<img class="cartbounty-email-image" src="<?php echo esc_url( $args['main_image'] ); ?>" alt="<?php echo esc_attr( get_option( 'blogname' ) );?>" title="<?php echo esc_attr( get_option( 'blogname' ) );?>" width="650" height="auto" style="display:block; -ms-interpolation-mode: bicubic; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none 0;" />
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<?php endif; ?>
 					<tr>
 						<td valign="top" style="background-color: <?php echo esc_attr( $args['main_color'] ); ?>; padding: 50px 0; border-bottom: 2px solid <?php echo esc_attr( $args['border_color'] );?>;">
 							<table cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
@@ -78,7 +95,16 @@ if (!defined( 'ABSPATH' )){ //Don't allow direct access
 													<table cellpadding="0" cellspacing="0" border="0" align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 														<tr>
 															<td width="650" valign="middle" style="mso-line-height-rule: exactly; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; padding: 0 50px; text-align: center;">
-																<?php echo apply_filters( 'cartbounty_automation_button_html', sprintf('<a href="%1$s" title="%4$s" style="margin: 0; outline: none; padding: 0; box-shadow: none;"><span style="padding: 18px 35px; background-color: %3$s; border-radius: 4px; color: %2$s; font-family: \'Open Sans\', Roboto, \'San Francisco\', Arial, Helvetica, sans-serif; display:inline-block; border: 0px none; font-size: 17px; font-weight: bold; line-height: 1; letter-spacing: normal; text-align: center; text-decoration: none; outline: none;">%4$s</span></a>', esc_url( $args['recovery_link'] ), esc_attr( $args['main_color'] ), esc_attr( $args['button_color'] ), esc_html__( 'Complete checkout', 'woo-save-abandoned-carts' ) ) );?>
+																<?php $button_html = sprintf(
+																	'<a href="%1$s" title="%4$s" style="margin: 0; outline: none; padding: 0; box-shadow: none;"><span style="padding: 18px 35px; background-color: %3$s; border-radius: 4px; color: %2$s; font-family: \'Open Sans\', Roboto, \'San Francisco\', Arial, Helvetica, sans-serif; display:inline-block; border: 0px none; font-size: 17px; font-weight: bold; line-height: 1; letter-spacing: normal; text-align: center; text-decoration: none; outline: none;">%4$s</span></a>',
+																	esc_url( $args['recovery_link'] ),
+																	esc_attr( $args['main_color'] ),
+																	esc_attr( $args['button_color'] ),
+																	esc_html__( 'Complete checkout', 'woo-save-abandoned-carts' ) );
+
+																	$button_html = apply_filters( 'cartbounty_automation_button_html', $button_html, $args );
+																	echo $button_html;
+																?>
 																<?php do_action('cartbounty_automation_after_button'); ?>
 															</td>
 														</tr>

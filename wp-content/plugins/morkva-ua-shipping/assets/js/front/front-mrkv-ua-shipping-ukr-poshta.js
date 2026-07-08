@@ -475,7 +475,7 @@ jQuery(window).on('load', function()
 	    function mrkvUaShipInterGetUUID() 
 	    {
 	        let postcode = jQuery('#mrkv_ua_shipping_ukr-poshta_international_postcode').val();
-			let country = jQuery('#billing_country').val();
+			var country = (jQuery('#ship-to-different-address-checkbox').is(':checked') ? jQuery('#shipping_country').val() : jQuery('#billing_country').val()) || '';
 			let region = jQuery('#mrkv_ua_shipping_ukr-poshta_international_region').val();
 			let city = jQuery('#mrkv_ua_shipping_ukr-poshta_international_city').val();
 			let street = jQuery('#mrkv_ua_shipping_ukr-poshta_international_street').val();
@@ -517,6 +517,15 @@ jQuery(window).on('load', function()
  		{
  			jQuery('#mrkv_ua_shipping_ukr-poshta_patronymic_enabled').val('off');
  			jQuery('label[for="mrkv_ua_shipping_ukr-poshta_patronymic"] abbr').hide();
+ 			jQuery('label[for="mrkv_ua_shipping_ukr-poshta_patronymic"]').find('.required').remove();
+ 		}
+ 		else
+ 		{
+ 			var $label = jQuery('label[for="mrkv_ua_shipping_ukr-poshta_patronymic"]');
+
+		    if ($label.length && !$label.find('.require').length) {
+		        $label.append(' <span class="require" aria-hidden="true">*</span>');
+		    }
  		}
  	}
 
@@ -530,6 +539,15 @@ jQuery(window).on('load', function()
  		{
  			jQuery('#mrkv_ua_shipping_ukr-poshta_patronymic_enabled').val('off');
  			jQuery('label[for="mrkv_ua_shipping_ukr-poshta_patronymic"] abbr').hide();
+ 			jQuery('label[for="mrkv_ua_shipping_ukr-poshta_patronymic"]').find('.required').remove();
+ 		}
+ 		else
+ 		{
+ 			var $label = jQuery('label[for="mrkv_ua_shipping_ukr-poshta_patronymic"]');
+
+		    if ($label.length && !$label.find('.require').length) {
+		        $label.append(' <span class="require" aria-hidden="true">*</span>');
+		    }
  		}
  		
 	    var selected = jQuery('input[name="payment_method"]:checked').val();
@@ -538,6 +556,12 @@ jQuery(window).on('load', function()
 	    {
 	    	jQuery('#mrkv_ua_shipping_ukr-poshta_patronymic_field').show();
 	    	jQuery('label[for="mrkv_ua_shipping_ukr-poshta_patronymic"] abbr').show();
+
+	    	var $label = jQuery('label[for="mrkv_ua_shipping_ukr-poshta_patronymic"]');
+
+		    if ($label.length && !$label.find('.require').length) {
+		        $label.append(' <span class="require" aria-hidden="true">*</span>');
+		    }
 	    }
 	}
 

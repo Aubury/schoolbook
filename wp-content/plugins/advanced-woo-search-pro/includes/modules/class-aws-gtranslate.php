@@ -200,34 +200,49 @@ if (!class_exists('AWS_GTranslate')) :
         public function wp_enqueue_scripts() {
 
             $script = '
-                function aws_ajax_request_params( data, options ) {
+                (function() {
                 
-                    function gtaws_get_cookie(name) {
-                        const value = `; ${decodeURIComponent(document.cookie)}`;
-                        const parts = value.split(`; ${name}=`);
-                        if ( parts.length === 2 ) return parts.pop().split(";").shift();
-                        return "";
-                    }
-                    
-                    var current_language = gtaws_get_cookie("googtrans").split("/").pop() || document.documentElement.lang;
-
-                    data.gTranslateLang = current_language;
-                    data.gTranslatePage = window.location.href;
-                    
-                    return data;
-                    
-                }
-                function aws_ajax_request_url( ajaxUrl, options ) {
-                    if ( typeof options.ajaxData.gTranslateLang !== "undefined" && options.ajaxData.gTranslateLang && window.location.href.indexOf("/" + options.ajaxData.gTranslateLang + "/") !== -1 ) {
-                        const absolutePattern = /^[a-z][a-z0-9+.-]*:|^\/\//i;
-                        if ( ajaxUrl.indexOf("/" + options.ajaxData.gTranslateLang + "/") === -1 && ! absolutePattern.test( ajaxUrl ) ) {
-                            ajaxUrl = "/" + options.ajaxData.gTranslateLang + "/" + ajaxUrl.replace(/^\/+/, "");
+                    function aws_init_gtranslate_hooks() {
+                
+                        // Wait until AwsHooks is available
+                        if ( typeof window.AwsHooks === "undefined" || typeof window.AwsHooks.add_filter !== "function" ) {
+                            setTimeout( aws_init_gtranslate_hooks, 100 );
+                            return;
                         }
+                
+                        function gtaws_get_cookie(name) {
+                            const value = `; ${decodeURIComponent(document.cookie)}`;
+                            const parts = value.split(`; ${name}=`);
+                            if ( parts.length === 2 ) return parts.pop().split(";").shift();
+                            return "";
+                        }
+                
+                        function aws_ajax_request_params( data, options ) {
+                            var current_language = gtaws_get_cookie("googtrans").split("/").pop() || document.documentElement.lang;
+                
+                            data.gTranslateLang = current_language;
+                            data.gTranslatePage = window.location.href;
+                
+                            return data;
+                        }
+                
+                        function aws_ajax_request_url( ajaxUrl, options ) {
+                            if ( typeof options.ajaxData.gTranslateLang !== "undefined" && options.ajaxData.gTranslateLang && window.location.href.indexOf("/" + options.ajaxData.gTranslateLang + "/") !== -1 ) {
+                                const absolutePattern = /^[a-z][a-z0-9+.-]*:|^\/\//i;                           
+                                if ( ajaxUrl.indexOf("/" + options.ajaxData.gTranslateLang + "/") === -1 && ! absolutePattern.test( ajaxUrl ) ) {
+                                    ajaxUrl = "/" + options.ajaxData.gTranslateLang + "/" + ajaxUrl.replace(/^\/+/, "");
+                                }
+                            }
+                            return ajaxUrl;
+                        }
+                
+                        window.AwsHooks.add_filter( "aws_ajax_request_url", aws_ajax_request_url );
+                        window.AwsHooks.add_filter( "aws_ajax_request_params", aws_ajax_request_params );
                     }
-                    return ajaxUrl;
-                }
-                AwsHooks.add_filter( "aws_ajax_request_url", aws_ajax_request_url );
-                AwsHooks.add_filter( "aws_ajax_request_params", aws_ajax_request_params );
+                
+                    aws_init_gtranslate_hooks();
+                
+                })();
             ';
 
             wp_add_inline_script( 'aws-pro-script', $script);
@@ -239,12 +254,16 @@ if (!class_exists('AWS_GTranslate')) :
          */
         public function aws_search_results_all( $results ) {
 
-            $current_lang = $this->get_current_language();
+            $language_parts = explode( '_', get_locale() );
+            $default_lang = $language_parts[0];
 
             $current_page_url = isset( $_REQUEST['gTranslatePage'] ) ? sanitize_url( $_REQUEST['gTranslatePage'] ) : '';
+            $current_lang = $this->get_current_language();
 
             if ( $current_lang && $current_page_url &&
-                ( strpos( $current_page_url, '/' . $current_lang . '/' ) !== false || strpos( $current_page_url, $current_lang . '.' ) !== false  )
+                ( ( strpos( $current_page_url, '/' . $current_lang . '/' ) !== false || strpos( $current_page_url, $current_lang . '.' ) !== false  )
+                    || ( $current_lang != $default_lang )
+                )
             ) {
 
                 $results['gt_translate_keys'] = array(

@@ -179,7 +179,7 @@ function add_favorites_icon_to_menu( $items, $args ) {
 
         $items .= '<li class="menu-item woosw-menu-item menu-item-type-woosw">
             <a href="' . esc_url( $favorites_url ) . '">
-                <span class="woosw-menu-item-inner" data-count="' . esc_html( $favorites_count ) . '">' . esc_html( $favorites_count ) . '</span>
+                <span class="woosw-menu-item-inner" data-count="' . esc_html( $favorites_count ) . '"></span>
             </a>
         </li>';
     }

@@ -81,7 +81,8 @@ if ( ! class_exists( 'AWS_WCFM' ) ) :
                 "name" => __( "WCFM: Product sold by", "advanced-woo-search" ),
                 "id"   => "product_wcfm_sold_by",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => array($this, 'get_all_vendors'),
                     'params'   => array()
@@ -157,14 +158,23 @@ if ( ! class_exists( 'AWS_WCFM' ) ) :
         public function wcfm_sold_by( $condition_rule ) {
             global $wpdb;
 
-            $value = $condition_rule['value'];
+            $values = isset( $condition_rule['value'] ) ? $condition_rule['value'] : array();
+            $values = is_array( $values ) ? $values : array( $values );
+            $values = array_map( 'intval', $values );
+            $values = array_filter( $values );
 
-            $relation = $condition_rule['operator'] === 'equal' ? 'IN' : 'NOT IN';
+            $relation = in_array( $condition_rule['operator'], array( 'equal', 'in_list' ), true ) ? 'IN' : 'NOT IN';
+
+            if ( empty( $values ) ) {
+                return 'IN' === $relation ? '( 1=2 )' : '( 1=1 )';
+            }
+
+            $values_string = implode( ',', array_unique( $values ) );
 
             $string = "( id {$relation} (
                    SELECT $wpdb->posts.ID
                    FROM $wpdb->posts
-                   WHERE $wpdb->posts.post_author = {$value}
+                   WHERE $wpdb->posts.post_author IN ({$values_string})
                 ))";
 
             return $string;

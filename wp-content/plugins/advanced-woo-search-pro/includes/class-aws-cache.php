@@ -83,6 +83,20 @@ if ( ! class_exists( 'AWS_Cache' ) ) :
                 }
             }
 
+            /**
+             * Filters cache option name
+             *
+             * Allow integrations to vary the cache bucket by criteria that are not
+             * reflected in the user role ( e.g. membership based restrictions ).
+             *
+             * @since 3.65
+             * @param string  $cache_option_name Cache option name
+             * @param string  $s                 Search string
+             * @param integer $form_id           Search form id
+             * @param integer $filter_id         Search form filter id
+             */
+            $cache_option_name = apply_filters( 'aws_cache_name', $cache_option_name, $s, $form_id, $filter_id );
+
             return $cache_option_name;
             
         }

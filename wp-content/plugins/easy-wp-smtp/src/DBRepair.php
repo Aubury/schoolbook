@@ -6,6 +6,8 @@ use EasyWPSMTP\Admin\Area;
 use EasyWPSMTP\Admin\DebugEvents\DebugEvents;
 use EasyWPSMTP\Admin\DebugEvents\Migration as DebugMigration;
 use EasyWPSMTP\Migrations\GeneralMigration;
+use EasyWPSMTP\Queue\Migration as QueueMigration;
+use EasyWPSMTP\Queue\Queue;
 use EasyWPSMTP\Tasks\Meta;
 
 /**
@@ -53,6 +55,7 @@ class DBRepair {
 				$redirect_tab  = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : '';
 				$query_args    = [
 					'check-db-tables' => 1,
+					'nonce'           => wp_create_nonce( 'easy-wp-smtp-check-db-tables' ),
 				];
 
 				if ( ! empty( $redirect_tab ) ) {
@@ -83,6 +86,8 @@ class DBRepair {
 			update_option( DebugMigration::OPTION_NAME, 0 );
 		} elseif ( $missing_table === Meta::get_table_name() ) {
 			update_option( GeneralMigration::OPTION_NAME, 0 );
+		} elseif ( $missing_table === Queue::get_table_name() ) {
+			update_option( QueueMigration::OPTION_NAME, 0 );
 		}
 	}
 
@@ -129,6 +134,11 @@ class DBRepair {
 				$missing_table,
 				get_option( GeneralMigration::ERROR_OPTION_NAME, $this->get_missing_table_default_error_message() )
 			);
+		} elseif ( $missing_table === Queue::get_table_name() ) {
+			$reason .= $this->get_reason_output_message(
+				$missing_table,
+				get_option( QueueMigration::ERROR_OPTION_NAME, $this->get_missing_table_default_error_message() )
+			);
 		}
 
 		$reasons[] = $reason;
@@ -174,6 +184,8 @@ class DBRepair {
 			easy_wp_smtp()->get_admin()->is_admin_page() &&
 			current_user_can( easy_wp_smtp()->get_capability_manage_options() )
 		) {
+			check_admin_referer( 'easy-wp-smtp-check-db-tables', 'nonce' );
+
 			$missing_tables = $this->get_missing_tables();
 
 			if ( empty( $missing_tables ) ) {

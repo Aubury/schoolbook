@@ -3,13 +3,14 @@
 /*
 Plugin Name: Advanced Woo Search PRO
 Description: Advance ajax WooCommerce product search.
-Version: 3.48
+Version: 3.66
 Author: ILLID
+Plugin URI: https://advanced-woo-search.com/
 Author URI: https://advanced-woo-search.com/
 Text Domain: advanced-woo-search
 Requires Plugins: woocommerce
 WC requires at least: 3.0.0
-WC tested up to: 10.3.0
+WC tested up to: 10.9.0
 */
 
 
@@ -107,7 +108,7 @@ final class AWS_PRO_Main {
      */
     private function define_constants() {
 
-        $this->define( 'AWS_PRO_VERSION', '3.48' );
+        $this->define( 'AWS_PRO_VERSION', '3.66' );
         $this->define( 'AWS_PRO_DIR', plugin_dir_path( AWS_PRO_FILE ) );
         $this->define( 'AWS_PRO_URL', plugin_dir_url( AWS_PRO_FILE ) );
         $this->define( 'AWS_PRO_BASENAME', plugin_basename( AWS_PRO_FILE ) );
@@ -157,6 +158,7 @@ final class AWS_PRO_Main {
         include_once( 'includes/class-aws-langs.php' );
         include_once( 'includes/class-aws-hooks.php' );
         include_once( 'includes/class-aws-shortcodes.php' );
+        include_once( 'includes/class-aws-nav-menu.php' );
         include_once( 'includes/widget.php' );
 
         // Admin
@@ -235,6 +237,7 @@ final class AWS_PRO_Main {
         AWS_Integrations::instance();
         AWS_Hooks::instance();
         AWS_Shortcodes::instance();
+        AWS_Nav_Menu::instance();
         AWS_Langs::instance();
 
         if ( is_admin() ) {
@@ -467,6 +470,15 @@ function aws_show_free_deactivation_notice() {
     }
 }
 
+/*
+ * Show notice to delete free plugin version if pro is active
+ */
+add_action( 'after_plugin_row_meta', 'aws_add_free_plugin_uninstall_notice', 10, 2 );
+function aws_add_free_plugin_uninstall_notice( $plugin_file, $plugin_data ) {
+    if ( $plugin_file === 'advanced-woo-search/advanced-woo-search.php' && ! is_plugin_active( $plugin_file ) ) {
+        echo '<div style="display: inline-block; margin: 0 0 8px; color: #b32d2e; border: 1px solid #c3c4c7; padding: 6px 12px; background-color: #fcf9e8;">' . esc_html__( 'You can safely delete this plugin since you already have Advanced Woo Search PRO installed.', 'advanced-woo-search' ) . '</div>';
+    }
+}
 
 /*
  * Init AWS plugin

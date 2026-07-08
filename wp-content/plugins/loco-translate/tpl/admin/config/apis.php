@@ -103,7 +103,52 @@ $help = apply_filters('loco_external','https://localise.biz/wordpress/plugin/man
                         </p>
                     </fieldset>
                 </td>
-            </tr>
+            </tr><?php
+            // OPENAI (CHATGPT) 
+            $api = $apis['openai']?> 
+            <tr>
+                <th scope="row"><?php $api->e('name')?></th>
+                <td>
+                    <fieldset>
+                        <legend class="screen-reader-text">
+                            <span><?php $ui->e('api_key')?></span>
+                        </legend>
+                        <p>
+                            <label for="loco--openai_api_key">
+                                <?php $ui->e('api_key')?>:
+                            </label>
+                            <input type="text" size="50" name="api[openai][key]" id="loco--openai_api_key" value="<?php $api->e('key')?>" spellcheck="false" />
+                        </p>
+                        <p>
+                            <label for="loco--openai_api_model">
+                                Model:
+                            </label>
+                            <input type="text" size="50" name="api[openai][model]" id="loco--openai_api_model" value="<?php $api->e('model')?>" placeholder="gpt-4o-mini" spellcheck="false" />
+                        </p>
+                        <p>
+                            <label for="loco--openai_prompt" style="vertical-align: top">
+                                Prompt:
+                            </label>
+                            <textarea class="regular-text" name="api[openai][prompt]" id="loco--openai_prompt"><?php $api->e('prompt')?></textarea>
+                        </p>
+                        <p>
+                            <span class="description"><a href="https://platform.openai.com/" target="_blank" tabindex="-1">https://platform.openai.com/</a></span>
+                        </p>
+                    </fieldset>
+                </td>
+            </tr><?php
+            /* @var Loco_mvc_ViewParams[] $hooked */
+            foreach( $hooked as $api ):?> 
+            <tr>
+                <th scope="row"><?php $api->e('name')?></th>
+                <td>
+                    <p><?php
+                        $api->key ? esc_html_e('Configured externally','loco-translate') : esc_html_e('No API key','loco-translate') ?><br />
+                        <span class="description"><a href="<?php $api->e('url')?>" target="_blank" tabindex="-1"><?php $api->e('url')?></a></span>
+                    </p>
+                </td>
+            </tr><?php
+            endforeach?> 
         </tbody>
     </table>
 
@@ -114,6 +159,10 @@ $help = apply_filters('loco_external','https://localise.biz/wordpress/plugin/man
                 <?php esc_html_e('Third party services are subject to their own terms of use and may incur costs from the provider','loco-translate')?>.
                 <a href="<?php self::e($help)?>#legal" target="_blank" tabindex="-1"><?php esc_html_e('See full disclaimer','loco-translate')?></a>.
             </span>
+        </p>
+        <p>
+            <strong class="has-icon"><?php esc_html_e('Important','loco-translate')?>:</strong>
+            <?php esc_html_e('All users granted access to this plugin can use your keys, and some APIs are called directly from the browser','loco-translate')?>.
         </p>
     </div>  
 

@@ -229,10 +229,19 @@ if (!class_exists('AWS_Gutenberg_Init')) :
         private function get_form_ids() {
             $plugin_options = get_option( 'aws_pro_settings' );
             $form_ids = array();
-            foreach ( $plugin_options as $instance_id => $instance_options ) {
+            if ( is_array( $plugin_options ) ) {
+                foreach ( $plugin_options as $instance_id => $instance_options ) {
+                    $form_ids[] = array(
+                        'label' => $instance_id,
+                        'value' => $instance_id
+                    );
+                }
+            }
+            if ( empty( $form_ids ) ) {
+                $default_id = AWS_Helpers::get_available_instance_id();
                 $form_ids[] = array(
-                    'label' => $instance_id,
-                    'value' => $instance_id
+                    'label' => $default_id,
+                    'value' => $default_id
                 );
             }
             return $form_ids;

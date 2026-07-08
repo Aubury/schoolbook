@@ -653,14 +653,30 @@ jQuery(document).ready(function ($) {
 
     }
 
+    function awsToggleRulesSelect2Loading( isPending ) {
+        var $rulesBox = $('#aws_form .aws-rules');
+
+        if ( ! $rulesBox.length ) {
+            return;
+        }
+
+        $rulesBox.toggleClass('aws-select2-pending', !! isPending );
+    }
+
     // Select2 cached data
     var select2CachedData = {};
 
     // Select2 init
     function aws_init_select2() {
 
-        $('.aws-rules-table select.aws-select2').select2({
-            minimumResultsForSearch: 15
+        awsToggleRulesSelect2Loading( true );
+
+        $('.aws-rules-table select.aws-select2').each(function() {
+            var isMultiselect = $(this).prop('multiple') || $(this).data('multiselect') || false;
+            $(this).select2({
+                minimumResultsForSearch: 15,
+                dropdownCssClass: isMultiselect ? 'aws-select2-dropdown-multiple' : ''
+            });
         });
 
         // Select2 init for main plugin settings page
@@ -678,6 +694,7 @@ jQuery(document).ready(function ($) {
                 var ajaxCallbackParam = $(this).data('ajax-callback-param') || '';
                 var placeholder = $(this).data('placeholder') || '';
                 var minimumInputLength = $(this).data('input') || 0;
+                var isMultiselect = $(this).prop('multiple') || $(this).data('multiselect') || false;
 
                 if ( minimumInputLength === 0 ) {
 
@@ -772,6 +789,7 @@ jQuery(document).ready(function ($) {
                         placeholder: placeholder,
                         minimumResultsForSearch: 15,
                         minimumInputLength: parseInt( minimumInputLength ),
+                        dropdownCssClass: isMultiselect ? 'aws-select2-dropdown-multiple' : ''
                     });
 
                 } else {
@@ -794,6 +812,7 @@ jQuery(document).ready(function ($) {
                         },
                         placeholder: placeholder,
                         minimumInputLength: parseInt( minimumInputLength ),
+                        dropdownCssClass: isMultiselect ? 'aws-select2-dropdown-multiple' : ''
                     });
 
                 }
@@ -801,9 +820,20 @@ jQuery(document).ready(function ($) {
             });
         }
 
+        window.requestAnimationFrame(function() {
+            awsToggleRulesSelect2Loading( false );
+        });
+
     }
 
     aws_init_select2();
+
+
+    // On Weight suboption field change - update counter inside table
+    $(document).on('change', '.aws-settings-inner-table input[name*="[weight]"]:not(.aws-term-weight)', function(e) {
+        $(this).closest('.aws-table-sources-item').find('[data-item-weight]').text( $(this).val() );
+    });
+
 
     // Advanced admin filters
 

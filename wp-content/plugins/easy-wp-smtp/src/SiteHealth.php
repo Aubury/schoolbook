@@ -53,11 +53,11 @@ class SiteHealth {
 		// Enqueue site health page scripts and styles.
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_assets' ] );
 
-		add_filter( 'site_status_tests', array( $this, 'register_site_status_tests' ) );
-		add_filter( 'debug_information', array( $this, 'register_debug_information' ) );
+		add_filter( 'site_status_tests', [ $this, 'register_site_status_tests' ] );
+		add_filter( 'debug_information', [ $this, 'register_debug_information' ] );
 
 		// Register async test hooks.
-		add_action( 'wp_ajax_health-check-email-domain_check_test', array( $this, 'email_domain_check_test' ) );
+		add_action( 'wp_ajax_health-check-email-domain_check_test', [ $this, 'email_domain_check_test' ] );
 	}
 
 	/**
@@ -93,20 +93,20 @@ class SiteHealth {
 	 */
 	public function register_site_status_tests( $tests ) {
 
-		$tests['direct']['easy_wp_smtp_mailer_setup_complete'] = array(
+		$tests['direct']['easy_wp_smtp_mailer_setup_complete'] = [
 			'label' => esc_html__( 'Is Easy WP SMTP mailer setup complete?', 'easy-wp-smtp' ),
-			'test'  => array( $this, 'mailer_setup_complete_test' ),
-		);
+			'test'  => [ $this, 'mailer_setup_complete_test' ],
+		];
 
-		$tests['direct']['easy_wp_smtp_db_tables_exist'] = array(
+		$tests['direct']['easy_wp_smtp_db_tables_exist'] = [
 			'label' => esc_html__( 'Do Easy WP SMTP DB tables exist?', 'easy-wp-smtp' ),
 			'test'  => [ $this, 'db_tables_test' ],
-		);
+		];
 
-		$tests['async']['easy_wp_smtp_email_domain_check'] = array(
+		$tests['async']['easy_wp_smtp_email_domain_check'] = [
 			'label' => esc_html__( 'Is email domain configured properly?', 'easy-wp-smtp' ),
 			'test'  => 'email_domain_check_test',
-		);
+		];
 
 		return $tests;
 	}
@@ -123,7 +123,7 @@ class SiteHealth {
 	 */
 	public function register_debug_information( $debug_info ) {
 
-		$debug_notices = Debug::get();
+		$debug_notices = EmailSendingDebug::get_messages();
 		$db_tables     = $this->get_db_tables( 'existing' );
 
 		$debug_info[ self::DEBUG_INFO_SLUG ] = [
@@ -139,7 +139,7 @@ class SiteHealth {
 				],
 				'debug'            => [
 					'label' => esc_html__( 'Debug', 'easy-wp-smtp' ),
-					'value' => ! empty( $debug_notices ) ? implode( '; ', $debug_notices ) : esc_html__( 'No debug notices found.', 'easy-wp-smtp' ),
+					'value' => ! empty( $debug_notices ) ? implode( WP::EOL . WP::EOL, $debug_notices ) : esc_html__( 'No debug notices found.', 'easy-wp-smtp' ),
 				],
 				'db_tables'        => [
 					'label'   => esc_html__( 'DB tables', 'easy-wp-smtp' ),
@@ -199,13 +199,13 @@ class SiteHealth {
 			esc_html( $mailer_title )
 		);
 
-		$result = array(
+		$result = [
 			'label'       => esc_html__( 'Easy WP SMTP mailer setup is complete', 'easy-wp-smtp' ),
 			'status'      => 'good',
-			'badge'       => array(
+			'badge'       => [
 				'label' => $this->get_label(),
 				'color' => self::BADGE_COLOR,
-			),
+			],
 			'description' => sprintf(
 				'<p>%s</p><p>%s</p>',
 				$mailer_text,
@@ -217,7 +217,7 @@ class SiteHealth {
 				esc_html__( 'Test email sending', 'easy-wp-smtp' )
 			),
 			'test'        => 'easy_wp_smtp_mailer_setup_complete',
-		);
+		];
 
 		if ( $mailer === 'mail' ) {
 			$mailer_text .= sprintf( /* translators: %s - explanation why default mailer is not a valid mailer option. */
@@ -254,17 +254,17 @@ class SiteHealth {
 	 */
 	public function db_tables_test() {
 
-		$result = array(
+		$result = [
 			'label'       => esc_html__( 'Easy WP SMTP DB tables are created', 'easy-wp-smtp' ),
 			'status'      => 'good',
-			'badge'       => array(
+			'badge'       => [
 				'label' => $this->get_label(),
 				'color' => self::BADGE_COLOR,
-			),
+			],
 			'description' => esc_html__( 'Easy WP SMTP is using custom database tables for some of its features. In order to work properly, the custom tables should be created, and it looks like they exist in your database.', 'easy-wp-smtp' ),
 			'actions'     => '',
 			'test'        => 'easy_wp_smtp_db_tables_exist',
-		);
+		];
 
 		$missing_tables = $this->get_db_tables( 'missing' );
 
@@ -334,13 +334,13 @@ class SiteHealth {
 			esc_html( WP::get_email_domain( $email ) )
 		);
 
-		$result = array(
+		$result = [
 			'label'       => esc_html__( 'Email domain is configured correctly', 'easy-wp-smtp' ),
 			'status'      => 'good',
-			'badge'       => array(
+			'badge'       => [
 				'label' => $this->get_label(),
 				'color' => self::BADGE_COLOR,
-			),
+			],
 			'description' => sprintf(
 				'<p>%1$s</p><p>%2$s</p>',
 				$email_domain_text,
@@ -352,7 +352,7 @@ class SiteHealth {
 				esc_html__( 'Send a Test Email', 'easy-wp-smtp' )
 			),
 			'test'        => 'easy_wp_smtp_email_domain_check',
-		);
+		];
 
 		// Add the optional sending domain parameter.
 		if ( in_array( $mailer, [ 'mailgun', 'sendinblue', 'sendgrid' ], true ) ) {

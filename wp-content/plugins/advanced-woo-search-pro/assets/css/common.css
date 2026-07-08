@@ -548,7 +548,29 @@
 .aws-search-result .aws_result_top_custom_item .aws_result_head img {
     width: 16px;
     height: auto;
-    margin: -1px 5px 0 0;
+}
+
+.aws-search-result .aws_result_tax .aws_result_head .aws_result_heading,
+.aws-search-result .aws_result_user .aws_result_head .aws_result_heading {
+    display: block;
+    color: #aaaaaa;
+    font-size: 11px;
+    line-height: 1;
+    font-weight: normal;
+    padding-bottom: 3px;
+}
+
+.aws-search-result .aws_result_tax .aws_result_head .aws_result_hierarchy {
+    display: block;
+    color: #aaaaaa;
+    font-size: 10px;
+    line-height: 1;
+    font-weight: normal;
+    padding-top: 2px;
+}
+
+.aws-search-result .aws_result_tax .aws_result_head .aws_result_tax_image {
+    margin: 2px 8px 0 0;
 }
 
 /* Search suggestions */
@@ -1351,4 +1373,8 @@ body.aws-overlay {
 
 .aws_results.style-big-grid .aws_result_title .aws_result_labels {
     justify-content: center;
+}
+
+.theme-flatsome .searchform-wrapper .aws-container .aws-show-clear .aws-search-field {
+    color: #313131 !important;
 }

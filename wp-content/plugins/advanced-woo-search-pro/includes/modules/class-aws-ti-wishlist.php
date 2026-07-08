@@ -95,7 +95,7 @@ if ( ! class_exists( 'AWS_TI_WISHLIST' ) ) :
 
                         $new_options[$section_name][] = $values;
 
-                        if ( $values['id'] === 'show_stock_quantity' ) {
+                        if ( isset( $values['id'] ) && $values['id'] === 'show_stock_quantity' ) {
 
                             $new_options[$section_name][] = array(
                                 "name"  => __( "Show TI Wishlist?", "advanced-woo-search" ),
@@ -104,6 +104,7 @@ if ( ! class_exists( 'AWS_TI_WISHLIST' ) ) :
                                 "inherit" => "true",
                                 "value" => 'no',
                                 "type"  => "radio",
+                                "section" => "content",
                                 'choices' => array(
                                     'excerpt' => __( 'Show after content', 'advanced-woo-search' ),
                                     'price'   => __( 'Show after price', 'advanced-woo-search' ),

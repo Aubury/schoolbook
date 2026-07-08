@@ -1903,18 +1903,13 @@ class AWS_Helpers {
      */
     static public function get_relevance_scores( $data ) {
 
-        $relevance_array = array(
-            'title'     => 350,
-            'content'   => 100,
-            'id'        => 300,
-            'sku'       => 300,
-            'gtin'      => 500,
-            'brand'     => 100,
-            'other'     => 35,
-            'tax_name'  => 350,
-            'tax_desc'  => 100,
-            'user_name' => 350,
-        );
+        $relevance_array = AWS_Helpers::get_default_relevance_scores();
+
+        if ( $data && isset( $data['search_in_weights'] ) && is_array( $data['search_in_weights'] ) ) {
+            foreach ( $data['search_in_weights'] as $field => $weight ) {
+                $relevance_array[$field] = (int) $weight;
+            }
+        }
 
         /**
          * Change relevance scores for product search fields
@@ -1927,6 +1922,70 @@ class AWS_Helpers {
         $relevance_array = shortcode_atts( $relevance_array, $relevance_array_filtered, 'aws_relevance_scores' );
 
         return $relevance_array;
+
+    }
+
+    /**
+     * Get array of default relevance scores
+     * @return array $default_relevance_array
+     */
+    static public function get_default_relevance_scores() {
+
+        $default_relevance_array = array(
+            'title'     => 350,
+            'content'   => 100,
+            'sku'       => 300,
+            'gtin'      => 500,
+            'excerpt'   => 100,
+            'brand'     => 100,
+            'category'  => 35,
+            'tag'       => 35,
+            'id'        => 300,
+            'attr'      => 35,
+            'tax'       => 35,
+            'meta'      => 35,
+            'other'     => 35,
+            'tax_name'  => 350,
+            'tax_desc'  => 100,
+            'user_name' => 350,
+        );
+
+        return $default_relevance_array;
+
+    }
+
+    /*
+     * Find duplicates in $relevance_params and combine them
+     * @return array $relevance_sources_groups
+     */
+    static public function grouped_similar_relevance_scores( $relevance_params, $search_in_arr ) {
+
+        $grouped = array();
+
+        foreach ($relevance_params as $key => $values) {
+            $groupKey = $values['full'] . '_' . $values['like'];
+
+            if ( array_search( $key, $search_in_arr ) !== false ) {
+
+                if (!isset($grouped[$groupKey])) {
+                    $grouped[$groupKey] = [
+                        'full' => $values['full'],
+                        'like' => $values['like'],
+                        'sources' => [],
+                    ];
+                }
+
+                $grouped[$groupKey]['sources'][] = $key;
+
+            }
+
+        }
+
+        $relevance_sources_groups = array_values(array_filter($grouped, function ($group) {
+            return count($group['sources']) > 1;
+        }));
+
+        return $relevance_sources_groups;
 
     }
 
@@ -2141,6 +2200,7 @@ class AWS_Helpers {
 
                 $filtering_tax = $filter_opts['filter_by'];
                 $hide_empty = isset( $filter_opts['hide_empty'] ) && $filter_opts['hide_empty'] === 'true';
+                $preselect = isset( $filter_opts['preselect'] ) && $filter_opts['preselect'] === 'true';
                 $only_parents = isset( $filter_opts['only_parents'] ) && $filter_opts['only_parents'] === 'true' ? 0 : '';
                 $max_number = isset( $filter_opts['max_number'] ) && $filter_opts['max_number'] ? intval( $filter_opts['max_number'] ) : 0;
 
@@ -2187,6 +2247,26 @@ class AWS_Helpers {
 
                     }
 
+                    $filters_arr['preselect'] = 0;
+
+                    // set filter id that must be preselected ( if prselect option is enabled )
+                    if ( $preselect && is_tax( $filtering_tax ) && isset( $filters_arr['filters'] ) && ! empty( $filters_arr['filters'] ) ) {
+                        $queried_object = get_queried_object();
+                        if ( isset( $queried_object->term_id ) ) {
+                            $filters_arr['preselect'] = $filter_id . '-' . $queried_object->term_id;
+                            if ( $filter_opts['only_parents'] === 'true' || ! self::array_key_exists( $filters_arr['filters'], $filters_arr['preselect'] ) ) {
+                                $taxonomy_obj = get_taxonomy( $filtering_tax );
+                                if ( $taxonomy_obj && $taxonomy_obj->hierarchical ) {
+                                    $term = $queried_object;
+                                    while ( $term->parent != 0 && ! self::array_key_exists( $filters_arr['filters'], $filter_id . '-' . $term->term_id ) ) {
+                                        $term = get_term( $term->parent, $filtering_tax );
+                                    }
+                                    $filters_arr['preselect'] = $filter_id . '-' . $term->term_id;
+                                }
+                            }
+                        }
+                    }
+
                 }
 
             } else {
@@ -2207,6 +2287,24 @@ class AWS_Helpers {
 
         return $filters_arr;
 
+    }
+
+    /**
+     * Check if key exists in quick filters array
+     * @param array $filters Filters array
+     * @param string $filter_id Filter id
+     * @return bool
+     */
+    static public function array_key_exists( $filters, $filter_id ) {
+        foreach ( $filters as $item ) {
+            foreach ( $item as $key => $value ) {
+                if ( $key === $filter_id ) {
+                    return true;
+                }
+                break;
+            }
+        }
+        return false;
     }
 
     /**
@@ -2240,11 +2338,14 @@ class AWS_Helpers {
 
                 $filtering_tax = $filter_settings['filter_by'];
 
+                $child_term_ids = get_term_children( (int) $term_id, $filtering_tax );
+                $all_term_ids   = array_merge( array( $term_id ), is_array( $child_term_ids ) ? $child_term_ids : array() );
+
                 $new_tax_rule = array(
                     'param' => 'product_taxonomy',
                     'suboption' => $filtering_tax,
                     'operator' => 'equal',
-                    'value' => $term_id,
+                    'value' => $all_term_ids,
                 );
 
                 if ( $adv_filters && is_array( $adv_filters ) && ! empty( $adv_filters ) && isset( $adv_filters['product'] ) && ! empty( $adv_filters['product'] ) ) {
@@ -2255,6 +2356,7 @@ class AWS_Helpers {
 
                 } else {
 
+                    $adv_filters = array();
                     $adv_filters['product']['group_1']['rule_1'] = $new_tax_rule;
 
                 }

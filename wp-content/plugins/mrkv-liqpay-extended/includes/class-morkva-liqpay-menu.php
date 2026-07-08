@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Class for add liqpay to wordpress menu
  * 
@@ -28,6 +29,6 @@ Class MorkvaLiqpayMenu
     public function register_admin_menu()
     {
         # Add menu Liqpay
-        add_menu_page(__('Morkva LiqPay', 'mrkv-liqpay-extended'), __('Morkva LiqPay', 'mrkv-liqpay-extended'), 'manage_options', $this->slug, false, plugin_dir_url(__DIR__) . 'img/morkva-liqpay-logo.svg', 26);
+        add_menu_page(__('morkva LiqPay', 'mrkv-liqpay-extended'), __('morkva LiqPay', 'mrkv-liqpay-extended'), 'manage_options', $this->slug, false, plugin_dir_url(__DIR__) . 'img/morkva-icon-20x20.svg', 26);
     }
 }

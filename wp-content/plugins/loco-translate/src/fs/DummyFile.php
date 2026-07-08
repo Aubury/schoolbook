@@ -1,37 +1,23 @@
+76
 <?php
 /**
  * Dummy file that just holds content in memory. 
- * Use when you don't want to commit data to disk but you need to pass a typed file object
+ * Use when you don't want to commit data to disk, but you need to pass a typed file object
  */
 class Loco_fs_DummyFile extends Loco_fs_File {
 
-    /**
-     * @var string
-     */
-    private $contents = '';
+    private string $contents = '';
 
-    /**
-     * @var int
-     */
-    private $mtime = 0;
+    private int $mtime;
 
-    /**
-     * @var int
-     */
-    private $fmode = 0644;
+    private int $fmode = 0644;
 
-    /**
-     * @var int
-     */
-    private $uid = 0;
+    private int $uid = 0;
 
-    /**
-     * @var int
-     */
-    private $gid = 0;
+    private int $gid = 0;
 
     
-    public function __construct($path){
+    public function __construct( string $path ){
         parent::__construct($path);
         $this->mtime = time();
     }
@@ -40,7 +26,7 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * {@inheritdoc}
      */
-    public function exists(){
+    public function exists():bool {
         return false;
     }
 
@@ -48,7 +34,7 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * {@inheritdoc}
      */
-    public function getContents(){
+    public function getContents():string {
         return $this->contents;
     }
 
@@ -56,7 +42,7 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * {@inheritdoc}
      */
-    public function size(){
+    public function size():int {
         return strlen($this->contents);
     }
 
@@ -64,25 +50,24 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * {@inheritdoc}
      */
-    public function putContents( $data ){
-        $this->contents = (string) $data;
-        return $this;
+    public function putContents( string $data ):int {
+        $this->contents = $data;
+        return strlen($data);
     }
 
 
     /**
      * {@inheritdoc}
      */
-    public function modified(){
+    public function modified():int {
         return $this->mtime;
     }
 
 
     /**
      * Allow forcing of modified stamp for testing purposes
-     * @return Loco_fs_File
      */
-    public function touch( $modified ){
+    public function touch( $modified ):self {
         $this->mtime = (int) $modified;
         return $this;
     }
@@ -91,7 +76,7 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * {@inheritdoc}
      */
-    public function mode(){
+    public function mode():int {
         return $this->fmode;
     }
 
@@ -99,8 +84,8 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * {@inheritdoc}
      */
-    public function chmod( $mode, $recursive = false ){
-        $this->fmode = (int) $mode;
+    public function chmod( int $mode, bool $recursive = false ):self {
+        $this->fmode = $mode;
         return $this;
     }
 
@@ -108,7 +93,7 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * TODO implement in parent
      */
-    public function chown( $uid = null, $gid = null ){
+    public function chown( ?int $uid = null, ?int $gid = null ):self {
         if( is_int($uid) ){
             $this->uid = $uid;
         }
@@ -122,7 +107,7 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * {@inheritdoc}
      */
-    public function copy( $dest ){
+    public function copy( string $dest ):self {
         $copy = new Loco_fs_DummyFile($dest);
         foreach( get_object_vars($this) as $prop => $value ){
             $copy->$prop = $value;
@@ -172,7 +157,7 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * {@inheritdoc}
      */
-    public function creatable(){
+    public function creatable():bool {
         return false;
     }
 
@@ -180,7 +165,7 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * {@inheritDoc}
      */
-    public function md5(){
+    public function md5():string {
         return md5( $this->getContents() );
     }
 
@@ -188,7 +173,7 @@ class Loco_fs_DummyFile extends Loco_fs_File {
     /**
      * {@inheritDoc}
      */
-    public function getWriteContext() {
+    public function getWriteContext():Loco_fs_FileWriter {
         return new _LocoDummyFileWriter($this);
     }
 
@@ -204,14 +189,14 @@ class _LocoDummyFileWriter extends Loco_fs_FileWriter {
     /**
      * @inheritdoc
      */
-    public function writable(){
+    public function writable():bool {
         return true;
     }
 
     /**
      * @inheritdoc
      */
-    public function authorize(){
+    public function authorize():self {
         return $this;
     }
 

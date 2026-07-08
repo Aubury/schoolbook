@@ -24,7 +24,7 @@ namespace Automattic\WooCommerce\Internal\BatchProcessing;
 /**
  * Class BatchProcessingController
  *
- * @package Automattic\WooCommerce\Internal\Updates.
+ * @package Automattic\WooCommerce\Internal\BatchProcessing.
  */
 class BatchProcessingController {
 	/*
@@ -97,10 +97,27 @@ class BatchProcessingController {
 	 */
 	public function enqueue_processor( string $processor_class_name ): void {
 		$pending_updates = $this->get_enqueued_processors();
-		if ( ! in_array( $processor_class_name, array_keys( $pending_updates ), true ) ) {
-			$pending_updates[] = $processor_class_name;
-			$this->set_enqueued_processors( $pending_updates );
+
+		// De-duplicate defensively. Historically this method compared the class name against array_keys() rather
+		// than the stored values, so the same processor was appended on every call and bloated the option. Building
+		// the unique list in a single pass heals stores already carrying duplicates on their next enqueue while
+		// keeping only one entry per class name in memory (so the cleanup stays bounded even when the stored list
+		// ballooned to thousands of entries), and skips any non-string values a corrupted option may hold.
+		$deduplicated_updates = array();
+		$seen                 = array();
+		foreach ( $pending_updates as $value ) {
+			if ( is_string( $value ) && ! isset( $seen[ $value ] ) ) {
+				$seen[ $value ]         = true;
+				$deduplicated_updates[] = $value;
+			}
 		}
+		if ( ! in_array( $processor_class_name, $deduplicated_updates, true ) ) {
+			$deduplicated_updates[] = $processor_class_name;
+		}
+		if ( $deduplicated_updates !== $pending_updates ) {
+			$this->set_enqueued_processors( $deduplicated_updates );
+		}
+
 		$this->schedule_watchdog_action( false, true );
 	}
 
@@ -220,17 +237,19 @@ class BatchProcessingController {
 	 * @return array Current state for the processor, or a "blank" state if none exists yet.
 	 */
 	private function get_process_details( BatchProcessorInterface $batch_processor ): array {
-		return get_option(
-			$this->get_processor_state_option_name( $batch_processor ),
-			array(
-				'total_time_spent'    => 0,
-				'current_batch_size'  => $batch_processor->get_default_batch_size(),
-				'last_error'          => null,
-				'recent_failures'     => 0,
-				'batch_first_failure' => null,
-				'batch_last_failure'  => null,
-			)
+		$defaults = array(
+			'total_time_spent'    => 0,
+			'current_batch_size'  => $batch_processor->get_default_batch_size(),
+			'last_error'          => null,
+			'recent_failures'     => 0,
+			'batch_first_failure' => null,
+			'batch_last_failure'  => null,
 		);
+
+		$process_details = get_option( $this->get_processor_state_option_name( $batch_processor ) );
+		$process_details = wp_parse_args( is_array( $process_details ) ? $process_details : array(), $defaults );
+
+		return $process_details;
 	}
 
 	/**
@@ -255,7 +274,7 @@ class BatchProcessingController {
 	 * @param float                   $time_taken Time take by the batch to complete processing.
 	 * @param \Exception|null         $last_error Exception object in processing the batch, if there was one.
 	 */
-	private function update_processor_state( BatchProcessorInterface $batch_processor, float $time_taken, \Exception $last_error = null ): void {
+	private function update_processor_state( BatchProcessorInterface $batch_processor, float $time_taken, ?\Exception $last_error = null ): void {
 		$current_status                      = $this->get_process_details( $batch_processor );
 		$current_status['total_time_spent'] += $time_taken;
 		$current_status['last_error']        = null !== $last_error ? $last_error->getMessage() : null;
@@ -349,7 +368,15 @@ class BatchProcessingController {
 	 * @return array List (of string) of the class names of the enqueued processors.
 	 */
 	public function get_enqueued_processors(): array {
-		return get_option( self::ENQUEUED_PROCESSORS_OPTION_NAME, array() );
+		$enqueued_processors = get_option( self::ENQUEUED_PROCESSORS_OPTION_NAME, array() );
+
+		if ( ! is_array( $enqueued_processors ) ) {
+			$this->logger->error( 'Could not fetch list of processors. Clearing up queue.', array( 'source' => 'batch-processing' ) );
+			delete_option( self::ENQUEUED_PROCESSORS_OPTION_NAME );
+			$enqueued_processors = array();
+		}
+
+		return $enqueued_processors;
 	}
 
 	/**

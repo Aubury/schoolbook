@@ -2,10 +2,9 @@
 Contributors: wpclever
 Donate link: https://wpclever.net
 Tags: woocommerce, wpc, wishlist, wait-list
-Requires at least: 4.0
-Tested up to: 6.6
-Version: 4.9.0
-Stable tag: 4.9.0
+Tested up to: 7.0
+Version: 6.0.5
+Stable tag: 6.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +40,7 @@ Visit our [live demo 01](https://demo.wpclever.net/woosw/ "live demo 01") or [li
 - Choose a menu to add the wishlist menu
 - Choose an action triggered by the wishlist menu
 - RTL support for better displaying right-to-left languages
+- Premium: Enable statistics
 - Premium: Enable multiple wishlists per user
 - Premium: Add note for each product
 - Premium: Lifetime update and dedicated support
@@ -49,10 +49,10 @@ Visit our [live demo 01](https://demo.wpclever.net/woosw/ "live demo 01") or [li
 Newly added feature for management: It's now possible to see all wishlists that a product was included in and check out all wishlists created by a user.
 
 = The Importance of Adding a Wishlist button =
-Many store owners miss the opportunities for selling items for their current customers because they’re not offering Add to Wishlist button on their shop or single product page. On many occasions, buyers need time to rethink their needs and allowing them to add products to wishlist increase the possibility for buyers to purchase these items in the future. As it is truly convenient and speedy to add, remove, proceed to check out or continue shopping, buyers will find the whole purchase flow an enjoyable process. Thus, this improves the shopping experience for your customers. In addition, enabling Add to Wishlist button is helpful for buyers to save an Out-of-Stock product for purchasing when it is restocked at a later time. Shop owners can control the wishlist availability by enabling it for authenticated users only, hence, encourage more membership engagement from visitors. Never miss any chance to strengthen the bond with your customers with an Add to Wishlist button on every product page and shop page of your site.
+Many store owners miss the opportunities for selling items for their current customers because they’re not offering Add to Wishlist button on their shop or single product page. On many occasions, buyers need time to rethink their needs and allowing them to add products to wishlist increase the possibility for buyers to purchase these items in the future. As it is truly convenient and speedy to add, remove, proceed to check out, or continue shopping, buyers will find the whole purchase flow an enjoyable process. Thus, this improves the shopping experience for your customers. In addition, enabling Add to Wishlist button is helpful for buyers to save an Out-of-Stock product for purchasing when it is restocked at a later time. Shop owners can control the wishlist availability by enabling it for authenticated users only, hence, encourage more membership engagement from visitors. Never miss any chance to strengthen the bond with your customers with an Add to Wishlist button on every product page and shop page of your site.
 
 = Product Details at a Glance =
-The wishlist items are displayed in great detail so that buyers don’t need to browse the single product page for more information when the title, price, stock status, thumbnail image and date of adding to the wishlist are smartly arranged in the wishlist page or wishlist popup. Buyers can also see a counter showing how many items have been added to their wishlist: a notification for urging them to checkout or to manage the list by removing unwanted items. By keeping your customers on your site, store owners can increase the conversion rate when buyers revise the list and find something useful that they might have missed or forgotten to purchase before. Controlling the wishlist is intuitive because there is a button to remove any item from the list. Users take full control of actions triggered by the wishlist button when an item is already added to the list.
+The wishlist items are displayed in great detail so that buyers don’t need to browse the single product page for more information when the title, price, stock status, thumbnail image, and date of adding to the wishlist are smartly arranged in the wishlist page or wishlist popup. Buyers can also see a counter showing how many items have been added to their wishlist: a notification for urging them to checkout or to manage the list by removing unwanted items. By keeping your customers on your site, store owners can increase the conversion rate when buyers revise the list and find something useful that they might have missed or forgotten to purchase before. Controlling the wishlist is intuitive because there is a button to remove any item from the list. Users take full control of actions triggered by the wishlist button when an item is already added to the list.
 
 = Ultra-speedy Performance =
 There’s nearly zero delay speed for this Smart Wishlist plugin when visitors perform any kind of actions: item addition or removal, closing the wishlist popup or open the wishlist page, it all happens immediately with precision. Wishlist popup also allows an overlay effect that keeps the popup opens while visitors can still scroll the background page until the Continue Shopping button or Close button is pressed. Our plugin is compatible with all WPClever plugins, most common WooCommerce add-ons and WordPress themes, so the flexibility is really high with smooth performance for your website. Smart Wishlist can work in similar ways with any product bundles, composite deals, bought together offers, grouped or force-sell products made with our plugins.
@@ -77,8 +77,8 @@ Please try other plugins from us:
 
 1. Please make sure that you installed WooCommerce
 2. Go to plugins in your dashboard and select "Add New"
-3. Search for "WPC Smart Wishlist", Install & Activate it
-4. Go to settings page to choose position and effect as you want
+3. Search for "WPC Smart Wishlist," Install & Activate it
+4. Go to the settings page to choose the position and effect as you want
 
 == Frequently Asked Questions ==
 
@@ -99,8 +99,98 @@ Example:
 
 == Changelog ==
 
+= 6.0.5 =
+* Updated: Optimized the code
+* Updated: Compatible with WP 7.0 & Woo 10.8
+
+= 6.0.4 =
+* Fixed: The button remains in the "added" state even after being removed from the wishlist
+
+= 6.0.3 =
+* Added: The wishlist's name on the wishlist page
+
+= 6.0.2 =
+* Fixed: Minor JS issue in the backend
+* Updated: Compatible with WP 6.9 & Woo 10.7
+
+= 6.0.1 =
+* Added: Show search input on the popup to filter products by name or note
+
+= 6.0.0 =
+* Updated: Optimized the code for better performance
+
+= 5.1.0 =
+* Fixed: Minor JS issue in the backend
+* Updated: Compatible with WP 6.9 & Woo 10.6
+
+= 5.0.9 =
+* Fixed: Security vulnerability reported by Yash Vardhan Tripathi
+
+= 5.0.8 =
+* Fixed: Minor JS/CSS issues
+
+= 5.0.7 =
+* Updated: Optimized the code
+
+= 5.0.6 =
+* Added: Import/export settings
+* Updated: Compatible with WP 6.8 & Woo 10.3
+
+= 5.0.5 =
+* Fixed: Security vulnerability reported by Wordfence
+
+= 5.0.4 =
+* Fixed: Security vulnerability reported by Wordfence
+
+= 5.0.3 =
+* Fixed: Minor JS issue in the backend
+* Updated: Compatible with WP 6.8 & Woo 10.2
+
+= 5.0.2 =
+* Updated: Optimized the code
+* Updated: Compatible with WP 6.8 & Woo 10.0
+
+= 5.0.1 =
+* Fixed: Minor JS issue in the backend
+
+= 5.0.0 =
+* Fixed: Minor JS issue on the frontend
+* Updated: Compatible with WP 6.8 & Woo 9.9
+
+= 4.9.9 =
+* Updated: Optimized the code
+* Updated: Compatible with WP 6.7 & Woo 9.7
+
+= 4.9.8 =
+* Updated: Optimized the code
+
+= 4.9.7 =
+* Fixed: Minor JS issue on the frontend
+* Updated: Compatible with WP 6.7 & Woo 9.5
+
+= 4.9.6 =
+* Fixed: Error on displaying price change
+
+= 4.9.5 =
+* Updated: Optimized the code
+* Updated: Compatible with WP 6.7 & Woo 9.4
+
+= 4.9.4 =
+* Updated: Optimized the code
+
+= 4.9.3 =
+* Added: Option to open wishlist popup menu on My Account
+* Fixed: Counter when having suggested products
+
+= 4.9.2 =
+* Added: Shortcode [woosw_link]
+
+= 4.9.1 =
+* Updated: Optimized the code
+* Updated: Compatible with WP 6.6 & Woo 9.3
+
 = 4.9.0 =
-* Updated: Using WC_AJAX for frontend
+* Updated: Use WC_AJAX for frontend
 
 = 4.8.9 =
 * Added: Filter hook 'woosw_get_ids' and 'woosw_get_items'

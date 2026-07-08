@@ -4,10 +4,10 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit8163cfec9d18b389656cb27b7a241f24
+class ComposerStaticInit7dbce783dc983385ac7421112661002f
 {
     public static $prefixLengthsPsr4 = array (
-        'u' => 
+        'u' =>
         array (
             'underDEV\\Utils\\' => 15,
             'underDEV\\AdvancedCronManager\\' => 29,
@@ -15,11 +15,11 @@ class ComposerStaticInit8163cfec9d18b389656cb27b7a241f24
     );
 
     public static $prefixDirsPsr4 = array (
-        'underDEV\\Utils\\' => 
+        'underDEV\\Utils\\' =>
         array (
             0 => __DIR__ . '/..' . '/underdev/utils/src',
         ),
-        'underDEV\\AdvancedCronManager\\' => 
+        'underDEV\\AdvancedCronManager\\' =>
         array (
             0 => __DIR__ . '/../..' . '/inc',
         ),
@@ -27,15 +27,39 @@ class ComposerStaticInit8163cfec9d18b389656cb27b7a241f24
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'underDEV\\AdvancedCronManager\\AdminScreen' => __DIR__ . '/../..' . '/inc/AdminScreen.php',
+        'underDEV\\AdvancedCronManager\\Assets' => __DIR__ . '/../..' . '/inc/Assets.php',
+        'underDEV\\AdvancedCronManager\\Cron\\Element\\Event' => __DIR__ . '/../..' . '/inc/Cron/Element/Event.php',
+        'underDEV\\AdvancedCronManager\\Cron\\Element\\Schedule' => __DIR__ . '/../..' . '/inc/Cron/Element/Schedule.php',
+        'underDEV\\AdvancedCronManager\\Cron\\Events' => __DIR__ . '/../..' . '/inc/Cron/Events.php',
+        'underDEV\\AdvancedCronManager\\Cron\\EventsActions' => __DIR__ . '/../..' . '/inc/Cron/EventsActions.php',
+        'underDEV\\AdvancedCronManager\\Cron\\EventsLibrary' => __DIR__ . '/../..' . '/inc/Cron/EventsLibrary.php',
+        'underDEV\\AdvancedCronManager\\Cron\\Schedules' => __DIR__ . '/../..' . '/inc/Cron/Schedules.php',
+        'underDEV\\AdvancedCronManager\\Cron\\SchedulesActions' => __DIR__ . '/../..' . '/inc/Cron/SchedulesActions.php',
+        'underDEV\\AdvancedCronManager\\Cron\\SchedulesLibrary' => __DIR__ . '/../..' . '/inc/Cron/SchedulesLibrary.php',
+        'underDEV\\AdvancedCronManager\\FormProvider' => __DIR__ . '/../..' . '/inc/FormProvider.php',
+        'underDEV\\AdvancedCronManager\\Misc' => __DIR__ . '/../..' . '/inc/Misc.php',
+        'underDEV\\AdvancedCronManager\\Server\\Processor' => __DIR__ . '/../..' . '/inc/Server/Processor.php',
+        'underDEV\\AdvancedCronManager\\Server\\Settings' => __DIR__ . '/../..' . '/inc/Server/Settings.php',
+        'underDEV\\Utils\\Ajax' => __DIR__ . '/..' . '/underdev/utils/src/Ajax.php',
+        'underDEV\\Utils\\Cache\\Cache' => __DIR__ . '/..' . '/underdev/utils/src/Cache/Cache.php',
+        'underDEV\\Utils\\Cache\\ObjectCache' => __DIR__ . '/..' . '/underdev/utils/src/Cache/ObjectCache.php',
+        'underDEV\\Utils\\Cache\\Transient' => __DIR__ . '/..' . '/underdev/utils/src/Cache/Transient.php',
+        'underDEV\\Utils\\Dice' => __DIR__ . '/..' . '/underdev/utils/src/Dice.php',
+        'underDEV\\Utils\\Dice\\JsonLoader' => __DIR__ . '/..' . '/underdev/utils/src/Dice/JsonLoader.php',
+        'underDEV\\Utils\\Files' => __DIR__ . '/..' . '/underdev/utils/src/Files.php',
+        'underDEV\\Utils\\Interfaces\\Cacheable' => __DIR__ . '/..' . '/underdev/utils/src/Interfaces/Cacheable.php',
+        'underDEV\\Utils\\Singleton' => __DIR__ . '/..' . '/underdev/utils/src/Singleton.php',
+        'underDEV\\Utils\\View' => __DIR__ . '/..' . '/underdev/utils/src/View.php',
         'underDEV_Requirements' => __DIR__ . '/..' . '/underdev/requirements/underDEV_Requirements.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit8163cfec9d18b389656cb27b7a241f24::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit8163cfec9d18b389656cb27b7a241f24::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit8163cfec9d18b389656cb27b7a241f24::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7dbce783dc983385ac7421112661002f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7dbce783dc983385ac7421112661002f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit7dbce783dc983385ac7421112661002f::$classMap;
 
         }, null, ClassLoader::class);
     }

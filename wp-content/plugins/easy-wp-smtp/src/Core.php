@@ -2,17 +2,24 @@
 
 namespace EasyWPSMTP;
 
+use EasyWPSMTP\Abilities\AbilityRegistrar;
+use EasyWPSMTP\Abilities\DebugEvents\GetDebugEventsAbility;
 use EasyWPSMTP\Admin\Area as AdminArea;
 use EasyWPSMTP\Admin\DashboardWidget;
 use EasyWPSMTP\Admin\DebugEvents\DebugEvents;
+use EasyWPSMTP\Admin\EmailSendingErrors\EmailSendingErrors;
 use EasyWPSMTP\Admin\Notifications;
+use EasyWPSMTP\Compatibility\Compatibility;
 use EasyWPSMTP\Migrations\Migrations;
 use EasyWPSMTP\Providers\Loader as ProvidersLoader;
-use EasyWPSMTP\Tasks\Tasks;
-use EasyWPSMTP\Tasks\Meta;
-use EasyWPSMTP\UsageTracking\UsageTracking;
-use EasyWPSMTP\Compatibility\Compatibility;
+use EasyWPSMTP\Providers\Outlook\Provider as OutlookProvider;
+use EasyWPSMTP\Providers\Sendlayer\QuickConnect as SendlayerQuickConnect;
+use EasyWPSMTP\Queue\Queue;
 use EasyWPSMTP\Reports\Reports;
+use EasyWPSMTP\Tasks\Meta;
+use EasyWPSMTP\Tasks\Tasks;
+use EasyWPSMTP\UsageTracking\UsageTracking;
+use EasyWPSMTP\WPCLI\Bootstrap as WPCLIBootstrap;
 use Exception;
 use ReflectionFunction;
 
@@ -60,6 +67,15 @@ class Core {
 	public $pro;
 
 	/**
+	 * Abilities API registrar.
+	 *
+	 * @since 2.15.0
+	 *
+	 * @var AbilityRegistrar
+	 */
+	private $abilities_registrar;
+
+	/**
 	 * Core constructor.
 	 *
 	 * @since 2.0.0
@@ -72,6 +88,10 @@ class Core {
 
 		if ( $this->is_not_loadable() ) {
 			add_action( 'admin_notices', 'easy_wp_smtp_insecure_php_version_notice' );
+
+			if ( WP::use_global_plugin_settings() ) {
+				add_action( 'network_admin_notices', 'easy_wp_smtp_insecure_php_version_notice' );
+			}
 
 			return;
 		}
@@ -139,6 +159,21 @@ class Core {
 		add_action( 'plugins_loaded', [ $this, 'get_db_repair' ] );
 		add_action( 'plugins_loaded', [ $this, 'get_connections_manager' ], 20 );
 		add_action( 'plugins_loaded', [ $this, 'get_wp_mail_initiator' ] );
+		add_action( 'plugins_loaded', [ $this, 'get_queue' ] );
+		add_action(
+			'plugins_loaded',
+			function () {
+				( new OptimizedEmailSending() )->hooks();
+				( new OutlookProvider() )->hooks();
+				( new SendlayerQuickConnect() )->hooks();
+				( new EmailSendingErrors() )->hooks();
+				$this->get_abilities_registrar()->hooks();
+			}
+		);
+
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			add_action( 'init', [ new WPCLIBootstrap(), 'register' ], 20 );
+		}
 	}
 
 	/**
@@ -172,8 +207,13 @@ class Core {
 
 		// Plugin admin area notices. Display to "admins" only.
 		if ( current_user_can( easy_wp_smtp()->get_capability_manage_options() ) ) {
-			add_action( 'admin_notices', array( '\EasyWPSMTP\WP', 'display_admin_notices' ) );
-			add_action( 'admin_notices', array( $this, 'display_general_notices' ) );
+			add_action( 'admin_notices', [ '\EasyWPSMTP\WP', 'display_admin_notices' ] );
+			add_action( 'admin_notices', [ $this, 'display_general_notices' ] );
+
+			if ( WP::use_global_plugin_settings() ) {
+				add_action( 'network_admin_notices', [ '\EasyWPSMTP\WP', 'display_admin_notices' ] );
+				add_action( 'network_admin_notices', [ $this, 'display_general_notices' ] );
+			}
 		}
 	}
 
@@ -213,6 +253,26 @@ class Core {
 		}
 
 		return $this->pro;
+	}
+
+	/**
+	 * Get the Abilities API registrar.
+	 *
+	 * @since 2.15.0
+	 *
+	 * @return AbilityRegistrar
+	 */
+	public function get_abilities_registrar() {
+
+		if ( ! isset( $this->abilities_registrar ) ) {
+			$this->abilities_registrar = new AbilityRegistrar(
+				[
+					GetDebugEventsAbility::class,
+				]
+			);
+		}
+
+		return $this->abilities_registrar;
 	}
 
 	/**
@@ -291,7 +351,7 @@ class Core {
 		$this->load_action_scheduler();
 
 		// Load Pro specific files early.
-		$pro_files = $this->is_pro_allowed() ? \EasyWPSMTP\Pro\Pro::PLUGGABLE_FILES : array();
+		$pro_files = $this->is_pro_allowed() ? \EasyWPSMTP\Pro\Pro::PLUGGABLE_FILES : [];
 
 		$files = (array) apply_filters( 'easy_wp_smtp_core_init_early_include_files', $pro_files );
 
@@ -416,7 +476,7 @@ class Core {
 	}
 
 	/**
-	 * Display various notifications to a user
+	 * Display various notifications to a user.
 	 *
 	 * @since 2.0.0
 	 */
@@ -432,25 +492,25 @@ class Core {
 		if ( easy_wp_smtp()->is_blocked() ) {
 			?>
 
-			<div class="notice <?php echo esc_attr( WP::ADMIN_NOTICE_ERROR ); ?>">
+			<div class="notice easy-wp-smtp-notice <?php echo esc_attr( WP::ADMIN_NOTICE_ERROR ); ?>">
 				<p>
 					<?php
 					$notices[] = sprintf(
-						/* translators: %s - plugin name and its version. */
+					/* translators: %s - plugin name and its version. */
 						__( '<strong>EMAILING DISABLED:</strong> The %s is currently blocking all emails from being sent.', 'easy-wp-smtp' ),
 						esc_html( 'Easy WP SMTP v' . EasyWPSMTP_PLUGIN_VERSION )
 					);
 
 					if ( Options::init()->is_const_defined( 'general', 'do_not_send' ) ) {
 						$notices[] = sprintf(
-							/* translators: %1$s - constant name; %2$s - constant value. */
+						/* translators: %1$s - constant name; %2$s - constant value. */
 							__( 'To send emails, change the value of the %1$s constant to %2$s.', 'easy-wp-smtp' ),
 							'<code>EASY_WP_SMTP_DO_NOT_SEND</code>',
 							'<code>false</code>'
 						);
 					} else {
 						$notices[] = sprintf(
-							/* translators: %s - plugin Misc settings page URL. */
+						/* translators: %s - plugin Misc settings page URL. */
 							__( 'To send emails, go to plugin <a href="%s">Misc settings</a> and disable the "Do Not Send" option.', 'easy-wp-smtp' ),
 							esc_url( add_query_arg( 'tab', 'misc', easy_wp_smtp()->get_admin()->get_admin_page_url() ) )
 						);
@@ -477,94 +537,6 @@ class Core {
 
 		if ( easy_wp_smtp()->get_admin()->is_admin_page() ) {
 			easy_wp_smtp()->wp_mail_function_incorrect_location_notice();
-		}
-
-		if ( easy_wp_smtp()->get_admin()->is_error_delivery_notice_enabled() ) {
-			$screen = get_current_screen();
-
-			// Skip the error notice if not on plugin page.
-			if (
-				is_object( $screen ) &&
-				strpos( $screen->id, 'page_easy-wp-smtp' ) === false
-			) {
-				return;
-			}
-
-			$notice = apply_filters(
-				'easy_wp_smtp_core_display_general_notices_email_delivery_error_notice',
-				Debug::get_last()
-			);
-
-			if ( ! empty( $notice ) ) {
-				?>
-
-				<div class="notice <?php echo esc_attr( WP::ADMIN_NOTICE_ERROR ); ?>">
-					<p>
-						<?php
-						echo wp_kses(
-							__( '<strong>Heads up!</strong> The last email your site attempted to send was unsuccessful.', 'easy-wp-smtp' ),
-							[
-								'strong' => [],
-							]
-						);
-						?>
-					</p>
-
-					<blockquote>
-						<pre><?php echo wp_kses_post( $notice ); ?></pre>
-					</blockquote>
-
-					<p>
-						<?php
-						if ( ! easy_wp_smtp()->get_admin()->is_admin_page() ) {
-							printf(
-								wp_kses( /* translators: %s - plugin admin page URL. */
-									__( 'Please review your Easy WP SMTP settings in <a href="%s">plugin admin area</a>.' ) . ' ',
-									array(
-										'a' => array(
-											'href' => array(),
-										),
-									)
-								),
-								esc_url( easy_wp_smtp()->get_admin()->get_admin_page_url() )
-							);
-						}
-
-						printf(
-							wp_kses( /* translators: %s - URL to the debug events page. */
-								__( 'For more details please try running an Email Test or reading the latest <a href="%s">error event</a>.' ),
-								[
-									'a' => [
-										'href' => [],
-									],
-								]
-							),
-							esc_url( DebugEvents::get_page_url() )
-						);
-						?>
-					</p>
-
-					<?php
-						echo wp_kses(
-							apply_filters(
-								'easy_wp_smtp_core_display_general_notices_email_delivery_error_notice_footer',
-								''
-							),
-							[
-								'p' => [],
-								'a' => [
-									'href'   => [],
-									'target' => [],
-									'class'  => [],
-									'rel'    => [],
-								],
-							]
-						);
-					?>
-				</div>
-
-				<?php
-			}
 		}
 	}
 
@@ -849,6 +821,10 @@ class Core {
 			DebugEvents::get_table_name(),
 		];
 
+		if ( $this->get_queue()->is_enabled() ) {
+			$tables[] = Queue::get_table_name();
+		}
+
 		return apply_filters( 'easy_wp_smtp_core_get_custom_db_tables', $tables );
 	}
 
@@ -1045,7 +1021,7 @@ class Core {
 			 *
 			 * @since 2.1.0
 			 *
-			 * @param \EasyWPSMTP\Compatibility\Compatibility  $compatibility Compatibility instance.
+			 * @param \EasyWPSMTP\Compatibility\Compatibility $compatibility Compatibility instance.
 			 */
 			$compatibility = apply_filters( 'easy_wp_smtp_core_get_compatibility', new Compatibility() );
 
@@ -1254,27 +1230,27 @@ class Core {
 			if ( $conflict['type'] === 'plugin' ) {
 				$message .= '<br><br>' . sprintf(
 					/* translators: %s - plugin name. */
-					esc_html__( 'It looks like the "%s" plugin is overwriting the "wp_mail" function. Please reach out to the plugin developer on how to disable or remove the "wp_mail" function overwrite to prevent conflicts with Easy WP SMTP.', 'easy-wp-smtp' ),
-					esc_html( $conflict['name'] )
-				);
+						esc_html__( 'It looks like the "%s" plugin is overwriting the "wp_mail" function. Please reach out to the plugin developer on how to disable or remove the "wp_mail" function overwrite to prevent conflicts with Easy WP SMTP.', 'easy-wp-smtp' ),
+						esc_html( $conflict['name'] )
+					);
 			} elseif ( $conflict['type'] === 'mu-plugin' ) {
 				$message .= '<br><br>' . sprintf(
 					/* translators: %s - must-use plugin name. */
-					esc_html__( 'It looks like the "%s" must-use plugin is overwriting the "wp_mail" function. Please reach out to your hosting provider on how to disable or remove the "wp_mail" function overwrite to prevent conflicts with Easy WP SMTP.', 'easy-wp-smtp' ),
-					esc_html( $conflict['name'] )
-				);
+						esc_html__( 'It looks like the "%s" must-use plugin is overwriting the "wp_mail" function. Please reach out to your hosting provider on how to disable or remove the "wp_mail" function overwrite to prevent conflicts with Easy WP SMTP.', 'easy-wp-smtp' ),
+						esc_html( $conflict['name'] )
+					);
 			} elseif ( $wp_mail_filepath === ABSPATH . 'wp-config.php' ) {
 				$message .= '<br><br>' . esc_html__( 'It looks like it\'s overwritten in the "wp-config.php" file. Please reach out to your hosting provider on how to disable or remove the "wp_mail" function overwrite to prevent conflicts with Easy WP SMTP.', 'easy-wp-smtp' );
 			}
 
 			$message .= '<br><br>' . sprintf(
 				/* translators: %s - path. */
-				esc_html__( 'Current function path: %s', 'easy-wp-smtp' ),
-				$wp_mail_filepath . ':' . $wp_mail_reflection->getStartLine()
-			);
+					esc_html__( 'Current function path: %s', 'easy-wp-smtp' ),
+					$wp_mail_filepath . ':' . $wp_mail_reflection->getStartLine()
+				);
 
 			printf(
-				'<div class="notice %1$s"><p>%2$s</p></div>',
+				'<div class="notice easy-wp-smtp-notice %1$s"><p>%2$s</p></div>',
 				esc_attr( WP::ADMIN_NOTICE_ERROR ),
 				wp_kses( $message, [ 'br' => [] ] )
 			);
@@ -1282,7 +1258,6 @@ class Core {
 			return;
 		}
 	}
-
 
 	/**
 	 * Get the default capability to manage everything for Easy WP SMTP.
@@ -1302,4 +1277,62 @@ class Core {
 		 */
 		return apply_filters( 'easy_wp_smtp_core_get_capability_manage_options', 'manage_options' );
 	}
+
+	/**
+	 * Capability required to manage Easy WP SMTP actions that operate on global plugin state.
+	 *
+	 * Returns `manage_network_options` on multisite when Easy WP SMTP's network-wide settings
+	 * mode is on, and `manage_options` otherwise. Use this getter (rather than
+	 * {@see Core::get_capability_manage_options()}) when the gated action reads or writes
+	 * state that lives on the main site / network scope in network-wide mode (the
+	 * `easy_wp_smtp` and `easy_wp_smtp_connections` option rows, license fields, OAuth
+	 * credentials, alerts subscriptions). Naming mirrors {@see WP::use_global_plugin_settings()}.
+	 *
+	 * @since 2.15.0
+	 *
+	 * @return string
+	 */
+	public function get_capability_manage_global_options() {
+
+		$default = ( is_multisite() && WP::use_global_plugin_settings() )
+			? 'manage_network_options'
+			: 'manage_options';
+
+		/**
+		 * Filters the capability required to manage global Easy WP SMTP actions.
+		 *
+		 * @since 2.15.0
+		 *
+		 * @param string $capability The default capability for global actions. Defaults to
+		 *                           `manage_network_options` on multisite when network-wide
+		 *                           settings are on, and `manage_options` otherwise.
+		 */
+		return apply_filters( 'easy_wp_smtp_core_get_capability_manage_global_options', $default ); // phpcs:ignore WPForms.PHP.ValidateHooks.InvalidHookName
+	}
+
+	/**
+	 * Load the queue functionality.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @return Queue
+	 */
+	public function get_queue() {
+
+		static $queue;
+
+		if ( ! isset( $queue ) ) {
+			/**
+			 * Filter the Queue object.
+			 *
+			 * @since 2.6.0
+			 *
+			 * @param Queue $queue The Queue object.
+			 */
+			$queue = apply_filters( 'easy_wp_smtp_core_get_queue', new Queue() );
+		}
+
+		return $queue;
+	}
+
 }

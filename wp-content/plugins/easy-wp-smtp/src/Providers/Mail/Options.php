@@ -41,6 +41,13 @@ class Options extends OptionsAbstract {
 				'slug'        => 'mail',
 				'title'       => esc_html__( 'Default (none)', 'easy-wp-smtp' ),
 				'description' => $description,
+				'supports'   => [
+					'from_email'       => true,
+					'from_name'        => true,
+					'return_path'      => true,
+					'from_email_force' => true,
+					'from_name_force'  => true,
+				],
 			)
 		);
 	}

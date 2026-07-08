@@ -5,7 +5,6 @@ namespace Automattic\WooCommerce\GoogleListingsAndAds\Admin\MetaBox;
 
 use Automattic\WooCommerce\GoogleListingsAndAds\Admin\Admin;
 use Automattic\WooCommerce\GoogleListingsAndAds\HelperTraits\ViewHelperTrait;
-use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\AdminConditional;
 use Automattic\WooCommerce\GoogleListingsAndAds\View\ViewException;
 use WP_Post;
 
@@ -18,7 +17,6 @@ defined( 'ABSPATH' ) || exit;
  */
 abstract class AbstractMetaBox implements MetaBoxInterface {
 
-	use AdminConditional;
 	use ViewHelperTrait;
 
 	protected const VIEW_PATH = 'meta-box';
@@ -77,6 +75,15 @@ abstract class AbstractMetaBox implements MetaBoxInterface {
 	 */
 	public function get_classes(): array {
 		return [];
+	}
+
+	/**
+	 * Check whether this meta box can be registered.
+	 *
+	 * @return bool Whether the meta box can be registered. Default true.
+	 */
+	public function can_register(): bool {
+		return true;
 	}
 
 	/**

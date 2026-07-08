@@ -181,6 +181,11 @@ class AWS_Search {
         $exclude_tags          = AWS_PRO()->get_settings( 'exclude_tags', $this->form_id );
         $exclude_products      = AWS_PRO()->get_settings( 'exclude_products', $this->form_id );
         $search_archives       = AWS_PRO()->get_settings( 'search_archives', $this->form_id );
+        $search_archives_heading = AWS_PRO()->get_settings( 'search_archives_heading', $this->form_id );
+        $search_archives_hierarchy = AWS_PRO()->get_settings( 'search_archives_hierarchy', $this->form_id );
+        $search_archives_count = AWS_PRO()->get_settings( 'search_archives_count', $this->form_id );
+        $search_archives_empty = AWS_PRO()->get_settings( 'search_archives_empty', $this->form_id );
+        $search_archives_images = AWS_PRO()->get_settings( 'search_archives_images', $this->form_id );
         $adv_filters           = AWS_PRO()->get_settings( 'adv_filters', $this->form_id );
         $quick_filters         = AWS_PRO()->get_settings( 'quick_filters', $this->form_id );
 
@@ -195,8 +200,15 @@ class AWS_Search {
         $this->data['s']                  = $s;
         $this->data['search_terms']       = array();
         $this->data['search_in']          = $this->set_search_in();
+        $this->data['search_in_weights']  = $this->get_search_in_weights();
         $this->data['results_num']        = $results_num;
         $this->data['pages_results_num']  = $pages_results_num;
+        $this->data['search_archives']    = $search_archives;
+        $this->data['search_archives_heading'] = $search_archives_heading;
+        $this->data['search_archives_hierarchy'] = $search_archives_hierarchy;
+        $this->data['search_archives_count'] = $search_archives_count;
+        $this->data['search_archives_empty'] = $search_archives_empty;
+        $this->data['search_archives_images'] = $search_archives_images;
         $this->data['search_logic']       = $search_logic ? $search_logic : 'or';
         $this->data['search_exact']       = $search_exact ? $search_exact : 'false';
         $this->data['fuzzy']              = $fuzzy;
@@ -261,9 +273,9 @@ class AWS_Search {
 
         $posts_ids = array();
 
-        if ( ! empty( $this->data['search_terms'] ) && ! isset( $this->data['posts_ids_rewrite'] ) ) {
+        if ( ! empty( $this->data['search_terms'] ) ) {
 
-            if ( ! empty( $this->data['search_in'] ) && $this->data['results_num'] ) {
+            if ( ! empty( $this->data['search_in'] ) && $this->data['results_num'] && ! isset( $this->data['posts_ids_rewrite'] ) ) {
 
                 $posts_ids = $this->query_index_table();
 
@@ -457,44 +469,33 @@ class AWS_Search {
             $search_term_len = strlen( $search_term );
             $is_normal_term = $search_term_len > 1;
 
-            $relevance_params = array(
-                'title' => array(
-                    'full' => $relevance_scores['title'] + 20 * $search_term_len,
-                    'like' => $relevance_scores['title'] / 5 + 2 * $search_term_len,
-                ),
-                'content' => array(
-                    'full' => $relevance_scores['content'] + 4 * $search_term_len,
-                    'like' => $relevance_scores['content'] + 1 * $search_term_len,
-                ),
-                'excerpt' => array(
-                    'full' => $relevance_scores['content'] + 4 * $search_term_len,
-                    'like' => $relevance_scores['content'] + 1 * $search_term_len,
-                ),
-                'category' => array(
-                    'full' => $relevance_scores['other'],
-                    'like' => $relevance_scores['other'] / 5,
-                ),
-                'tag' => array(
-                    'full' => $relevance_scores['other'],
-                    'like' => $relevance_scores['other'] / 5,
-                ),
-                'sku' => array(
-                    'full' => $relevance_scores['sku'],
-                    'like' => $relevance_scores['sku'] / 5,
-                ),
-                'gtin' => array(
-                    'full' => $relevance_scores['gtin'],
-                    'like' => $relevance_scores['gtin'] / 5,
-                ),
-                'brand' => array(
-                    'full' => $relevance_scores['brand'],
-                    'like' => $relevance_scores['brand'] / 5,
-                ),
-                'id' => array(
-                    'full' => $relevance_scores['id'],
-                    'like' => $relevance_scores['id'] / 10,
-                ),
-            );
+            $relevance_params = array();
+
+            if ( $relevance_scores ) {
+                foreach ( $relevance_scores as $relevance_score_name => $relevance_score_value ) {
+
+                    $full_score = $relevance_score_value;
+                    $like_score = $relevance_score_value / 5;
+
+                    if ( $relevance_score_name === 'title' ) {
+                        $full_score = $relevance_score_value + 20 * $search_term_len;
+                        $like_score = $relevance_score_value / 5 + 2 * $search_term_len;
+                    }
+                    elseif ( $relevance_score_name === 'content' || $relevance_score_name === 'excerpt' ) {
+                        $full_score = $relevance_score_value + 4 * $search_term_len;
+                        $like_score = $relevance_score_value + 1 * $search_term_len;
+                    }
+                    elseif ( $relevance_score_name === 'id' ) {
+                        $like_score = $relevance_score_value / 10;
+                    }
+
+                    $relevance_params[$relevance_score_name] = array(
+                        'full' => $full_score,
+                        'like' => $like_score,
+                    );
+
+                }
+            }
 
             /**
              * Array of relevance parameters
@@ -532,7 +533,10 @@ class AWS_Search {
                 $search_array[] = $wpdb->prepare( "( term = '%s' )", $search_term );
             }
 
-            $addition_relevance_sources = array();
+            $relevance_sources_groups = array();
+
+            // find duplicates in $relevance_params and move them to $relevance_sources_groups
+            $relevance_sources_groups = AWS_Helpers::grouped_similar_relevance_scores( $relevance_params, $search_in_arr );
 
             foreach ( $search_in_arr as $search_in_term ) {
 
@@ -542,6 +546,14 @@ class AWS_Search {
 
                 if ( isset( $relevance_params[$search_in_term] ) ) {
 
+                    if ( $relevance_sources_groups ) {
+                        foreach ( $relevance_sources_groups as $relevance_sources_group ) {
+                            if ( isset( $relevance_sources_group['sources'] ) && ! empty( $relevance_sources_group['sources'] ) && in_array( $search_in_term, $relevance_sources_group['sources'], true ) ) {
+                                continue 2;
+                            }
+                        }
+                    }
+
                     $relevance = $relevance_params[$search_in_term]['full'];
                     $relevance_like = $relevance_params[$search_in_term]['like'];
 
@@ -550,30 +562,52 @@ class AWS_Search {
                         $relevance_array[$search_in_term][] = $wpdb->prepare( "( case when ( term_source = '%s' AND term LIKE %s ) then {$relevance_like} * ( {$count_multiplier} ) else 0 end )", $search_in_term, $like );
                     }
 
-                } else {
+                } elseif ( $search_in_term ) {
 
-                    $addition_relevance_sources[] = $search_in_term;
+                    $relevance_sources_groups['other']['sources'][] = $search_in_term;
+                    $relevance_sources_groups['other']['full'] = $relevance_scores['other'];
+                    $relevance_sources_groups['other']['like'] = $relevance_scores['other'] / 5;
 
                 }
 
             }
 
-            if ( ! empty( $addition_relevance_sources ) ) {
-                $addition_relevance_sources_string = '';
-                foreach ( $addition_relevance_sources as $addition_relevance_source ) {
-                    $addition_relevance_sources_string .= "'" . $addition_relevance_source . "',";
+            if ( $relevance_sources_groups ) {
+                foreach ( $relevance_sources_groups as $relevance_sources_group ) {
+
+                    if ( empty( $relevance_sources_group['sources'] ) || ! is_array( $relevance_sources_group['sources'] ) ) {
+                        continue;
+                    }
+
+                    $group_sources = array_values( array_unique( $relevance_sources_group['sources'] ) );
+                    $group_relevance_score = isset( $relevance_sources_group['full'] ) ? (int) $relevance_sources_group['full'] : 0;
+                    $group_relevance_like_score = isset( $relevance_sources_group['like'] ) ? (int) $relevance_sources_group['like'] : 0;
+
+                    if ( ! $group_sources ) {
+                        continue;
+                    }
+
+                    $source_placeholders = implode( ',', array_fill( 0, count( $group_sources ), '%s' ) );
+
+                    $sql_full = $wpdb->prepare(
+                        "( case when ( term_source IN ($source_placeholders) AND term = %s ) then %d * ( {$count_multiplier} ) else 0 end )",
+                        array_merge( $group_sources, [ $search_term, $group_relevance_score ] )
+                    );
+
+                    $new_relevance_string = $sql_full;
+
+                    if ( $is_normal_term ) {
+                        $sql_like = $wpdb->prepare(
+                            "( case when ( term_source IN ($source_placeholders) AND term LIKE %s ) then %d * ( {$count_multiplier} ) else 0 end )",
+                            array_merge( $group_sources, [ $like, $group_relevance_like_score ] )
+                        );
+
+                        $new_relevance_string .= ' + ' . $sql_like;
+                    }
+
+                    $new_relevance_array[] = $new_relevance_string;
+
                 }
-                $addition_relevance_sources_string = rtrim( $addition_relevance_sources_string, "," );
-                $relevance_other = $relevance_scores['other'];
-                $relevance_other_like = $relevance_scores['other'] / 5;
-
-                $new_relevance_string = $wpdb->prepare( "( case when ( term_source IN ( {$addition_relevance_sources_string} ) AND term = '%s' ) then {$relevance_other} else 0 end )",  $search_term );
-                if ( $is_normal_term ) {
-                    $new_relevance_string .= $wpdb->prepare( " + ( case when ( term_source IN ( {$addition_relevance_sources_string} ) AND term LIKE %s ) then {$relevance_other_like} else 0 end )",  $like );
-                }
-
-                $new_relevance_array[] = $new_relevance_string;
-
             }
 
         }
@@ -588,6 +622,11 @@ class AWS_Search {
 
 
         $query['select'] = ' distinct ID';
+        // Guard against an empty relevance list, which would produce an
+        // invalid 'SUM(  )' expression and a fatal SQL syntax error.
+        if ( empty( $new_relevance_array ) ) {
+            $new_relevance_array[] = '0';
+        }
         $query['relevance'] = sprintf( ' (SUM( %s )) ', implode( ' + ', $new_relevance_array ) );
         $query['search'] = sprintf( ' AND ( %s )', implode( ' OR ', $search_array ) );
 
@@ -766,7 +805,7 @@ class AWS_Search {
          * @param int $this->filter_id Filter id
          */
         $sql = apply_filters( 'aws_search_query_string', $sql, $this->form_id, $this->filter_id );
-
+        
         $this->data['query_params'] = $query;
 
         $this->data['sql'] = $sql;
@@ -801,10 +840,49 @@ class AWS_Search {
 
         } else {
             // depricated
-            $search_in_arr = explode( ',',  $search_in );
+            $search_in_arr = $search_in ? explode( ',',  $search_in ) : array();
         }
 
+        // Drop empty entries so a misconfigured/deprecated 'search_in' setting
+        // cannot leave a source list of only empty strings (e.g. explode( ',', '' )
+        // returns array( '' ) ), which would yield an empty relevance SUM().
+        $search_in_arr = array_values( array_filter( $search_in_arr, 'strlen' ) );
+
         return $search_in_arr;
+
+    }
+
+    /*
+     * Get weights for search in sources
+     */
+    private function get_search_in_weights() {
+
+        $search_in = AWS_PRO()->get_settings( 'search_in', $this->form_id );
+
+        $search_in_weights_arr = array();
+
+        if ( $search_in && is_array( $search_in ) ) {
+
+            foreach ( $search_in as $search_in_name => $search_in_params ) {
+                if ( is_array( $search_in_params ) && isset( $search_in_params['weight'] ) ) {
+
+                    $search_in_weights_arr[$search_in_name] = $search_in_params['weight'];
+
+                    if ( isset( $search_in_params['fields'] ) && is_array( $search_in_params['fields'] ) ) {
+                        foreach ( $search_in_params['fields'] as $field_name => $field_param ) {
+                            if ( $field_param && is_array( $field_param ) ) {
+                                $child_weight_val = isset( $field_param['weight'] ) && $field_param['weight'] !== '' ? $field_param['weight'] : $search_in_params['weight'];
+                                $search_in_weights_arr[$field_name] = $child_weight_val;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        return $search_in_weights_arr;
 
     }
 

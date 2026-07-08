@@ -106,9 +106,9 @@ abstract class DataSourcePoller {
 	public function get_specs_from_data_sources() {
 		$locale      = get_user_locale();
 		$specs_group = get_transient( $this->args['transient_name'] ) ?? array();
-		$specs       = isset( $specs_group[ $locale ] ) ? $specs_group[ $locale ] : array();
+		$specs       = isset( $specs_group[ $locale ] ) ? $specs_group[ $locale ] : null;
 
-		if ( ! is_array( $specs ) || empty( $specs ) ) {
+		if ( ! is_array( $specs ) ) {
 			$this->read_specs_from_data_sources();
 			$specs_group = get_transient( $this->args['transient_name'] );
 			$specs       = isset( $specs_group[ $locale ] ) ? $specs_group[ $locale ] : array();
@@ -123,6 +123,29 @@ abstract class DataSourcePoller {
 		 * @since 8.8.0
 		 */
 		$specs = apply_filters( self::FILTER_NAME_SPECS, $specs, $this->id );
+		return false !== $specs ? $specs : array();
+	}
+
+	/**
+	 * Gets specs from cache if it exists.
+	 *
+	 * @return array list of specs.
+	 */
+	public function get_cached_specs() {
+		$locale      = get_user_locale();
+		$specs_group = get_transient( $this->args['transient_name'] ) ?? array();
+		$specs       = isset( $specs_group[ $locale ] ) ? $specs_group[ $locale ] : null;
+
+		/**
+		 * Filter specs.
+		 *
+		 * @param array      $specs List of specs.
+		 * @param string     $this->id Spec identifier.
+		 *
+		 * @since 8.8.0
+		 */
+		$specs = apply_filters( self::FILTER_NAME_SPECS, $specs, $this->id );
+
 		return false !== $specs ? $specs : array();
 	}
 
@@ -151,6 +174,10 @@ abstract class DataSourcePoller {
 			$this->merge_specs( $specs_from_data_source, $specs, $url );
 		}
 
+		if ( count( $specs ) === 0 ) {
+			return false;
+		}
+
 		$specs_group            = get_transient( $this->args['transient_name'] );
 		$specs_group            = is_array( $specs_group ) ? $specs_group : array();
 		$locale                 = get_user_locale();
@@ -160,7 +187,7 @@ abstract class DataSourcePoller {
 			$specs_group,
 			$this->args['transient_expiry']
 		);
-		return count( $specs ) !== 0;
+		return true;
 	}
 
 	/**
@@ -203,6 +230,13 @@ abstract class DataSourcePoller {
 				$url
 			),
 			array(
+				/**
+				 * Filters the HTTP timeout (in seconds) used when fetching remote specs data sources.
+				 *
+				 * @since 10.8.0
+				 * @param int $timeout Timeout in seconds. Default 3.
+				 */
+				'timeout'    => max( 1, absint( apply_filters( 'woocommerce_data_source_poller_timeout', 3 ) ) ),
 				'user-agent' => 'WooCommerce/' . WC_VERSION . '; ' . home_url( '/' ),
 			)
 		);

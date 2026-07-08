@@ -502,10 +502,29 @@ class DUPX_DBInstall extends AbstractJsonSerializable
         }
     }
 
+    /**
+     * Re-execute all SET queries collected during the first chunk.
+     * Called after any reconnection to restore session variables
+     * (e.g. FOREIGN_KEY_CHECKS=0) that are lost on a new connection.
+     *
+     * @return void
+     */
+    protected function reApplySetQueries()
+    {
+        if (empty($this->setQueries)) {
+            return;
+        }
+        foreach ($this->setQueries as $setQuery) {
+            Log::info('RECONNECT RE-APPLY SET QUERY: ' . Log::v2str($setQuery), Log::LV_DETAILED);
+            DUPX_DB::mysqli_query($this->dbh, $setQuery);
+        }
+    }
+
     protected function pingAndReconnect()
     {
         if (!$this->dbh instanceof mysqli) {
             $this->dbConnect(true);
+            $this->reApplySetQueries();
             return;
         }
 
@@ -519,6 +538,7 @@ class DUPX_DBInstall extends AbstractJsonSerializable
             Log::info('DB PING FAILED: ' . $e->getMessage());
             Log::info('Attempting to reconnect');
             $this->dbConnect(true);
+            $this->reApplySetQueries();
         }
     }
 
@@ -712,7 +732,11 @@ class DUPX_DBInstall extends AbstractJsonSerializable
                 if ($this->post['first_chunk']) {
                     //Matches ordinary set queries e.g "SET @saved_cs_client = @@character_set_client;"
                     //and version dependent set queries e.g. "/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;"
-                    if (preg_match('/^[\s\t]*(?:\/\*!\d+)?[\s\t]*SET[\s\t]*@.+;/', $line)) {
+                    //Also captures "SET FOREIGN_KEY_CHECKS = 0;" written by PHP build mode (no @ variable).
+                    if (
+                        preg_match('/^[\s\t]*(?:\/\*!\d+)?[\s\t]*SET[\s\t]*@.+;/', $line) ||
+                        preg_match('/^\s*SET\s+FOREIGN_KEY_CHECKS\s*=\s*0\s*;/i', $line)
+                    ) {
                         $setQuery = trim($line);
                         if (!in_array($setQuery, $this->setQueries)) {
                             Log::info("FIRST CHUNK SET QUERY " . Log::v2str($setQuery), Log::LV_DEBUG);

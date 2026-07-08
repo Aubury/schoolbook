@@ -12,19 +12,18 @@
 		"multiple": false,
 		"typography": {
 			"fontSize": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
 		}
 	},
 	"example": {
 		"attributes": {
-			"isPreview": true,
 			"className": "wc-block-mini-cart--preview"
 		}
 	},
 	"attributes": {
-		"isPreview": {
-			"type": "boolean",
-			"default": false
-		},
 		"miniCartIcon": {
 			"type": "string",
 			"default": "cart"
@@ -32,6 +31,10 @@
 		"addToCartBehaviour": {
 			"type": "string",
 			"default": "none"
+		},
+		"onCartClickBehaviour": {
+			"type": "string",
+			"default": "open_drawer"
 		},
 		"hasHiddenPrice": {
 			"type": "boolean",
@@ -58,8 +61,12 @@
 		},
 		"productCountColorValue": {
 			"type": "string"
+		},
+		"productCountVisibility": {
+			"type": "string",
+			"default": "greater_than_zero"
 		}
 	},
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"$schema": "https://schemas.wp.org/trunk/block.json"
 }

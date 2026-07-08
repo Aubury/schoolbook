@@ -89,7 +89,7 @@ class ProductCategories extends AbstractDynamicBlock {
 
 		$classes_and_styles = StyleAttributesUtils::get_classes_and_styles_by_attributes(
 			$attributes,
-			array( 'line_height', 'text_color', 'font_size' )
+			array( 'line_height', 'text_color', 'font_size', 'extra_classes' )
 		);
 
 		$classes = $this->get_container_classes( $attributes ) . ' ' . $classes_and_styles['classes'];
@@ -114,10 +114,6 @@ class ProductCategories extends AbstractDynamicBlock {
 
 		if ( isset( $attributes['align'] ) ) {
 			$classes[] = "align{$attributes['align']}";
-		}
-
-		if ( ! empty( $attributes['className'] ) ) {
-			$classes[] = $attributes['className'];
 		}
 
 		if ( $attributes['isDropdown'] ) {
@@ -174,6 +170,15 @@ class ProductCategories extends AbstractDynamicBlock {
 				}
 			);
 		}
+
+		if ( ! empty( $attributes['hasImage'] ) ) {
+			$attachment_ids = array_filter( array_map( static fn( $category ) => (int) get_term_meta( $category->term_id, 'thumbnail_id', true ), $categories ) );
+			if ( ! empty( $attachment_ids ) ) {
+				// Prime caches to reduce future queries.
+				_prime_post_caches( $attachment_ids );
+			}
+		}
+
 		return $hierarchical ? $this->build_category_tree( $categories, $children_only ) : $categories;
 	}
 

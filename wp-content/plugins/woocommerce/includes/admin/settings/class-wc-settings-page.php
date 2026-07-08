@@ -6,6 +6,12 @@
  * @version     2.1.0
  */
 
+declare( strict_types = 1);
+
+use Automattic\WooCommerce\Admin\Settings\SettingsSectionRegistry;
+use Automattic\WooCommerce\Admin\Settings\SettingsUIPageInterface;
+use Automattic\WooCommerce\Internal\Admin\Settings\SettingsUIRequestContext;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
@@ -25,6 +31,47 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 		protected $id = '';
 
 		/**
+		 * Setting page icon.
+		 *
+		 * @var string
+		 */
+		public $icon = 'settings';
+
+		/**
+		 * Setting field types.
+		 *
+		 * @var string
+		 */
+		const TYPE_TITLE                          = 'title';
+		const TYPE_INFO                           = 'info';
+		const TYPE_SECTIONEND                     = 'sectionend';
+		const TYPE_TEXT                           = 'text';
+		const TYPE_PASSWORD                       = 'password';
+		const TYPE_DATETIME                       = 'datetime';
+		const TYPE_DATETIME_LOCAL                 = 'datetime-local';
+		const TYPE_DATE                           = 'date';
+		const TYPE_MONTH                          = 'month';
+		const TYPE_TIME                           = 'time';
+		const TYPE_WEEK                           = 'week';
+		const TYPE_NUMBER                         = 'number';
+		const TYPE_EMAIL                          = 'email';
+		const TYPE_URL                            = 'url';
+		const TYPE_TEL                            = 'tel';
+		const TYPE_COLOR                          = 'color';
+		const TYPE_TEXTAREA                       = 'textarea';
+		const TYPE_SELECT                         = 'select';
+		const TYPE_MULTISELECT                    = 'multiselect';
+		const TYPE_RADIO                          = 'radio';
+		const TYPE_CHECKBOX                       = 'checkbox';
+		const TYPE_IMAGE_WIDTH                    = 'image_width';
+		const TYPE_SINGLE_SELECT_PAGE             = 'single_select_page';
+		const TYPE_SINGLE_SELECT_PAGE_WITH_SEARCH = 'single_select_page_with_search';
+		const TYPE_SINGLE_SELECT_COUNTRY          = 'single_select_country';
+		const TYPE_MULTI_SELECT_COUNTRIES         = 'multi_select_countries';
+		const TYPE_RELATIVE_DATE_SELECTOR         = 'relative_date_selector';
+		const TYPE_SLOTFILL_PLACEHOLDER           = 'slotfill_placeholder';
+
+		/**
 		 * Setting page label.
 		 *
 		 * @var string
@@ -40,6 +87,7 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 			add_action( 'woocommerce_settings_' . $this->id, array( $this, 'output' ) );
 			add_action( 'woocommerce_settings_save_' . $this->id, array( $this, 'save' ) );
 			add_action( 'woocommerce_admin_field_add_settings_slot', array( $this, 'add_settings_slot' ) );
+			add_filter( 'admin_body_class', array( $this, 'add_settings_ui_body_class' ) );
 		}
 
 		/**
@@ -60,6 +108,71 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 		 */
 		public function get_label() {
 			return $this->label;
+		}
+
+		/**
+		 * Get the settings UI page adapter for this settings page.
+		 *
+		 * Settings pages can override this to opt in to the settings UI renderer
+		 * while retaining the classic WooCommerce settings page route and save flow.
+		 *
+		 * @since 10.9.0
+		 * @return SettingsUIPageInterface|null
+		 */
+		public function get_settings_ui_page(): ?SettingsUIPageInterface {
+			return null;
+		}
+
+		/**
+		 * Add a body class for settings pages rendered through the settings UI.
+		 *
+		 * @since 10.9.0
+		 *
+		 * @param string $classes The existing body classes for the admin area.
+		 * @return string The modified body classes for the admin area.
+		 */
+		public function add_settings_ui_body_class( $classes ) {
+			global $current_section, $current_tab;
+
+			if ( ! is_string( $classes ) || $this->id !== $current_tab ) {
+				return $classes;
+			}
+
+			$section = is_string( $current_section ) ? $current_section : '';
+			$context = SettingsUIRequestContext::for_settings_page( $this, $section );
+
+			if ( ! $context->is_rendering_enabled() ) {
+				return $classes;
+			}
+
+			if ( str_contains( $classes, 'woocommerce-settings-ui-page' ) ) {
+				return $classes;
+			}
+
+			return "$classes woocommerce-settings-ui-page";
+		}
+
+		/**
+		 * Log a developer-facing notice when settings UI rendering falls back to the legacy renderer.
+		 *
+		 * @since 10.9.0
+		 *
+		 * @param SettingsUIPageInterface $settings_ui_page Settings UI page adapter.
+		 * @param string                  $section_id Section id.
+		 * @param string                  $reason Fallback reason.
+		 */
+		private function log_settings_ui_fallback( SettingsUIPageInterface $settings_ui_page, string $section_id, string $reason ): void {
+			wc_doing_it_wrong(
+				'WC_Settings_Page::output',
+				sprintf(
+					/* translators: 1: settings page id, 2: settings section id, 3: fallback reason. */
+					__( 'Settings UI rendering for page "%1$s" section "%2$s" fell back to the legacy settings renderer. Reason: %3$s', 'woocommerce' ),
+					$settings_ui_page->get_page_id(),
+					'' === $section_id ? 'default' : $section_id,
+					$reason
+				),
+				'10.9.0'
+			);
 		}
 
 		/**
@@ -153,7 +266,9 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 		 * @return array Settings array, each item being an associative array representing a setting.
 		 */
 		protected function get_settings_for_section_core( $section_id ) {
-			return array();
+			$registered_section = SettingsSectionRegistry::get_instance()->get_registered( $this->id, (string) $section_id );
+
+			return $registered_section ? $registered_section->get_settings( $this ) : array();
 		}
 
 		/**
@@ -162,7 +277,18 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 		 * @return array
 		 */
 		public function get_sections() {
-			$sections = $this->get_own_sections();
+			$sections            = $this->get_own_sections();
+			$registered_sections = SettingsSectionRegistry::get_instance()->get_sections_for_page( $this->id );
+
+			foreach ( $registered_sections as $section_id => $section_label ) {
+				// Preserve sections declared by the settings page when a registered section uses the same id.
+				if ( array_key_exists( $section_id, $sections ) ) {
+					continue;
+				}
+
+				$sections[ $section_id ] = $section_label;
+			}
+
 			/**
 			 * Filters the sections for this settings page.
 			 *
@@ -222,9 +348,45 @@ if ( ! class_exists( 'WC_Settings_Page', false ) ) :
 		public function output() {
 			global $current_section;
 
+			$section = is_string( $current_section ) ? $current_section : '';
+			$context = SettingsUIRequestContext::for_settings_page( $this, $section );
+
+			if ( $context->is_rendering_enabled() ) {
+				$settings_ui_page = $context->get_settings_ui_page();
+				assert( $settings_ui_page instanceof SettingsUIPageInterface );
+
+				if ( $context->has_schema_failed() ) {
+					$this->log_settings_ui_fallback(
+						$settings_ui_page,
+						$section,
+						__( 'Settings UI schema generation failed.', 'woocommerce' )
+					);
+				} else {
+					$script_handles = $context->get_script_handles();
+
+					if ( $context->has_script_handles_failed() ) {
+						$this->log_settings_ui_fallback( $settings_ui_page, $section, $context->get_script_handles_failure_reason() );
+					} else {
+						foreach ( $script_handles as $script_handle ) {
+							wp_enqueue_script( $script_handle );
+						}
+
+						$GLOBALS['hide_save_button'] = true;
+
+						printf(
+							'<div id="%1$s" data-wc-settings-ui="1" data-wc-settings-page="%2$s" data-wc-settings-section="%3$s"></div>',
+							esc_attr( 'wc_settings_ui_' . sanitize_html_class( $this->id ) . '_' . sanitize_html_class( '' === $section ? 'default' : $section ) ),
+							esc_attr( $context->get_page_id() ),
+							esc_attr( $section )
+						);
+						return;
+					}
+				}
+			}
+
 			// We can't use "get_settings_for_section" here
 			// for compatibility with derived classes overriding "get_settings".
-			$settings = $this->get_settings( $current_section );
+			$settings = $this->get_settings( $section );
 
 			WC_Admin_Settings::output_fields( $settings );
 		}

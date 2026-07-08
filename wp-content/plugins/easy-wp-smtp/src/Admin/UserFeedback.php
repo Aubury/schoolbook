@@ -104,7 +104,7 @@ class UserFeedback {
 		}
 
 		?>
-		<div class="notice notice-info is-dismissible easy-wp-smtp-review-notice">
+		<div class="notice notice-info is-dismissible easy-wp-smtp-notice easy-wp-smtp-review-notice">
 			<div class="easy-wp-smtp-review-step easy-wp-smtp-review-step-1">
 				<p><?php esc_html_e( 'Are you enjoying Easy WP SMTP?', 'easy-wp-smtp' ); ?></p>
 				<p>
@@ -133,7 +133,7 @@ class UserFeedback {
 				<p><?php esc_html_e( 'That’s awesome! Could you please do me a BIG favor and give it a 5-star rating on WordPress to help us spread the word and boost our motivation?', 'easy-wp-smtp' ); ?></p>
 				<p><strong><?php esc_html_e( '~ Easy WP SMTP team', 'easy-wp-smtp' ); ?></strong></p>
 				<p>
-					<a href="https://wordpress.org/support/plugin/easy-wp-smtp/reviews/?filter=5#new-post"
+					<a href="https://easywpsmtp.com/easywpsmtp-wordpress-review/"
 						 class="easy-wp-smtp-dismiss-review-notice easy-wp-smtp-review-out" target="_blank"
 						 rel="noopener noreferrer">
 						<?php esc_html_e( 'OK, you deserve it', 'easy-wp-smtp' ); ?>
@@ -151,7 +151,10 @@ class UserFeedback {
           if (!$(this).hasClass('easy-wp-smtp-review-out')) {
             e.preventDefault();
           }
-          $.post(ajaxurl, {action: 'easy_wp_smtp_feedback_notice_dismiss'});
+          $.post(ajaxurl, {
+            action: 'easy_wp_smtp_feedback_notice_dismiss',
+            nonce: '<?php echo esc_js( wp_create_nonce( 'easy-wp-smtp-feedback-notice-dismiss' ) ); ?>'
+          });
           $('.easy-wp-smtp-review-notice').remove();
         });
 
@@ -206,6 +209,12 @@ class UserFeedback {
 	 * @since 1.5.3
 	 */
 	public function feedback_notice_dismiss() {
+
+		check_ajax_referer( 'easy-wp-smtp-feedback-notice-dismiss', 'nonce' );
+
+		if ( ! is_super_admin() ) {
+			wp_send_json_error();
+		}
 
 		$options              = get_option( self::OPTION_NAME, [] );
 		$options['time']      = time();

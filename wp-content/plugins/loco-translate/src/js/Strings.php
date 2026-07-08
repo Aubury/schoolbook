@@ -1,17 +1,20 @@
 <?php
-/**
- * Auto-generated class, do not edit.
- * The purpose of this is to provide extractable strings that can be compiled at runtime into raw data for exporting to JavaScript.
- */
-class Loco_js_Strings extends Loco_hooks_TranslateBuffer {
-
     /**
-     * @return array
-     */ 
-    public function compile(){
-
+     * Auto-generated class, do not edit.
+     * The purpose of this is to provide extractable strings that can be compiled at runtime into raw data for exporting to JavaScript.
+     */
+    class Loco_js_Strings extends Loco_hooks_TranslateBuffer {
+    
+        /**
+         * @return array
+         */ 
+        public function compile(){
+    
         // translators: When text filtering reduces to an empty view
         __("Nothing matches the text filter",'loco-translate');
+
+        //
+        __("No API key",'loco-translate');
 
         /* translators: Where %s is the name of the POT template file. Message appears after sync
          * xgettext: javascript-format */
@@ -193,7 +196,8 @@ class Loco_js_Strings extends Loco_hooks_TranslateBuffer {
         //
         __("Mismatching placeholder type; check against source text formatting",'loco-translate');
 
-
-        return $this->flush('loco-translate');
+    
+            return $this->flush('loco-translate');
+        }
     }
-}
+    

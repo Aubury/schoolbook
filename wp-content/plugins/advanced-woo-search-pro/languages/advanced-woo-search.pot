@@ -55,9 +55,6 @@ msgstr ""
 msgid "Widgets Screen"
 msgstr ""
 
-msgid "Add PHP code to the necessary files of your theme: %s"
-msgstr ""
-
 msgid "Replace %s with ID of search form that you want to display"
 msgstr ""
 
@@ -1216,7 +1213,7 @@ msgstr ""
 msgid "License key inactive"
 msgstr ""
 
-msgid "Please activate your license key in the box below to receive plugin updates. If you don't know your license key - please %s."
+msgid "Activate your license key below to enable updates and access all Pro features. If you don't know your license key - please %s."
 msgstr ""
 
 msgid "contact support"
@@ -1702,6 +1699,9 @@ msgstr ""
 msgid "Weight"
 msgstr ""
 
+msgid "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999."
+msgstr ""
+
 msgid "selected"
 msgstr ""
 
@@ -1813,6 +1813,12 @@ msgstr ""
 msgid "Hide terms without products."
 msgstr ""
 
+msgid "Preselect"
+msgstr ""
+
+msgid "Automatically preselect the relevant filter on its corresponding taxonomy archive page."
+msgstr ""
+
 msgid "Filtering Rules"
 msgstr ""
 
@@ -1871,4 +1877,106 @@ msgid "User name"
 msgstr ""
 
 msgid "Page name"
+msgstr ""
+
+msgid "(Pro)"
+msgstr ""
+
+msgid "Critical updates missing"
+msgstr ""
+
+msgid "Your plugin version is %s updates behind the latest release. This means you are missing bug fixes, performance improvements, and security patches. Activate your license to restore updates and support. For any questions - please %s."
+msgstr ""
+
+msgid "Purchase License"
+msgstr ""
+
+msgid "You can safely delete this plugin since you already have Advanced Woo Search PRO installed."
+msgstr ""
+
+msgid "Invalid domain"
+msgstr ""
+
+msgid "Your license was not activated for this domain. Most likely the problem occurs after your database migration to a new domain."
+msgstr ""
+
+msgid "Please deactivate your license on the current domain and activate it again via the box below."
+msgstr ""
+
+msgid "Also, if the domain %s is not a staging site and you’re no longer using it, please consider deactivating the license for it as well."
+msgstr ""
+
+msgid "You can also manage all activations in the %s."
+msgstr ""
+
+msgid "customers portal"
+msgstr ""
+
+msgid "WARNING: Current domain is not associated with your active license. Please go to %s, deactivate and activate your license again."
+msgstr ""
+
+msgid "license page"
+msgstr ""
+
+msgid "Show count"
+msgstr ""
+
+msgid "Show the number of products next to each item."
+msgstr ""
+
+msgid "Show empty"
+msgstr ""
+
+msgid "Show archive pages that do not contain any products."
+msgstr ""
+
+msgid "Show images"
+msgstr ""
+
+msgid "Show images for archive page results, if available."
+msgstr ""
+
+msgid "Show taxonomy name"
+msgstr ""
+
+msgid "Show the taxonomy name next to each result."
+msgstr ""
+
+msgid "Show hierarchy"
+msgstr ""
+
+msgid "Show parent terms for hierarchical taxonomies."
+msgstr ""
+
+msgid "Only search results that match these rules will be displayed."
+msgstr ""
+
+msgid "Product name"
+msgstr ""
+
+msgid "Select..."
+msgstr ""
+
+msgid "in list"
+msgstr ""
+
+msgid "not in list"
+msgstr ""
+
+msgid "Add to Menu"
+msgstr ""
+
+msgid "Click the %s to add Advanced Woo Search to the menu."
+msgstr ""
+
+msgid "Search form"
+msgstr ""
+
+msgid "This menu item will be replaced with the selected search form on the front end."
+msgstr ""
+
+msgid "Add search form to a menu. Go to %s and use the 'Advanced Woo Search' box"
+msgstr ""
+
+msgid "Menus Screen"
 msgstr ""

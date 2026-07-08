@@ -5,42 +5,36 @@
 class Loco_fs_File {
     
     /**
-     * @var Loco_fs_FileWriter
+     * Write context for the current file path
      */
-    private $w;
+    private ?Loco_fs_FileWriter $w = null;
 
     /**
      * Path to file
-     * @var string
      */
-    private $path;
+    private string $path = '';
     
     /**
      * Cached pathinfo() data 
-     * @var array
      */
-    private $info;
+    private ?array $info = null;
 
     /**
      * Base path which path has been normalized against
-     * @var string
      */
-    private $base;
+    private ?string $base = null;
 
     /**
      * Flag set when current path is relative
-     * @var bool
      */
-    private $rel;
+    private bool $rel;
 
 
     /**
      * Check if a path is absolute and return fixed slashes for readability
-     * @param string $path
      * @return string fixed path, or "" if not absolute
      */
-    public static function abs( $path ){
-        $path = (string) $path;
+    public static function abs( string $path ):string {
         if( '' !== $path ){
             $chr1 = substr($path,0,1);
             // return unmodified path if starts "/"
@@ -61,11 +55,17 @@ class Loco_fs_File {
 
 
     /**
-     * Call PHP is_readable() but suppress E_WARNING when path is outside open_basedir.
-     * @param string $path
-     * @return bool
+     * Test if a path looks absolute
      */
-    public static function is_readable( $path ){
+    public static function is_abs( string $path ):bool {
+        return '' !== $path && ( '/' === $path[0] || preg_match('!^\\\\\\\\|.:\\\\!',$path) );
+    }
+
+
+    /**
+     * Call PHP is_readable() but suppress E_WARNING when path is outside open_basedir.
+     */
+    public static function is_readable( string $path ):bool {
         if( '' === $path || '.' === $path[0] ){
             throw new InvalidArgumentException('Relative paths disallowed');
         }
@@ -79,20 +79,16 @@ class Loco_fs_File {
 
     /**
      * Create file with initial, unvalidated path
-     * @param string $path
      */    
-    public function __construct( $path ){
+    public function __construct( string $path ){
         $this->setPath( $path );
     }
 
 
     /**
      * Internally set path value and flag whether relative or absolute
-     * @param string $path
-     * @return void
      */
-    private function setPath( $path ){
-        $path = (string) $path;
+    private function setPath( string $path ):void {
         if( $fixed = self::abs($path) ){
             $path = $fixed;
             $this->rel = false;
@@ -108,9 +104,9 @@ class Loco_fs_File {
 
 
     /**
-     * @return bool
+     * Return whether currently configure path is absolute 
      */
-    public function isAbsolute(){
+    public function isAbsolute(): bool {
         return ! $this->rel;
     }
 
@@ -125,10 +121,8 @@ class Loco_fs_File {
 
     /**
      * Copy write context with our file reference
-     * @param Loco_fs_FileWriter|null $context
-     * @return void
      */
-    private function cloneWriteContext( Loco_fs_FileWriter $context = null ){
+    private function cloneWriteContext( ?Loco_fs_FileWriter $context = null ):void {
         if( $context ){
             $context = clone $context;
             $this->w = $context->setFile($this);
@@ -139,9 +133,8 @@ class Loco_fs_File {
     /**
      * Get file system context for operations that *modify* the file system.
      * Read operations and operations that stat the file will always do so directly.
-     * @return Loco_fs_FileWriter 
      */
-    public function getWriteContext(){
+    public function getWriteContext():Loco_fs_FileWriter {
         if( ! $this->w ){
             $this->w = new Loco_fs_FileWriter( $this );
         }
@@ -160,34 +153,32 @@ class Loco_fs_File {
     /**
      * Checks if a file exists, and is within open_basedir restrictions.
      * This does NOT check if file permissions allow PHP to read it. Call $this->readable() or self::is_readable($path).
-     * @return bool
      */
-    public function exists(){
+    public function exists():bool {
         return file_exists($this->path);
     }
 
 
     /**
-     * @return bool
+     * Check if file is writable by the current write context
      */
-    public function writable(){
+    public function writable():bool {
         return $this->getWriteContext()->writable();
     }
 
 
     /**
      * Check if the file exists and is readable by the current PHP process.
-     * @return bool
      */
-    public function readable(){
+    public function readable():bool {
         return self::is_readable($this->path);
     }
 
 
     /**
-     * @return bool
+     * Check if file is removable by the current write context
      */
-    public function deletable(){
+    public function deletable():bool {
         $parent = $this->getParent();
         if( $parent && $parent->writable() ){
             // sticky directory requires that either the file its parent is owned by effective user
@@ -208,7 +199,7 @@ class Loco_fs_File {
 
     /**
      * Get owner uid
-     * @return int
+     * @return int|false
      */
     public function uid(){
         return fileowner($this->path);
@@ -217,7 +208,7 @@ class Loco_fs_File {
 
     /**
      * Get group gid
-     * @return int
+     * @return int|false
      */
     public function gid(){
         return filegroup($this->path);
@@ -227,9 +218,8 @@ class Loco_fs_File {
     /**
      * Check if file can't be overwritten when existent, nor created when non-existent
      * This does not check permissions recursively as directory trees are not built implicitly
-     * @return bool
      */
-    public function locked(){
+    public function locked():bool {
         if( $this->exists() ){
             return ! $this->writable();
         }
@@ -242,9 +232,8 @@ class Loco_fs_File {
 
     /**
      * Check if full path can be built to non-existent file.
-     * @return bool
      */
-    public function creatable(){
+    public function creatable():bool {
         $file = $this;
         while( $file = $file->getParent() ){
             if( $file->exists() ){
@@ -256,27 +245,27 @@ class Loco_fs_File {
     
     
     /**
-     * @return string
+     * Get directory name like dirname()
      */
-    public function dirname(){
+    public function dirname():string{
         $info = $this->pathinfo();
         return $info['dirname'];
     }
 
     
     /**
-     * @return string
+     * Get base name like basenaame()
      */
-    public function basename(){
+    public function basename():string {
         $info = $this->pathinfo();
         return $info['basename'];
     }
 
     
     /**
-     * @return string
+     * Get file name without extension, like filename()
      */
-    public function filename(){
+    public function filename():string {
         $info = $this->pathinfo();
         return $info['filename'];
     }
@@ -284,54 +273,50 @@ class Loco_fs_File {
 
     /**
      * Gets final file extension, e.g. "html" in "foo.php.html"
-     * @return string
      */
-    public function extension(){
+    public function extension():string {
         $info = $this->pathinfo();
-        return isset($info['extension']) ? $info['extension'] : '';
+        return $info['extension'] ?? '';
     }
 
 
     /**
-     * Gets full file extension after first dot ("."), e.g. "php.html" in "foo.php.html"
-     * @return string
+     * Gets full file extension after first dot separator, e.g. "php.html" in "foo.php.html"
      */
-    public function fullExtension(){
+    public function fullExtension():string {
         $bits = explode('.',$this->basename(),2);
         return array_key_exists(1,$bits) ? $bits[1] : '';
     }
 
 
     /**
-     * @return string
+     * Get currently configure path, unmodified
      */
-    public function getPath(){
+    public function getPath():string {
         return $this->path;
     }
 
 
     /**
      * Get file modification time as unix timestamp in seconds
-     * @return int
      */
-    public function modified(){
-        return filemtime( $this->path );
+    public function modified():int {
+        return filemtime($this->path) ?: 0;
     }
 
 
     /**
      * Get file size in bytes
-     * @return int
      */
-    public function size(){
-        return filesize( $this->path );
+    public function size():int {
+        return filesize($this->path) ?: 0;
     }
 
 
     /**
-     * @return int
+     * Get file mode as integer
      */
-    public function mode(){
+    public function mode():int {
         if( is_link($this->path) ){
             $stat = lstat( $this->path );
             $mode = $stat[2];
@@ -347,9 +332,8 @@ class Loco_fs_File {
      * Set file mode
      * @param int $mode file mode integer e.g 0664
      * @param bool $recursive whether to set recursively (directories)
-     * @return Loco_fs_File
      */
-    public function chmod( $mode, $recursive = false ){
+    public function chmod( int $mode, bool $recursive = false ):self {
         $this->getWriteContext()->chmod( $mode, $recursive );
         return $this->clearStat();
     }
@@ -357,9 +341,8 @@ class Loco_fs_File {
     
     /**
      * Clear stat cache if any file data has changed
-     * @return Loco_fs_File
      */
-    public function clearStat(){
+    public function clearStat():self {
         $this->info = null;
         // PHP 5.3.0 Added optional clear_realpath_cache and filename parameters.
         if( version_compare( PHP_VERSION, '5.3.0', '>=' ) ){
@@ -384,9 +367,8 @@ class Loco_fs_File {
     /**
      * Check if passed path is equal to ours
      * @param string|self $ref
-     * @return bool
      */
-    public function equal( $ref ){
+    public function equal( $ref ):bool {
         return $this->path === (string) $ref;
     }
 
@@ -394,9 +376,8 @@ class Loco_fs_File {
     /**
      * Normalize path for string comparison, resolves redundant dots and slashes.
      * @param string $base path to prefix
-     * @return string
      */
-    public function normalize( $base = '' ){
+    public function normalize( string $base = '' ):string {
         if( $path = self::abs($base) ){
             $base = $path;
         }
@@ -424,9 +405,8 @@ class Loco_fs_File {
     /**
      * Get real path if file is real, but without altering internal path property.
      * Also skips call to realpath() when likely to raise E_WARNING due to open_basedir
-     * @return string
      */
-    public function getRealPath(){
+    public function getRealPath():string {
         if( $this->readable() ){
             $path = realpath( $this->getPath() );
             if( is_string($path) ){
@@ -434,15 +414,10 @@ class Loco_fs_File {
             }
         }
         return '';
-    } 
+    }
 
 
-    /**
-     * @param string $path
-     * @param string[] $b
-     * @return array
-     */
-    private static function explode( $path, array $b ){
+    private static function explode( string $path, array $b ):array {
         $a = explode( '/', $path );
         foreach( $a as $i => $s ){
             if( '' === $s ){
@@ -469,7 +444,7 @@ class Loco_fs_File {
      * @param string $base Base path
      * @return string path relative to given base
      */
-    public function getRelativePath( $base ){
+    public function getRelativePath( string $base ):string {
         $path = $this->normalize();
         if( self::abs($path) ){
             // base may require normalizing
@@ -503,9 +478,9 @@ class Loco_fs_File {
 
 
     /**
-     * @return bool
+     * Test if file is a directory
      */
-    public function isDirectory(){
+    public function isDirectory():bool {
         if( $this->readable() ){
             return is_dir($this->path);
         }
@@ -516,62 +491,56 @@ class Loco_fs_File {
 
     /**
      * Load contents of file into a string
-     * @return string
      */
-    public function getContents(){
-        return file_get_contents( $this->path );
+    public function getContents():string {
+        return file_get_contents($this->path);
     }
 
 
     /**
      * Check if path is under a theme directory 
-     * @return bool
      */
-    public function underThemeDirectory(){
+    public function underThemeDirectory():bool {
         return Loco_fs_Locations::getThemes()->check( $this->path );
     }
 
 
     /**
      * Check if path is under a plugin directory 
-     * @return bool
      */
-    public function underPluginDirectory(){
+    public function underPluginDirectory():bool {
         return Loco_fs_Locations::getPlugins()->check( $this->path );
     }
 
 
     /**
      * Check if path is under wp-content directory 
-     * @return bool
      */
-    public function underContentDirectory(){
+    public function underContentDirectory():bool {
         return Loco_fs_Locations::getContent()->check( $this->path );
     }
 
 
     /**
      * Check if path is under WordPress root directory (ABSPATH) 
-     * @return bool
      */
-    public function underWordPressDirectory(){
+    public function underWordPressDirectory():bool {
         return Loco_fs_Locations::getRoot()->check( $this->path );
     }
 
 
     /**
      * Check if path is under the global system directory 
-     * @return bool
      */
-    public function underGlobalDirectory(){
-        return Loco_fs_Locations::getGlobal()->check( $this->path );
+    public function underGlobalDirectory():bool {
+        return Loco_fs_Locations::getLangs()->check( $this->path );
     }
 
 
     /**
      * @return Loco_fs_Directory|null
      */
-    public function getParent(){
+    public function getParent():?Loco_fs_Directory {
         $dir = null;
         $path = $this->dirname();
         if( '.' !== $path && $this->path !== $path ){ 
@@ -588,7 +557,7 @@ class Loco_fs_File {
      * @throws Loco_error_WriteException
      * @return Loco_fs_File new file
      */
-    public function copy( $dest ){
+    public function copy( string $dest ):self {
         $copy = clone $this;
         $copy->path = $dest;
         $copy->clearStat();
@@ -601,9 +570,9 @@ class Loco_fs_File {
      * Move/rename this file for real
      * @param Loco_fs_File $dest target file with new path
      * @throws Loco_error_WriteException
-     * @return Loco_fs_File original file that should no longer exist
+     * @return self original file that should no longer exist
      */
-    public function move( Loco_fs_File $dest ){
+    public function move( Loco_fs_File $dest ):self {
         $this->getWriteContext()->move($dest);
         return $this->clearStat();
     }
@@ -612,9 +581,8 @@ class Loco_fs_File {
     /**
      * Delete this file for real
      * @throws Loco_error_WriteException
-     * @return Loco_fs_File
      */
-    public function unlink(){
+    public function unlink():self {
         $recursive = $this->isDirectory();
         $this->getWriteContext()->delete( $recursive );
         return $this->clearStat();
@@ -624,9 +592,8 @@ class Loco_fs_File {
     /**
      * Copy this object with an alternative file extension
      * @param string $ext new extension
-     * @return self
      */
-    public function cloneExtension( $ext ){
+    public function cloneExtension( string $ext ):self {
         return $this->cloneBasename( $this->filename().'.'.ltrim($ext,'.') );
     }
 
@@ -634,9 +601,8 @@ class Loco_fs_File {
     /**
      * Copy this object with an alternative name under the same directory
      * @param string $name new name
-     * @return self
      */
-    public function cloneBasename( $name ){
+    public function cloneBasename( string $name ):self {
         $file = clone $this;
         $file->path = rtrim($file->dirname(),'/').'/'.$name;
         $file->info = null;
@@ -646,9 +612,8 @@ class Loco_fs_File {
 
     /**
      * Ensure full parent directory tree exists
-     * @return Loco_fs_Directory|null
      */
-    public function createParent(){
+    public function createParent():?Loco_fs_Directory {
         $dir = $this->getParent();
         if( $dir instanceof Loco_fs_Directory && ! $dir->exists() ){
             $dir->mkdir();
@@ -661,7 +626,7 @@ class Loco_fs_File {
      * @param string $data file contents
      * @return int number of bytes written to file
      */
-    public function putContents( $data ){
+    public function putContents( string $data ):int {
         $this->getWriteContext()->putContents($data);
         $this->clearStat();
         return $this->size();
@@ -673,10 +638,10 @@ class Loco_fs_File {
      * Value is that used by WP_Automatic_Updater::should_update.
      * @return string "core", "plugin", "theme" or "translation"
      */
-    public function getUpdateType(){
+    public function getUpdateType():string {
         // global languages directory root, and canonical subdirectories
         $dirpath = (string) ( $this->isDirectory() ? $this : $this->getParent() );
-        $sub = Loco_fs_Locations::getGlobal()->rel($dirpath);
+        $sub = Loco_fs_Locations::getLangs()->rel($dirpath);
         if( is_string($sub) && '' !== $sub ){
             list($root) = explode('/', $sub, 2 );
             if( '.' === $root || 'themes' === $root || 'plugins' === $root ){
@@ -701,9 +666,8 @@ class Loco_fs_File {
 
     /**
      * Get MD5 hash of file contents
-     * @return string
      */
-    public function md5(){
+    public function md5():string {
         if( $this->exists() ) {
             return md5_file( $this->path );
         }

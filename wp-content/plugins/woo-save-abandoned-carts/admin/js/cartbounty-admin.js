@@ -51,6 +51,7 @@
 				},
 				multiple: false
 			}).on('select', function(){ //It also has "open" and "close" events
+				var automation = button.data('automation'); //Number ID that has been triggered
 				var attachment = custom_uploader.state().get('selection').first().toJSON();
 				var image_url = attachment.url;
 
@@ -59,9 +60,13 @@
  					image_url = thumbnail;
  				}
 				button.html('<img src="' + image_url + '">');
-				var input_field = jQuery('#cartbounty-custom-image');
-				var remove_button = jQuery('#cartbounty-remove-custom-image');
-				
+				if(typeof automation !== 'undefined'){ //If multiple items exist on the page
+					var input_field = jQuery('#cartbounty-custom-image-' + automation);
+					var remove_button = jQuery('#cartbounty-remove-custom-image-' + automation);
+				}else{ //In case of a single item on page
+					var input_field = jQuery('#cartbounty-custom-image');
+					var remove_button = jQuery('#cartbounty-remove-custom-image');
+				}
 				input_field.val(attachment.id);
 				remove_button.show();
 
@@ -71,41 +76,53 @@
 		function removeCustomImage(e){ //Removing Custom image
 			e.preventDefault();
 			var button = jQuery(this).hide();
-			var input_field = jQuery('#cartbounty-custom-image');
-			var add_button = jQuery('#cartbounty-upload-custom-image');
+			var automation = button.data('automation'); //Number ID that has been triggered
+
+			if(typeof automation !== 'undefined'){ //If multiple items exist on the page
+				var input_field = jQuery('#cartbounty-custom-image-' + automation);
+				var add_button = jQuery('#cartbounty-upload-custom-image-' + automation);
+			}else{ //In case of a single item on page
+				var input_field = jQuery('#cartbounty-custom-image');
+				var add_button = jQuery('#cartbounty-upload-custom-image');
+			}
 
 			input_field.val('');
 			add_button.html('<input type="button" class="cartbounty-button button-secondary button" value="Add a custom image">');
 		};
 
-		function getPreviewData( button, action ){
+		function getPreviewData( button, automation, action ){
 			var data = {
 				nonce				: button.data('nonce'),
 				action				: action,
-				email				: jQuery('#cartbounty-send-test').val(),
-				subject				: jQuery('#cartbounty-automation-subject').val(),
-				main_title			: jQuery('#cartbounty-automation-heading').val(),
-				content				: jQuery('#cartbounty-automation-content').val(),
-				main_color			: jQuery('#cartbounty-template-main-color').val(),
-				button_color		: jQuery('#cartbounty-template-button-color').val(),
-				text_color			: jQuery('#cartbounty-template-text-color').val(),
-				background_color	: jQuery('#cartbounty-template-background-color').val()
+				step				: automation,
+				email				: jQuery('#cartbounty-send-test-' + automation).val(),
+				subject				: jQuery('#cartbounty-automation-subject-' + automation).val(),
+				main_title			: jQuery('#cartbounty-automation-heading-' + automation).val(),
+				content				: jQuery('#cartbounty-automation-content-' + automation).val(),
+				main_color			: jQuery('#cartbounty-template-main-color-' + automation).val(),
+				button_color		: jQuery('#cartbounty-template-button-color-' + automation).val(),
+				text_color			: jQuery('#cartbounty-template-text-color-' + automation).val(),
+				background_color	: jQuery('#cartbounty-template-background-color-' + automation).val(),
+				include_image		: jQuery('#cartbounty-automation-include-image-' + automation).prop('checked'),
+				main_image			: jQuery('#cartbounty-custom-image-' + automation).val(),
 			};
+
 			return data;
 		}
 
 		function previewEmail(e){
 			e.preventDefault();
 			var button = jQuery(this)
-			var data = getPreviewData( button, "email_preview" );
+			var automation = button.data('automation');
+			var data = getPreviewData( button, automation, "email_preview" );
 
 			jQuery.post(cartbounty_admin_data.ajaxurl, data,
 			function(response){
-				var content = jQuery('#cartbounty-modal-content');
-				var modal = jQuery('#cartbounty-modal');
+				var content = jQuery('#cartbounty-modal-content-' + automation);
+				var modal = jQuery('#cartbounty-modal-' + automation);
 				modal.addClass('content-loaded');
 				content.html(response.data);
-				MicroModal.show('cartbounty-modal', {
+				MicroModal.show('cartbounty-modal-' + automation, {
 					onClose(){ 
 						content.empty(); //Removing email preview once preview closed
 					}
@@ -117,9 +134,9 @@
 		function sendTestEmail(e){
 			e.preventDefault();
 			var button = jQuery(this);
-			var email_data = jQuery('#cartbounty-send-test').val();
+			var automation = button.data('automation');
 			var label = button.closest('.cartbounty-settings-group').find('label');
-			var data = getPreviewData( button, "send_test" );
+			var data = getPreviewData( button, automation, "send_test" );
 			label.find('.license-status').remove();
 			
 			jQuery.post(cartbounty_admin_data.ajaxurl, data,
@@ -140,7 +157,7 @@
 				action		: "force_sync"
 			};
 
-			jQuery.post(cartbounty_admin_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on Wordpress
+			jQuery.post(cartbounty_admin_data.ajaxurl, data, //Ajaxurl coming from localized script and contains the link to wp-admin/admin-ajax.php file that handles AJAX requests on WordPress
 			function(response){
 				button.removeClass('cartbounty-loading');
 			});
@@ -160,6 +177,46 @@
 			}
 		}
 
+		function addStepStatusClass(){ //Adding or removing a class in case if a step should not be available
+			var step = jQuery(this).closest('.cartbounty-step');
+			var current_automation = step.data('automation-step'); //Automation step number that has been triggered
+
+			//Must check status of steps, so we would know which ones are enabled and which ones are disabled
+			var all_steps = jQuery('.cartbounty-step');
+
+			var disabled_steps = [];
+			var active_steps = [];
+
+			for (var i = all_steps.length - 1; i >= 0; i--) { //Looping through all steps to see which ones are disabled
+				var step_number = jQuery(all_steps[i]).data('automation-step');
+				var checked = jQuery(all_steps[i]).find('.cartbounty-step-controller input').prop('checked');
+				if(!checked){ //If step is disabled, add it to the disabled steps array
+					disabled_steps.push(step_number);	
+				}else{
+					active_steps.push(step_number);
+				}
+			}
+
+			for (var i = active_steps.length - 1; i >= 0; i--) { //Looping through active steps to enable ones that should be available
+				if(active_steps[i] == 0){ //If first step is enabled, activate 2nd step
+					jQuery("[data-automation-step=1]").removeClass('cartbounty-step-disabled');
+
+				}else if(active_steps[i] == 1){ //If second step is enabled, enable 3rd step
+					jQuery("[data-automation-step=2]").removeClass('cartbounty-step-disabled');
+				}
+			}
+
+			for (var i = disabled_steps.length - 1; i >= 0; i--) { //Looping through disabled steps to disable ones that should not be active and closing disabled steps if they were open
+				if(disabled_steps[i] == 0){ //If first step is disabled, deactivate 2nd and 3rd steps
+					jQuery("[data-automation-step=1]").addClass('cartbounty-step-disabled').removeClass('cartbounty-step-active');
+					jQuery("[data-automation-step=2]").addClass('cartbounty-step-disabled').removeClass('cartbounty-step-active');
+
+				}else if(disabled_steps[i] == 1){ //If second step is disabled, deactivate 3rd step
+					jQuery("[data-automation-step=2]").addClass('cartbounty-step-disabled').removeClass('cartbounty-step-active');
+				}
+			}
+		}
+
 		function addUnavailableClass(){ //Adding unavailable class to display a message
 			var current = jQuery(this);
 			current.parent().addClass('cartbounty-checked'); //Necessary to show/hide small text additions
@@ -168,6 +225,15 @@
 		function addUnavailableReportClass(){ //Adding unavailable class to display a message
 			var current = jQuery(this);
 			current.parent().parent().parent().addClass('cartbounty-checked'); //Necessary to show/hide small text additions
+		}
+
+		function disableInputField(){
+			var $input = jQuery(this);
+
+			if(!$input.prop('disabled')){
+				$input.prop('disabled', true);
+				$input.parent().addClass('cartbounty-checked');
+			}
 		}
 
 		function disableLink(e){ //Function prevents link from firing
@@ -188,26 +254,28 @@
 		};
 
 		function copySystemReport(){
-            var button = jQuery(this);
-            var container = button.parent();
-            container.removeClass('cartbounty-container-active');
+			var button = jQuery(this);
+			var container = button.parent();
+			container.removeClass('cartbounty-container-active');
 
 			var data = {
-				nonce		: button.data('nonce'),
-				action		: "get_system_status"
+				nonce: button.data('nonce'),
+				action: "get_system_status"
 			};
 
-			jQuery.post(cartbounty_admin_data.ajaxurl, data,
-			function(response){
-				if ( response.success == true ){
-			        var system_report = '';
-			        //Transforming HTML table into readable text that we can copy later
-					jQuery(response.data).each(function(){
+			jQuery.post(cartbounty_admin_data.ajaxurl, data, function(response){
+				if(response.success == true){
+					var system_report = '';
+					var modal_container = response.data.container;
+					var report_data = response.data.report;
+
+					//Transforming HTML table into readable text
+					jQuery(report_data).each(function(){
 						jQuery('tr', jQuery( this )).each(function(){
 							var the_name    = rewriteTable( jQuery.trim( jQuery( this ).find('td:eq(0)').text() ), 30, ' ' );
 							var the_value   = jQuery.trim( jQuery( this ).find('td:eq(1)').text() );
 							var value_array = the_value.split( ', ' );
-							if ( value_array.length > 1 ){
+							if(value_array.length > 1){
 								var output = '';
 								var temp_line = '';
 								jQuery.each( value_array, function(key, line){
@@ -220,25 +288,61 @@
 						});
 					});
 
-					try { //Try adding a temporary textarea input field that will hold the system report so it can be copied
-						var textarea = jQuery("<textarea>");
-						jQuery("body").append(textarea);
-						textarea.val( system_report ).select();
-						document.execCommand("copy");
-						textarea.remove();
-						container.addClass('cartbounty-container-active');
-					}catch(e) {
-						console.log(e);
+					//Copy to clipboard information
+					function copyToClipboard(text, modal_container){
+						if(navigator.clipboard){
+							navigator.clipboard.writeText(text).then(function(){
+								container.addClass('cartbounty-container-active');
+							}).catch(function(err){
+								fallbackCopyTextToClipboard(text, modal_container);
+							});
+						}else{
+							fallbackCopyTextToClipboard(text, modal_container);
+						}
 					}
 
-					setTimeout(function(){
+					//Fallback method for copying text in case of browsers that do not allow auto copy
+					function fallbackCopyTextToClipboard(text, modal_container){
+						var $textarea = jQuery('<textarea>').val(text).appendTo('body').select();
+
+						try{
+							var successful = document.execCommand("copy");
+							if(successful){
+								container.addClass('cartbounty-container-active');
+							}else{
+								buildModalOutput(text, modal_container);
+							}
+						}catch (err){
+							buildModalOutput(text, modal_container);
+						}finally{
+							$textarea.remove();
+						}
+					}
+
+					//Building modal output
+					function buildModalOutput(text, modal_container){
+						jQuery('body').append(modal_container);
+						var content = jQuery('#cartbounty-modal-content-report');
+						content.html('<pre>' + text + '</pre>');
+
+						MicroModal.show('cartbounty-modal-report', {
+							onClose(){ 
+								content.empty();
+								jQuery('#cartbounty-modal-report').remove();
+							}
+						});
+					}
+
+					copyToClipboard(system_report, modal_container);
+
+					setTimeout(function() {
 						container.removeClass('cartbounty-container-active');
 					}, 3000);
 
 					button.removeClass('cartbounty-loading');
-					return false;
-				}else{ //In case an error occurs
-					console.log( response.data );
+					return;
+				}else{
+					console.log(response.data);
 				}
 			});
 		}
@@ -267,7 +371,7 @@
 					notice.removeClass('cartbounty-show-bubble'); //Hide the bubble from screen
 				}
 
-				if ( response.success != true ){
+				if(response.success != true){
 					console.log(response.data);
 				}
 			});
@@ -286,6 +390,61 @@
 			}
 		}
 
+		//Handling multiple select checkboxes where a single block must be displayed
+		jQuery('.cartbounty-select-multiple').each(function(){
+			var parentElement = jQuery(this);
+			var checkboxes = parentElement.find('.cartbounty-checkbox');
+
+			function toggleParentClassByInputs(){
+				var anyChecked = checkboxes.is(':checked'); //Check if any checkbox within this block is checked
+
+				// Toggle classes on the parent element
+				if (anyChecked){
+					parentElement.addClass('cartbounty-checked-parent');
+				}else{
+					parentElement.removeClass('cartbounty-checked-parent');
+				}
+			}
+
+			// Add event listener to all checkboxes within this block
+			checkboxes.on('change', toggleParentClassByInputs);
+
+			// Initialize the parent element's state
+			toggleParentClassByInputs();
+		});
+
+		//Making sure Abandoned cart table bottom Bulk actions are synced or else the bottom button does not work
+		function syncSelectizeBulkActions(){
+			let $topSelect = $('#bulk-action-selector-top');
+			let $bottomSelect = $('#bulk-action-selector-bottom');
+
+			if($topSelect.length === 0 || $bottomSelect.length === 0){
+				return;
+			}
+
+			if($topSelect[0].selectize && $bottomSelect[0].selectize){
+				let topSelectize = $topSelect[0].selectize;
+				let bottomSelectize = $bottomSelect[0].selectize;
+
+				function syncSelects(from, to){
+					to.setValue(from.getValue(), true);
+				}
+
+				topSelectize.on('change', function(){
+					syncSelects(topSelectize, bottomSelectize);
+				});
+
+				bottomSelectize.on('change', function(){
+					syncSelects(bottomSelectize, topSelectize);
+				});
+
+				syncSelects(topSelectize, bottomSelectize);
+			}
+		}
+
+		//Run sync function after Selectize is initialized
+		setTimeout(syncSelectizeBulkActions, 500);
+
 		jQuery(".cartbounty-type").on("click", addActiveClass );
 		jQuery(".cartbounty-progress").on("click", addLoadingIndicator );
 		jQuery(".cartbounty-upload-image").on("click", addCustomImage );
@@ -295,6 +454,7 @@
 		jQuery(".cartbounty-disable-submit").on("keypress", disableSubmitOnEnter );
 		jQuery("#force_sync").on("click", force_sync );
 		jQuery(".cartbounty-toggle .cartbounty-control-visibility").on("click", addCheckedClass );
+		jQuery(".cartbounty-step-controller").on("click", addStepStatusClass );
 		jQuery(".cartbounty-unavailable").on("click", addUnavailableClass );
 		jQuery("#cartbounty-abandoned-cart-stats-options .cartbounty-unavailable").on("click", addUnavailableReportClass );
 		jQuery(".cartbounty-unavailable .cartbounty-section-image, #cartbounty-sections .cartbounty-unavailable a").on("click", disableLink );
@@ -303,6 +463,7 @@
 		jQuery('.cartbounty-wordpress-get-additional-step').on("click", removeActiveStepClassUpgradeNotice );
 		jQuery(".cartbounty-close-notice:not(.cartbounty-preview-container .cartbounty-notice-content .button)").on("click", closeNotice );
 		jQuery(".button-preview, .cartbounty-preview-container .cartbounty-notice-content .button").on("click", togglePreview );
+		jQuery(".disabled").on("focus input keydown", disableInputField );
 	});
 
 })( jQuery );

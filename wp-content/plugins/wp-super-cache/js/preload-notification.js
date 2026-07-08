@@ -28,6 +28,7 @@ jQuery( document ).ready( function () {
 				window.wpsc_preload_ajax.ajax_url,
 				{
 					action: 'wpsc_get_preload_status',
+					_ajax_nonce: window.wpsc_preload_ajax.nonce,
 				},
 				json => {
 					if ( ! json || ! json.success ) {
@@ -108,7 +109,7 @@ jQuery( document ).ready( function () {
 
 			if ( data.previous ) {
 				const p = jQuery( '<p>' );
-				p.append( jQuery( '<b>' ).text( __( 'Last preload finished: ', 'wp-super-cache' ) ) );
+				p.append( jQuery( '<b>' ).text( __( 'Last preload finished:', 'wp-super-cache' ) + ' ' ) );
 				p.append( jQuery( '<span>' ).text( new Date( data.previous * 1000 ).toLocaleString() ) );
 				panel.append( p );
 			}

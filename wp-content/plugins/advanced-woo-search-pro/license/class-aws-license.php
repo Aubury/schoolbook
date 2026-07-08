@@ -63,9 +63,12 @@ if ( ! class_exists( 'AWS_License' ) ) :
          * Include required core files used in admin and on the frontend.
          */
         private function includes() {
+            include_once( 'class-aws-license-helpers.php' );
             include_once( 'class-aws-updates.php' );
             include_once( 'class-aws-license-page.php' );
             include_once( 'class-aws-license-notices.php' );
+            include_once( 'class-aws-remote-notices.php' );
+            include_once( 'class-aws-license-features.php' );
         }
 
         /*
@@ -85,9 +88,13 @@ if ( ! class_exists( 'AWS_License' ) ) :
          */
         function modify_plugin_update_message( $plugin_data, $response ) {
 
-            if ( $this->get_license_key() ) return;
+            if ( $this->get_license_key() && ! $this->is_license_domain_valid() ) {
+                echo '<br />' .sprintf( esc_html__( 'WARNING: Current domain is not associated with your active license. Please go to %s, deactivate and activate your license again.', 'advanced-woo-search' ), '<a href="'.admin_url('admin.php?page=aws-options-updates').'">' . __( 'license page', 'advanced-woo-search' ) . '</a>' );
+            }
 
-            echo '<br />' . sprintf( esc_html__('To enable updates, please enter your license key on the %s updates %s page. If you don\'t have a licence key, please visit  %s plugin page %s.', 'advanced-woo-search'), '<a href="'.admin_url('admin.php?page=aws-options-updates').'">', '</a>', '<a href="https://advanced-woo-search.com/" target="_blank">', '</a>' );
+            if ( ! $this->get_license_key() ) {
+                echo '<br />' . sprintf( esc_html__('To enable updates, please enter your license key on the %s updates %s page. If you don\'t have a licence key, please visit  %s plugin page %s.', 'advanced-woo-search'), '<a href="'.admin_url('admin.php?page=aws-options-updates').'">', '</a>', '<a href="https://advanced-woo-search.com/" target="_blank">', '</a>' );
+            }
 
         }
 
@@ -111,6 +118,7 @@ if ( ! class_exists( 'AWS_License' ) ) :
                 if ( $license_response['success'] ) {
                     $response = array( 'type' => 'valid', 'text' => $license_response['text'] );
                     $this->update_license_key( $license_key );
+                    $this->update_license_domain( home_url() );
                     $this->remove_transient();
                 } else {
                     $response = array( 'type' => 'invalid', 'text' => $license_response['text'] );
@@ -123,6 +131,8 @@ if ( ! class_exists( 'AWS_License' ) ) :
                 $license_key = $this->get_license_key();
 
                 $this->updater->remove_license( $license_key );
+
+                $this->remove_license_domain();
 
                 $this->remove_license_key();
 
@@ -156,6 +166,7 @@ if ( ! class_exists( 'AWS_License' ) ) :
         public function remote_information( $response ) {
             if ( $response && property_exists( $response, 'domain_removed' ) && $response->domain_removed ) {
                 $this->remove_license_key();
+                $this->remove_license_domain();
             }
             return $response;
         }
@@ -169,12 +180,29 @@ if ( ! class_exists( 'AWS_License' ) ) :
         }
 
         /*
+         * Get currently active license key domain
+         */
+        public function get_license_domain() {
+            $option_name = $this->get_license_domain_option_name();
+            return get_option( $option_name );
+        }
+
+        /*
          * Update currently active license key
          * @param string $license_key New license key
          */
         private function update_license_key( $license_key ) {
             $option_name = $this->get_license_option_name();
             update_option( $option_name, $license_key );
+        }
+
+        /*
+         * Update currently active license key
+         * @param string $domain Domain name
+         */
+        private function update_license_domain( $domain ) {
+            $option_name = $this->get_license_domain_option_name();
+            update_option( $option_name, $domain );
         }
 
         /*
@@ -186,10 +214,36 @@ if ( ! class_exists( 'AWS_License' ) ) :
         }
 
         /*
+         * Remove currently active license domain
+         */
+        private function remove_license_domain() {
+            $option_name = $this->get_license_domain_option_name();
+            return delete_option( $option_name );
+        }
+
+        /*
+         * Check if license domain is valid
+         */
+        public function is_license_domain_valid() {
+            $license_domain = $this->get_license_domain();
+            if ( $license_domain && $license_domain !== home_url() ) {
+                return false;
+            }
+            return true;
+        }
+
+        /*
          * Get option name for license key
          */
         public function get_license_option_name() {
             return trim( str_replace( '-', '_', $this->conf['slug'] ) );
+        }
+
+        /*
+         * Get option name for license key
+         */
+        public function get_license_domain_option_name() {
+            return trim( str_replace( '-', '_', $this->conf['slug'] . '_domain' ) );
         }
 
         /*

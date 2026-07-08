@@ -283,11 +283,7 @@ class elFinderConnector
                     if (version_compare(PHP_VERSION, '5.6', '<')) {
                         file_put_contents('php://output', $fp);
                     } else {
-                        if(function_exists('fpassthru')) {
                             fpassthru($fp);
-                        } else {
-                            file_put_contents('php://output', $fp);
-                        }
                     }
                 } else {
                     $out = fopen('php://output', 'wb');
@@ -328,7 +324,6 @@ class elFinderConnector
         }
         $res = str_replace("\0", '', $args);
         $magic_quotes_gpc && ($res = stripslashes($res));
-        $res = stripslashes($res);
         return $res;
     }
 

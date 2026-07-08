@@ -67,6 +67,31 @@ if ( ! class_exists( 'AWS_Tax_Search' ) ) :
         private $results_num = 10;
 
         /**
+         * @var AWS_Tax_Search Show or not taxonomy name for archive results
+         */
+        private $search_archives_heading;
+
+        /**
+         * @var AWS_Tax_Search Show or not taxonomy term hierarchy
+         */
+        private $search_archives_hierarchy;
+
+        /**
+         * @var AWS_Tax_Search Show or not the number of products for archive results
+         */
+        private $search_archives_count;
+
+        /**
+         * @var AWS_Tax_Search Show or not results with 0 products inside
+         */
+        private $search_archives_empty;
+
+        /**
+         * @var AWS_Tax_Search Show or not archive pages images
+         */
+        private $search_archives_images;
+
+        /**
          * @var AWS_Tax_Search ID of current form instance $form_id
          */
         private $form_id = 0;
@@ -101,6 +126,11 @@ if ( ! class_exists( 'AWS_Tax_Search' ) ) :
             $this->search_terms_normalized = array();
             $this->filters = isset( $data['adv_filters']['term'] ) ? $data['adv_filters']['term'] : array();
             $this->results_num = isset( $data['pages_results_num'] ) ? $data['pages_results_num'] : 10;
+            $this->search_archives_heading = isset( $data['search_archives_heading'] ) ? $data['search_archives_heading'] : 'false';
+            $this->search_archives_hierarchy = isset( $data['search_archives_hierarchy'] ) ? $data['search_archives_hierarchy'] : 'false';
+            $this->search_archives_count = isset( $data['search_archives_count'] ) ? $data['search_archives_count'] : 'true';
+            $this->search_archives_empty = isset( $data['search_archives_empty'] ) ? $data['search_archives_empty'] : 'false';
+            $this->search_archives_images = isset( $data['search_archives_images'] ) ? $data['search_archives_images'] : 'true';
             $this->form_id = isset( $data['form_id'] ) ? $data['form_id'] : 1;
             $this->filter_id = isset( $data['filter_id'] ) ? $data['filter_id'] : 1;
 
@@ -196,6 +226,11 @@ if ( ! class_exists( 'AWS_Tax_Search' ) ) :
                 $relevance_query = '0';
             }
 
+            $count_query = '';
+            if ( $this->search_archives_empty === 'false' ) {
+                $count_query = " AND count > 0 ";
+            }
+
             // For multilingual shops
             $search_query .= $this->get_lang_query();
 
@@ -213,7 +248,7 @@ if ( ! class_exists( 'AWS_Tax_Search' ) ) :
 				{$search_query}
 				AND $wpdb->term_taxonomy.taxonomy IN ( {$taxonomies_names} )
 				AND $wpdb->term_taxonomy.term_id = $wpdb->terms.term_id
-			    AND count > 0
+			    {$count_query}
 			    {$filters}
 			    GROUP BY term_id
 			    ORDER BY relevance DESC, term_id DESC
@@ -253,8 +288,10 @@ if ( ! class_exists( 'AWS_Tax_Search' ) ) :
                     $count = '';
                     $parent = '';
                     $slug = '';
+                    $heading = '';
+                    $hierarchy_path = '';
 
-                    if ( $result->count > 0 ) {
+                    if ( $result->count > 0 && $this->search_archives_count === 'true' ) {
                         $count = $result->count;
                     }
 
@@ -262,11 +299,21 @@ if ( ! class_exists( 'AWS_Tax_Search' ) ) :
 
                     if ( $term != null && !is_wp_error( $term ) ) {
                         $term_link  = get_term_link( $term );
-                        $term_image = AWS_Helpers::get_term_thumbnail( $result->term_id );
+                        if ( $this->search_archives_images === 'true' ) {
+                            $term_image = AWS_Helpers::get_term_thumbnail( $result->term_id );
+                        }
                         $parent     = is_object( $term ) && property_exists( $term, 'parent' ) ? $term->parent : '';
                         $slug       = $term->slug;
                     } else {
                         continue;
+                    }
+
+                    if ( $this->search_archives_heading === 'true' ) {
+                        $heading = $this->get_taxonomy_name_label( $result->taxonomy );
+                    }
+
+                    if ( $this->search_archives_hierarchy === 'true' && $parent ) {
+                        $hierarchy_path = $this->get_term_hierarchy_path( $term, $result->taxonomy );
                     }
 
                     $new_result = array(
@@ -277,7 +324,9 @@ if ( ! class_exists( 'AWS_Tax_Search' ) ) :
                         'link'     => $term_link,
                         'excerpt'  => '',
                         'parent'   => $parent,
-                        'image'    => $term_image
+                        'image'    => $term_image,
+                        'heading'  => $heading,
+                        'hierarchy' => $hierarchy_path,
                     );
 
                     /**
@@ -307,6 +356,63 @@ if ( ! class_exists( 'AWS_Tax_Search' ) ) :
             }
 
             return $result_array;
+
+        }
+
+        /**
+         * Get formatted hierarchy path for taxonomy term.
+         * @param WP_Term $term Term object.
+         * @param string  $taxonomy Taxonomy name.
+         * @return string
+         */
+        private function get_term_hierarchy_path( $term, $taxonomy ) {
+
+            $ancestors = get_ancestors( $term->term_id, $taxonomy, 'taxonomy' );
+
+            if ( empty( $ancestors ) ) {
+                return '';
+            }
+
+            $ancestors = array_reverse( $ancestors );
+            $ancestors = array_slice( $ancestors, 0, 3 );
+            $names = array();
+
+            foreach ( $ancestors as $ancestor_id ) {
+                $ancestor = get_term( $ancestor_id, $taxonomy );
+
+                if ( ! $ancestor || is_wp_error( $ancestor ) ) {
+                    continue;
+                }
+
+                $names[] = esc_html( $ancestor->name );
+            }
+
+            return $names ? implode( ' &gt; ', $names ) : '';
+
+        }
+
+        /**
+         * Get taxonomy name label.
+         * @param string $taxonomy_name Taxonomy name.
+         * @return string
+         */
+        private function get_taxonomy_name_label( $taxonomy_name ) {
+
+            $taxonomy = get_taxonomy( $taxonomy_name );
+
+            if ( ! $taxonomy || is_wp_error( $taxonomy ) ) {
+                return $taxonomy_name;
+            }
+
+            if ( isset( $taxonomy->labels->singular_name ) && $taxonomy->labels->singular_name ) {
+                return $taxonomy->labels->singular_name;
+            }
+
+            if ( isset( $taxonomy->label ) && $taxonomy->label ) {
+                return $taxonomy->label;
+            }
+
+            return $taxonomy_name;
 
         }
 

@@ -1492,8 +1492,11 @@ main > .section {
 }
 
 .header-video-button {
-  background: url("../image/stroke-white-video.svg") no-repeat;
+  background-color: var(--brand-green-dark);
+  background-image: url("../image/stroke-white-video.svg");
+  background-repeat: no-repeat;
   background-size: 100% 100%;
+  border-radius: 100px;
   display: flex;
   width: 188px;
   height: 64px;
@@ -1733,18 +1736,7 @@ main > .section {
   content: unset;
 }
 .header-wishlist-block .woosw-menu-item-inner:after {
-  background-color: var(--brand-orange);
-  width: 20px;
-  height: 20px;
-  top: -12px;
-  right: -18px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--fm-base);
-  font-size: 11px;
-  font-weight: 700;
+  content: unset;
 }
 @media (max-width: 992px) {
   .header-wishlist-block {
@@ -2426,6 +2418,8 @@ main > .section {
 @media (max-width: 1030px) {
   .banner-wrap {
     margin-bottom: 100px;
+    padding-top: 10px;
+    z-index: 20;
   }
 }
 @media (max-width: 431px) {
@@ -2436,7 +2430,7 @@ main > .section {
 .banner-wrap .bottom-line-cell {
   position: absolute;
   left: 0;
-  bottom: -90px;
+  bottom: -110px;
   width: 100%;
   height: 150px;
   background: url("../image/bottom-line-cell.svg") no-repeat center bottom;
@@ -2445,6 +2439,12 @@ main > .section {
   pointer-events: none;
 }
 @media (max-width: 1030px) {
+  .banner-wrap .bottom-line-cell {
+    height: 100px;
+    bottom: -80px;
+  }
+}
+@media (max-width: 576px) {
   .banner-wrap .bottom-line-cell {
     height: 100px;
     bottom: -65px;
@@ -2604,7 +2604,7 @@ main > .section {
 .promo-slider .slick-dots {
   height: auto;
   position: relative;
-  top: 50px;
+  top: 70px;
   bottom: auto;
   margin-left: 0;
   display: flex;
@@ -2632,10 +2632,10 @@ main > .section {
 }
 @media (max-width: 1030px) {
   .promo-slider .slick-dots {
-    top: 40px;
+    top: 55px;
   }
 }
-@media (max-width: 431px) {
+@media (max-width: 576px) {
   .promo-slider .slick-dots {
     top: 45px;
   }

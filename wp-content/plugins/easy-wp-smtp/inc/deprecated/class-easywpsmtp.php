@@ -385,6 +385,10 @@ class EasyWPSMTP {
 			echo esc_html( __( 'Nonce check failed.', 'easy-wp-smtp' ) );
 			exit;
 		};
+		if ( ! current_user_can( 'manage_options' ) ) {
+			echo esc_html( __( 'You are not allowed to do that.', 'easy-wp-smtp' ) );
+			exit;
+		};
 		if ( $this->log( self::$reset_log_str, true ) !== false ) {
 			echo '1';
 		} else {

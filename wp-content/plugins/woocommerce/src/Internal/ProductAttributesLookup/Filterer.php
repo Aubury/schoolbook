@@ -59,14 +59,34 @@ class Filterer {
 	public function filter_by_attribute_post_clauses( array $args, \WP_Query $wp_query, array $attributes_to_filter_by ) {
 		global $wpdb;
 
-		if ( ! $wp_query->is_main_query() || ! $this->filtering_via_lookup_table_is_active() ) {
+		/**
+		 * Filter whether to add the filter post clauses
+		 *
+		 * @param bool     $is_main_query Whether the current query is 'is_main_query'.
+		 * @param WP_Query $wp_query      The current WP_Query object.
+		 *
+		 * @since 9.9.0
+		 */
+		$enable_filtering = apply_filters( 'woocommerce_enable_post_clause_filtering', $wp_query->is_main_query(), $wp_query );
+
+		if ( ! $enable_filtering || ! $this->filtering_via_lookup_table_is_active() ) {
 			return $args;
 		}
 
 		// The extra derived table ("SELECT product_or_parent_id FROM") is needed for performance
 		// (causes the filtering subquery to be executed only once).
 		$clause_root = " {$wpdb->posts}.ID IN ( SELECT product_or_parent_id FROM (";
-		if ( 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) ) {
+
+		/**
+		 * Filters the woocommerce_hide_out_of_stock_items option to override the default behavior in product filtering by attribute.
+		 *
+		 * @param bool $option_value The behavior configured in WooCommerce settings.
+		 * @return bool The behavior to use in the catalog when product filtering by attribute.
+		 *
+		 * @since 9.8.0.
+		 */
+		$hide_out_of_stock = apply_filters( 'woocommerce_product_attributes_filterer_hide_out_of_stock', 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) );
+		if ( $hide_out_of_stock ) {
 			$in_stock_clause = ' AND in_stock = 1';
 		} else {
 			$in_stock_clause = '';
@@ -117,6 +137,8 @@ class Filterer {
 				WHERE is_variation_attribute=1
 				{$in_stock_clause}
 				AND term_id in {$term_ids_to_filter_by_list}
+				GROUP BY product_or_parent_id
+				HAVING COUNT(DISTINCT term_id)={$count}
 			)";
 		}
 
@@ -144,8 +166,6 @@ class Filterer {
 	public function get_filtered_term_product_counts( $term_ids, $taxonomy, $query_type ) {
 		global $wpdb;
 
-		$use_lookup_table = $this->filtering_via_lookup_table_is_active();
-
 		$tax_query  = \WC_Query::get_main_tax_query();
 		$meta_query = \WC_Query::get_main_meta_query();
 		if ( 'or' === $query_type ) {
@@ -157,14 +177,22 @@ class Filterer {
 		}
 
 		$meta_query = new \WP_Meta_Query( $meta_query );
-		$tax_query  = new \WP_Tax_Query( $tax_query );
+		$tax_query  = new TaxQuery( $tax_query );
 
-		if ( $use_lookup_table ) {
+		if ( $this->filtering_via_lookup_table_is_active() ) {
 			$query = $this->get_product_counts_query_using_lookup_table( $tax_query, $meta_query, $taxonomy, $term_ids );
 		} else {
 			$query = $this->get_product_counts_query_not_using_lookup_table( $tax_query, $meta_query, $term_ids );
 		}
 
+		/**
+		 * Customizes the SQL query that populates product counts in layered navigation.
+		 *
+		 * @since 10.9.0 the query was optimized to remove the join on term_relationships in favor of a nested select from term_relationships.
+		 * @since 2.6.1
+		 *
+		 * @param array $query Query fragments (the available fragments are: select, from, join, where, group_by).
+		 */
 		$query     = apply_filters( 'woocommerce_get_filtered_term_product_counts_query', $query );
 		$query_sql = implode( ' ', $query );
 
@@ -201,9 +229,18 @@ class Filterer {
 	private function get_product_counts_query_using_lookup_table( $tax_query, $meta_query, $taxonomy, $term_ids ) {
 		global $wpdb;
 
-		$meta_query_sql    = $meta_query->get_sql( 'post', $this->lookup_table_name, 'product_or_parent_id' );
-		$tax_query_sql     = $tax_query->get_sql( $this->lookup_table_name, 'product_or_parent_id' );
-		$hide_out_of_stock = 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' );
+		$meta_query_sql = $meta_query->get_sql( 'post', $this->lookup_table_name, 'product_or_parent_id' );
+		$tax_query_sql  = $tax_query->get_sql( $this->lookup_table_name, 'product_or_parent_id' );
+
+		/**
+		 * Filters the woocommerce_hide_out_of_stock_items option to override the default behavior in product filtering by attribute.
+		 *
+		 * @param bool $option_value The behavior configured in WooCommerce settings.
+		 * @return bool The behavior to use in the catalog when product filtering by attribute.
+		 *
+		 * @since 9.5.0.
+		 */
+		$hide_out_of_stock = apply_filters( 'woocommerce_product_attributes_filterer_hide_out_of_stock', 'yes' === get_option( 'woocommerce_hide_out_of_stock_items' ) );
 		$in_stock_clause   = $hide_out_of_stock ? ' AND in_stock = 1' : '';
 
 		$query           = array();
@@ -259,6 +296,8 @@ class Filterer {
 							WHERE is_variation_attribute=1
 							{$in_stock_clause}
 							AND term_id in {$term_ids_list}
+							GROUP BY product_or_parent_id
+							HAVING COUNT(DISTINCT term_id)={$terms_count}
 						) temp )";
 				}
 			} else {
@@ -273,7 +312,6 @@ class Filterer {
 			$query['where'] .= ' AND ' . $search_query_sql;
 		}
 
-		$query['group_by'] = 'GROUP BY terms.term_id';
 		$query['group_by'] = "GROUP BY {$this->lookup_table_name}.term_id";
 
 		return $query;

@@ -649,8 +649,11 @@
 }
 
 .header-video-button {
-  background: url("../image/stroke-white-video.svg") no-repeat;
+  background-color: var(--brand-green-dark);
+  background-image: url("../image/stroke-white-video.svg");
+  background-repeat: no-repeat;
   background-size: 100% 100%;
+  border-radius: 100px;
   display: flex;
   width: 188px;
   height: 64px;

@@ -4,7 +4,6 @@ namespace EasyWPSMTP\Providers;
 
 use EasyWPSMTP\Admin\DebugEvents\DebugEvents;
 use EasyWPSMTP\ConnectionInterface;
-use EasyWPSMTP\Debug;
 use EasyWPSMTP\Helpers\Helpers;
 use EasyWPSMTP\MailCatcherInterface;
 use EasyWPSMTP\Options;
@@ -61,21 +60,21 @@ abstract class MailerAbstract implements MailerInterface {
 	 *
 	 * @var array
 	 */
-	protected $headers = array();
+	protected $headers = [];
 
 	/**
 	 * @since 2.0.0
 	 *
 	 * @var array
 	 */
-	protected $body = array();
+	protected $body = [];
 
 	/**
 	 * @since 2.0.0
 	 *
 	 * @var mixed
 	 */
-	protected $response = array();
+	protected $response = [];
 
 	/**
 	 * The error message recorded when email sending failed and the error can't be processed from the API response.
@@ -85,6 +84,15 @@ abstract class MailerAbstract implements MailerInterface {
 	 * @var string
 	 */
 	protected $error_message = '';
+
+	/**
+	 * The error code recorded when email sending failed.
+	 *
+	 * @since 2.15.0
+	 *
+	 * @var string
+	 */
+	protected $error_code = '';
 
 	/**
 	 * Should the email sent by this mailer have its "sent status" verified via its API?
@@ -165,21 +173,21 @@ abstract class MailerAbstract implements MailerInterface {
 		$this->set_headers( $this->phpmailer->getCustomHeaders() );
 		$this->set_from( $this->phpmailer->From, $this->phpmailer->FromName );
 		$this->set_recipients(
-			array(
+			[
 				'to'  => $this->phpmailer->getToAddresses(),
 				'cc'  => $this->phpmailer->getCcAddresses(),
 				'bcc' => $this->phpmailer->getBccAddresses(),
-			)
+			]
 		);
 		$this->set_subject( $this->phpmailer->Subject );
 		if ( $this->phpmailer->ContentType === 'text/plain' ) {
 			$this->set_content( $this->phpmailer->Body );
 		} else {
 			$this->set_content(
-				array(
+				[
 					'text' => $this->phpmailer->AltBody,
 					'html' => $this->phpmailer->Body,
-				)
+				]
 			);
 		}
 
@@ -239,9 +247,9 @@ abstract class MailerAbstract implements MailerInterface {
 	public function set_subject( $subject ) {
 
 		$this->set_body_param(
-			array(
+			[
 				'subject' => $subject,
-			)
+			]
 		);
 	}
 
@@ -294,11 +302,11 @@ abstract class MailerAbstract implements MailerInterface {
 
 		$params = Options::array_merge_recursive(
 			$this->get_default_params(),
-			array(
+			[
 				'headers' => $this->get_headers(),
 				'body'    => $this->get_body(),
 				'timeout' => $timeout ? $timeout : 30,
-			)
+			]
 		);
 
 		$response = wp_safe_remote_post( $this->url, $params );
@@ -329,6 +337,10 @@ abstract class MailerAbstract implements MailerInterface {
 			return;
 		}
 
+		if ( wp_remote_retrieve_response_code( $response ) !== $this->email_sent_code ) {
+			$this->error_code = wp_remote_retrieve_response_code( $response );
+		}
+
 		if ( isset( $response['body'] ) && WP::is_json( $response['body'] ) ) {
 			$response['body'] = json_decode( $response['body'] );
 		}
@@ -347,11 +359,11 @@ abstract class MailerAbstract implements MailerInterface {
 
 		return apply_filters(
 			'easy_wp_smtp_providers_mailer_get_default_params',
-			array(
+			[
 				'timeout'     => 15,
 				'httpversion' => '1.1',
 				'blocking'    => true,
-			),
+			],
 			$this->mailer
 		);
 	}
@@ -398,6 +410,49 @@ abstract class MailerAbstract implements MailerInterface {
 	}
 
 	/**
+	 * The error code when email sending failed.
+	 * Should be overwritten when appropriate.
+	 *
+	 * @since 2.15.0
+	 *
+	 * @return string
+	 */
+	public function get_response_error_code() {
+
+		return ! empty( $this->error_code ) ? $this->error_code : '';
+	}
+
+	/**
+	 * Get a header from the retained send response.
+	 *
+	 * @since 2.15.0
+	 *
+	 * @param string $name Header name (case-insensitive).
+	 *
+	 * @return string
+	 */
+	public function get_response_header( $name ) {
+
+		return wp_remote_retrieve_header( $this->response, $name );
+	}
+
+	/**
+	 * Get the HTTP response code.
+	 *
+	 * @since 2.15.0
+	 *
+	 * @return int
+	 */
+	public function get_response_code() {
+
+		if ( empty( $this->response ) || ! is_array( $this->response ) ) {
+			return 0;
+		}
+
+		return (int) wp_remote_retrieve_response_code( $this->response );
+	}
+
+	/**
 	 * Whether the mailer supports the current PHP version or not.
 	 *
 	 * @since 2.0.0
@@ -423,17 +478,16 @@ abstract class MailerAbstract implements MailerInterface {
 
 		global $phpmailer;
 
-		$smtp_text = array();
+		$smtp_text = [];
 
 		// Mail mailer has nothing to return.
 		if ( $this->connection_options->is_mailer_smtp() ) {
 			// phpcs:disable
-			$smtp_text[] = '<strong>ErrorInfo:</strong> ' . make_clickable( wp_strip_all_tags( $phpmailer->ErrorInfo ) );
 			$smtp_text[] = '<strong>Host:</strong> ' . $phpmailer->Host;
 			$smtp_text[] = '<strong>Port:</strong> ' . $phpmailer->Port;
-			$smtp_text[] = '<strong>SMTPSecure:</strong> ' . Debug::pvar( $phpmailer->SMTPSecure );
-			$smtp_text[] = '<strong>SMTPAutoTLS:</strong> ' . Debug::pvar( $phpmailer->SMTPAutoTLS );
-			$smtp_text[] = '<strong>SMTPAuth:</strong> ' . Debug::pvar( $phpmailer->SMTPAuth );
+			$smtp_text[] = '<strong>SMTPSecure:</strong> ' . Helpers::pvar( $phpmailer->SMTPSecure );
+			$smtp_text[] = '<strong>SMTPAutoTLS:</strong> ' . Helpers::pvar( $phpmailer->SMTPAutoTLS );
+			$smtp_text[] = '<strong>SMTPAuth:</strong> ' . Helpers::pvar( $phpmailer->SMTPAuth );
 			if ( ! empty( $phpmailer->SMTPOptions ) ) {
 				$smtp_text[] = '<strong>SMTPOptions:</strong> <code>' . wp_json_encode( $phpmailer->SMTPOptions ) . '</code>';
 			}
@@ -628,7 +682,21 @@ abstract class MailerAbstract implements MailerInterface {
 	 */
 	public function sanitize_header_value( $name, $value ) {
 
-		if ( strtolower( $name ) === 'list-unsubscribe' ) {
+		if (
+			in_array(
+				strtolower( $name ),
+				[
+					'cc',
+					'bcc',
+					'reply-to',
+					'message-id',
+					'list-unsubscribe',
+					'references',
+					'in-reply-to',
+				],
+				true
+			)
+	) {
 			return $value;
 		}
 

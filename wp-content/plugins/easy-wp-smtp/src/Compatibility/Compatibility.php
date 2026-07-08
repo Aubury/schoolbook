@@ -2,7 +2,13 @@
 
 namespace EasyWPSMTP\Compatibility;
 
-use EasyWPSMTP\WP;
+use EasyWPSMTP\Compatibility\Plugin\Admin2020;
+use EasyWPSMTP\Compatibility\Plugin\Polylang;
+use EasyWPSMTP\Compatibility\Plugin\PolylangPro;
+use EasyWPSMTP\Compatibility\Plugin\WooCommerce;
+use EasyWPSMTP\Compatibility\Plugin\WPForms;
+use EasyWPSMTP\Compatibility\Plugin\WPFormsLite;
+use EasyWPSMTP\Compatibility\Plugin\WPML;
 
 /**
  * Compatibility.
@@ -28,10 +34,7 @@ class Compatibility {
 	 */
 	public function init() {
 
-		// Setup compatibility only in admin area.
-		if ( WP::in_wp_admin() ) {
-			$this->setup_compatibility();
-		}
+		$this->setup_compatibility();
 	}
 
 	/**
@@ -42,7 +45,13 @@ class Compatibility {
 	public function setup_compatibility() {
 
 		$plugins = [
-			'admin-2020' => '\EasyWPSMTP\Compatibility\Plugin\Admin2020',
+			'admin-2020'   => Admin2020::class,
+			'wpforms-lite' => WPFormsLite::class,
+			'wpforms'      => WPForms::class,
+			'woocommerce'  => WooCommerce::class,
+			'wpml'         => WPML::class,
+			'polylang'     => Polylang::class,
+			'polylang-pro' => PolylangPro::class,
 		];
 
 		foreach ( $plugins as $key => $classname ) {

@@ -3,26 +3,31 @@ declare( strict_types=1 );
 
 namespace Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter;
 
+use Automattic\Jetpack\Connection\Client;
 use Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Ads;
 use Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Merchant;
 use Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Middleware;
 use Automattic\WooCommerce\GoogleListingsAndAds\API\Google\SiteVerification;
-use Automattic\WooCommerce\GoogleListingsAndAds\API\WP\NotificationsService;
+use Automattic\WooCommerce\GoogleListingsAndAds\API\WP\OAuthService;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Table\MerchantIssueTable;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Table\ShippingRateTable;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Table\ShippingTimeTable;
 use Automattic\WooCommerce\GoogleListingsAndAds\Exception\ApiNotReady;
 use Automattic\WooCommerce\GoogleListingsAndAds\Exception\ExceptionWithResponseData;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service;
+use Automattic\WooCommerce\GoogleListingsAndAds\Internal\ContainerAwareTrait;
+use Automattic\WooCommerce\GoogleListingsAndAds\Internal\Interfaces\ContainerAwareInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\CleanupSyncedProducts;
+use Automattic\WooCommerce\GoogleListingsAndAds\Jobs\JobRepository;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\AdsAccountState;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\MerchantAccountState;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareTrait;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsInterface;
+use Automattic\WooCommerce\GoogleListingsAndAds\Options\ServiceBasedMerchantState;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\TransientsInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\PluginHelper;
-use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Psr\Container\ContainerInterface;
+use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\GuzzleHttp\Exception\BadResponseException;
 use Exception;
 use Jetpack_Options;
 
@@ -34,9 +39,8 @@ defined( 'ABSPATH' ) || exit;
  * Container used to access:
  * - Ads
  * - AdsAccountState
- * - CleanupSyncedProducts
+ * - JobRepository
  * - Merchant
- * - MerchantAccountState
  * - MerchantCenterService
  * - MerchantIssueTable
  * - MerchantStatuses
@@ -48,15 +52,11 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.12.0
  * @package Automattic\WooCommerce\GoogleListingsAndAds\MerchantCenter
  */
-class AccountService implements OptionsAwareInterface, Service {
+class AccountService implements ContainerAwareInterface, OptionsAwareInterface, Service {
 
+	use ContainerAwareTrait;
 	use OptionsAwareTrait;
 	use PluginHelper;
-
-	/**
-	 * @var ContainerInterface
-	 */
-	protected $container;
 
 	/**
 	 * @var MerchantAccountState
@@ -80,11 +80,10 @@ class AccountService implements OptionsAwareInterface, Service {
 	/**
 	 * AccountService constructor.
 	 *
-	 * @param ContainerInterface $container
+	 * @param MerchantAccountState $state
 	 */
-	public function __construct( ContainerInterface $container ) {
-		$this->state     = $container->get( MerchantAccountState::class );
-		$this->container = $container;
+	public function __construct( MerchantAccountState $state ) {
+		$this->state = $state;
 	}
 
 	/**
@@ -142,6 +141,10 @@ class AccountService implements OptionsAwareInterface, Service {
 		} catch ( ExceptionWithResponseData $e ) {
 			throw $e;
 		} catch ( Exception $e ) {
+			if ( $e->getPrevious() instanceof BadResponseException ) {
+				throw $this->prepare_api_error_exception( $e );
+			}
+
 			throw $this->prepare_exception( $e->getMessage(), [], $e->getCode() );
 		}
 	}
@@ -166,6 +169,9 @@ class AccountService implements OptionsAwareInterface, Service {
 		} catch ( ExceptionWithResponseData | ApiNotReady $e ) {
 			throw $e;
 		} catch ( Exception $e ) {
+			if ( $e->getPrevious() instanceof BadResponseException ) {
+				throw $this->prepare_api_error_exception( $e );
+			}
 			throw $this->prepare_exception( $e->getMessage(), [], $e->getCode() );
 		}
 	}
@@ -221,17 +227,28 @@ class AccountService implements OptionsAwareInterface, Service {
 	 * @return array
 	 */
 	public function get_connected_status(): array {
-		/** @var NotificationsService $notifications_service */
-		$notifications_service = $this->container->get( NotificationsService::class );
-
 		$id                    = $this->options->get_merchant_id();
 		$wpcom_rest_api_status = $this->options->get( OptionsInterface::WPCOM_REST_API_STATUS );
 
+		/*
+		 * Since we switched to client credentials, authorization is granted by default.
+		 * Set status to 'approved' if not set. This code is preserved for future UI functionality.
+		 */
+		if ( ! $wpcom_rest_api_status ) {
+			$wpcom_rest_api_status = OAuthService::STATUS_APPROVED;
+			$this->options->update( OptionsInterface::WPCOM_REST_API_STATUS, $wpcom_rest_api_status );
+		}
+
+		// If token is revoked outside the extension. Set the status as error to force the merchant to grant access again.
+		if ( $wpcom_rest_api_status === 'approved' && ! $this->is_wpcom_api_status_healthy() ) {
+			$wpcom_rest_api_status = OAuthService::STATUS_ERROR;
+			$this->options->update( OptionsInterface::WPCOM_REST_API_STATUS, $wpcom_rest_api_status );
+		}
+
 		$status = [
-			'id'                           => $id,
-			'status'                       => $id ? 'connected' : 'disconnected',
-			'notification_service_enabled' => $notifications_service->is_enabled(),
-			'wpcom_rest_api_status'        => $wpcom_rest_api_status,
+			'id'                    => $id,
+			'status'                => $id ? 'connected' : 'disconnected',
+			'wpcom_rest_api_status' => $wpcom_rest_api_status,
 		];
 
 		$incomplete = $this->state->last_incomplete_step();
@@ -271,11 +288,13 @@ class AccountService implements OptionsAwareInterface, Service {
 		$this->container->get( ShippingRateTable::class )->truncate();
 		$this->container->get( ShippingTimeTable::class )->truncate();
 
-		$this->container->get( CleanupSyncedProducts::class )->schedule();
+		$this->container->get( JobRepository::class )->get( CleanupSyncedProducts::class )->schedule();
 
 		$this->container->get( TransientsInterface::class )->delete( TransientsInterface::MC_ACCOUNT_REVIEW );
 		$this->container->get( TransientsInterface::class )->delete( TransientsInterface::URL_MATCHES );
 		$this->container->get( TransientsInterface::class )->delete( TransientsInterface::MC_IS_SUBACCOUNT );
+
+		$this->container->get( ServiceBasedMerchantState::class )->reset_service_based_merchant_status();
 	}
 
 	/**
@@ -341,6 +360,9 @@ class AccountService implements OptionsAwareInterface, Service {
 						} else {
 							$merchant->claimwebsite();
 						}
+						break;
+					case 'sdi_update':
+						$middleware->update_sdi_merchant_account();
 						break;
 					case 'link_ads':
 						// Continue to next step if Ads account is not connected yet.
@@ -448,7 +470,6 @@ class AccountService implements OptionsAwareInterface, Service {
 		/** @var Merchant $merchant */
 		$merchant = $this->container->get( Merchant::class );
 
-		/** @var Account $account */
 		$account     = $merchant->get_account( $merchant_id );
 		$account_url = $account->getWebsiteUrl() ?: '';
 
@@ -505,8 +526,11 @@ class AccountService implements OptionsAwareInterface, Service {
 		$ads_state = $this->container->get( AdsAccountState::class );
 
 		// Create link for Merchant and accept it in Ads.
-		$this->container->get( Merchant::class )->link_ads_id( $this->options->get_ads_id() );
-		$this->container->get( Ads::class )->accept_merchant_link( $this->options->get_merchant_id() );
+		$waiting_acceptance = $this->container->get( Merchant::class )->link_ads_id( $this->options->get_ads_id() );
+
+		if ( $waiting_acceptance ) {
+			$this->container->get( Ads::class )->accept_merchant_link( $this->options->get_merchant_id() );
+		}
 
 		$ads_state->complete_step( 'link_merchant' );
 	}
@@ -522,7 +546,7 @@ class AccountService implements OptionsAwareInterface, Service {
 	 *
 	 * @return ExceptionWithResponseData
 	 */
-	private function prepare_exception( string $message, array $data = [], int $code = null ): ExceptionWithResponseData {
+	private function prepare_exception( string $message, array $data = [], ?int $code = null ): ExceptionWithResponseData {
 		$merchant_id = $this->options->get_merchant_id();
 
 		if ( $merchant_id && ! isset( $data['id'] ) ) {
@@ -533,12 +557,37 @@ class AccountService implements OptionsAwareInterface, Service {
 	}
 
 	/**
+	 * Prepares an API error Exception to be thrown with Merchant data.
+	 *
+	 * @param Exception $e The caught exception.
+	 *
+	 * @return ExceptionWithResponseData
+	 */
+	private function prepare_api_error_exception( Exception $e ) {
+		/** @var BadResponseException $prev */
+		$prev    = $e->getPrevious();
+		$body    = method_exists( $prev, 'getResponse' ) && $prev->getResponse() ? (string) $prev->getResponse()->getBody() : '';
+		$decoded = json_decode( $body, true );
+		$error   = is_array( $decoded ) ? ( $decoded['error'] ?? [] ) : [];
+		$message = is_array( $error ) && isset( $error['message'] ) ? (string) $error['message'] : $e->getMessage();
+		return $this->prepare_exception(
+			$message,
+			[
+				'code'  => 'API_ERROR',
+				'error' => $decoded,
+			],
+			$e->getCode() ?: 400
+		);
+	}
+
+	/**
 	 * Delete the option regarding WPCOM authorization
 	 *
 	 * @return bool
 	 */
 	public function reset_wpcom_api_authorization_data(): bool {
 		$this->delete_wpcom_api_auth_nonce();
+		$this->delete_wpcom_api_status_transient();
 		return $this->options->delete( OptionsInterface::WPCOM_REST_API_STATUS );
 	}
 
@@ -592,6 +641,7 @@ class AccountService implements OptionsAwareInterface, Service {
 				]
 			);
 
+			$this->delete_wpcom_api_status_transient();
 			return $this->options->update( OptionsInterface::WPCOM_REST_API_STATUS, $status );
 		} catch ( ExceptionWithResponseData $e ) {
 
@@ -622,5 +672,55 @@ class AccountService implements OptionsAwareInterface, Service {
 	 */
 	public function delete_wpcom_api_auth_nonce(): bool {
 		return $this->options->delete( OptionsInterface::GOOGLE_WPCOM_AUTH_NONCE );
+	}
+
+	/**
+	 * Deletes the transient storing the WPCOM Status data.
+	 */
+	public function delete_wpcom_api_status_transient(): void {
+		$transients = $this->container->get( TransientsInterface::class );
+		$transients->delete( TransientsInterface::WPCOM_API_STATUS );
+	}
+
+	/**
+	 * Check if the WPCOM API Status is healthy by doing a request to /wc/partners/google/remote-site-status endpoint in WPCOM.
+	 *
+	 * @return bool True when the status is healthy, false otherwise.
+	 */
+	public function is_wpcom_api_status_healthy() {
+		/** @var TransientsInterface $transients */
+		$transients = $this->container->get( TransientsInterface::class );
+		$status     = $transients->get( TransientsInterface::WPCOM_API_STATUS );
+
+		if ( ! $status ) {
+
+			$integration_status_args = [
+				'method'  => 'GET',
+				'timeout' => 30,
+				'url'     => 'https://public-api.wordpress.com/wpcom/v2/sites/' . Jetpack_Options::get_option( 'id' ) . '/wc/partners/google/remote-site-status',
+				'user_id' => get_current_user_id(),
+			];
+
+			$integration_remote_request_response = Client::remote_request( $integration_status_args, null );
+
+			if ( is_wp_error( $integration_remote_request_response ) ) {
+				$status = [ 'is_healthy' => false ];
+			} else {
+				$status = json_decode( wp_remote_retrieve_body( $integration_remote_request_response ), true ) ?? [ 'is_healthy' => false ];
+
+				/*
+				 * Since we switched from OAuth to client credentials,
+				 * WPCOM's partner token validation returns false. Inject true status until
+				 * the issue is resolved. Preserving for future UI functionality.
+				 */
+				if ( isset( $status['is_partner_token_healthy'] ) && ! $status['is_partner_token_healthy'] ) {
+					$status['is_partner_token_healthy'] = true;
+				}
+			}
+
+			$transients->set( TransientsInterface::WPCOM_API_STATUS, $status, MINUTE_IN_SECONDS * 30 );
+		}
+
+		return isset( $status['is_healthy'] ) && $status['is_healthy'] && $status['is_wc_rest_api_healthy'] && $status['is_partner_token_healthy'];
 	}
 }

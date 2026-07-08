@@ -41,6 +41,13 @@ class Options extends OptionsAbstract {
 					),
 					esc_url( easy_wp_smtp()->get_utm_url( 'https://easywpsmtp.com/docs/setting-up-the-other-smtp-mailer/', 'Other SMTP documentation' ) )
 				),
+				'supports' => [
+					'from_email'       => true,
+					'from_name'        => true,
+					'return_path'      => true,
+					'from_email_force' => true,
+					'from_name_force'  => true,
+				]
 			],
 			$connection
 		);

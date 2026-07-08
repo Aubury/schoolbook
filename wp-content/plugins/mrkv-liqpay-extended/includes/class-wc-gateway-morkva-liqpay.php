@@ -21,6 +21,10 @@ use Automattic\WooCommerce\Utilities\OrderUtil;
  */
 class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
 {
+    public string $lang;
+    public array $enable_for_methods;
+    public bool $enable_for_virtual;
+    
     /**
      * Constructor for the gateway
      */
@@ -39,9 +43,6 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
 
         # Save Gateway description
         $this->description = $this->get_option('description');
-
-        # Save Gateway instruction
-        $this->instructions = $this->get_option('instructions');
 
         # Save Gateway default language
         $this->lang = $this->get_option('lang', 'uk');
@@ -73,7 +74,8 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
         }
 
         # Add payment image
-        add_filter( 'woocommerce_gateway_icon', array( $this, 'morkva_liqpay_gateway_icon' ), 100, 2 ); 
+        add_filter( 'woocommerce_gateway_icon', array( $this, 'morkva_liqpay_gateway_icon' ), 100, 2 );
+        add_filter('woocommerce_available_payment_gateways', array($this, 'mrkv_filter_gateway_by_admin_test_mode'), 10, 1);
     }
 
     /**
@@ -84,10 +86,42 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
     {
         # Save slug of Morkva Liqpay
         $this->id = 'morkva-liqpay';
-        $this->icon = apply_filters('woocommerce_cod_icon', '');
-        $this->method_title = __('Morkva LiqPay ', 'mrkv-liqpay-extended');
+        $this->icon = $this->get_admin_icon_url();
+        $this->method_title = __('morkva LiqPay ', 'mrkv-liqpay-extended');
         $this->method_description = __('A payment service that allows you to make instant payments on the Internet and with Visa and MasterCard payment cards worldwide.', 'mrkv-liqpay-extended');
         $this->has_fields = false;
+    }
+
+    public function get_admin_icon_url()
+    {
+        return plugins_url( '../img/morkva-liqpay-logo.svg', __FILE__ );
+    }
+
+    public function admin_options() {
+        $back_link = admin_url( 'admin.php?page=wc-settings&tab=checkout' );
+        ?>
+        <div class="morkva-settings-wrapper" style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px;">
+            
+            <div class="morkva-settings-main" style="flex: 3;">
+                <h2 class="wc-admin-header">
+                    <small>
+                        <a href="<?php echo esc_url( $back_link ); ?>" aria-label="<?php esc_attr_e( 'Return to payments', 'mrkv-liqpay-extended' ); ?>">
+                            <span class="dashicons dashicons-arrow-left-alt2" aria-hidden="true"></span>
+                        </a>
+                    </small>
+                    <?php echo esc_html( $this->method_title ); ?>
+                </h2>
+
+                <?php echo wp_kses_post( wpautop( $this->method_description ) ); ?>
+                
+                <table class="form-table">
+                    <?php $this->generate_settings_html(); ?>
+                </table>
+            </div>
+
+            <?php do_action('mrkv_liqpay_settings_sidebar'); ?>
+        </div>
+        <?php
     }
 
     /**
@@ -96,6 +130,14 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
      */
     public function init_form_fields()
     {
+        $all_order_statuses = wc_get_order_statuses();
+        $correct_order_statuses = array();
+
+        foreach($all_order_statuses as $k => $v)
+        {
+            $k = str_replace('wc-', '', $k);
+            $correct_order_statuses[$k] = $v;
+        }
 
         $this->form_fields = array(
             'enabled' => array(
@@ -108,7 +150,7 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
             'title' => array(
                 'title' => __('Title', 'mrkv-liqpay-extended'),
                 'type' => 'text',
-                'description' => __('Morkva LiqPay - Instant payments around the world', 'mrkv-liqpay-extended'),
+                'description' => __('morkva LiqPay - Instant payments around the world', 'mrkv-liqpay-extended'),
                 'default' => '',
                 'desc_tip' => true,
             ),
@@ -119,12 +161,13 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
                 'default' => '',
                 'desc_tip' => false,
             ),
-            'instructions' => array(
-                'title' => __('Instructions that will be sent by email', 'mrkv-liqpay-extended'),
-                'type' => 'textarea',
-                'description' => __('The text that will be sent to the buyer in the order confirmation letter if the payment method Liqpay is selected', 'mrkv-liqpay-extended'),
-                'default' => '',
-                'desc_tip' => false,
+            'payment_description_template' => array(
+                'title'       => __( 'Payment destination', 'mrkv-liqpay-extended' ),
+                'type'        => 'text',
+                'description' => __( 'Template for the "description" field sent to LiqPay (shown to customer as payment purpose). Available shortcodes: {order_id}, {billing_first_name}, {billing_last_name}. Leave empty to keep default behavior.', 'mrkv-liqpay-extended' ) . '<br>' . __( 'Shortcodes:', 'mrkv-liqpay-extended' ) . '<br>' . __( '{billing_first_name} - The buyer\'s name as listed in the order\'s payment details,', 'mrkv-liqpay-extended' ) . '<br>' . __( '{billing_last_name} - the buyer\'s last name as listed in the order\'s billing information,', 'mrkv-liqpay-extended' ) . '<br>' . __( '{order_id} - Order ID.', 'mrkv-liqpay-extended' ),
+                'placeholder' => __( 'Оплата за замовлення №{order_id} від {billing_last_name} {billing_first_name}', 'mrkv-liqpay-extended' ),
+                'default'     => '',
+                'desc_tip'    => false,
             ),
             'public_key' => array(
                 'title' => __('API public_key', 'mrkv-liqpay-extended'),
@@ -142,35 +185,33 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
                 'desc_tip' => true,
                 'placeholder' => '',
             ),
-            'test_enabled' => array(
-                'title' => __('Test mode', 'mrkv-liqpay-extended'),
-                'label' => __('Enable', 'mrkv-liqpay-extended'),
+            'liqpay_order_status' => array(
+                'title' => __( 'Status of completed payment', 'mrkv-liqpay-extended' ),
+                'type' => 'select',
+                'description' => __( 'Select the status to which the order status will change after successful payment', 'mrkv-liqpay-extended' ),
+                'label' => '',
+                'options' => $correct_order_statuses,
+                'default' => 'processing',
+            ),
+            'use_holds' => array(
+                'title' => __('Holds', 'mrkv-liqpay-extended'),
+                'label' => '<span>' . __( 'Enable', 'mrkv-liqpay-extended' )  . '</span>',
                 'type' => 'checkbox',
-                'description' => '',
                 'default' => 'no',
+                'description' => __( 'The payment is held for 30 days. After this period, the payment is automatically finalized. You can finalize it manually from the order page, or it will be finalized automatically when the status changes.', 'mrkv-liqpay-extended' ),
             ),
-            'test_enabled_admin' => array(
-                'title' => __('Test mode for the administrator', 'mrkv-liqpay-extended'),
-                'label' => __('Enable', 'mrkv-liqpay-extended'),
-                'type' => 'checkbox',
-                'description' => '',
-                'default' => 'no',
+            'hold_cancel_status' => array(
+                'title' => __( 'Automatic cancellation of holding when the order status changes', 'mrkv-liqpay-extended' ),
+                'type' => 'select',
+                'description' => '<br>',
+                'label' => '',
+                'options' => $correct_order_statuses,
+                'default' => 'cancelled',
             ),
-            'test_public_key' => array(
-                'title' => __('Test API public_key', 'mrkv-liqpay-extended'),
-                'type' => 'text',
-                'description' => '',
-                'default' => '',
-                'desc_tip' => true,
-                'placeholder' => '',
-            ),
-            'test_private_key' => array(
-                'title' => __('Test API private_key', 'mrkv-liqpay-extended'),
-                'type' => 'text',
-                'description' => '',
-                'default' => '',
-                'desc_tip' => true,
-                'placeholder' => '',
+            'title_method_image' => array(
+                'title' => __( 'Image Settings', 'mrkv-liqpay-extended' ),
+                'type' => 'title',
+                'description' => __( 'Configure the display of the payment method logo on the checkout page', 'mrkv-liqpay-extended' ),
             ),
             'liqpay_image_type_black' => array(
                 'title' => __( 'Image style', 'mrkv-liqpay-extended' ),
@@ -209,6 +250,60 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
                 'description' => __( 'Enter full url to image', 'mrkv-liqpay-extended' ),
                 'default'     => '',
             ),
+            'liqpay_national_cashback' => array(
+                'title' => __( 'National cashback', 'mrkv-liqpay-extended' ),
+                'type' => 'title',
+                'description' => __( 'Request Merchant ID and Terminal ID from LiqPay support', 'mrkv-liqpay-extended' ),
+            ),
+            'national_cashback_merchant_id' => array(
+                'title'       => __( 'Merchant ID', 'mrkv-liqpay-extended' ),
+                'type'        => 'text',
+                'desc_tip'    => true,
+                'description' => __( 'Enter Merchant ID', 'mrkv-liqpay-extended' ),
+                'default'     => '',
+            ),
+            'national_cashback_terminal_id' => array(
+                'title'       => __( 'Terminal ID', 'mrkv-liqpay-extended' ),
+                'type'        => 'text',
+                'desc_tip'    => true,
+                'description' => __( 'Enter Terminal ID', 'mrkv-liqpay-extended' ),
+                'default'     => '',
+            ),
+            'title_test_mode' => array(
+                'title' => __( 'Test mode Settings', 'mrkv-liqpay-extended' ),
+                'type' => 'title',
+                'description' => __( 'To test the method\'s functionality, use test mode', 'mrkv-liqpay-extended' ),
+            ),
+            'test_enabled' => array(
+                'title' => __('Test mode', 'mrkv-liqpay-extended'),
+                'label' => __('Enable', 'mrkv-liqpay-extended'),
+                'type' => 'checkbox',
+                'description' => '',
+                'default' => 'no',
+            ),
+            'test_enabled_admin' => array(
+                'title' => __('Test mode for the administrator', 'mrkv-liqpay-extended'),
+                'label' => __('Enable', 'mrkv-liqpay-extended'),
+                'type' => 'checkbox',
+                'description' => '',
+                'default' => 'no',
+            ),
+            'test_public_key' => array(
+                'title' => __('Test API public_key', 'mrkv-liqpay-extended'),
+                'type' => 'text',
+                'description' => '',
+                'default' => '',
+                'desc_tip' => true,
+                'placeholder' => '',
+            ),
+            'test_private_key' => array(
+                'title' => __('Test API private_key', 'mrkv-liqpay-extended'),
+                'type' => 'text',
+                'description' => '',
+                'default' => '',
+                'desc_tip' => true,
+                'placeholder' => '',
+            )
         );
     }
 
@@ -220,7 +315,7 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
      * */
     function morkva_liqpay_gateway_icon( $icon, $id ) 
     {
-        if ( $id === 'morkva-liqpay' ) 
+        if ( $id === 'morkva-liqpay' && !is_admin() ) 
         {
             if($this->get_option( 'hide_image' ) == 'no')
             {
@@ -255,6 +350,11 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
                     }
                 }
             }
+        }
+        elseif($id === 'morkva-liqpay' && is_admin())
+        {
+            $admin_url = $this->get_admin_icon_url();
+            return '<img src="' . esc_url( $admin_url ) . '" alt="' . esc_attr( $this->title ) . '" style="max-width: 100px; height: auto;" />';
         }
         
         return $icon;
@@ -294,11 +394,22 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
      */
     private function getDescription($order_id)
     {
-        # Create description
-        $description = __('Payment for order № ', 'mrkv-liqpay-extended') . $order_id;
-
-        # Return description
-        return $description;
+        $default = __( 'Payment for order № ', 'mrkv-liqpay-extended' ) . $order_id;
+        $template = (string) $this->get_option( 'payment_description_template', '' );
+        $template = trim( $template );
+        if ( $template === '' ) {
+            return $default;
+        }
+        $order = wc_get_order( $order_id );
+        if ( ! $order ) {
+            return $default;
+        }
+        $replacements = array(
+            '{order_id}'           => (string) $order->get_id(),
+            '{billing_first_name}' => (string) $order->get_billing_first_name(),
+            '{billing_last_name}'  => (string) $order->get_billing_last_name(),
+        );
+        return strtr( $template, $replacements );
     }
 
     /**
@@ -319,9 +430,6 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
             $this->pending_new_order_notification($order->get_id());
         } 
 
-        # Remove cart data
-        WC()->cart->empty_cart();
-
         # Include Api Morkva liqpay
         require_once(__DIR__ . '/classes/MorkvaLiqPay.php');
 
@@ -341,11 +449,13 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
             # Use main keys
             $morkva_liqPay = new MorkvaLiqPay($this->get_option('public_key'), $this->get_option('private_key'));
         }
+
+        $action_pay = ($this->get_option( 'use_holds' ) == 'yes') ? 'hold' : 'pay';
         
         # Create argument of query
         $arrayData = array(
             'version' => '3',
-            'action' => 'pay',
+            'action' => $action_pay,
             'amount' => $order->get_total(),
             'currency' => $order->get_currency(),
             'description' => $this->getDescription($order->get_id()),
@@ -355,8 +465,24 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
             'server_url' => WC()->api_request_url( 'WC_Gateway_Morkva_Liqpay' )
         );
 
+        update_post_meta($order->get_id(), 'mrkv_liqpay_accuiring_action', $action_pay);
+        $order->update_meta_data( 'mrkv_liqpay_accuiring_action',  $action_pay);
+        $order->save();
+
         # Create result link
         $url = $morkva_liqPay->cnb_link($arrayData);
+        
+        $logger = wc_get_logger();
+        $context = array( 'source' => 'mrkv-liqpay-extended' );
+
+        $log_message = "--- Liqpay Request ---\n";
+        $log_message .= "Body: " . wp_json_encode($arrayData, JSON_UNESCAPED_UNICODE) . "\n";
+        
+        $log_message .= "Answer: " . wp_json_encode($url, JSON_UNESCAPED_UNICODE) . "\n";
+        $log_message .= "------------------------";
+
+        $logger->debug( $log_message, $context );
+        
 
         # Return result 
         return array( 
@@ -382,13 +508,6 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
             # Show info by payment
             echo wp_kses_post(wpautop(wptexturize($this->cancel_pay)));
         }
-
-        # Show Instruction for user 
-        if ($this->instructions) 
-        {
-            # Show info by payment
-            echo wp_kses_post(wpautop(wptexturize($this->instructions)));
-        }
     }
 
     /**
@@ -401,12 +520,7 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
      */
     public function email_instructions($order, $sent_to_admin, $plain_text = false)
     {
-        # Check email instruction
-        if ($this->instructions && !$sent_to_admin && $this->id === $order->get_payment_method()) 
-        {
-            # Show info
-            echo wp_kses_post(wpautop(wptexturize($this->instructions)) . PHP_EOL);
-        }
+        
     }
 
     /**
@@ -433,6 +547,31 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
         $wc_email->trigger($order_id);
     }
 
+    public function get_keys_access()
+    {
+        $keys_access = array();
+
+        # Check test mode
+        if($this->get_option( 'test_enabled_admin' ) == 'yes' && ( current_user_can('editor') || current_user_can('administrator') ))
+        {
+            $keys_access['public_key'] = $this->get_option('test_public_key');
+            $keys_access['private_key'] = $this->get_option('test_private_key');
+        }
+        
+        elseif($this->get_option( 'test_enabled' ) == 'yes' && $this->get_option( 'test_enabled_admin' ) != 'yes')
+        {
+            $keys_access['public_key'] = $this->get_option('test_public_key');
+            $keys_access['private_key'] = $this->get_option('test_private_key');
+        }
+        else
+        {   
+            $keys_access['public_key'] = $this->get_option('public_key');
+            $keys_access['private_key'] = $this->get_option('private_key');
+        }
+
+        return $keys_access;
+    }
+
     /**
      * Check response from LiqPay
      * 
@@ -444,37 +583,18 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
         # Get Woo global data
         global $woocommerce;
 
-        # Check data response 
+        // phpcs:disable WordPress.Security.NonceVerification.Missing 
         $success = isset($_POST['data']) && isset($_POST['signature']);
         
-        if(isset($_POST['data'])){
-            $data = sanitize_text_field($_POST['data']);
-        }
-        # Get response signature
-        if(isset($_POST['signature'])){
-            $received_signature = sanitize_text_field($_POST['signature']);
-        }
+        $logger = wc_get_logger();
+        $context = array( 'source' => 'mrkv-liqpay-extended' );
 
-        $parsed_data = json_decode(base64_decode($data));
-        $_received_signature = json_decode(base64_decode($received_signature));
-        $order_id = $parsed_data->order_id;
-        $status = $parsed_data->status;
+        $log_message = "--- Liqpay Callback ---\n";
+        $log_message .= "Body: " . wp_json_encode($_POST, JSON_UNESCAPED_UNICODE) . "\n";
+        $log_message .= "------------------------";
 
-        update_post_meta($order_id, 'payment_status', $status);
-
-        # Get order data
-        $order = new WC_Order($order_id);
-        $payment_method = $order->get_payment_method();
-
-        if ( $payment_method === 'cod' ) {
-            if ( $status === 'success' ) {
-                update_post_meta($order_id, '_prepayment_status', 'Сплачено');
-            } else {
-                update_post_meta($order_id, '_prepayment_status', 'Очікується оплата');
-            }
-        }
-
-        update_post_meta($order_id, '_payment_detail', $parsed_data);
+        $logger->debug( $log_message, $context );
+        
 
         # If payment success
         if ($success) 
@@ -482,42 +602,57 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
             $data = '';
             $received_signature = '';
 
-            # Get response data
+            // phpcs:disable WordPress.Security.NonceVerification.Missing 
             if(isset($_POST['data'])){
-                $data = sanitize_text_field($_POST['data']);
+                // phpcs:disable WordPress.Security.NonceVerification.Missing 
+                $data = sanitize_text_field(wp_unslash($_POST['data']));
             }
-            # Get response signature
+            // phpcs:disable WordPress.Security.NonceVerification.Missing 
             if(isset($_POST['signature'])){
-                $received_signature = sanitize_text_field($_POST['signature']); 
+                // phpcs:disable WordPress.Security.NonceVerification.Missing 
+                $received_signature = sanitize_text_field(wp_unslash($_POST['signature'])); 
             }
 
             # Parse JSON data
             $parsed_data = json_decode(base64_decode($data)); 
+
+            $log_message = "--- Liqpay Callback Parsed ---\n";
+            $log_message .= "Body: " . wp_json_encode($parsed_data, JSON_UNESCAPED_UNICODE) . "\n";
+            $log_message .= "------------------------";
+
+            $logger->debug( $log_message, $context );
             
             # Save main data response
-            $received_public_key = $parsed_data->public_key;
-            $order_id = $parsed_data->order_id; 
-            $status = $parsed_data->status; 
-            $sender_phone = $parsed_data->sender_phone;
-            $amount = $parsed_data->amount;
-            $currency = $parsed_data->currency;
-            $transaction_id = $parsed_data->transaction_id;
-			
-			update_post_meta($order_id, 'payment_status', $status);
-
-            file_put_contents(__DIR__.'/log/debug.log', date('d-m-Y H:i:s') . PHP_EOL . ' Status: ' .  print_r($status, 1), FILE_APPEND); 
+            $received_public_key = $parsed_data->public_key ?? '';
+            $order_id     = $parsed_data->order_id ?? '';
+            $status              = $parsed_data->status ?? ''; 
+            $sender_phone        = $parsed_data->sender_phone ?? '';
+            $amount              = $parsed_data->amount ?? '';
+            $currency            = $parsed_data->currency ?? '';
+            $transaction_id      = $parsed_data->transaction_id ?? '';
 
             # Get order data
-            $order = new WC_Order($order_id);
+            $order = wc_get_order($order_id);
 
-            file_put_contents(__DIR__.'/log/debug.log', date('d-m-Y H:i:s') . PHP_EOL . print_r($status, 1), FILE_APPEND); 
-            file_put_contents(__DIR__.'/log/debug.log', date('d-m-Y H:i:s') . PHP_EOL . ' order_id: ' .  print_r($order_id, 1), FILE_APPEND); 
-            file_put_contents(__DIR__.'/log/debug.log', date('d-m-Y H:i:s') . PHP_EOL . ' order_id: ' .  print_r($parsed_data, 1), FILE_APPEND); 
+            if(!$order_id)
+            {
+                return;
+            }
 
+            if(!$order)
+            {
+                return;
+            }
 
+            if($order && $status)
+            {
+                $order->update_meta_data( 'mrkv_liqpay_payment_status', $status );
+                update_post_meta( $order_id, 'mrkv_liqpay_payment_status', $status );
+                $order->save();
+            }
 
             # Check status response 
-            if ($status == 'success' || ($status == 'sandbox')) 
+            if ($status == 'success' || $status == 'sandbox' || $status == 'hold_wait' || $status == 'wait_secure') 
             {
                 if(!$order->has_status('processing'))
                 {
@@ -540,12 +675,27 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
                         $message .= ' ' . __('sender_card_type:  ', 'mrkv-liqpay-extended') . $parsed_data->sender_card_type . '<br>';
                     }
 
-                    if(isset($parsed_data) && isset($parsed_data->acq_id)  && !$order->get_meta('_mrkv_liqpay_acq_id'))
+                    if($this->get_option('national_cashback_merchant_id'))
+                    {
+                        $order->update_meta_data( '_mrkv_liqpay_acq_id', $this->get_option('national_cashback_merchant_id') );
+                        update_post_meta( $order_id, '_mrkv_liqpay_acq_id', $this->get_option('national_cashback_merchant_id') );
+
+                        $message .= ' ' . __('acq_id:  ', 'mrkv-liqpay-extended') . $this->get_option('national_cashback_merchant_id') . '<br>';
+                    }
+                    elseif(isset($parsed_data) && isset($parsed_data->acq_id)  && !$order->get_meta('_mrkv_liqpay_acq_id'))
                     {
                         $order->update_meta_data( '_mrkv_liqpay_acq_id', $parsed_data->acq_id );
                         update_post_meta( $order_id, '_mrkv_liqpay_acq_id', $parsed_data->acq_id );
 
                         $message .= ' ' . __('acq_id:  ', 'mrkv-liqpay-extended') . $parsed_data->acq_id . '<br>';
+                    }
+
+                    if($this->get_option('national_cashback_terminal_id'))
+                    {
+                        $order->update_meta_data( '_mrkv_liqpay_terminal_id', $this->get_option('national_cashback_terminal_id') );
+                        update_post_meta( $order_id, '_mrkv_liqpay_terminal_id', $this->get_option('national_cashback_terminal_id') );
+
+                        $message .= ' ' . __('terminal_id:  ', 'mrkv-liqpay-extended') . $this->get_option('national_cashback_terminal_id') . '<br>';
                     }
 
                     if(isset($parsed_data) && isset($parsed_data->agent_commission) && !$order->get_meta('_mrkv_liqpay_agent_commission'))
@@ -580,25 +730,42 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
                         $message .= ' ' . __('commission_credit:  ', 'mrkv-liqpay-extended') . $parsed_data->commission_credit . '<br>';
                     }
 
+                    if(isset($parsed_data) && isset($parsed_data->rrn_debit) && !$order->get_meta('_mrkv_liqpay_rrn_debit'))
+                    {
+                       $order->update_meta_data( '_mrkv_liqpay_rrn_debit', $parsed_data->rrn_debit );
+                       update_post_meta( $order_id, '_mrkv_liqpay_rrn_debit', $parsed_data->rrn_debit );
+
+                       $message .= ' ' . __('rrn_debit:  ', 'mrkv-liqpay-extended') . $parsed_data->rrn_debit . '<br>';
+                    }
+
+                    if(isset($parsed_data) && isset($parsed_data->authcode_debit) && !$order->get_meta('_mrkv_liqpay_authcode_debit'))
+                    {
+                       $order->update_meta_data( '_mrkv_liqpay_authcode_debit', $parsed_data->authcode_debit );
+                       update_post_meta( $order_id, '_mrkv_liqpay_authcode_debit', $parsed_data->authcode_debit );
+
+                       $message .= ' ' . __('authcode_debit:  ', 'mrkv-liqpay-extended') . $parsed_data->authcode_debit . '<br>';
+                    }
+
                     // Save the order.
                     $order->save();
 
-                    # Update order status
-                    $order->update_status('processing');
+                    if($status == 'hold_wait')
+                    {
+                        # Add to order note payment status
+                        $order->add_order_note(__('LiqPay payment hold has been completed successfully.<br/>LiqPay payment identifier:  ', 'mrkv-liqpay-extended') . $parsed_data->liqpay_order_id );
+                    }
+                    elseif($status == 'wait_secure')
+                    {
+                        # Add to order note payment status
+                        $order->add_order_note(__('LiqPay payment has been completed, but requires additional approval by LiqPay. Transaction status: wait_secure.<br/>LiqPay payment identifier:  ', 'mrkv-liqpay-extended') . $parsed_data->liqpay_order_id );
+                    }
+                    else
+                    {
+                        # Add to order note payment status
+                        $order->add_order_note(__('LiqPay payment has been completed successfully.<br/>LiqPay payment identifier:  ', 'mrkv-liqpay-extended') . $parsed_data->liqpay_order_id );
+                    } 
 
-                    # Switch payment to complete
-                    $order->payment_complete();
-
-                    $order->save();
-
-                    # Add to order note payment status
-                    $order->add_order_note(__('LiqPay payment has been completed successfully.<br/>LiqPay payment identifier:  ', 'mrkv-liqpay-extended') . $parsed_data->liqpay_order_id ); 
-
-                    if(isset($parsed_data) && isset($parsed_data->amount_debit) && isset($order_id)){
-                        file_put_contents(__DIR__.'/log/debug.log', date('d-m-Y H:i:s') . PHP_EOL . 'testestestetse', FILE_APPEND);      
-                        file_put_contents(__DIR__.'/log/debug.log', date('d-m-Y H:i:s') . PHP_EOL . print_r($parsed_data->amount_debit , 1), FILE_APPEND);      
-                        file_put_contents(__DIR__.'/log/debug.log', date('d-m-Y H:i:s') . PHP_EOL . 'testestestetse', FILE_APPEND);                 
-
+                    if(isset($parsed_data) && isset($parsed_data->amount_debit) && isset($order_id)){                 
                         $order->update_meta_data( '_mrkv_liqpay_total_amount', $parsed_data->amount_debit );
                         // Save amount uah
                         update_post_meta( $order_id, '_mrkv_liqpay_total_amount', $parsed_data->amount_debit );
@@ -606,6 +773,23 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
                         // Save the order.
                         $order->save();
                     }
+
+                    $new_order_status = ($this->get_option( 'liqpay_order_status' ) && $this->get_option( 'liqpay_order_status' ) != '') ? $this->get_option( 'liqpay_order_status' ) : 'processing';
+
+                    if($status == 'hold_wait')
+                    {
+                        # Update order status
+                        $order->update_status('on-hold');
+                    }
+                    else
+                    {
+                        # Update order status
+                        $order->update_status($new_order_status);
+                        # Switch payment to complete
+                        $order->payment_complete();
+                    } 
+
+                    $order->save();
                 }
             } 
             else 
@@ -622,5 +806,60 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
             # Stop Wordpress job
             wp_die('IPN Request Failure');
         }
-    }   
+    }
+
+    /**
+     * Hide payment method if "Test mode for administrator" is enabled and user is not an admin.
+     * 
+     * @param array $available_gateways
+     * @return array
+     */
+    public function mrkv_filter_gateway_by_admin_test_mode($available_gateways)
+    {
+        if (is_admin() || !isset($available_gateways[$this->id])) {
+            return $available_gateways;
+        }
+
+        $test_admin_only = $this->get_option('test_enabled_admin');
+
+        if ($test_admin_only === 'yes') {
+            if (!current_user_can('manage_options') && !current_user_can('administrator')) {
+                unset($available_gateways[$this->id]);
+            }
+        }
+
+        return $available_gateways;
+    }
+
+    /**
+     * Return hold status cancel
+     * @return string hold status cancel
+     * */
+    public function get_mrkv_liqpay_hold_cancel_status()
+    {
+        if($this->get_option( 'hold_cancel_status' ))
+        {
+            return $this->get_option( 'hold_cancel_status' );
+        }
+        else
+        {
+            return '';
+        }
+    }
+
+    /**
+     * Return hold enabled
+     * @return string hold enabled
+     * */
+    public function get_mrkv_liqpay_hold_enabled()
+    {
+        if($this->get_option( 'use_holds' ) && $this->get_option( 'use_holds' ) == 'yes')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

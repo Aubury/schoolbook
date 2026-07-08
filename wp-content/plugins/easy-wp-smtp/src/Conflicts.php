@@ -197,11 +197,11 @@ class Conflicts {
 			/**
 			 * Url: https://wordpress.org/plugins/easy-wp-smtp-mailer/
 			 */
-			[
-				'name'     => 'WP Mail Smtp Mailer',
-				'slug'     => 'easy-wp-smtp-mailer/easy-wp-smtp-mailer.php',
-				'function' => 'EasyWPSMTP_php_mailer',
-			],
+      [
+        'name'     => 'WP Mail Smtp Mailer',
+        'slug'     => 'wp-mail-smtp-mailer/wp-mail-smtp-mailer.php',
+        'function' => 'WPMS_php_mailer',
+      ],
 
 			/**
 			 * Closed.
@@ -280,7 +280,7 @@ class Conflicts {
 			 * Url: https://wordpress.org/plugins/wp-smtp/
 			 */
 			[
-				'name'  => 'WP SMTP',
+				'name'  => 'Solid Mail',
 				'slug'  => 'wp-smtp/wp-smtp.php',
 				'class' => 'WP_SMTP',
 			],
@@ -351,6 +351,33 @@ class Conflicts {
 				'name'     => 'Zoho Mail for WordPress',
 				'slug'     => 'zoho-mail/zohoMail.php',
 				'function' => 'zmail_send_mail_callback',
+			],
+
+			/**
+			 * Url: https://elementor.com/products/site-mailer/
+			 */
+			[
+				'name'  => 'Site Mailer - SMTP Replacement, Email API Deliverability & Email Log',
+				'slug'  => 'site-mailer/site-mailer.php',
+				'class' => 'SiteMailer',
+			],
+
+			/**
+			 * Url: https://wordpress.org/plugins/suremails/
+			 */
+			[
+				'name'  => 'SureMail',
+				'slug'  => 'suremails/suremails.php',
+				'class' => 'MailHandler',
+			],
+
+			/**
+			 * Url: https://www.gravityforms.com/gravity-smtp/
+			 */
+			[
+				'name'  => 'Gravity SMTP',
+				'slug'  => 'gravitysmtp/gravitysmtp.php',
+				'class' => 'Gravity_SMTP',
 			],
 		];
 	}
@@ -463,6 +490,7 @@ class Conflicts {
 	 * Get the conflicting plugin message.
 	 *
 	 * @since 2.0.0
+	 * @since 2.15.0 Append a one-click deactivation link when the conflicting plugin has a known slug.
 	 *
 	 * @param array $conflict_plugin The conflicting plugin array. If provided then extract the message from the array.
 	 * Else get the message from first conflicting plugin.
@@ -484,7 +512,61 @@ class Conflicts {
 			$message .= ' ' . $conflict_plugin['message'];
 		}
 
+		$deactivate_link = $this->get_conflict_deactivate_link( $conflict_plugin );
+
+		if ( $deactivate_link !== '' ) {
+			$message .= ' ' . $deactivate_link;
+		}
+
 		return $message;
+	}
+
+	/**
+	 * Build a one-click deactivation link for the conflicting plugin.
+	 *
+	 * @since 2.15.0
+	 *
+	 * @param array $conflict_plugin The conflicting plugin array.
+	 *
+	 * @return string Escaped anchor markup, or an empty string when no link applies.
+	 */
+	private function get_conflict_deactivate_link( $conflict_plugin ) {
+
+		if ( empty( $conflict_plugin['slug'] ) || ! WP::is_plugin_activated( $conflict_plugin['slug'] ) ) {
+			return '';
+		}
+
+		$slug = $conflict_plugin['slug'];
+
+		if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		// Network-active plugins can only be deactivated from the network admin plugins screen.
+		if ( is_multisite() && is_plugin_active_for_network( $slug ) ) {
+			if ( ! current_user_can( 'manage_network_plugins' ) ) {
+				return '';
+			}
+
+			$base_url = network_admin_url( 'plugins.php?action=deactivate&plugin=' . $slug );
+		} else {
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				return '';
+			}
+
+			$base_url = admin_url( 'plugins.php?action=deactivate&plugin=' . $slug );
+		}
+
+		$url = wp_nonce_url( $base_url, 'deactivate-plugin_' . $slug );
+
+		return sprintf(
+			'<a href="%1$s">%2$s</a>',
+			esc_url( $url ),
+			sprintf( /* translators: %1$s - Plugin name causing conflict. */
+				esc_html__( 'Deactivate %1$s', 'easy-wp-smtp' ),
+				$this->get_conflict_name( $conflict_plugin )
+			)
+		);
 	}
 
 	/**

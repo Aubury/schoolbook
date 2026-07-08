@@ -264,6 +264,10 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
                     add_action( 'wp_head', array( $this, 'techstore_wp_head' ) );
                 }
 
+                if ( 'Uncode' === $this->current_theme ) {
+                    add_action( 'wp_head', array( $this, 'uncode_wp_head' ) );
+                }
+
                 // WP Bottom Menu
                 if ( defined( 'WP_BOTTOM_MENU_VERSION' ) ) {
                     add_action( 'wp_head', array( $this, 'wp_bottom_menu_wp_head' ) );
@@ -370,9 +374,18 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
                 add_filter( 'post_thumbnail_id', array( $this, 'oxygen_post_thumbnail_id' ), 10, 2 );
             }
 
+            if ( 'Hestia' === $this->current_theme ) {
+                add_action( 'wp_head', array( $this, 'hestia_wp_head' ) );
+            }
+
             // Yoast Premium
             if ( in_array( 'wordpress-seo-premium/wp-seo-premium.php', $this->active_plugins ) ) {
                 add_filter( 'Yoast\WP\SEO\allowlist_permalink_vars', array( $this, 'yoast_allowlist_permalink_vars' ) );
+            }
+
+            // Brizy PRO search results page fix
+            if ( in_array( 'brizy-pro/brizy-pro.php', $this->active_plugins ) && isset( $_GET['type_aws'] ) ) {
+                  add_filter( 'aws_search_page_custom_data', array( $this, 'brizy_search_page_fix' ) );
             }
 
         }
@@ -401,6 +414,7 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
             if ( defined( 'ET_BUILDER_PLUGIN_DIR' ) || function_exists( 'et_setup_theme' ) ) {
                 include_once( AWS_PRO_DIR . '/includes/modules/divi/class-aws-divi.php' );
                 include_once( AWS_PRO_DIR . '/includes/modules/divi/class-divi-aws-module.php' );
+                include_once( AWS_PRO_DIR . '/includes/modules/divi/divi-5/server/Modules/Modules.php' );
             }
 
             // Beaver builder module
@@ -424,11 +438,6 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
             if ( class_exists( 'YITH_WCWL' ) ) {
                 include_once( AWS_PRO_DIR . '/includes/modules/class-aws-yith-wishlist.php' );
                 AWS_YITH_WISHLIST::instance();
-            }
-
-            if ( defined( 'TINVWL_FVERSION' ) ) {
-                include_once( AWS_PRO_DIR . '/includes/modules/class-aws-ti-wishlist.php' );
-                AWS_TI_WISHLIST::instance();
             }
 
             // WOOF - WooCommerce Products Filter
@@ -625,6 +634,12 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
             // GTranslate plugins
             if ( in_array( 'gtranslate/gtranslate.php', $this->active_plugins ) ) {
                 include_once( AWS_PRO_DIR . '/includes/modules/class-aws-gtranslate.php' );
+            }
+
+            // TI WooCommerce Wishlist
+            if ( defined( 'TINVWL_FVERSION' ) || in_array( 'ti-woocommerce-wishlist/ti-woocommerce-wishlist.php', $this->active_plugins ) || in_array( 'ti-woocommerce-wishlist-premium/ti-woocommerce-wishlist-premium.php', $this->active_plugins ) ) {
+                include_once( AWS_PRO_DIR . '/includes/modules/class-aws-ti-wishlist.php' );
+                AWS_TI_WISHLIST::instance();
             }
 
         }
@@ -1511,14 +1526,18 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
             }
             $script = '
                 function aws_results_layout( styles, options ) {
-                    styles.width = 200;
-                    styles.left = styles.left - 200;
-                    styles.top = styles.top + 40;
+                    if ( options.form.closest(".hestia-search-in-menu").length > 0 ) {
+                        styles.width = 200;
+                        styles.left = styles.left - 200;
+                        styles.top = styles.top + 40;
+                    }
                     return styles;
                 }
                 function aws_main_filter_layout( styles, options ) {
-                    styles.top = styles.top + 35;
-                    styles.right = styles.right + 30;
+                    if ( options.form.closest(".hestia-search-in-menu").length > 0 ) {
+                        styles.top = styles.top + 40;
+                        styles.right = styles.right + 30;
+                    }
                     return styles;
                 }
                 AwsHooks.add_filter( "aws_results_layout", aws_results_layout );
@@ -1527,6 +1546,20 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
             wp_add_inline_script( 'aws-script', $script);
             wp_add_inline_script( 'aws-pro-script', $script);
         }
+        public function hestia_wp_head() { ?>
+            <style>
+                .aws-wrapper {
+                    margin-bottom: 0 !important;
+                }
+                .aws-container .aws-search-field {
+                    background-image: none !important;
+                    border: 1px solid #d8d8d8 !important;
+                }
+                .aws-container .aws-search-form {
+                    padding-bottom: 0 !important;
+                }
+            </style>
+        <?php }
 
         /*
          * Open Shop theme header styles
@@ -1682,6 +1715,43 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
             <style>
                 .hw-nav-search form.hw-search {
                     visibility: hidden;
+                }
+            </style>
+        <?php }
+
+        /*
+         * Add custom styles for Uncode theme
+         */
+        public function uncode_wp_head() { ?>
+            <style>
+                .overlay.overlay-search .search-container .aws-container {
+                    display: inline-block;
+                    width: 100%;
+                    max-width: 600px;
+                    max-width: 60vw;
+                }
+                .overlay.overlay-search .search-container .aws-container .aws-search-form,
+                .overlay.overlay-search .search-container .aws-container .aws-search-form .aws-form-btn {
+                    background: transparent;
+                    border-color: rgba(255, 255, 255, 0.25);
+                }
+                .overlay.overlay-search .search-container .aws-container .aws-search-form {
+                    padding-top: 0;
+                    padding-bottom: 0;
+                    height: auto;
+                }
+                .overlay.overlay-search .search-container .aws-container .aws-search-form .aws-wrapper {
+                    overflow: visible;
+                }
+                .overlay.overlay-search .search-container .aws-container .aws-search-field {
+                    border-color: rgba(255, 255, 255, 0.25);
+                    color: #fff;
+                    font-size: 16px;
+                    padding: 12px 24px;
+                }
+                .overlay.overlay-search .search-container .aws-container .aws-search-form .aws-main-filter .aws-main-filter__current,
+                .overlay.overlay-search .search-container .aws-container .aws-search-form .aws-search-btn_icon {
+                    color: #fff;
                 }
             </style>
         <?php }
@@ -2799,6 +2869,21 @@ if ( ! class_exists( 'AWS_Integrations' ) ) :
             $allowed_extravars[] = 'aws_id';
             $allowed_extravars[] = 'aws_filter';
             return $allowed_extravars;
+        }
+
+        /*
+         * Fix Brizy PRO search results page
+        */
+        public function brizy_search_page_fix( $data ) {
+
+            global $wp_current_filter;
+
+            if ( in_array( 'brizy_template_content', $wp_current_filter ) ) {
+                $data['force_ids'] = true;
+            }
+
+            return $data;
+
         }
 
     }

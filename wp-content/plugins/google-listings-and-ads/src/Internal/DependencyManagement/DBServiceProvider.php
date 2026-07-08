@@ -3,10 +3,13 @@ declare( strict_types=1 );
 
 namespace Automattic\WooCommerce\GoogleListingsAndAds\Internal\DependencyManagement;
 
-use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migration20231109T1653383133;
+use Automattic\WooCommerce\GoogleListingsAndAds\ActionScheduler\ActionScheduler;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\MigrationInterface;
+use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migration20231109T1653383133;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migration20211228T1640692399;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migration20220524T1653383133;
+use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migration20240813T1653383133;
+use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migration20250910T1653383133;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\MigrationVersion141;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Migration\Migrator;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\ProductFeedQueryHelper;
@@ -14,11 +17,13 @@ use Automattic\WooCommerce\GoogleListingsAndAds\DB\ProductMetaQueryHelper;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\AttributeMappingRulesQuery;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\BudgetRecommendationQuery;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\MerchantIssueQuery;
+use Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\MerchantPriceBenchmarksQuery;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\ShippingRateQuery;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Query\ShippingTimeQuery;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Table\AttributeMappingRulesTable;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Table\BudgetRecommendationTable;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Table\MerchantIssueTable;
+use Automattic\WooCommerce\GoogleListingsAndAds\DB\Table\MerchantPriceBenchmarksTable;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Table\ShippingRateTable;
 use Automattic\WooCommerce\GoogleListingsAndAds\DB\Table\ShippingTimeTable;
 use Automattic\WooCommerce\GoogleListingsAndAds\Exception\InvalidClass;
@@ -48,19 +53,22 @@ class DBServiceProvider extends AbstractServiceProvider {
 	 * @var array
 	 */
 	protected $provides = [
-		AttributeMappingRulesTable::class => true,
-		ShippingRateTable::class          => true,
-		ShippingRateQuery::class          => true,
-		ShippingTimeTable::class          => true,
-		ShippingTimeQuery::class          => true,
-		BudgetRecommendationTable::class  => true,
-		BudgetRecommendationQuery::class  => true,
-		MerchantIssueTable::class         => true,
-		MerchantIssueQuery::class         => true,
-		ProductFeedQueryHelper::class     => true,
-		ProductMetaQueryHelper::class     => true,
-		MigrationInterface::class         => true,
-		Migrator::class                   => true,
+		AttributeMappingRulesTable::class   => true,
+		AttributeMappingRulesQuery::class   => true,
+		ShippingRateTable::class            => true,
+		ShippingRateQuery::class            => true,
+		ShippingTimeTable::class            => true,
+		ShippingTimeQuery::class            => true,
+		BudgetRecommendationTable::class    => true,
+		BudgetRecommendationQuery::class    => true,
+		MerchantIssueTable::class           => true,
+		MerchantIssueQuery::class           => true,
+		MerchantPriceBenchmarksTable::class => true,
+		MerchantPriceBenchmarksQuery::class => true,
+		ProductFeedQueryHelper::class       => true,
+		ProductMetaQueryHelper::class       => true,
+		MigrationInterface::class           => true,
+		Migrator::class                     => true,
 	];
 
 	/**
@@ -77,12 +85,12 @@ class DBServiceProvider extends AbstractServiceProvider {
 
 	/**
 	 * Use the register method to register items with the container via the
-	 * protected $this->leagueContainer property or the `getLeagueContainer` method
+	 * protected $this->container property or the `getContainer` method
 	 * from the ContainerAwareTrait.
 	 *
 	 * @return void
 	 */
-	public function register() {
+	public function register(): void {
 		$this->share_table_class( AttributeMappingRulesTable::class );
 		$this->add_query_class( AttributeMappingRulesQuery::class, AttributeMappingRulesTable::class );
 		$this->share_table_class( BudgetRecommendationTable::class );
@@ -93,6 +101,8 @@ class DBServiceProvider extends AbstractServiceProvider {
 		$this->add_query_class( ShippingTimeQuery::class, ShippingTimeTable::class );
 		$this->share_table_class( MerchantIssueTable::class );
 		$this->add_query_class( MerchantIssueQuery::class, MerchantIssueTable::class );
+		$this->share_table_class( MerchantPriceBenchmarksTable::class );
+		$this->add_query_class( MerchantPriceBenchmarksQuery::class, MerchantPriceBenchmarksTable::class );
 
 		$this->share_with_tags( ProductFeedQueryHelper::class, wpdb::class, ProductRepository::class );
 		$this->share_with_tags( ProductMetaQueryHelper::class, wpdb::class );
@@ -102,6 +112,8 @@ class DBServiceProvider extends AbstractServiceProvider {
 		$this->share_migration( Migration20211228T1640692399::class, ShippingRateTable::class, OptionsInterface::class );
 		$this->share_with_tags( Migration20220524T1653383133::class, BudgetRecommendationTable::class );
 		$this->share_migration( Migration20231109T1653383133::class, BudgetRecommendationTable::class );
+		$this->share_migration( Migration20240813T1653383133::class, ShippingTimeTable::class );
+		$this->share_migration( Migration20250910T1653383133::class, ActionScheduler::class );
 		$this->share_with_tags( Migrator::class, MigrationInterface::class );
 	}
 

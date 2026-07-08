@@ -3,12 +3,12 @@ declare( strict_types=1 );
 
 namespace Automattic\WooCommerce\GoogleListingsAndAds\API\Google;
 
-use Google\Ads\GoogleAds\Util\V16\ResourceNames;
-use Google\Ads\GoogleAds\V16\Common\LocationInfo;
-use Google\Ads\GoogleAds\V16\Enums\CampaignCriterionStatusEnum\CampaignCriterionStatus;
-use Google\Ads\GoogleAds\V16\Resources\CampaignCriterion;
-use Google\Ads\GoogleAds\V16\Services\CampaignCriterionOperation;
-use Google\Ads\GoogleAds\V16\Services\MutateOperation;
+use Google\Ads\GoogleAds\Util\V23\ResourceNames;
+use Google\Ads\GoogleAds\V23\Common\LocationInfo;
+use Google\Ads\GoogleAds\V23\Enums\CampaignCriterionStatusEnum\CampaignCriterionStatus;
+use Google\Ads\GoogleAds\V23\Resources\CampaignCriterion;
+use Google\Ads\GoogleAds\V23\Services\CampaignCriterionOperation;
+use Google\Ads\GoogleAds\V23\Services\MutateOperation;
 
 /**
  * Class AdsCampaignCriterion

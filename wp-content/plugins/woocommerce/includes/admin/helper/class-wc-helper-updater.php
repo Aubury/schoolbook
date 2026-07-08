@@ -6,6 +6,8 @@
  * @package WooCommerce\Admin\Helper
  */
 
+use Automattic\WooCommerce\Admin\PluginsHelper;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -26,7 +28,7 @@ class WC_Helper_Updater {
 		add_action( 'pre_set_site_transient_update_themes', array( __CLASS__, 'transient_update_themes' ), 21, 1 );
 		add_action( 'upgrader_process_complete', array( __CLASS__, 'upgrader_process_complete' ) );
 		add_action( 'upgrader_pre_download', array( __CLASS__, 'block_expired_updates' ), 10, 2 );
-		add_action( 'plugins_loaded', array( __CLASS__, 'add_hook_for_modifying_update_notices' ) );
+		add_action( 'admin_init', array( __CLASS__, 'add_hook_for_modifying_update_notices' ) );
 	}
 
 	/**
@@ -38,15 +40,27 @@ class WC_Helper_Updater {
 		}
 		if ( WC_Helper::is_site_connected() ) {
 			add_action( 'load-plugins.php', array( __CLASS__, 'setup_message_for_expired_and_expiring_subscriptions' ), 11 );
+			add_action( 'load-plugins.php', array( __CLASS__, 'setup_message_for_plugins_without_subscription' ), 11 );
 		}
 	}
 
 	/**
 	 * Add the hook for modifying default WPCore update notices on the plugins management page.
+	 * This is for plugins with expired or expiring subscriptions.
 	 */
 	public static function setup_message_for_expired_and_expiring_subscriptions() {
 		foreach ( WC_Helper::get_local_woo_plugins() as $plugin ) {
 			add_action( 'in_plugin_update_message-' . $plugin['_filename'], array( __CLASS__, 'display_notice_for_expired_and_expiring_subscriptions' ), 10, 2 );
+		}
+	}
+
+	/**
+	 * Add the hook for modifying default WPCore update notices on the plugins management page.
+	 * This is for plugins without a subscription.
+	 */
+	public static function setup_message_for_plugins_without_subscription() {
+		foreach ( WC_Helper::get_local_woo_plugins() as $plugin ) {
+			add_action( 'in_plugin_update_message-' . $plugin['_filename'], array( __CLASS__, 'display_notice_for_plugins_without_subscription' ), 10, 2 );
 		}
 	}
 
@@ -92,6 +106,14 @@ class WC_Helper_Updater {
 
 			if ( isset( $data['requires_php'] ) ) {
 				$item['requires_php'] = $data['requires_php'];
+			}
+
+			if ( isset( $data['tested'] ) ) {
+				$item['tested'] = $data['tested'];
+			}
+
+			if ( isset( $data['icons'] ) ) {
+				$item['icons'] = $data['icons'];
 			}
 
 			if ( $transient instanceof stdClass ) {
@@ -186,9 +208,11 @@ class WC_Helper_Updater {
 	public static function add_connect_woocom_plugin_message() {
 		$connect_page_url = add_query_arg(
 			array(
-				'page' => 'wc-admin',
-				'tab'  => 'my-subscriptions',
-				'path' => rawurlencode( '/extensions' ),
+				'page'         => 'wc-admin',
+				'tab'          => 'my-subscriptions',
+				'path'         => rawurlencode( '/extensions' ),
+				'utm_source'   => 'pu',
+				'utm_campaign' => 'pu_plugin_screen_connect',
 			),
 			admin_url( 'admin.php' )
 		);
@@ -239,7 +263,7 @@ class WC_Helper_Updater {
 		}
 
 		if ( ! WC_Woo_Update_Manager_Plugin::is_plugin_active() ) {
-			echo esc_html_e( ' Activate WooCommerce.com Update Manager to update.', 'woocommerce' );
+			esc_html_e( ' Activate WooCommerce.com Update Manager to update.', 'woocommerce' );
 		}
 	}
 
@@ -252,41 +276,74 @@ class WC_Helper_Updater {
 	 * @return void.
 	 */
 	public static function display_notice_for_expired_and_expiring_subscriptions( $plugin_data, $response ) {
-
 		// Extract product ID from the response.
 		$product_id = preg_replace( '/[^0-9]/', '', $response->id );
 
-		// Get the subscription details based on product ID.
-		$subscription = current(
-			wp_list_filter(
-				WC_Helper::get_subscriptions(),
-				array( 'product_id' => $product_id )
-			)
+		$installed_or_unconnected = array_merge(
+			WC_Helper::get_installed_subscriptions(),
+			WC_Helper::get_unconnected_subscriptions()
 		);
 
-		// Check if subscription is empty.
-		if ( empty( $subscription ) ) {
+		// Product subscriptions.
+		$subscriptions = wp_list_filter( $installed_or_unconnected, array( 'product_id' => $product_id ) );
+		if ( empty( $subscriptions ) ) {
 			return;
 		}
 
+		$expired_subscription = current(
+			array_filter(
+				$subscriptions,
+				function ( $subscription ) {
+					return ! empty( $subscription['expired'] ) && ! $subscription['lifetime'];
+				}
+			)
+		);
+
+		$expiring_subscription = current(
+			array_filter(
+				$subscriptions,
+				function ( $subscription ) {
+					return ! empty( $subscription['expiring'] ) && ! $subscription['autorenew'];
+				}
+			)
+		);
+
 		// Prepare the expiry notice based on subscription status.
 		$expiry_notice = '';
-		if ( ! empty( $subscription['expired'] ) && ! $subscription['lifetime'] ) {
+		if ( ! empty( $expired_subscription ) ) {
+
+			$renew_link = add_query_arg(
+				array(
+					'add-to-cart'  => $product_id,
+					'utm_source'   => 'pu',
+					'utm_campaign' => 'pu_plugin_screen_renew',
+				),
+				PluginsHelper::WOO_CART_PAGE_URL
+			);
+
 			/* translators: 1: Product regular price */
-			$product_price = ! empty( $subscription['product_regular_price'] ) ? sprintf( __( 'for %s ', 'woocommerce' ), esc_html( $subscription['product_regular_price'] ) ) : '';
+			$product_price = ! empty( $expired_subscription['product_regular_price'] ) ? sprintf( __( 'for %s ', 'woocommerce' ), esc_html( $expired_subscription['product_regular_price'] ) ) : '';
 
 			$expiry_notice = sprintf(
 			/* translators: 1: URL to My Subscriptions page 2: Product price */
 				__( ' Your subscription expired, <a href="%1$s" class="woocommerce-renew-subscription">renew %2$s</a>to update.', 'woocommerce' ),
-				esc_url( 'https://woocommerce.com/my-account/my-subscriptions/' ),
+				esc_url( $renew_link ),
 				$product_price
 			);
-		} elseif ( ! empty( $subscription['expiring'] ) && ! $subscription['autorenew'] ) {
+		} elseif ( ! empty( $expiring_subscription ) ) {
+			$renew_link = add_query_arg(
+				array(
+					'utm_source'   => 'pu',
+					'utm_campaign' => 'pu_plugin_screen_enable_autorenew',
+				),
+				PluginsHelper::WOO_SUBSCRIPTION_PAGE_URL
+			);
+
 			$expiry_notice = sprintf(
 			/* translators: 1: Expiry date 1: URL to My Subscriptions page */
 				__( ' Your subscription expires on %1$s, <a href="%2$s" class="woocommerce-enable-autorenew">enable auto-renew</a> to continue receiving updates.', 'woocommerce' ),
-				date_i18n( 'F jS', $subscription['expires'] ),
-				esc_url( 'https://woocommerce.com/my-account/my-subscriptions/' )
+				date_i18n( 'F jS', $expiring_subscription['expires'] ),
+				esc_url( $renew_link )
 			);
 		}
 
@@ -305,6 +362,52 @@ class WC_Helper_Updater {
 	}
 
 	/**
+	 * Runs on in_plugin_update_message-{file-name}, show a message if plugin is without a subscription.
+	 * Only Woo local plugins are passed to this function.
+	 *
+	 * @see setup_message_for_plugins_without_subscription
+	 * @param object $plugin_data An array of plugin metadata.
+	 * @param object $response  An object of metadata about the available plugin update.
+	 *
+	 * @return void.
+	 */
+	public static function display_notice_for_plugins_without_subscription( $plugin_data, $response ) {
+		// Extract product ID from the response.
+		$product_id = preg_replace( '/[^0-9]/', '', $response->id );
+
+		if ( WC_Helper::has_product_subscription( $product_id ) ) {
+			return;
+		}
+
+		// Prepare the expiry notice based on subscription status.
+		$purchase_link = add_query_arg(
+			array(
+				'add-to-cart'  => $product_id,
+				'utm_source'   => 'pu',
+				'utm_campaign' => 'pu_plugin_screen_purchase',
+			),
+			PluginsHelper::WOO_CART_PAGE_URL,
+		);
+
+		$notice = sprintf(
+			/* translators: 1: URL to My Subscriptions page */
+			__( ' You don\'t have a subscription, <a href="%1$s" class="woocommerce-purchase-subscription">subscribe</a> to update.', 'woocommerce' ),
+			esc_url( $purchase_link ),
+		);
+
+		// Display the expiry notice.
+		echo wp_kses(
+			$notice,
+			array(
+				'a' => array(
+					'href'  => array(),
+					'class' => array(),
+				),
+			)
+		);
+	}
+
+	/**
 	 * Get update data for all plugins.
 	 *
 	 * @return array Update data {product_id => data}
@@ -314,7 +417,9 @@ class WC_Helper_Updater {
 		$payload = array();
 
 		// Scan subscriptions.
-		foreach ( WC_Helper::get_subscriptions() as $subscription ) {
+		$subscriptions = WC_Helper::get_subscriptions();
+
+		foreach ( $subscriptions as $subscription ) {
 			$payload[ $subscription['product_id'] ] = array(
 				'product_id' => $subscription['product_id'],
 				'file_id'    => '',
@@ -348,7 +453,9 @@ class WC_Helper_Updater {
 		$payload = array();
 
 		// Scan subscriptions.
-		foreach ( WC_Helper::get_subscriptions() as $subscription ) {
+		$subscriptions = WC_Helper::get_subscriptions();
+
+		foreach ( $subscriptions as $subscription ) {
 			$payload[ $subscription['product_id'] ] = array(
 				'product_id' => $subscription['product_id'],
 				'file_id'    => '',
@@ -503,6 +610,34 @@ class WC_Helper_Updater {
 	}
 
 	/**
+	 * Validates cached update data and checks if it matches the expected hash.
+	 *
+	 * Ensures the cached data is properly structured and corresponds to the current
+	 * payload to prevent fatal errors and avoid stale cache returns.
+	 *
+	 * @since 10.3.6
+	 *
+	 * @param mixed  $data The data retrieved from the transient.
+	 * @param string $hash The expected hash to compare against.
+	 * @return bool True if the data is valid and hash matches, false otherwise.
+	 */
+	private static function should_use_cached_update_data( $data, $hash ) {
+		if ( ! is_array( $data ) ) {
+			return false;
+		}
+
+		if ( ! isset( $data['hash'], $data['products'] ) ) {
+			return false;
+		}
+
+		if ( ! is_string( $data['hash'] ) || ! is_array( $data['products'] ) ) {
+			return false;
+		}
+
+		return hash_equals( $hash, $data['hash'] );
+	}
+
+	/**
 	 * Run an update check API call.
 	 *
 	 * The call is cached based on the payload (product ids, file ids). If
@@ -520,10 +655,9 @@ class WC_Helper_Updater {
 
 		$cache_key = '_woocommerce_helper_updates';
 		$data      = get_transient( $cache_key );
-		if ( false !== $data ) {
-			if ( hash_equals( $hash, $data['hash'] ) ) {
-				return $data['products'];
-			}
+
+		if ( self::should_use_cached_update_data( $data, $hash ) ) {
+			return $data['products'];
 		}
 
 		$data = array(
@@ -533,11 +667,23 @@ class WC_Helper_Updater {
 			'errors'   => array(),
 		);
 
+		// Detect if this is a manual refresh button click.
+		$request_uri = wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$source      = '';
+		if ( stripos( $request_uri, 'wc/v3/marketplace/refresh' ) !== false ) {
+			$source = 'refresh-button';
+		}
+
+		$request_body = array( 'products' => $payload );
+		if ( ! empty( $source ) ) {
+			$request_body['source'] = $source;
+		}
+
 		if ( WC_Helper::is_site_connected() ) {
 			$request = WC_Helper_API::post(
 				'update-check',
 				array(
-					'body'          => wp_json_encode( array( 'products' => $payload ) ),
+					'body'          => wp_json_encode( $request_body ),
 					'authenticated' => true,
 				)
 			);
@@ -545,7 +691,7 @@ class WC_Helper_Updater {
 			$request = WC_Helper_API::post(
 				'update-check-public',
 				array(
-					'body' => wp_json_encode( array( 'products' => $payload ) ),
+					'body' => wp_json_encode( $request_body ),
 				)
 			);
 		}
@@ -595,6 +741,10 @@ class WC_Helper_Updater {
 				continue;
 			}
 
+			if ( ! is_plugin_active( $plugin['_filename'] ) ) {
+				continue;
+			}
+
 			if ( version_compare( $plugin['Version'], $update_data[ $plugin['_product_id'] ]['version'], '<' ) ) {
 				++$count;
 			}
@@ -603,6 +753,10 @@ class WC_Helper_Updater {
 		// Scan local themes.
 		foreach ( WC_Helper::get_local_woo_themes() as $theme ) {
 			if ( empty( $update_data[ $theme['_product_id'] ] ) ) {
+				continue;
+			}
+
+			if ( get_stylesheet() !== $theme['_stylesheet'] ) {
 				continue;
 			}
 
@@ -680,7 +834,7 @@ class WC_Helper_Updater {
 	 */
 	public static function get_updates_count_html() {
 		$count      = self::get_updates_count_based_on_site_status();
-		$count_html = sprintf( '<span class="update-plugins count-%d"><span class="update-count">%d</span></span>', $count, number_format_i18n( $count ) );
+		$count_html = sprintf( ' <span class="update-plugins count-%d"><span class="update-count">%d</span></span>', $count, number_format_i18n( $count ) );
 
 		return $count_html;
 	}
@@ -728,7 +882,7 @@ class WC_Helper_Updater {
 			sprintf(
 				// translators: %s: URL of WooCommerce.com subscriptions tab.
 				__( 'Please visit the <a href="%s" target="_blank">subscriptions page</a> and renew to continue receiving updates.', 'woocommerce' ),
-				esc_url( admin_url( 'admin.php?page=wc-addons&section=helper' ) )
+				esc_url( admin_url( 'admin.php?page=wc-admin&tab=my-subscriptions&path=%2Fextensions' ) )
 			)
 		);
 	}

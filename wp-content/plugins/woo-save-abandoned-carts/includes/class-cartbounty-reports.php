@@ -13,6 +13,27 @@
 class CartBounty_Reports{
 
 	/**
+	 * @since    8.9
+	 * @access   protected
+	 * @var      CartBounty_Admin    $admin    Provides methods to control and extend the plugin's admin area.
+	 */
+	protected $admin = null;
+
+	/**
+	 * @since 8.9
+	 * @access protected
+	 * @return CartBounty_Admin
+	 */
+	protected function admin(){
+		
+		if( $this->admin === null ){
+			$this->admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		}
+
+		return $this->admin;
+	}
+
+	/**
      * Returning reporting defaults
      *
      * @since    8.0
@@ -39,8 +60,10 @@ class CartBounty_Reports{
 			),
 			'default_chart_type'		=> 'bar',
 			'default_top_product_count'	=> 5,
-			'top_product_count'			=> 5,
+			'available_list_values'		=> 5,
 			'empty_chart_data'			=> __( 'No data for selected date range', 'woo-save-abandoned-carts' ),
+			'default_map'				=> 'abandoned-carts',
+			'country_count'				=> 5,
 		);
 
 		if( $value ){ //If a single value should be returned
@@ -123,6 +146,17 @@ class CartBounty_Reports{
 			);
 		}
 
+		if( $type == 'map' ){
+			$items = array(
+				'abandoned-carts' 		=> esc_html__( 'Abandoned carts', 'woo-save-abandoned-carts' ),
+				'abandonment-rate' 		=> esc_html__( 'Cart abandonment rate', 'woo-save-abandoned-carts' ),
+				'anonymous-carts' 		=> esc_html__( 'Anonymous carts', 'woo-save-abandoned-carts' ),
+				'recoverable-carts' 	=> esc_html__( 'Recoverable carts', 'woo-save-abandoned-carts' ),
+				'recovered-carts' 		=> esc_html__( 'Recovered carts', 'woo-save-abandoned-carts' ),
+				'average-cart-value' 	=> esc_html__( 'Average cart value', 'woo-save-abandoned-carts' )
+			);
+		}
+
 		if( $item ){ //If a single value should be returned
 
 			if( isset( $items[$item] ) ){ //Checking if value exists
@@ -148,6 +182,8 @@ class CartBounty_Reports{
 			'charts' 			=> $this->get_default_reports( 'charts' ),
 			'chart_type' 		=> $default_values['default_chart_type'],
 			'top_product_count' => $default_values['default_top_product_count'],
+			'map' 				=> $default_values['default_map'],
+			'country_count' 	=> $default_values['country_count'],
 		);
 
 		if( is_array( $saved_options ) ){
@@ -229,6 +265,45 @@ class CartBounty_Reports{
 		$settings[$type] = $active_reports;
 		return update_option( 'cartbounty_report_settings', $settings );
 
+	}
+
+	/**
+	 * Return report name
+	 *
+	 * @since    8.2
+	 * @return   string
+	 */
+	public function get_selected_map_report_name(){
+		$report_name = '';
+
+		if( empty( $selected_report ) ){
+			$selected_report = $this->get_selected_map();
+		}
+
+		$report_name = $this->get_available_reports( 'map', $selected_report );
+		return $report_name;
+	}
+
+		/**
+	 * Retrieve selected map report to display
+	 *
+	 * @since    8.2
+	 * @return   string
+	 */
+	private function get_selected_map(){
+		$report = $this->get_settings( 'map' );
+		return $report;
+	}
+
+	/**
+	 * Retrieve selected country count to display
+	 *
+	 * @since    8.2
+	 * @return   string
+	 */
+	private function get_selected_country_count(){
+		$count = $this->get_settings( 'country_count' );
+		return $count;
 	}
 
 	/**
@@ -315,7 +390,7 @@ class CartBounty_Reports{
 	 * @param    string     $type    		  	  Type of data to return
 	 */
 	public function get_available_report_list_items( $type = 'quick_stats' ){
-		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$admin = $this->admin();
 		$available_reports = $this->get_available_reports( $type );
 		$active_reports = $this->get_active_reports( $type );
 		$unavailable_reports = array();
@@ -416,6 +491,7 @@ class CartBounty_Reports{
 			case 'update_chart_type':
 				$action = 'update_chart_type';
 				break;
+
 		}
 
 		if( isset( $_POST['action'] ) && $_POST['action'] == $action ){
@@ -489,7 +565,7 @@ class CartBounty_Reports{
 	 */
 	public function handle_ajax_submit(){
 		
-		if( $this->is_valid_ajax_request( 'period_submit' ) ){ //If this is a valid ajax request coming from preiod submit form
+		if( $this->is_valid_ajax_request( 'period_submit' ) ){ //If this is a valid ajax request coming from period submit form
 			$response = array(
 				'report_data'		=> $this->display_quick_stats(),
 				'chart_data'		=> $this->display_charts(),
@@ -497,6 +573,7 @@ class CartBounty_Reports{
 				'url' 				=> $this->get_period_url(),
 				'period_dropdown' 	=> $this->display_period_dropdown(),
 				'top_products' 		=> $this->display_top_products(),
+				'map_data' 			=> $this->display_carts_by_country(),
 				'chart_type' 		=> $this->get_selected_chart_type(),
 			);
 			wp_send_json_success( $response );
@@ -541,14 +618,13 @@ class CartBounty_Reports{
 	public function display_reports( $type = false ){
 		$content = '';
 		$active_item_count = 0;
-		$active_reports = $this->prepare_active_reports( $type );
 
 		ob_start(); ?>
-		<div id="cartbounty-abandoned-cart-quick-stats-container">
-			<?php echo $this->display_quick_stats( $active_reports ); ?>
+		<div id="cartbounty-abandoned-cart-quick-stats-container" class="cartbounty-loading-skeleton-screen">
+			<?php echo $this->display_report_skeleton( 'quick_stats' ); ?>
 		</div>
-		<div id="cartbounty-charts-container">
-			<?php echo $this->display_charts( $active_reports ); ?>
+		<div id="cartbounty-charts-container" class="cartbounty-loading-skeleton-screen">
+			<?php echo $this->display_report_skeleton( 'charts' ); ?>
 		</div>
 		<?php $content = ob_get_contents();
 		ob_end_clean();
@@ -580,23 +656,7 @@ class CartBounty_Reports{
 
 		if( !empty( $active_quick_stats ) ){ //If any quick stat has been enabled
 			$active_item_count = count( $active_quick_stats );
-
-			ob_start(); ?>
-			<div id="cartbounty-abandoned-cart-quick-stats">
-				<ul class="cartbounty-quick-stat cartbounty-active-items-<?php echo $active_item_count; ?>">
-					<?php foreach( $active_quick_stats as $key => $item ): ?>
-					<li class="cartbounty-quick-stat-item cartbounty-report-content<?php echo ( !empty( $item['state'] ) ) ? ' ' . $item['state'] : ''; ?>">
-						<div class="cartbounty-quick-stat-label"><?php echo $item['label']; ?></div>
-						<div class="cartbounty-quick-stat-data">
-							<div class="cartbounty-quick-stat-value"><?php echo $item['value']; ?></div>
-							<div class="cartbounty-quick-stat-delta"><?php echo $item['delta']; ?></div>
-						</div>
-					</li>
-					<?php endforeach; ?>
-				</ul>
-			</div>
-			<?php $content = ob_get_contents();
-			ob_end_clean();
+			$content = $this->get_quick_stats_skeleton( $active_quick_stats, $active_item_count );
 		}
 
 		return $content;
@@ -623,49 +683,26 @@ class CartBounty_Reports{
 			$active_charts = $this->prepare_active_reports( 'charts' );
 		}
 
-		$date_information = $this->get_selected_date_information();
-
 		if( !empty( $active_charts ) ){ //If any chart has been enabled
-			ob_start(); ?>
-			<?php foreach( $active_charts as $key => $item ): ?>
-				<?php $chart_id = 'chart-' . $key; ?>
-				<div class="cartbounty-abandoned-cart-chart">
-					<div class="cartbounty-stats-header cartbounty-report-content">
-						<h3><?php echo $item['label']; ?></h3>
-					</div>
-					<div class="cartbounty-report-content-chart">
-						<div class="cartbounty-report-chart-container">
-							<div id="<?php echo $chart_id; ?>" class="cartbounty-report-chart"></div>
-						</div>
-						<script>
-							var <?php echo str_replace( '-', '_', $chart_id ); ?>_start_date = <?php echo json_encode( $date_information['start_date'] ); ?>;
-							var <?php echo str_replace( '-', '_', $chart_id ); ?>_end_date = <?php echo json_encode( $date_information['end_date'] ); ?>;
-							var <?php echo str_replace( '-', '_', $chart_id ); ?>_current_period_data = <?php echo json_encode( $item['current_period_data'] ); ?>;
-							var <?php echo str_replace( '-', '_', $chart_id ); ?>_previous_period_data = <?php echo json_encode( $item['previous_period_data'] ); ?>;
-						</script>
-					</div>
-				</div>
-			<?php endforeach; ?>
-			<?php $content = ob_get_contents();
-			ob_end_clean();
+			$date_information = $this->get_selected_date_information();
+			$content = $this->get_charts_skeleton( $active_charts, $date_information );
 		}
 
 		return $content;
 	}
 
 	/**
-	 * Display active quick stats
+	 * Display top abandoned products
 	 *
 	 * @since    8.0
 	 * @return   HTML
 	 */
 	public function display_top_products(){
-		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
-		$content = '<div class="cartbounty-report-content cartbounty-empty-top"><div class="cartbounty-empty-text">' . esc_html__( 'N/A', 'woo-save-abandoned-carts' ) .'</div></div>';
+		$admin = $this->admin();
+		$content = '<div class="cartbounty-report-content cartbounty-empty-top"><div class="cartbounty-empty-text">' . esc_html__( 'n/a', 'woo-save-abandoned-carts' ) .'</div></div>';
 		$date_information = $this->get_selected_date_information();
 		$carts = $this->get_abandoned_cart_rows( $date_information );
 		$product_array = array();
-		$position = 0;
 		$start_date = $date_information['start_date'];
 		$end_date = $date_information['end_date'];
 		$start_date_timestamp = strtotime( $start_date );
@@ -680,7 +717,7 @@ class CartBounty_Reports{
 
 				if( $cart_date_timestamp >= $start_date_timestamp && $cart_date_timestamp <= $end_date_timestamp ){ //Looking for dates in currently selected start - end date period (necessary since the results returned include both current and previous period data)
 					$cart_count = $cart->cart_count;
-					$cart_contents = $admin->get_saved_cart_contents( $cart->cart_contents, 'products' );
+					$cart_contents = $admin->get_saved_cart_contents( $cart->cart_contents );
 
 					if( $cart_count > 1 ){ //If more than one cart found with the same products
 
@@ -699,55 +736,47 @@ class CartBounty_Reports{
 		
 		if( empty( $top_products ) ) return $content;
 
-		ob_start(); ?>
-		<table id="cartbounty-cart-top-products">
-			<tr>
-				<th class="position"><?php esc_html_e( 'No.', 'woo-save-abandoned-carts' ); ?></th>
-				<th class="product"><?php esc_html_e( 'Product', 'woo-save-abandoned-carts' ); ?></th>
-				<th class="count"><?php esc_html_e( 'Count', 'woo-save-abandoned-carts' ); ?></th>
-			</tr>
-			<?php foreach( $top_products as $key => $product ): ?>
-			<?php
-				$position++;
-				$product_title = $product['product_title'];
-				$image_url = $admin->get_product_thumbnail_url( $product, 'thumbnail' );
-				$image_html = '<img src="'. esc_url( $image_url ) .'" title="'. esc_attr( $product_title ) .'" alt="'. esc_attr( $product_title ).'" />';
-				$edit_product_link = get_edit_post_link( $product['product_id'], '&' ); //Get product link by product ID
-			?>
-			<tr>
-				<td class="position">
-					<div><?php echo $position; ?>.</div>
-				</td>
-				<td class="product">
-					<div class="product-image-container">
-						<?php if( $edit_product_link ): //If link exists (meaning the product hasn't been deleted) ?>
-							<a href="<?php echo esc_url( $edit_product_link ); ?>" title="<?php echo esc_attr( $product_title ); ?>">
-								<?php echo $image_html; ?>
-							</a>
-						<?php else: ?>
-							<?php echo $image_html; ?>
-						<?php endif;?>
-					</div>
-					<div>
-						<?php if( $edit_product_link ): //If link exists (meaning the product hasn't been deleted) ?>
-							<a href="<?php echo esc_url( $edit_product_link ); ?>" title="<?php echo esc_attr( $product_title ); ?>">
-								<?php echo $product_title; ?>
-							</a>
-						<?php else: ?>
-							<?php echo $product_title; ?>
-						<?php endif;?>
-					</div>
-				</td>
-				<td class="count">
-					<div><?php echo $product['quantity']; ?></div>
-				</td>
-			</tr>
-			<?php endforeach; ?>
-		</table>
-		<?php $content = ob_get_contents();
-		ob_end_clean();
+		$content = $this->get_top_products_skeleton( $top_products );
 
 		return $content;
+	}
+
+	/**
+	 * Display abandoned carts by country
+	 *
+	 * @since    8.2
+	 * @return   HTML
+	 */
+	public function display_carts_by_country(){
+		$selected_report = $this->get_selected_map();
+		$carts_by_country = $this->get_carts_by_country( $selected_report );
+		$country_count = $this->get_selected_country_count();
+		$top_countries = array_slice( $carts_by_country['data'], 0, $country_count, true ); //Select the count of countries that is selected
+		$content = $this->get_map_skeleton( $top_countries, $carts_by_country );
+		return $content;
+	}
+
+	/**
+	 * Retrieve cart data by country
+	 *
+	 * @since    8.2
+	 * @return   array
+	 */
+	public function get_carts_by_country(){
+		$result = array();
+		$date_information = $this->get_selected_date_information();
+		$carts = $this->get_abandoned_cart_rows( $date_information );
+		$selected_report = $this->get_selected_map();
+
+		switch( $selected_report ){
+
+			case 'abandoned-carts':
+				$country_data = $this->get_cart_count( 'abandoned', $carts, $date_information, 'abandoned_carts_by_country' );
+				$result['data'] = $country_data['carts_by_country'];
+				break;
+		}
+
+		return $result;
 	}
 
 	/**
@@ -813,7 +842,7 @@ class CartBounty_Reports{
 		
 		if( !$this->is_multiple_currencies() ) return; //Exit if we have just one currency
 
-		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$admin = $this->admin();
 		$selected_currency = $this->get_selected_currency();
 
 		ob_start(); ?>
@@ -840,7 +869,7 @@ class CartBounty_Reports{
 	 * @return   HTML
 	 */
 	public function display_top_product_count(){
-		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$admin = $this->admin();
 		ob_start(); ?>
 		<div id="cartbounty-top-product-count" class="cartbounty-options-tooltip">
 			<h3 class="cartbounty-unavailable">
@@ -851,6 +880,62 @@ class CartBounty_Reports{
 			</select>
 			<p class='cartbounty-additional-information'>
 				<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $admin->display_unavailable_notice( 'report_product_count' ); ?></i>
+			</p>
+		</div>
+		<?php $content = ob_get_contents();
+		ob_end_clean();
+
+		return $content;
+	}
+
+		/**
+	 * Display dropdown that allows to select how many countries should be displayed in the list under map
+	 *
+	 * @since    8.2
+	 * @return   HTML
+	 */
+	public function display_selected_country_count(){
+		$admin = $this->admin();
+		ob_start(); ?>
+		<div id="cartbounty-country-count" class="cartbounty-options-tooltip">
+			<h3>
+				<label for="cartbounty_country_count"><?php esc_html_e( 'List size', 'woo-save-abandoned-carts' ); ?></label>
+			</h3>
+			<select id="cartbounty_country_count" class="cartbounty-select cartbounty-unavailable" disabled autocomplete="off">
+				<option>5</option>
+			</select>
+			<p class='cartbounty-additional-information'>
+				<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $admin->display_unavailable_notice( 'report_country_count' ); ?></i>
+			</p>
+		</div>
+		<?php $content = ob_get_contents();
+		ob_end_clean();
+
+		return $content;
+	}
+
+	/**
+	 * Display dropdown that allows to select available map report
+	 *
+	 * @since    8.2
+	 * @return   HTML
+	 */
+	public function display_selected_map_report(){
+		$admin = $this->admin();
+		$available_reports = $this->get_available_reports( 'map' );
+		$selected_map = $this->get_selected_map();
+		ob_start(); ?>
+		<div id="cartbounty-available-map-reports" class="cartbounty-options-tooltip">
+			<h3>
+				<label for="cartbounty_available_map_reports"><?php esc_html_e( 'Report', 'woo-save-abandoned-carts' ); ?></label>
+			</h3>
+			<select id="cartbounty_available_map_reports" class="cartbounty-select cartbounty-unavailable" autocomplete="off">
+				<?php foreach( $available_reports as $key => $option ): ?>
+				<option value="<?php esc_attr_e( $key ); ?>" <?php echo selected( $selected_map, $key, false ); ?>><?php esc_html_e( $option );?></option>
+				<?php endforeach; ?>
+			</select>
+			<p class='cartbounty-additional-information'>
+				<i class='cartbounty-hidden cartbounty-unavailable-notice'><?php echo $admin->display_unavailable_notice( 'report_change_map_report_type' ); ?></i>
 			</p>
 		</div>
 		<?php $content = ob_get_contents();
@@ -896,6 +981,10 @@ class CartBounty_Reports{
 		}elseif( $block_type == 'reports' ){
 			$data = $this->display_selected_currency();
 			$data .= $this->display_available_reports();
+
+		}elseif( $block_type == 'carts-by-country' ){
+			$data = $this->display_selected_map_report();
+			$data .= $this->display_selected_country_count();
 		}
 
 		$more_icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.5 70"><circle cx="8.75" cy="8.75" r="8.75"/><circle cx="8.75" cy="61.25" r="8.75"/><circle cx="8.75" cy="35" r="8.75"/></svg>';
@@ -970,7 +1059,7 @@ class CartBounty_Reports{
 	/**
 	 * Prepare array of different time intervals used for retrieving various report periods
 	 * Time periods:
-	 *		- today:			Period of curent day starting from 00:00:00 until end of today at 23:59:59
+	 *		- today:			Period of current day starting from 00:00:00 until end of today at 23:59:59
 	 *		- yesterday:		Yesterday starting from 00:00:00 until end of yesterday at 23:59:59
 	 *		- week-to-date:		Period of current week starting from Monday 00:00:00 until end of today at 23:59:59
 	 *		- last-week:		Last week, from Monday 00:00:00 to Sunday 23:59:59
@@ -1158,16 +1247,16 @@ class CartBounty_Reports{
 		$end = new DateTime($end_date);
 
 		if( $start->format( 'Y-m' ) == $end->format( 'Y-m' ) ){ //Check if dates are within same year and month
-			$formatted_start = date_i18n( 'M j', $start->getTimestamp() );
-			$formatted_end = date_i18n( 'j, Y', $end->getTimestamp() );
+			$formatted_start = wp_date( 'M j', $start->getTimestamp() );
+			$formatted_end = wp_date( 'j, Y', $end->getTimestamp() );
 
 		}elseif( $start->format( 'Y' ) == $end->format( 'Y' ) ){ //Check if dates are within same year
-			$formatted_start = date_i18n( 'M j', $start->getTimestamp() );
-			$formatted_end = date_i18n( 'M j, Y', $end->getTimestamp() );
+			$formatted_start = wp_date( 'M j', $start->getTimestamp() );
+			$formatted_end = wp_date( 'M j, Y', $end->getTimestamp() );
 
 		}else{ //If dates span across different years
-			$formatted_start = date_i18n( 'M j, Y', $start->getTimestamp() );
-			$formatted_end = date_i18n( 'M j, Y', $end->getTimestamp() );
+			$formatted_start = wp_date( 'M j, Y', $start->getTimestamp() );
+			$formatted_end = wp_date( 'M j, Y', $end->getTimestamp() );
 		}
 
 		//Return the formatted date string
@@ -1183,7 +1272,7 @@ class CartBounty_Reports{
 	 * @return   integer
 	 */
 	public function prepare_daypicker_data(){
-		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$admin = $this->admin();
 		$defaults = $this->get_defaults();
 		$date_periods = array();
 		$comparison_periods = array();
@@ -1197,7 +1286,7 @@ class CartBounty_Reports{
 			'name' 		=> $this->get_date_periods($report_parameters['period']),
 		);
 
-		if( $user_locale != 'en' ){ //No need to set locale in case we have English language alreayd set
+		if( $user_locale != 'en' ){ //No need to set locale in case we have English language already set
 			$locale = $user_locale;
 		}
 		
@@ -1441,7 +1530,7 @@ class CartBounty_Reports{
 		$intervals = $this->get_time_intervals( $report_parameters['period'], $custom_start, $custom_end );
 		$intervals['compare'] = $report_parameters['compare'];
 
-		//Setting compre period values according to selected compare period
+		//Setting compare period values according to selected compare period
 		if( $report_parameters['compare'] == 'previous-year'){ //In case comparing to previous year period
 			$intervals['compare_start_date'] = $intervals['previous_year_start'];
 			$intervals['compare_end_date'] = $intervals['previous_year_end'];
@@ -1455,7 +1544,7 @@ class CartBounty_Reports{
 	}
 
 	/**
-	 * Method is necessary for formating date coming from DayPicker input field to a date that can be used in a URL
+	 * Method is necessary for formatting date coming from DayPicker input field to a date that can be used in a URL
 	 *
 	 * @since    8.0
 	 * @return   string
@@ -1727,10 +1816,11 @@ class CartBounty_Reports{
 				"SELECT
 				email,
 				phone,
-				cart_contents,
 				cart_total,
 				currency,
 				type,
+				location,
+				cart_contents,
 				DATE(time) AS cart_date,
 				WEEK(time) AS cart_week,
 				MONTH(time) AS cart_month,
@@ -1787,7 +1877,7 @@ class CartBounty_Reports{
 	 * @param    string           $report           			Report label
 	 */
 	private function get_abandonment_rate( $carts, $date_information, $report ){
-		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$admin = $this->admin();
 		$current_period_abandoned_count = 0;
 		$current_period_converted_count = 0;
 		$previous_period_abandoned_count = 0;
@@ -1853,11 +1943,12 @@ class CartBounty_Reports{
 	 * @param    string           $report           			Report label
 	 */
 	private function get_cart_count( $type, $carts, $date_information, $report ){
-		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$admin = $this->admin();
 		$previous_period_cart_count = 0;
 		$current_period_cart_count = 0;
 		$previous_period_data = array();
 		$current_period_data = array();
+		$current_period_cart_count_by_country = array();
 
 		$start_date = $date_information['start_date'];
 		$end_date = $date_information['end_date'];
@@ -1870,6 +1961,7 @@ class CartBounty_Reports{
 			$cart_date = $cart->cart_date;
 			$cart_date_timestamp = strtotime( $cart->cart_date );
 			$cart_count = $cart->cart_count;
+			$country = $admin->get_cart_location( $cart->location, 'country');
 
 			if( $admin->get_where_sentence( $type, false, $cart ) ){
 
@@ -1883,6 +1975,17 @@ class CartBounty_Reports{
 					}
 
 					$current_period_cart_count += $cart_count;
+
+					//Data for country based report
+					if( $country ){
+
+						if( isset( $current_period_cart_count_by_country[$country] ) ){
+							$current_period_cart_count_by_country[$country] += $cart_count;
+
+						} else {
+							$current_period_cart_count_by_country[$country] = $cart_count;
+						}
+					}
 
 				}else{
 					//In case period data array already has an item on that day - add to the value of that day
@@ -1911,7 +2014,8 @@ class CartBounty_Reports{
 			'previous_period_data'			=> $previous_period_data,
 			'current_period_data'			=> $current_period_data,
 			'delta'							=> $delta,
-			'delta_state'					=> $delta_state
+			'delta_state'					=> $delta_state,
+			'carts_by_country'				=> $this->prepare_country_data( $current_period_cart_count_by_country )
 		);
 
 		return $data;
@@ -1928,7 +2032,7 @@ class CartBounty_Reports{
 	 * @param    string           $report           			Report label
 	 */
 	private function get_cart_revenue( $type, $carts, $date_information, $report ){
-		$admin = new CartBounty_Admin( CARTBOUNTY_PLUGIN_NAME_SLUG, CARTBOUNTY_VERSION_NUMBER );
+		$admin = $this->admin();
 		$previous_period_value = 0;
 		$current_period_value = 0;
 
@@ -1983,7 +2087,7 @@ class CartBounty_Reports{
 		$result = array();
 
 		if( !empty( $data ) ){
-			$full_period = $this->fill_mising_dates( $data, $start_date, $end_date );
+			$full_period = $this->fill_missing_dates( $data, $start_date, $end_date );
 			
 			foreach( $full_period as $date => $count ){
 				$result[] = array(
@@ -2067,6 +2171,42 @@ class CartBounty_Reports{
 
 		return $rate;
 	}
+
+	/**
+	 * Prepare country report data in the form that is required to display data
+	 *
+	 * @since    8.2
+	 * @return   array
+	 * @param    array           $data         Country data
+	 */
+	private function prepare_country_data( $data ){
+		$admin = $this->admin();
+		$result = array();
+
+		foreach( $data as $key => $value ){
+			$country_name = $key;
+
+			if( isset( WC()->countries ) ){
+
+				if( array_key_exists( $key, WC()->countries->countries ) ){
+					$country_name = WC()->countries->countries[ $key ];
+				}
+			}
+
+			$result[] = array(
+				'country' 		=> $admin->convert_country_code( $key ),
+				'country_name' 	=> $country_name,
+				'value' 		=> $value,
+			);
+		}
+
+		usort( $result, function( $a, $b ){
+			return $b['value'] - $a['value'];
+		} );
+
+		return $result;
+	}
+
 
 	/**
 	 * Add currency symbol to a given value
@@ -2168,25 +2308,250 @@ class CartBounty_Reports{
 	 * @param    array            $start_date          	Start date
 	 * @param    array            $end_date           	End date
 	 */
-	private function fill_mising_dates( $data, $start_date, $end_date ) {
+	private function fill_missing_dates( $data, $start_date, $end_date ){
 		$period = array();
 		$start_date = strtotime( $start_date );
 		$end_date = strtotime( $end_date );
 
 		// Loop over each date between start date and end date
 		while( $start_date <= $end_date ){
-			$formated_start_date = date( 'Y-m-d', $start_date ); //Converting current timestamp to Y-m-d format
+			$formatted_start_date = date( 'Y-m-d', $start_date ); //Converting current timestamp to Y-m-d format
 
 			//If the date is in the original array, use the existing value, otherwise, set value to 0
-			if( isset( $data[$formated_start_date] ) ){
-				$period[$formated_start_date] = $data[$formated_start_date];
+			if( isset( $data[$formatted_start_date] ) ){
+				$period[$formatted_start_date] = $data[$formatted_start_date];
 			}else{
-				$period[$formated_start_date] = 0;
+				$period[$formatted_start_date] = 0;
 			}
 
 			$start_date = strtotime( '+1 day', $start_date ); //Moving on to the next day
 		}
 
 		return $period;
+	}
+
+	/**
+	 * Output report skeleton during initial page load
+	 *
+	 * @since    8.8
+	 * @return   array
+	 * @param    string           $report_type          Type of the report block
+	 */
+	public function display_report_skeleton( $report_type ){
+		$skeleton = '';
+
+		if( $report_type == 'quick_stats' || $report_type == 'charts' ){
+			$active_reports = $this->get_active_reports( $report_type );
+
+			if( is_array( $active_reports ) ){
+				$active_item_count = count( $active_reports );
+				
+				if( $report_type == 'quick_stats' ){
+					$skeleton = $this->get_quick_stats_skeleton( $active_reports, $active_item_count );
+				
+				}elseif( $report_type == 'charts' ){
+					$skeleton = $this->get_charts_skeleton( $active_reports );
+				}
+			}
+
+		}elseif( $report_type == 'top_products' ){
+			$skeleton = $this->get_top_products_skeleton();
+
+		}elseif( $report_type == 'map' ){
+			$skeleton = $this->get_map_skeleton();
+		}
+
+		echo $skeleton;
+	}
+
+	/**
+	 * Retrieve quick stats skeleton
+	 *
+	 * @since    8.8
+	 * @return   HTML
+	 * @param    array     		  $active_reports    	Active report data
+	 * @param    integer          $active_item_count    Count of active reports
+	 */
+	public function get_quick_stats_skeleton( $active_reports = array(), $active_item_count = 0 ){
+		ob_start(); ?>
+		<div id="cartbounty-abandoned-cart-quick-stats">
+			<ul class="cartbounty-quick-stat cartbounty-active-items-<?php echo $active_item_count; ?>">
+				<?php foreach( $active_reports as $key => $item ): ?>
+				<li class="cartbounty-quick-stat-item cartbounty-report-content<?php echo ( !empty( $item['state'] ) ) ? ' ' . $item['state'] : ''; ?>">
+					<div class="cartbounty-quick-stat-label"><?php echo $item['label'] ?? esc_html__( 'n/a', 'woo-save-abandoned-carts' ); ?></div>
+					<div class="cartbounty-quick-stat-data">
+						<div class="cartbounty-quick-stat-value"><?php echo $item['value'] ?? esc_html__( 'n/a', 'woo-save-abandoned-carts' ); ?></div>
+						<div class="cartbounty-quick-stat-delta"><?php echo $item['delta'] ?? esc_html__( 'n/a', 'woo-save-abandoned-carts' ); ?></div>
+					</div>
+				</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+		<?php $content = ob_get_contents();
+		ob_end_clean();
+		return $content;
+	}
+
+	/**
+	 * Retrieve charts skeleton
+	 *
+	 * @since    8.8
+	 * @return   HTML
+	 * @param    array     		  $active_reports    	Active report data
+	 * @param    array     		  $date_information    	Date information
+	 */
+	public function get_charts_skeleton( $active_reports = array(), $date_information = array() ){
+		ob_start(); ?>
+		<?php foreach( $active_reports as $key => $item ): ?>
+			<?php $chart_id = 'chart-' . $key; ?>
+			<div class="cartbounty-abandoned-cart-chart">
+				<div class="cartbounty-stats-header cartbounty-report-content">
+					<h3><?php echo $item['label'] ?? esc_html__( 'n/a', 'woo-save-abandoned-carts' ); ?></h3>
+				</div>
+				<div class="cartbounty-report-content-chart">
+					<div class="cartbounty-report-chart-container">
+						<div id="<?php echo $chart_id; ?>" class="cartbounty-report-chart"></div>
+					</div>
+					<?php if( !empty( $date_information ) ): ?>
+					<script>
+						var <?php echo str_replace( '-', '_', $chart_id ); ?>_start_date = <?php echo json_encode( $date_information['start_date'] ); ?>;
+						var <?php echo str_replace( '-', '_', $chart_id ); ?>_end_date = <?php echo json_encode( $date_information['end_date'] ); ?>;
+						var <?php echo str_replace( '-', '_', $chart_id ); ?>_current_period_data = <?php echo json_encode( $item['current_period_data'] ); ?>;
+						var <?php echo str_replace( '-', '_', $chart_id ); ?>_previous_period_data = <?php echo json_encode( $item['previous_period_data'] ); ?>;
+					</script>
+					<?php endif; ?>
+				</div>
+			</div>
+		<?php endforeach; ?>
+		<?php $content = ob_get_contents();
+		ob_end_clean();
+		return $content;
+	}
+
+	/**
+	 * Retrieve top products skeleton
+	 *
+	 * @since    8.8
+	 * @return   HTML
+	 * @param    array     		  $top_products    	Top products data
+	 */
+	public function get_top_products_skeleton( $top_products = array() ){
+		$admin = $this->admin();
+		$position = 0;
+		$on_load = false;
+
+		if( empty( $top_products ) ){ //If we are missing products
+			$on_load = true;
+			$top_products = range( 1, 3 );
+		}
+
+		ob_start(); ?>
+		<table id="cartbounty-cart-top-products" class="cartbounty-dashboard-table">
+			<tr>
+				<th class="position"><?php esc_html_e( 'No.', 'woo-save-abandoned-carts' ); ?></th>
+				<th class="product"><?php esc_html_e( 'Product', 'woo-save-abandoned-carts' ); ?></th>
+				<th class="count"><?php esc_html_e( 'Count', 'woo-save-abandoned-carts' ); ?></th>
+			</tr>
+			<?php foreach( $top_products as $key => $product ): ?>
+			<?php
+				$position++;
+				$product_title = $product['product_title'] ?? esc_html__( 'n/a', 'woo-save-abandoned-carts' );
+				$image_url = '';
+				$edit_product_link = '';
+
+				if( !$on_load ){ //If not triggered on page load, but Ajax request
+					$image_url = $admin->get_product_thumbnail_url( $product, 'thumbnail' ) ?? 'na';
+					$edit_product_link = get_edit_post_link( $product['product_id'], '&' ) ?? esc_html__( 'n/a', 'woo-save-abandoned-carts' ); //Get product link by product ID
+				}
+
+				$image_html = '<img src="'. esc_url( $image_url ) .'" title="'. esc_attr( $product_title ) .'" alt="'. esc_attr( $product_title ).'" />';
+			?>
+			<tr>
+				<td class="position">
+					<div><?php echo $position; ?>.</div>
+				</td>
+				<td class="product">
+					<div class="product-image-container">
+						<?php if( $edit_product_link ): //If link exists (meaning the product hasn't been deleted) ?>
+							<a href="<?php echo esc_url( $edit_product_link ); ?>" title="<?php echo esc_attr( $product_title ); ?>">
+								<?php echo $image_html; ?>
+							</a>
+						<?php else: ?>
+							<?php echo $image_html; ?>
+						<?php endif;?>
+					</div>
+					<div>
+						<?php if( $edit_product_link ): //If link exists (meaning the product hasn't been deleted) ?>
+							<a href="<?php echo esc_url( $edit_product_link ); ?>" title="<?php echo esc_attr( $product_title ); ?>">
+								<?php echo $product_title; ?>
+							</a>
+						<?php else: ?>
+							<?php echo $product_title; ?>
+						<?php endif;?>
+					</div>
+				</td>
+				<td class="count">
+					<div><?php echo $product['quantity'] ?? esc_html__( 'n/a', 'woo-save-abandoned-carts' ); ?></div>
+				</td>
+			</tr>
+			<?php endforeach; ?>
+		</table>
+		<?php $content = ob_get_contents();
+		ob_end_clean();
+		return $content;
+	}
+
+	/**
+	 * Retrieve map skeleton
+	 *
+	 * @since    8.8
+	 * @return   HTML
+	 * @param    array     		  $top_countries    	Top countries that should be displayed
+	 * @param    array     		  $carts_by_country    	Carts by country
+	 */
+	public function get_map_skeleton( $top_countries = array(), $carts_by_country = array() ){
+		$position = 0;
+		ob_start(); ?>
+		<div id="cartbounty-country-map" class="cartbounty-report-content"></div>
+		<?php if( is_array( $top_countries ) ): ?>
+			<?php if( $top_countries ): ?>
+			<table id="cartbounty-country-data" class="cartbounty-dashboard-table">
+				<tr>
+					<th class="position"><?php esc_html_e( 'No.', 'woo-save-abandoned-carts' ); ?></th>
+					<th class="country"><?php esc_html_e( 'Country', 'woo-save-abandoned-carts' ); ?></th>
+					<th class="count"><?php esc_html_e( 'Count', 'woo-save-abandoned-carts' ); ?></th>
+				</tr>
+				<?php foreach( $top_countries as $key => $country ): ?>
+				<?php
+					$position++;
+					$country_name = $country['country_name'];
+				?>
+				<tr>
+					<td class="position">
+						<div><?php echo $position; ?>.</div>
+					</td>
+					<td class="country">
+						<div>
+							<?php echo $country_name; ?>
+						</div>
+					</td>
+					<td class="count">
+						<div>
+							<?php echo $country['value']; ?>
+						</div>
+					</td>
+				</tr>
+				<?php endforeach; ?>
+			</table>
+			<?php endif; ?>
+		<?php endif; ?>
+		<?php if( isset( $carts_by_country['data'] ) ): ?>
+		<script>
+			var abandoned_cart_country_data = <?php echo json_encode( $carts_by_country['data'] ); ?>;
+		</script>
+		<?php endif; ?>
+		<?php $content = ob_get_contents();
+		ob_end_clean();
+		return $content;
 	}
 }

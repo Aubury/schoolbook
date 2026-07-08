@@ -1,646 +1,219 @@
-﻿=== Weather Effect - Christmas, Santa, Snow Falling, Snowflake Effect===
+=== AWPLife Weather Effects ===
 Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkhan007, sharikkhan007, zishlife, FARAZFRANK
 Donate link: https://paypal.me/awplife
-Tags: snow falling, christmas effect, valentine effect, weather effect, winter effect
+Tags: weather, snow, snowfall, christmas, halloween
 Requires at least: 4.0
-Tested up to: 6.8.2
-Requires PHP: 5.0
-Stable tag: 1.5.9
+Tested up to: 7.0
+Requires PHP: 5.6
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Weather plugin with seasonal effects: snow, rain, autumn leaves, Christmas, Halloween, Valentine, New Year & more to enhance your website.
+Add animated falling effects like snow, rain, autumn leaves, and seasonal decorations to your website.
 
 == Description ==
 
-The weather effect WordPress plugin applies falling objects on websites like snow, flakes, candy, stars, sleigh, snowman, ball, Christmas bells, Halloween bats, autumn and spring leaves, raindrops and umbrella, valentine heart and rose, thanksgiving day turkey, new year balloon and stickers.
+Weather Effect lets you add animated falling objects to your website. You can display snowfall during winter, falling leaves in autumn, rain drops, or festive decorations for holidays like Christmas, Halloween, and Valentine's Day.
 
-The weather effect plugin has many weather seasons and occasions like Christmas, Winter, Autumn, Spring, Summer, Rain, Halloween, Thanks Giving Day, Valentine and New Year.
+The plugin works by overlaying animated elements on your pages. Visitors see these effects as they browse your site, which can help create a seasonal atmosphere or celebrate special occasions.
 
-The best WordPress plugin for showing multiple falling objects accordingly seasons and occasion. The falling objects give an amazing and fresh feeling to website visitors to make them happy.
+= Demo and Documentation =
+
+* [Free Version Demo](https://awplife.com/demo/weather-effect-wordpress-plugin/)
+* [Pro Version Demo](https://awplife.com/demo/weather-effect/)
+* [Try Admin Demo](https://awplife.com/demo/weather-effect-premium-admin-demo/)
+* [Documentation](https://awplife.com/wordpress-plugins/weather-effect-wordpress-plugin/)
+* [Get Pro Version](https://awplife.com/account/signup/weather-effect-premium)
 
 https://www.youtube.com/watch?v=0ffKTyBsVbw
 
-## Weather Effect Free Features
-* Multiple Weather
-* Seasons And Occasions
-* Setting Panel
-* Few Falling Objects
-* Live Preview Button
+= What This Plugin Does =
 
-### [Check Free Plugin Live Demo](https://awplife.com/demo/weather-effect-wordpress-plugin/)
+Weather Effect adds falling animation effects to your website. Here's what you can display:
 
-## Weather Effect Premium Features
-* Many Weather Seasons And Occasions
-* Christmas 
-* Winter 
-* Autumn
-* Spring
-* Summer
-* Rain
-* Halloween
-* Thanks Giving Day
-* Valentine
-* New Year
-* Multiple Falling Objects
-* Christmas Balls
-* Christmas Bells
-* Christmas Candy
-* Christmas Gift
-* Christmas Hat
-* Christmas Ribbon
-* Christmas Santa
-* Christmas Santa Sleigh
-* Christmas Snowman
-* Christmas Socks
-* Christmas Stars
-* Christmas Snow Flakes
-* Autumn Leaf
-* Spring Leaf
-* Summer Drink
-* Summer Sun
-* Rain Umbrella
-* Rain Drops
-* Rain Cloud
-* Halloween Ghost
-* Halloween Bats
-* Halloween Moon
-* Halloween Pumpkin
-* Halloween Web
-* Halloween Witch
-* Thanks Giving Turkey
-* Valentine Balloon
-* Valentine Pink Rose
-* Valentine Red Rose
-* Valentine Yellow Rose
-* Valentine Heart
-* New Year Balloon
-* New Year Sticker
-* Happy New Year Sticker
-* Snowfall
-* Snowflakes
-* Summer Drink
-* Summer Sun
-* Setting Panel
-* Random Size Object Falling
-* Object Falling Speed
-* Live Preview Button
+* ❄️ Snow and snowflakes for winter themes
+* 🍂 Falling autumn leaves
+* 🌧️ Rain drops with umbrella graphics
+* 🎄 Christmas decorations like Santa, bells, candy, and gifts
+* 🎃 Halloween elements including bats, pumpkins, and ghosts
+* 💕 Valentine's Day hearts and roses
+* 🎆 New Year balloons and celebration graphics
 
-### [Check Premium Plugin Live Demo](https://awplife.com/demo/weather-effect/)
-### [Check Premium Plugin Details](https://awplife.com/wordpress-plugins/weather-effect-wordpress-plugin/)
-### [Test Premium Plugin Before Buy](https://awplife.com/demo/weather-effect-premium-admin-demo/)
-### [Buy Premium Plugin](https://awplife.com/account/signup/weather-effect-premium)
+= How It Works =
+
+After installing the plugin, go to the Weather Effect settings page in your admin dashboard. Select the season or occasion you want, choose the falling objects, and save your settings. The effects will appear on your website immediately.
+
+You can preview the effects before making them live using the Preview button in the settings panel.
+
+= Free Version Features =
+
+* Multiple seasonal themes (Christmas, Winter, Autumn, Rain)
+* Snow falling animation
+* Snowflake effects
+* Settings panel for configuration
+* Live preview option
+* Works on mobile devices
+
+= Pro Version Features =
+
+The pro version includes additional falling objects and customization options:
+
+**Seasonal Themes Available:**
+
+* Christmas: Balls, Bells, Candy, Gifts, Hat, Ribbon, Santa, Sleigh, Snowman, Socks, Stars
+* Winter: Snowfall, Snowflakes
+* Autumn: Falling Leaves
+* Spring: Spring Leaves
+* Summer: Summer themed graphics
+* Rain: Rain Drops, Umbrella, Clouds
+* Halloween: Ghost, Bats, Moon, Pumpkin, Spider Web, Witch
+* Thanksgiving: Turkey decorations
+* Valentine's Day: Roses, Hearts, Balloons
+* New Year: Balloons, Celebration stickers
+
+**Additional Pro Features:**
+
+* Control falling object size randomly
+* Adjust falling speed
+* Set timeout for effects
+* Exclude specific pages or posts
+* Upload up to 10 custom images (PNG, JPEG, GIF supported)
+* Enable or disable effects easily
 
 == Frequently Asked Questions ==
 
-= How to use the plugin? =
+= What does this plugin do? =
 
-Download & install the plugin into your site. After the successful installation of the plugin go to plugins menu weather effect and apply your custom settings then save.
+Weather Effect adds animated falling objects to your website. These can be snowflakes, rain drops, autumn leaves, or seasonal decorations like Christmas ornaments or Halloween bats.
 
-= How to check preview? =
+= Do I need to know coding? =
 
-Go to plugin setting panel, configure and save the setting and there is `Preview` button nearby Save button. Hit that button to reload the page and check the effect preview.
+No. The plugin has a settings page where you select what you want to display and save. No coding is needed.
+
+= Does it work with my theme? =
+
+Weather Effect works with standard WordPress themes. It also works with page builders like Elementor, Divi, and Beaver Builder.
+
+= Can I see a preview before going live? =
+
+Yes. There is a Preview button in the settings panel. Click it to see how the effects look before saving.
+
+= Will it affect my site speed? =
+
+The plugin uses JavaScript to display animations. On most websites, this runs smoothly. If you notice any slowdown, you can disable the effects from the settings.
+
+= Can I choose which pages show the effects? =
+
+In the free version, effects appear on all pages. The pro version lets you exclude specific pages or posts.
+
+= Can I use my own images? =
+
+The pro version allows you to upload up to 10 custom images. Supported formats are PNG, JPEG, and GIF.
+
+= What seasons and occasions are supported? =
+
+The plugin includes effects for: Winter, Autumn, Spring, Summer, Rain, Christmas, Halloween, Thanksgiving, Valentine's Day, and New Year.
+
+= Does it work on mobile? =
+
+Yes. The animations display on desktops, tablets, and mobile phones.
+
+= Where can I get help? =
+
+Post your questions on the [WordPress.org support forum](https://wordpress.org/support/plugin/weather-effect/).
 
 == Screenshots ==
 
-1. Christmas Falls Effect
-2. New Year Falls Effect
-3. Christmas Falls Setting Page
-4. Winter Falls Settings Page 
-5. New Year Falls Setting Page
-
-= WEATHER EFFECTS PRO FEATURES =
-
-**Standard Features**
-
-* Christmas Occasion Effects
-* Falling Christmas Candy
-* Falling Christmas Balls
-* Falling Snow Flakes
-* Falling Santa
-* New Year Effects
-* Falling Banners
-* Falling Balloons
-* Falling Gifts
-* Winter Season Effects
-
-**Get Premium Version With More Features**
-
-**Premium Features**
-
-* Halloween Effects
-* New Year Effects
-* Valentine Effects
-* Christmas Effects
-* Rain Season Effects
-* Thanks Giving Effects
-* Autumn Season Effects
-* Spring Season Effects
-* Summer Season Effects
-* Winter Season Effects
-* Add Up to 10 Custom Images in any format which WordPress supports like png, jpg, jpeg, gif
-* Add Custom Cartoon Funny Animals Slogans Greeting Animated Images
-* Exclude Pages Posts From Take Effect
-* Easy To Implement Anywhere Into WordPress Theme
-* Easily Customization
-* Fast, Friendly & Quality Support
-
-**Upgrade To Premium Plugin - <a href="https://awplife.com/wordpress-plugins/weather-effect-premium/">Click Here</a>**
-
-**Check Premium Plugin Demo - <a href="https://awplife.com/demo/weather-effect/">Click Here</a>**
-
-= Recommended Plugins =
-
-The following are other recommended plugins by the author:
-
-* [Portfolio Filter Gallery](https://wordpress.org/plugins/portfolio-filter-gallery/ "Best Portfolio Filter Gallery") - The Gallery Plugin to create awesome Portfolio Filter Gallery Plugin in minutes. 
-
-**Buy Premium Plugin - <a href="https://awplife.com/wordpress-plugins/portfolio-filter-gallery-premium/">Click Here</a>**
-
-* [Media Slider](https://wordpress.org/plugins/media-slider/ "Best Media Slider") - The Media Slider Plugin to create Media / Video Slider Gallery Plugin in minutes. 
-
-**Buy Premium Plugin - <a href="https://awplife.com/wordpress-plugins/media-slider-premium/">Click Here</a>**
-
-* [Modal Popup Box](https://wordpress.org/plugins/modal-popup-box/ "Best Modal Popup Box") -
-
-A set of experimental modal window appearance effects with CSS transitions and animations.An Easy And Powerful modal popup box plugin for WordPress. 
-
-**Buy Premium Plugin - <a href="https://awplife.com/wordpress-plugins/model-popup-box-premium/">Click Here</a>**
-
-* [Best Weather Effect Plugin](https://wordpress.org/plugins/weather-effect/ "Best Weather Effect Plugin") - Very Simple And Easy To Design Your Sites With Multiple Effects.
-
-**Buy Premium Plugin - <a href="https://awplife.com/wordpress-plugins/weather-effect-premium/">Click Here</a>**
-
-* [Best Grid Gallery Plugin](https://wordpress.org/plugins/new-grid-gallery/ "Best Grid Galley Plugin") - Easy Grid Gallery Widget - Displaying your image in Page & Post widget/sidebar area with very easy. Allows you to customize it to looking exactly what you want.
-
-**Buy Premium Plugin - <a href="https://awplife.com/wordpress-plugins/grid-gallery-premium/">Click Here</a>**
-
-* [Social Media Plugin](https://wordpress.org/plugins/new-social-media-widget/ "Social Media") - Display your Social Media Plugin into Widget/Sidebar in a WordPress site with very easily.
-
-**Buy Premium Plugin - <a href="https://awplife.com/wordpress-plugins/social-media-widget-premium//">Click Here</a>**
-
-* [Photo Gallery Plugin](https://wordpress.org/plugins/new-photo-gallery/ "Image Gallery Plugin") - Displays all  Photo Gallery, Video Gallery, Link Gallery, Map Gallery into Wordpress in just a few seconds.
-
-**Buy Premium Plugin - <a href="https://awplife.com/wordpress-plugins/photo-gallery-premium/">Click Here</a>**
-
-* [Image Gallery Plugin](https://wordpress.org/plugins/new-image-gallery/ "Image Gallery Plugin") - Gallery Lightbox - Displays all gallery images into the lightbox slider in just a few seconds.
-
-**Buy Premium Plugin - <a href="https://awplife.com/wordpress-plugins/image-gallery-premium/">Click Here</a>**
-
-* [Contact Form](https://wordpress.org/plugins/new-contact-form-widget/ "Contact Form Plugin") - Contact Form Widget Shortcode Plugin For WordPress.
-
-**Buy Premium Plugin - <a href="https://awplife.com/wordpress-plugins/contact-form-premium/">Click Here</a>**
-
-* [Slider Plugin](https://wordpress.org/plugins/responsive-slider-gallery/ "Slider Plugin") - Fully Responsive Slider Gallery For Wordpress ,You can Show Slider Into Page/Post & Widget/Sidebar By Generate Shortcode.
-
-**Buy Premium Plugin - <a href="https://awplife.com/wordpress-plugins/responsive-slider-gallery-premium/">Click Here</a>**
-
-* [Video Gallery Plugin](https://wordpress.org/plugins/new-video-gallery/ "Best Video Gallery Plugin") - The Best Responsive video gallery For Wordpress.
-
-**Buy Premium Plugin - <a href="https://awplife.com/wordpress-plugins/video-gallery-premium/">Click Here</a>**
-
-* [Facebook Like Share Follow Button](https://wordpress.org/plugins/new-facebook-like-share-follow-button/ "Facebook Like Share Follow Button") - Display your Facebook Like Share Follow Button Plugin into Page/Post & Widget/Sidebar in WordPress sites with very easily.
- 
-* [Google Plus Badge](https://wordpress.org/plugins/new-google-plus-badge/ "Google Plus Badge") - Google+ Badge & Profile Widget For Show Into Widget & sidebar
-
-* [Facebook Likebox Plugin](https://wordpress.org/plugins/facebook-likebox-widget-and-shortcode/ "Facebook Likebox Plugin") - Facebook Light Box Plugin For Wordpress 
- 
+1. Christmas snow falling effect on a website
+2. New Year celebration effect with balloons
+3. Admin settings page for Christmas effects
+4. Winter season settings configuration
+5. New Year settings page
 
 == Installation ==
 
-Install weather effect either via the WordPress.org plugin directory or by uploading the files to your server.
+= Automatic Installation =
 
-After activating the weather effect plugin, go to the plugin menu.
+1. Go to Plugins > Add New in your WordPress dashboard
+2. Search for "AWPLife Weather Effects"
+3. Click Install Now, then Activate
+4. Go to Weather Effect in the admin menu to configure
 
-Login into the WordPress admin dashboard. Go to menu: Weather Effect --> Add weather effect
+= Manual Installation =
 
-Add effects & configure settings and save.
+1. Download the plugin zip file
+2. Go to Plugins > Add New > Upload Plugin
+3. Upload the zip file and click Install Now
+4. Activate the plugin
+5. Go to Weather Effect in the admin menu
 
-Copy the shortcode and paste the shortcode into any Page / Post. And view page for weather effect output.
+= Setting Up =
 
-That's it. You're ready to go!
-
-== Frequently Asked Questions ==
-
-Have any queries?
-
-Please post your question on the plugin support forum
-
-https://wordpress.org/support/plugin/weather-effect/
+1. Go to Weather Effect in your admin menu
+2. Select a season or occasion
+3. Choose the falling objects
+4. Adjust speed and size if needed
+5. Click Preview to check the effect
+6. Click Save to apply
 
 
 == Changelog ==
 
-
-Version 1.5.9
-
-* Testing plugin for wordpress 6.8.2
-
-Version 1.5.8
-
-* Testing plugin for wordpress 6.8.1
-
-Version 1.5.7
-
-* Testing plugin for wordpress 6.7.2
-
-Version 1.5.6
-
-* Testing plugin for wordpress 6.7.1
-* Fatal error Fixed On multiple site
-
-Version 1.5.5
-
-* Testing plugin for wordpress 6.7.1
-* Bug Fix: Footer Bottom space and scroll bug fixed
-
-Version 1.5.4
-
-* Testing plugin for wordpress 6.6.2
-
-Version 1.5.3
-
-* Testing plugin for wordpress 6.6.1
-
-
-Version 1.5.2
-
-* Testing plugin for wordpress 6.5.4
-
-Version 1.5.1
-
-* Bug Fix: Fixed.
-* Additional changes: None.
-* Testing plugin for wordpress 6.4.3
-
-Version 1.5.0
-
-* Bug Fix: Fixed.
-* Additional changes: None.
-* Testing plugin for wordpress 6.4.2
-
-Version 1.4.9
-
-* Bug Fix: Fixed.
-* Additional changes: None.
-* Testing plugin for wordpress 6.4.2
-
-
-Version 1.4.8
-
-* Tested on version 6.3.2
-
-Version 1.4.7
-
-* Tested on version 6.3.1
-
-Version 1.4.6
-
-* Tested on version 6.2.1
-* Bug Fix: Fixed
-
-Version 1.4.5
-
-* Tested on version 6.1.1
-
-Version 1.4.4
-
-* misspelled spelling fixed.
-* Tested on version 6.1.1
-
-Version 1.4.3
-
-* Codding bugs fixed.
-* Tested on version 6.0.3
-
-Version 1.4.2
-
-* wordpress security issues fixed.
-* Enhancements: Compatible upto new version 6.0.1
-
-Version 1.4.1
-
-* Enhancements: Compatible upto new version 6.0.1
-
-Version 1.4.0
-
-* Enhancements: Compatible upto new version 5.9.3
-
-Version 1.3.9
-
-* Enhancements: Compatible upto new version 5.9
-
-Version 1.3.8
-
-* Enhancements: Compatible upto new version 5.8.2
-* wordpress security issues fixed
-
-Version 1.3.7
-
-* Enhancements: Compatible upto new version 5.8.1
-
-Version 1.3.6
-
-* Enhancements: Compatible upto new version 5.8
-* Fixed Security issues.
-
-Version 1.3.4
-
-* Enhancements: Compatible upto new version 5.8
-* Fixed Security issues.
-
-Version 1.3.3
-
-* Enhancements: Compatible upto new version 5.7.2
-
-Version 1.3.2
-
-* Enhancements: Compatible upto new version 5.7.1
-
-Version 1.3.1
-
-* Enhancements: Compatible upto new version 5.7
-
-Version 1.3.0
-
-* Enhancements: Compatible upto new version 5.6.2
-
-Version 1.2.10
-
-* Enhancements: Compatible upto new version 5.5.3
-* Bug Fix: Fixed
-
-Version 1.2.0
-
-*  Select Weather Occasion setting bug fixed
-
-Version 1.1.9
-
-* Enhancements: Compatible upto new version 5.5.3
-
-Version 1.1.8
-
-* Enhancements: Compatible upto new version 5.5.1
-
-Version 1.1.7
-
-* Enhancements: Compatible upto new version 5.5
-
-Version 1.1.6
-
-* Enhancements: Compatible upto new version 5.4.2
-
-Version 1.1.5
-
-* Enhancements: Compatible upto new version 5.4.1
-
-Version 1.1.4
-
-* Enhancements: Compatible upto new version 5.3.2
-
-
-Version 1.1.3
-* Enable and disable setting added
-
-Version 1.1.2
-* Post content conflict fixed
-
-Version 1.1.1
-* Snowfall effect setting bug fixed under Christmas Season
-* Typos fixed
-* Translation files updates (bank file and hindi file added)
-* File structure updated
-
-Version 1.1.0
-* Enhancements: Typos fixed
-* Enhancements: Compatible upto new version 5.3
-
-Version 1.0.10
-* Bug Fix: Fixed
-
-Version 1.0.9
-* Enhancements: Compatible upto new version 5.2.3
-
-
-Feature Enhancements: Version 1.0.8
-* Enhancements: Compatible upto new version 5.2.2
-* Bug Fix: Fixed
-* Additional changes: None,
-
-Feature Enhancements: Version 1.0.7
-* Enhancements: Compatible upto new version 5.2.2
-* Bug Fix: Fixed
-* Additional changes: None,
-
-Feature Enhancements: Version 1.0.6
-* Enhancements: Compatible upto new version 5.2.2
-* Bug Fix: Fixed
-* Additional changes: None,
-
-Feature Enhancements: Version 1.0.5
-* Enhancements: Compatible upto new version 5.2.1
-* Bug Fix: Fixed
-* Additional changes: None,
-
-Feature Enhancements: Version 1.0.4
-* Enhancements: Compatible upto new version 5.2.1
-* Bug Fix: Fixed
-* Additional changes: None,
-
-Feature Enhancements: Version 1.0.3
-* Enhancements: Compatible upto new version 5.1.1
-* Bug Fix: Fixed
-* Additional changes: None,
-
-Feature Enhancements: Version 1.0.2
-* Enhancements: Compatible upto new version 5.1.1
-* Bug Fix: Fixed
-* Additional changes: None,
-
-Feature Enhancements: Version 1.0.1
-* Enhancements: Compatible upto new version 5.1
-* Bug Fix: Fixed
-* Additional changes: None,
-
-Feature Enhancements: Version 0.3.0
-* Enhancements: Compatible upto new version 5.0.3
-* Bug Fix: Fixed
-* Additional changes: None,
-
-Feature Enhancements: Version 1.0.0
-* Enhancements: Compatible upto new version 5.0.3
-* Bug Fix: Fixed
-* Additional changes: None,
-
-Feature Enhancements: Version 0.2.9
-* Enhancements: Compatible upto new version 5.0.2
-* Bug Fix: Fixed
-* Additional changes: None,
-
-Feature Enhancements: Version 0.2.8
-* Enhancements: Compatible upto new version 5.0.2
-* Bug Fix: None
-* Additional changes: None,
-
-Feature Enhancements: Version 0.2.7
-* Enhancements: Compatible upto new version 5.0.1
-* Bug Fix: None
-* Additional changes: None,
-
-Feature Enhancements: Version 0.2.6
-* Enhancements: None,
-* Bug Fix: None
-* Additional changes: update links,
-
-Feature Enhancements: Version 0.2.5
-* Enhancements: Added Hindi translation file,
-* Bug Fix: None
-* Additional changes: None,
-
-Feature Enhancements: Version 0.2.4
-* Enhancements: Compatible upto new version 4.9.8
-* Bug Fix: Fixed
-* Additional changes: Yes, Hindi translation Added
-
-Feature Enhancements: Version 0.2.3
-* Enhancements: Compatible up to new version 4.8.2
-* Bug Fix: Fixed
-* Additional changes: None
-
-Feature Enhancements: Version 0.2.2
-* Enhancements: Compatible up to new version 4.8.1
-* Bug Fix: Fixed
-* Additional changes: None
-
-Feature Enhancements: Version 0.2.1
-* Enhancements: Compatible up to new version 4.8.1
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.2.0
-* Enhancements: Compatible up to new version 4.8
-* Bug Fix: Fast Falling Error Fixed
-* Additional changes: None
-
-Feature Enhancements: Version 0.1.11
-* Enhancements: Compatible up to new version 4.8
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.1.10
-* Enhancements: Compatible up to new version 4.8
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.1.9
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.1.8
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.1.7
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.1.6
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.1.5
-* Enhancements: None
-* Bug Fix: Yes, Bootstrap error fixed
-* Additional changes: Yes, Removed Some files
-
-Feature Enhancements: Version 0.1.4
-* Enhancements: None
-* Bug Fix: Yes, Bootstrap error fixed
-* Additional changes: Yes, Removed Some files
-
-Feature Enhancements: Version 0.1.3
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.1.2
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.1.1
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.1.0
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.0.12
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.0.11
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.0.10
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.0.9
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.0.8
-* Enhancements: Compatible For New WordPress Version
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.0.7
-* Enhancements: New Update
-* Bug Fix: None
-* Additional changes: None
-
-Feature Enhancements: Version 0.0.6
-* Enhancements: New Update
-* Bug Fix: None
-* Additional changes: Add More Falls 
-
-Feature Enhancements: Version 0.0.5
-* Enhancements: New Update
-* Bug Fix: None
-* Additional changes: Add More Falls, more occasion
-
-Feature Enhancements: Version 0.0.4
-* Enhancements: New Update
-* Bug Fix: None
-* Additional changes: Add More Falls
-
-Feature Enhancements: Version 0.0.3
-* Enhancements: New Update
-* Bug Fix: Gift Falls
-* Additional changes: Add More Falls
-
-Feature Enhancements: Version 0.0.2
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: Add Falls
-
-Feature Enhancements: Version 0.0.1
-* Enhancements: None
-* Bug Fix: None
-* Additional changes: None
+= 1.6.0 =
+* Security: Hardened administrative settings with capability checks and nonces.
+* Security: Implemented robust output escaping and sanitization across all frontend effects.
+* Standards: Migrated asset loading to standard WordPress hooks (wp_enqueue_scripts/wp_footer).
+* Standards: Applied unique prefixes to all constants and functions to prevent namespace collisions.
+* Feature: Added new "Our Themes" and "Our Plugins" submenus to showcase the ecosystem.
+* Optimization: Removed unused files and optimized database queries.
+
+= 1.5.9 =
+* Tested: WordPress 6.8.3 compatibility
+
+= 1.5.8 =
+* Tested: WordPress 6.8.1 compatibility
+
+= 1.5.7 =
+* Tested: WordPress 6.7.2 compatibility
+
+= 1.5.6 =
+* Tested: WordPress 6.7.1 compatibility
+* Fixed: Fatal error on multisite installations
+
+= 1.5.5 =
+* Tested: WordPress 6.7.1 compatibility
+* Fixed: Footer bottom space and scroll bug
+
+= 1.5.4 =
+* Tested: WordPress 6.6.2 compatibility
+
+= 1.5.3 =
+* Tested: WordPress 6.6.1 compatibility
+
+= 1.5.2 =
+* Tested: WordPress 6.5.4 compatibility
+
+= 1.5.1 =
+* Fixed: Minor bug fixes
+* Tested: WordPress 6.4.3 compatibility
+
+= 1.5.0 =
+* Fixed: Minor bug fixes
+* Tested: WordPress 6.4.2 compatibility
 
 == Upgrade Notice ==
-This is an initial release. Start with version 0.0.1. and share your feedback <a href="https://wordpress.org/support/view/plugin-reviews/weather-effect/">here</a>.
+
+= 1.6.0 =
+Major security and performance refactor. Recommended update for all users.
+
+= 1.5.9 =
+Tested with WordPress 6.8.3 - Recommended update for all users.
+
+= 1.5.6 =
+Important: Fixed fatal error on multisite installations.
+
+= 1.5.5 =
+Fixed footer space and scroll bug. Recommended update.
+
+= 1.4.2 =
+Security improvements. Recommended update for all users.

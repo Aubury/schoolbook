@@ -81,21 +81,28 @@ if ( ! class_exists( 'AWS_Markup' ) ) :
 
             // generate quick filters array
             $filters_arr = AWS_Helpers::get_quick_filters( $filters, $this->form_id );
+            $filter_current_id = 0;
 
+            // select current filter id for search results page
             if ( isset( $_GET['type_aws'] ) && isset( $_GET['aws_id'] ) && isset( $_GET['aws_filter'] ) ) {
                 $current_id = sanitize_text_field( $_GET['aws_id'] );
-                $filter_current_id = sanitize_text_field( $_GET['aws_filter'] );
-
                 if ( $this->form_id == $current_id && ! empty( $filters_arr ) && isset( $filters_arr['filters'] ) ) {
+                    $filter_current_id = sanitize_text_field( $_GET['aws_filter'] );
+                }
+            }
 
-                    foreach ( $filters_arr['filters'] as $filter_i ) {
-                        if ( isset( $filter_i[$filter_current_id] ) ) {
-                            $filter_current = $filter_current_id;
-                            $filter_current_name = $filter_i[$filter_current_id];
-                            break;
-                        }
+            // complex filters preselection for taxonomy pages
+            if ( ! empty( $filters_arr ) && isset( $filters_arr['filters'] ) && isset( $filters_arr['preselect'] ) && $filters_arr['preselect'] ) {
+                $filter_current_id = $filters_arr['preselect'];
+            }
+
+            if ( $filter_current_id ) {
+                foreach ( $filters_arr['filters'] as $filter_i ) {
+                    if ( isset( $filter_i[$filter_current_id] ) ) {
+                        $filter_current = $filter_current_id;
+                        $filter_current_name = $filter_i[$filter_current_id];
+                        break;
                     }
-
                 }
             }
 

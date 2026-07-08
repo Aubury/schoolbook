@@ -54,6 +54,137 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
         }
 
         /*
+         * Check whether current rule uses positive operator
+         *
+         * @param string|null $operator Rule operator.
+         * @return bool
+         */
+        private function is_positive_operator( $operator = null ) {
+
+            if ( null === $operator ) {
+                $operator = isset( $this->rule['operator'] ) ? $this->rule['operator'] : '';
+            }
+
+            return in_array( $operator, array( 'equal', 'in_list' ), true );
+
+        }
+
+        /*
+         * Get current rule values as array
+         *
+         * @param mixed|null $value Rule value.
+         * @return array
+         */
+        private function get_rule_values( $value = null ) {
+
+            if ( null === $value ) {
+                $value = isset( $this->rule['value'] ) ? $this->rule['value'] : array();
+            }
+
+            if ( ! is_array( $value ) ) {
+                $value = '' !== $value && null !== $value ? array( $value ) : array();
+            }
+
+            $value = array_map( 'strval', $value );
+            $value = array_filter( $value, 'strlen' );
+
+            return array_values( $value );
+
+        }
+
+        /*
+         * Check if current rule uses wildcard value for multiselect fields
+         *
+         * Covers both the 'aws_any' sentinel and empty arrays left by old migrations.
+         *
+         * @return bool
+         */
+        private function has_rule_wildcard_value() {
+            return $this->has_rule_any_value() || $this->has_rule_empty_value();
+        }
+
+        /*
+         * Check if the rule value is the 'aws_any' sentinel (match everything).
+         *
+         * @return bool
+         */
+        private function has_rule_any_value() {
+
+            $raw_value = isset( $this->rule['value'] ) ? $this->rule['value'] : null;
+
+            if ( ! is_array( $raw_value ) && 'aws_any' === $raw_value ) {
+                return true;
+            }
+
+            return in_array( 'aws_any', $this->get_rule_values( $raw_value ), true );
+
+        }
+
+        /*
+         * Check if the rule value is an empty array (no items selected).
+         *
+         * @return bool
+         */
+        private function has_rule_empty_value() {
+
+            $raw_value = isset( $this->rule['value'] ) ? $this->rule['value'] : null;
+
+            return is_array( $raw_value ) && empty( $this->get_rule_values( $raw_value ) ) && ! $this->has_rule_any_value();
+
+        }
+
+        /*
+         * Check if wildcard value should behave as a positive (include) condition.
+         *
+         * - aws_any  : standard semantics — in_list = include (show), not_in_list = exclude (hide).
+         * - empty [] : reversed semantics — in_list = nothing to include (hide), not_in_list = nothing to exclude (show).
+         *
+         * @return bool
+         */
+        private function is_wildcard_positive_operator() {
+
+            if ( $this->has_rule_any_value() ) {
+                return $this->is_positive_operator();
+            }
+
+            $operator = isset( $this->rule['operator'] ) ? $this->rule['operator'] : '';
+
+            if ( 'not_in_list' === $operator ) {
+                return true;
+            }
+
+            if ( 'in_list' === $operator ) {
+                return false;
+            }
+
+            return $this->is_positive_operator( $operator );
+
+        }
+
+        /*
+         * Return SQL relation for list rules
+         *
+         * @return string
+         */
+        private function get_list_relation() {
+
+            return $this->is_positive_operator() ? 'IN' : 'NOT IN';
+
+        }
+
+        /*
+         * Convert boolean match result to SQL stub
+         *
+         * @param bool $match Rule match state.
+         * @return string
+         */
+        private function get_match_sql( $match ) {
+
+            return $this->is_positive_operator() === (bool) $match ? '( 1=1 )' : '( 1=2 )';
+
+        }
+
+        /*
          * Filter products results and output SQL string
          */
         public function filter() {
@@ -141,18 +272,29 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
             foreach( $group_rules as $condition_rule ) {
 
                 if ( array_search( $condition_rule['param'], $terms_rules ) !== false ) {
-                    if ( $condition_rule['operator'] === 'equal' ) {
-                        if ( $condition_rule['value'] === 'aws_any' ) {
+                    $operator = isset( $condition_rule['operator'] ) ? $condition_rule['operator'] : '';
+                    $values = isset( $condition_rule['value'] ) ? $condition_rule['value'] : array();
+                    $values = is_array( $values ) ? array_values( array_filter( $values, 'strlen' ) ) : array( $values );
+
+                    $is_any = in_array( 'aws_any', $values, true );
+                    $is_positive = in_array( $operator, array( 'equal', 'in_list' ), true );
+
+                    if ( $is_positive ) {
+                        if ( $is_any ) {
                             $taxonomies_equal_array[] = $wpdb->prepare( '%s', $condition_rule['suboption'] );
+                        } elseif ( ! empty( $values ) ) {
+                            $terms_equal_array = array_merge( $terms_equal_array, $values );
                         } else {
-                            $terms_equal_array[] = $condition_rule['value'];
+                            // in_list + [] → nothing to include → always hide
+                            $new_group_rules[] = array( 'param' => 'product_terms', 'operator' => 'equal', 'value' => array() );
                         }
                     } else {
-                        if ( $condition_rule['value'] === 'aws_any' ) {
+                        if ( $is_any ) {
                             $taxonomies_not_equal_array[] = $wpdb->prepare( '%s', $condition_rule['suboption'] );
-                        } else {
-                            $terms_not_equal_array[] = $condition_rule['value'];
+                        } elseif ( ! empty( $values ) ) {
+                            $terms_not_equal_array = array_merge( $terms_not_equal_array, $values );
                         }
+                        // else: not_in_list + [] → nothing to exclude → always show → no constraint needed
                     }
                     continue;
                 }
@@ -190,32 +332,37 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
                 return '';
             }
 
-            if ( 'aws_any' === $this->rule['value'] ) {
-                if ( $this->rule['operator'] === 'equal' ) {
-                    return '( 1=1 )';
-                } else {
-                    return "( 1=2 )";
+            if ( $this->has_rule_wildcard_value() ) {
+                return $this->is_wildcard_positive_operator() ? '( 1=1 )' : '( 1=2 )';
+            }
+
+            $filter_products = array();
+            $relation = $this->get_list_relation();
+            $product_ids = $this->get_rule_values();
+
+            foreach ( $product_ids as $product_id ) {
+                $product = wc_get_product( $product_id );
+
+                if ( ! is_a( $product, 'WC_Product' ) ) {
+                    continue;
+                }
+
+                $filter_products[] = $product_id;
+
+                if ( $product->is_type( 'variable' ) && method_exists( $product, 'get_children' ) ) {
+                    $filter_products = array_merge( $filter_products, $product->get_children() );
                 }
             }
 
-            $product = wc_get_product( $this->rule['value'] );
-
-            $filter_products = array();
-            $filter_products[] = $this->rule['value'];
-            $relation = $this->rule['operator'] === 'equal' ? 'IN' : 'NOT IN';
-
-            if ( ! is_a( $product, 'WC_Product' ) ) {
-               return '';
+            if ( empty( $filter_products ) ) {
+                return 'IN' === $relation ? '( 1=2 )' : '( 1=1 )';
             }
 
             /*
              * Products filter
              */
             $filter_products = apply_filters( 'aws_products_filter', $filter_products, $relation, $this->form_id, $this->filter_id );
-
-            if ( $product->is_type( 'variable' ) && method_exists( $product, 'get_children' ) ) {
-                $filter_products = array_merge( $filter_products, $product->get_children() );
-            }
+            $filter_products = array_unique( array_map( 'intval', $filter_products ) );
 
             $product_ids = implode( ',', $filter_products );
 
@@ -232,12 +379,14 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
 
             global $wpdb;
 
-            $relation = $this->rule['operator'] === 'equal' ? 'IN' : 'NOT IN';
+            $relation = $this->get_list_relation();
 
-            /*
-            * Taxonomies filter
-            */
             $terms = apply_filters( 'aws_tax_filter', $this->rule['value'], $relation, $this->form_id, $this->filter_id );
+
+            if ( is_array( $terms ) && empty( $terms ) ) {
+                return 'IN' === $relation ? '( 1=2 )' : '( 1=1 )';
+            }
+
             $terms = implode( ',', $terms );
 
             /**
@@ -272,8 +421,14 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
 
             global $wpdb;
 
+            $relation = $this->get_list_relation();
+
+            if ( is_array( $this->rule['value'] ) && empty( $this->rule['value'] ) ) {
+                return 'IN' === $relation ? '( 1=2 )' : '( 1=1 )';
+            }
+
             $taxonomies = implode( ',', $this->rule['value'] );
-            $relation = $this->rule['operator'] === 'equal' ? 'IN' : 'NOT IN';
+
 
             $string = "( id {$relation} (
                    SELECT $wpdb->posts.ID
@@ -294,41 +449,66 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
          */
         private function match_product_type() {
 
+            if ( $this->has_rule_wildcard_value() ) {
+                return $this->is_wildcard_positive_operator() ? '( 1=1 )' : '( 1=2 )';
+            }
+
+            $values = $this->get_rule_values();
+
+            if ( empty( $values ) ) {
+                return $this->is_positive_operator() ? '( 1=2 )' : '( 1=1 )';
+            }
+
+            $strings = array();
+
+            foreach ( $values as $type ) {
+                $this->rule['value'] = $type;
+                $strings[] = $this->match_product_type_single();
+            }
+
+            return '( ' . implode( $this->is_positive_operator() ? ' OR ' : ' AND ', $strings ) . ' )';
+
+        }
+
+        /*
+         * Product type single value rule
+         */
+        private function match_product_type_single() {
+
             global $wpdb;
 
             $type = $this->rule['value'];
-            $relation = $this->rule['operator'] === 'equal' ? '=' : '!=';
+            $relation = $this->is_positive_operator() ? '=' : '!=';
 
             if ( $type === 'simple') {
                 $pr_type = AWS_PRO()->table_updates->get_product_type_code( 'product' );
                 $pr_type = is_string( $pr_type ) ? "'" . $pr_type . "'" : $pr_type;
-                $string = "( type {$relation} {$pr_type} )";
+                return "( type {$relation} {$pr_type} )";
             } elseif ( $type === 'variable') {
                 $pr_type = AWS_PRO()->table_updates->get_product_type_code( 'var' );
                 $pr_type = is_string( $pr_type ) ? "'" . $pr_type . "'" : $pr_type;
-                $string = "( type {$relation} {$pr_type} )";
+                return "( type {$relation} {$pr_type} )";
             } elseif ( $type === 'variation') {
                 $pr_type = AWS_PRO()->table_updates->get_product_type_code( 'child' );
                 $pr_type = is_string( $pr_type ) ? "'" . $pr_type . "'" : $pr_type;
-                $string = "( type {$relation} {$pr_type} )";
-            } else {
-                $relation = $this->rule['operator'] === 'equal' ? 'IN' : 'NOT IN';
-                $string = "( id {$relation} (
-                   SELECT $wpdb->posts.ID
-                   FROM $wpdb->term_relationships
-                   JOIN $wpdb->posts
-                   ON ( $wpdb->term_relationships.object_id = $wpdb->posts.post_parent OR $wpdb->term_relationships.object_id = $wpdb->posts.ID )
-                   WHERE $wpdb->term_relationships.term_taxonomy_id IN ( 
-                       select term_taxonomy_id from $wpdb->term_taxonomy WHERE term_id IN (
-                            SELECT term_id
-                            FROM $wpdb->terms
-                            WHERE slug = '{$type}'
-                       )
-                   )
-                ))";
+                return "( type {$relation} {$pr_type} )";
             }
 
-            return $string;
+            $relation = $this->get_list_relation();
+
+            return "( id {$relation} (
+               SELECT $wpdb->posts.ID
+               FROM $wpdb->term_relationships
+               JOIN $wpdb->posts
+               ON ( $wpdb->term_relationships.object_id = $wpdb->posts.post_parent OR $wpdb->term_relationships.object_id = $wpdb->posts.ID )
+               WHERE $wpdb->term_relationships.term_taxonomy_id IN ( 
+                   select term_taxonomy_id from $wpdb->term_taxonomy WHERE term_id IN (
+                        SELECT term_id
+                        FROM $wpdb->terms
+                        WHERE slug = '{$type}'
+                   )
+               )
+            ))";
 
         }
 
@@ -367,16 +547,25 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
          */
         private function match_product_visibility() {
 
-            $visibility = $this->rule['value'];
-            $relation = $this->rule['operator'] === 'equal' ? '=' : '!=';
-
-            $visibility = AWS_PRO()->table_updates->get_visibility_code( $visibility );
-
-            if ( is_string( $visibility ) ) {
-                $string = "( visibility {$relation} '{$visibility}' )";
-            } else {
-                $string = "( visibility {$relation} {$visibility} )";
+            if ( $this->has_rule_wildcard_value() ) {
+                return $this->is_wildcard_positive_operator() ? '( 1=1 )' : '( 1=2 )';
             }
+
+            $visibilities = array();
+            $relation = $this->get_list_relation();
+
+            foreach ( $this->get_rule_values() as $visibility ) {
+                $visibility = AWS_PRO()->table_updates->get_visibility_code( $visibility );
+                $visibilities[] = is_string( $visibility ) ? "'" . esc_sql( $visibility ) . "'" : intval( $visibility );
+            }
+
+            $visibilities = array_unique( $visibilities );
+
+            if ( empty( $visibilities ) ) {
+                return 'IN' === $relation ? '( 1=2 )' : '( 1=1 )';
+            }
+
+            $string = '( visibility ' . $relation . ' ( ' . implode( ',', $visibilities ) . ' ) )';
 
             return $string;
 
@@ -401,20 +590,33 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
          */
         private function match_product_stock_status() {
 
-            $relation = $this->rule['operator'] === 'equal' ? 'IN' : 'NOT IN';
-
-            switch ( $this->rule['value'] ) {
-                case 'instock':
-                    $val = 1;
-                    break;
-                case 'outofstock':
-                    $val = 0;
-                    break;
-                default:
-                    $val = 2;
+            if ( $this->has_rule_wildcard_value() ) {
+                return $this->is_wildcard_positive_operator() ? '( 1=1 )' : '( 1=2 )';
             }
 
-            $string = "( in_stock {$relation} ( {$val} ) )";
+            $relation = $this->get_list_relation();
+            $values = array();
+
+            foreach ( $this->get_rule_values() as $stock_status ) {
+                switch ( $stock_status ) {
+                    case 'instock':
+                        $values[] = 1;
+                        break;
+                    case 'outofstock':
+                        $values[] = 0;
+                        break;
+                    default:
+                        $values[] = 2;
+                }
+            }
+
+            $values = array_unique( array_map( 'intval', $values ) );
+
+            if ( empty( $values ) ) {
+                return 'IN' === $relation ? '( 1=2 )' : '( 1=1 )';
+            }
+
+            $string = '( in_stock ' . $relation . ' ( ' . implode( ',', $values ) . ' ) )';
 
             return $string;
 
@@ -618,17 +820,26 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
 
             global $wpdb;
 
-            $relation = $this->rule['operator'] === 'equal' ? 'IN' : 'NOT IN';
-            $meta_name = $this->rule['suboption'];
-            $meta_value = $this->rule['value'] === 'aws_any' ? '' : $this->rule['value'];
+            if ( $this->has_rule_wildcard_value() ) {
+                return $this->is_wildcard_positive_operator() ? '( 1=1 )' : '( 1=2 )';
+            }
 
-            if ( $meta_value ) {
+            $relation = $this->get_list_relation();
+            $meta_name = $this->rule['suboption'];
+            $meta_values = $this->get_rule_values();
+
+            if ( $meta_values ) {
+
+                $value_conditions = array();
+                foreach ( $meta_values as $meta_value ) {
+                    $value_conditions[] = $wpdb->prepare( 'meta_value LIKE %s', '%' . $wpdb->esc_like( $meta_value ) . '%' );
+                }
 
                 $string = $wpdb->prepare( "( id {$relation} (
                       SELECT post_id
                       FROM $wpdb->postmeta
-                      WHERE meta_key = '_product_attributes' AND meta_value LIKE %s AND meta_value LIKE %s
-                ))", '%' . $wpdb->esc_like( $meta_name ) . '%', '%' . $wpdb->esc_like( $meta_value ) . '%' );
+                      WHERE meta_key = '_product_attributes' AND meta_value LIKE %s AND ( " . implode( ' OR ', $value_conditions ) . " )
+                ))", '%' . $wpdb->esc_like( $meta_name ) . '%' );
 
             } else {
 
@@ -651,9 +862,10 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
 
             global $wpdb;
 
-            $relation = $this->rule['operator'] === 'equal' ? 'IN' : 'NOT IN';
+            $relation = $this->get_list_relation();
             $taxonomy = $this->rule['suboption'];
-            $term = $this->rule['value'] === 'aws_any' ? '' : $this->rule['value'];
+            $term_values = $this->has_rule_wildcard_value() ? array() : array_map( 'intval', $this->get_rule_values() );
+            $term = implode( ',', $term_values );
 
             /**
              * Include or not child terms for tax filter
@@ -663,7 +875,7 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
 
             $include_childs = '';
             if ( $filter_tax_include_childs ) {
-                $include_childs_operator = $this->rule['operator'] === 'equal' ? 'OR' : 'AND';
+                $include_childs_operator = 'IN' === $relation ? 'OR' : 'AND';
                 $include_childs = " {$include_childs_operator} {$wpdb->term_taxonomy}.parent {$relation} ( {$term} ) {$include_childs_operator} {$wpdb->term_taxonomy}.parent {$relation} ( SELECT term_id from {$wpdb->term_taxonomy} WHERE parent IN ({$term}) )";
             }
             
@@ -672,6 +884,10 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
                 $string = "( {$wpdb->terms}.term_id {$relation} ( {$term} ) {$include_childs} )";
 
             } else {
+
+                if ( $this->has_rule_wildcard_value() ) {
+                    $relation = $this->is_wildcard_positive_operator() ? 'IN' : 'NOT IN';
+                }
 
                 $string = "( {$wpdb->term_taxonomy}.taxonomy {$relation} ( '{$taxonomy}' ) )";
 
@@ -746,8 +962,16 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
          */
         private function match_user_page_user() {
 
-            $user_id = $this->rule['value'];
-            $relation = $this->rule['operator'] === 'equal' ? 'IN' : 'NOT IN';
+            if ( $this->has_rule_wildcard_value() ) {
+                return $this->is_wildcard_positive_operator() ? '( 1=1 )' : '( 1=2 )';
+            }
+
+            $user_id = implode( ',', array_map( 'intval', $this->get_rule_values() ) );
+            $relation = $this->get_list_relation();
+
+            if ( ! $user_id ) {
+                return 'IN' === $relation ? '( 1=2 )' : '( 1=1 )';
+            }
 
             $string = "(ID {$relation} ( {$user_id} ))";
 
@@ -760,10 +984,14 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
          */
         private function match_user_page_role() {
 
-            $relation = $this->rule['operator'] === 'equal' ? 'IN' : 'NOT IN';
+            if ( $this->has_rule_wildcard_value() ) {
+                return $this->is_wildcard_positive_operator() ? '( 1=1 )' : '( 1=2 )';
+            }
+
+            $relation = $this->get_list_relation();
             $users_array = array();
             $users_args = array(
-                'role__in' => $this->rule['value'],
+                'role__in' => $this->get_rule_values(),
             );
 
             $users = get_users( $users_args );
@@ -823,16 +1051,11 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
          */
         private function match_current_user() {
 
-            $value = intval( $this->rule['value'] );
+            $value = array_map( 'intval', $this->get_rule_values() );
             $current_user_id = get_current_user_id();
+            $match = in_array( $current_user_id, $value, true );
 
-            if ( $this->rule['operator'] === 'equal' && $value === $current_user_id ) {
-                return "( 1=1 )";
-            } elseif ( $this->rule['operator'] === 'not_equal' && $value !== $current_user_id ) {
-                return "( 1=1 )";
-            } else {
-                return "( 1=2 )";
-            }
+            return $this->get_match_sql( $match );
 
         }
 
@@ -841,7 +1064,7 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
          */
         private function match_current_user_role() {
 
-            $value = $this->rule['value'];
+            $values = $this->get_rule_values();
 
             if ( is_user_logged_in() ) {
                 global $current_user;
@@ -850,15 +1073,9 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
                 $current_user_roles = array( 'non-logged' );
             }
 
-            $match = array_search( $value, $current_user_roles ) !== false;
+            $match = (bool) array_intersect( $values, $current_user_roles );
 
-            if ( $this->rule['operator'] === 'equal' && $match ) {
-                return "( 1=1 )";
-            } elseif ( $this->rule['operator'] === 'not_equal' && ! $match ) {
-                return "( 1=1 )";
-            } else {
-                return "( 1=2 )";
-            }
+            return $this->get_match_sql( $match );
 
         }
 
@@ -887,16 +1104,9 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
         public function match_current_page() {
 
             $value = isset( $_REQUEST['aws_page'] ) ? intval( $_REQUEST['aws_page'] ) : AWS_Helpers::get_current_page_id();
+            $match = in_array( $value, array_map( 'intval', $this->get_rule_values() ), true );
 
-            $match = intval( $this->rule['value'] ) === $value;
-
-            if ( $this->rule['operator'] === 'equal' && $match ) {
-                return "( 1=1 )";
-            } elseif ( $this->rule['operator'] === 'not_equal' && ! $match ) {
-                return "( 1=1 )";
-            } else {
-                return "( 1=2 )";
-            }
+            return $this->get_match_sql( $match );
 
         }
 
@@ -917,15 +1127,9 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
                 $value = 'default';
             }
 
-            $match = $this->rule['value'] === $value;
+            $match = in_array( $value, $this->get_rule_values(), true );
 
-            if ( $this->rule['operator'] === 'equal' && $match ) {
-                return "( 1=1 )";
-            } elseif ( $this->rule['operator'] === 'not_equal' && ! $match ) {
-                return "( 1=1 )";
-            } else {
-                return "( 1=2 )";
-            }
+            return $this->get_match_sql( $match );
 
         }
 
@@ -979,15 +1183,9 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
                 $page_type[] = 'tax_page';
             }
 
-            $match = in_array( $this->rule['value'], $page_type );
+            $match = (bool) array_intersect( $this->get_rule_values(), $page_type );
 
-            if ( $this->rule['operator'] === 'equal' && $match ) {
-                return "( 1=1 )";
-            } elseif ( $this->rule['operator'] === 'not_equal' && ! $match ) {
-                return "( 1=1 )";
-            } else {
-                return "( 1=2 )";
-            }
+            return $this->get_match_sql( $match );
 
         }
 
@@ -999,7 +1197,7 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
             $page_id = isset( $_REQUEST['aws_page'] ) ? intval( $_REQUEST['aws_page'] ) : AWS_Helpers::get_current_page_id();
 
             $tax = $this->rule['suboption'];
-            $term = $this->rule['value'] === 'aws_any' ? '' : intval( $this->rule['value'] );
+            $terms = $this->has_rule_wildcard_value() ? array() : array_map( 'intval', $this->get_rule_values() );
 
             $term_obj = get_term( $page_id );
 
@@ -1008,18 +1206,16 @@ if ( ! class_exists( 'AWS_Search_Filters' ) ) :
             }
 
             if ( 'attributes' === $tax ) {
-                $match = $term ? $term === $term_obj->term_id : ( $term === $term_obj->term_id && taxonomy_is_product_attribute( $term_obj->taxonomy ) );
+                $match = $terms ? in_array( intval( $term_obj->term_id ), $terms, true ) : taxonomy_is_product_attribute( $term_obj->taxonomy );
             } else {
-                $match = $term ? $term === $term_obj->term_id : $tax === $term_obj->taxonomy;
+                $match = $terms ? in_array( intval( $term_obj->term_id ), $terms, true ) : $tax === $term_obj->taxonomy;
             }
 
-            if ( $this->rule['operator'] === 'equal' && $match ) {
-                return "( 1=1 )";
-            } elseif ( $this->rule['operator'] === 'not_equal' && ! $match ) {
-                return "( 1=1 )";
-            } else {
-                return "( 1=2 )";
+            if ( $this->has_rule_wildcard_value() ) {
+                return $this->is_wildcard_positive_operator() === (bool) $match ? '( 1=1 )' : '( 1=2 )';
             }
+
+            return $this->get_match_sql( $match );
 
         }
 

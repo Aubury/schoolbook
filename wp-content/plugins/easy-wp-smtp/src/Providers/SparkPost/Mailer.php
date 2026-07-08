@@ -474,6 +474,26 @@ class Mailer extends MailerAbstract {
 	}
 
 	/**
+	 * Get the error code from the SparkPost API response.
+	 *
+	 * @since 2.15.0
+	 *
+	 * @return string
+	 */
+	public function get_response_error_code() {
+
+		if ( ! empty( $this->response ) ) {
+			$body = wp_remote_retrieve_body( $this->response );
+
+			if ( ! empty( $body->errors ) && is_array( $body->errors ) && ! empty( $body->errors[0]->code ) ) {
+				return $body->errors[0]->code;
+			}
+		}
+
+		return parent::get_response_error_code();
+	}
+
+	/**
 	 * Get mailer debug information, that is helpful during support.
 	 *
 	 * @since 2.4.0

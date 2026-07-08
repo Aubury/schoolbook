@@ -87,12 +87,9 @@ class Loco_error_Exception extends Exception implements JsonSerializable {
 
     /**
      * @param int $depth number of levels up from callee
-     * @return Loco_error_Exception
      */
-    public function setCallee( $depth = 0, array $stack = null ){
-        if( is_null($stack) ) {
-            $stack = debug_backtrace(0);
-        }
+    public function setCallee( int $depth = 0 ):self {
+        $stack = debug_backtrace(0);
         $callee = $stack[$depth];
         $this->_file = $callee['file'];
         $this->_line = $callee['line'];
@@ -112,6 +109,7 @@ class Loco_error_Exception extends Exception implements JsonSerializable {
         // separate error log for cli tests
         if( 'cli' === PHP_SAPI && defined('LOCO_TEST_DATA_ROOT') ){
             error_log( '['.date('c').'] '.$text."\n", 3, 'debug.log' );
+            //fwrite( STDERR, $this->getType().': '.$this->getMessage()."\n" );
         }
         // Else write to default PHP log, but note that WordPress may have set this to wp-content/debug.log.
         // If no `error_log` is set this will send message to the SAPI, so check your httpd/fast-cgi errors too.

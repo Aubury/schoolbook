@@ -5,6 +5,8 @@
 
 namespace Automattic\WooCommerce\Admin\Notes;
 
+use WC_Site_Tracking;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -24,6 +26,7 @@ class Notes {
 		add_action( 'admin_init', array( __CLASS__, 'schedule_unsnooze_notes' ) );
 		add_action( 'admin_init', array( __CLASS__, 'possibly_delete_survey_notes' ) );
 		add_action( 'update_option_woocommerce_show_marketplace_suggestions', array( __CLASS__, 'possibly_delete_marketing_notes' ), 10, 2 );
+		add_action( self::UNSNOOZE_HOOK, array( __CLASS__, 'unsnooze_notes' ) );
 	}
 
 	/**
@@ -60,8 +63,8 @@ class Notes {
 				$notes[ $note_id ]['date_created']  = $note->get_date_created( $context );
 				$notes[ $note_id ]['date_reminder'] = $note->get_date_reminder( $context );
 				$notes[ $note_id ]['actions']       = $note->get_actions( $context );
-				$notes[ $note_id ]['layout']        = $note->get_layout( $context );
-				$notes[ $note_id ]['image']         = $note->get_image( $context );
+				$notes[ $note_id ]['layout']        = 'plain';
+				$notes[ $note_id ]['image']         = '';
 				$notes[ $note_id ]['is_deleted']    = $note->get_is_deleted( $context );
 			} catch ( \Exception $e ) {
 				wc_caught_exception( $e, __CLASS__ . '::' . __FUNCTION__, array( $note_id ) );
@@ -406,7 +409,6 @@ class Notes {
 		wp_set_current_user( $user_id );
 		self::record_tracks_event_without_cookies( $event_name, $params );
 		wp_set_current_user( $current_user_id );
-
 	}
 
 	/**
@@ -423,7 +425,7 @@ class Notes {
 		unset( $_COOKIE['tk_ai'] );
 		wc_admin_record_tracks_event( $event_name, $params );
 		if ( isset( $anon_id ) ) {
-			setcookie( 'tk_ai', $anon_id );
+			WC_Site_Tracking::set_tracking_cookie( 'tk_ai', $anon_id );
 		}
 	}
 

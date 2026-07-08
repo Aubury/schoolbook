@@ -2,6 +2,8 @@
 
 namespace EasyWPSMTP\Tasks;
 
+use ActionScheduler;
+
 /**
  * Class Task.
  *
@@ -191,7 +193,11 @@ class Task {
 	 */
 	public function params() {
 
-		$this->params = func_get_args();
+		$args = func_get_args();
+
+		if ( ! empty( $args ) ) {
+			$this->params = $args;
+		}
 
 		return $this;
 	}
@@ -341,5 +347,103 @@ class Task {
 		as_unschedule_all_actions( $this->action );
 
 		return true;
+	}
+
+	/**
+	 * Cancel all occurrences of this task,
+	 * preventing it from re-registering itself.
+	 *
+	 * @since 2.6.0
+	 */
+	public function cancel_force() { // phpcs:ignore WPForms.PHP.HooksMethod.InvalidPlaceForAddingHooks
+
+		add_action( 'shutdown', [ $this, 'cancel' ], PHP_INT_MAX );
+	}
+
+	/**
+	 * Remove completed occurrences of this task.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @param int $limit The amount of rows to remove.
+	 */
+	protected function remove_completed( $limit = 0 ) {
+
+		// Make sure that all used functions, classes, and methods exist.
+		if (
+			! function_exists( 'as_get_scheduled_actions' ) ||
+			! class_exists( 'ActionScheduler' ) ||
+			! method_exists( 'ActionScheduler', 'store' ) ||
+			! class_exists( 'ActionScheduler_Store' ) ||
+			! method_exists( 'ActionScheduler_Store', 'delete_action' )
+		) {
+			return;
+		}
+
+		// Cap the query result to prevent performing a large number of individual delete actions at once.
+		$per_page = min( 10, max( 0, intval( $limit ) ) );
+
+		// Get completed occurrences of this task.
+		$action_ids = as_get_scheduled_actions(
+			[
+				'hook'     => $this->action,
+				'status'   => 'complete',
+				'per_page' => $per_page,
+			],
+			'ids'
+		);
+
+		if ( empty( $action_ids ) ) {
+			return;
+		}
+
+		// Delete actions through the Action Scheduler API so that associated
+		// `actionscheduler_logs` rows are cleaned up via the
+		// `action_scheduler_deleted_action` hook.
+		foreach ( $action_ids as $action_id ) {
+			ActionScheduler::store()->delete_action( $action_id );
+		}
+	}
+
+	/**
+	 * Remove pending occurrences of this task.
+	 *
+	 * @since 2.8.0
+	 *
+	 * @param int $limit The amount of rows to remove.
+	 */
+	protected function remove_pending( $limit = 0 ) {
+
+		// Make sure that all used functions, classes, and methods exist.
+		if (
+			! function_exists( 'as_get_scheduled_actions' ) ||
+			! class_exists( 'ActionScheduler' ) ||
+			! method_exists( 'ActionScheduler', 'store' ) ||
+			! class_exists( 'ActionScheduler_Store' ) ||
+			! method_exists( 'ActionScheduler_Store', 'delete_action' )
+		) {
+			return;
+		}
+
+		$per_page = max( 0, intval( $limit ) );
+
+		// Get all pending license check actions.
+		$action_ids = as_get_scheduled_actions(
+			[
+				'hook'     => $this->action,
+				'status'   => 'pending',
+				'per_page' => $per_page,
+			],
+			'ids'
+		);
+
+		if ( empty( $action_ids ) ) {
+			return;
+		}
+
+		// Delete all pending license check actions.
+		foreach ( $action_ids as $action_id ) {
+			ActionScheduler::store()->delete_action( $action_id );
+		}
 	}
 }

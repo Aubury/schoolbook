@@ -414,7 +414,8 @@ if ( ! class_exists( 'AWS_Dokan' ) ) :
                 "name" => __( "Dokan: Product sold by", "advanced-woo-search" ),
                 "id"   => "product_dokan_sold_by",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => array($this, 'get_all_vendors'),
                     'params'   => array()
@@ -557,14 +558,23 @@ if ( ! class_exists( 'AWS_Dokan' ) ) :
         public function dokan_sold_by( $condition_rule ) {
             global $wpdb;
 
-            $value = $condition_rule['value'];
+            $values = isset( $condition_rule['value'] ) ? $condition_rule['value'] : array();
+            $values = is_array( $values ) ? $values : array( $values );
+            $values = array_map( 'intval', $values );
+            $values = array_filter( $values );
 
-            $relation = $condition_rule['operator'] === 'equal' ? 'IN' : 'NOT IN';
+            $relation = in_array( $condition_rule['operator'], array( 'equal', 'in_list' ), true ) ? 'IN' : 'NOT IN';
+
+            if ( empty( $values ) ) {
+                return 'IN' === $relation ? '( 1=2 )' : '( 1=1 )';
+            }
+
+            $values_string = implode( ',', array_unique( $values ) );
 
             $string = "( id {$relation} (
                    SELECT $wpdb->posts.ID
                    FROM $wpdb->posts
-                   WHERE $wpdb->posts.post_author = {$value}
+                   WHERE $wpdb->posts.post_author IN ({$values_string})
                 ))";
 
             return $string;
@@ -580,7 +590,7 @@ if ( ! class_exists( 'AWS_Dokan' ) ) :
             $value_relation = $condition_rule['value'] === 'true' ? 'IN' : 'NOT IN';
 
             $vendors = array( 0 );
-            $vendors_list = $this->get_all_vendors( array( 'featured' => 'yes' ) );
+            $vendors_list = $this->get_all_vendors( array( 'featured' => 'yes', 'number' => 999, 'fields' => 'ids' ) );
             if ( $vendors_list ) {
                 $vendors = array_keys( $vendors_list );
             }
@@ -756,7 +766,7 @@ if ( ! class_exists( 'AWS_Dokan' ) ) :
             }
 
             $vendors = array( 0 );
-            $vendors_list = $this->get_all_vendors( array( 'featured' => 'yes' ) );
+            $vendors_list = $this->get_all_vendors( array( 'featured' => 'yes', 'number' => 999, 'fields' => 'ids' ) );
             if ( $vendors_list ) {
                 $vendors = array_keys( $vendors_list );
             }
@@ -974,7 +984,7 @@ if ( ! class_exists( 'AWS_Dokan' ) ) :
         /*
          * Condition callback: get all available vendors
          */
-        public function get_all_vendors( $args = array() ) {
+        public function get_all_vendors( $args = array( 'number' => 999, 'fields' => 'ids' ) ) {
 
             $options = array();
 
@@ -982,8 +992,9 @@ if ( ! class_exists( 'AWS_Dokan' ) ) :
                 $vendors = dokan()->vendor;
                 if ( $vendors ) {
                     foreach ( $vendors->get_vendors( $args ) as $vendor ) {
-                        $store_name = get_user_meta( $vendor->id, 'dokan_store_name', true );
-                        $options[$vendor->id] = $store_name ? $store_name : 'ID: ' . $vendor->id ;
+                        $vendor_id = is_object( $vendor ) ? $vendor->id : $vendor;
+                        $store_name = get_user_meta( $vendor_id, 'dokan_store_name', true );
+                        $options[$vendor_id] = $store_name ? $store_name : 'ID: ' . $vendor_id ;
                     }
                 }
             }

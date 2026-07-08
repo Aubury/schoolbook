@@ -1,5 +1,5 @@
 <?php
-	$weather_effect_settings = get_option( 'weather_effect_settings' );
+	// $weather_effect_settings is provided by the calling function scope.
 
 if ( isset( $weather_effect_settings['weather_occasion'] ) ) {
 	$weather_occasion = $weather_effect_settings['weather_occasion'];
@@ -549,7 +549,7 @@ if ( $weather_occasion == 'christmas_check' ) {
 					jQuery(document).ready(function(){
 						<?php if ( $leaf_spring == 'leaf_spring' ) { ?>
 							snowFall.snow(document.body, {
-								image : "<?php echo esc_url(plugin_dir_url( __FILE__ ).'assets/images/spring/'); ?><?php echo esc_js( $spring_leaf ); ?>.png",
+								image : "<?php echo esc_url( AWPLIFE_WE_PLUGIN_PATH . 'assets/images/spring/' . $spring_leaf . '.png' ); ?>",
 								minSize: <?php echo esc_js( (int) $spring_min_size_leaf ); ?>, 
 								maxSize: <?php echo esc_js( (int) $spring_max_size_leaf ); ?>, 
 								flakeCount: <?php echo esc_js( (int) $spring_flakes_leaf ); ?>, 
@@ -590,7 +590,7 @@ if ( $weather_occasion == 'christmas_check' ) {
 				jQuery(document).ready(function(){
 					<?php if ( $drink == 'drink' ) { ?>
 						snowFall.snow(document.body, {
-							image : "<?php echo esc_url(plugin_dir_url( __FILE__ ).'assets/images/summer/'); ?><?php echo esc_js( $summer_drink ); ?>.png",
+							image : "<?php echo esc_url( AWPLIFE_WE_PLUGIN_PATH . 'assets/images/summer/' . $summer_drink . '.png' ); ?>",
 							minSize: <?php echo esc_js( (int) $summer_min_size_leaf ); ?>, 
 							maxSize: <?php echo esc_js( (int) $summer_max_size_leaf ); ?>, 
 							flakeCount: <?php echo esc_js( (int) $summer_flakes_leaf ); ?>, 
@@ -599,7 +599,7 @@ if ( $weather_occasion == 'christmas_check' ) {
 					<?php } ?>
 					<?php if ( $sun == 'sun' ) { ?>
 						snowFall.snow(document.body, {
-							image : "<?php echo esc_url(plugin_dir_url( __FILE__ ).'assets/images/summer/'); ?><?php echo esc_js( $summer_sun ); ?>.png",
+							image : "<?php echo esc_url( AWPLIFE_WE_PLUGIN_PATH . 'assets/images/summer/' . $summer_sun . '.png' ); ?>",
 							minSize: <?php echo esc_js( (int) $summer_min_size_leaf ); ?>, 
 							maxSize: <?php echo esc_js( (int) $summer_max_size_leaf ); ?>, 
 							flakeCount: <?php echo esc_js( (int) $summer_flakes_leaf ); ?>, 
@@ -936,7 +936,7 @@ if ( $weather_occasion == 'christmas_check' ) {
 						jQuery(document).ready(function(){
 								<?php if ( $balloon_new == 'balloon_new' ) { ?>
 								snowFall.snow(document.body, {
-									image : "<?php echo esc_url(plugin_dir_url( __FILE__ ).'assets/images/newyear/'); ?><?php echo esc_js( $newyear_balloon ); ?>.png",
+									image : "<?php echo esc_url( AWPLIFE_WE_PLUGIN_PATH . 'assets/images/newyear/' . $newyear_balloon . '.png' ); ?>",
 									minSize: <?php echo esc_js( (int) $newyear_min_size_leaf ); ?>, 
 									maxSize: <?php echo esc_js( (int) $newyear_max_size_leaf ); ?>, 
 									flakeCount: <?php echo esc_js( (int) $newyear_flakes_leaf ); ?>, 
@@ -945,7 +945,7 @@ if ( $weather_occasion == 'christmas_check' ) {
 							<?php } ?>
 								<?php if ( $sticker == 'sticker' ) { ?>
 								snowFall.snow(document.body, {
-									image : "<?php echo esc_url(plugin_dir_url( __FILE__ ).'assets/images/newyear/'); ?><?php echo esc_js( $new_year_sticker ); ?>.png",
+									image : "<?php echo esc_url( AWPLIFE_WE_PLUGIN_PATH . 'assets/images/newyear/' . $new_year_sticker . '.png' ); ?>",
 									minSize: <?php echo esc_js( (int) $newyear_min_size_leaf ); ?>, 
 									maxSize: <?php echo esc_js( (int) $newyear_max_size_leaf ); ?>, 
 									flakeCount: <?php echo esc_js( (int) $newyear_flakes_leaf ); ?>, 

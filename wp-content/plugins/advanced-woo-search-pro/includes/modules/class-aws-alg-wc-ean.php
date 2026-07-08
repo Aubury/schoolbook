@@ -63,9 +63,20 @@ if (!class_exists('AWS_Alg_Wc_Ean')) :
             $ean = get_post_meta( $id, $ean_key, true );
 
             if ( $ean ) {
-
                 $data['terms']['alg_wc_ean'][$ean] = 1;
+            }
 
+            // add child products EANs to parent product
+            if ( isset( $data['type'] ) && $data['type'] === 'var' ) {
+                $product = wc_get_product( $id );
+                if ( $product && $product->is_type( 'variable' ) && sizeof( $product->get_children() ) > 0  ) {
+                    foreach ( $product->get_children() as $child_id ) {
+                        $ean = get_post_meta( $child_id, $ean_key, true );
+                        if ( $ean ) {
+                            $data['terms']['alg_wc_ean'][$ean] = 1;
+                        }
+                    }
+                }
             }
 
             return $data;

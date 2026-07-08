@@ -8,6 +8,7 @@ namespace Automattic\WooCommerce\Admin\Features;
 use Automattic\WooCommerce\Admin\PageController;
 use Automattic\WooCommerce\Internal\Admin\Loader;
 use Automattic\WooCommerce\Internal\Admin\WCAdminAssets;
+use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 /**
  * Features Class.
@@ -26,20 +27,8 @@ class Features {
 	 * @var array
 	 */
 	protected static $optional_features = array(
-		'navigation'                 => array( 'default' => 'no' ),
-		'settings'                   => array( 'default' => 'no' ),
 		'analytics'                  => array( 'default' => 'yes' ),
 		'remote-inbox-notifications' => array( 'default' => 'yes' ),
-	);
-
-	/**
-	 * Beta features
-	 *
-	 * @var array
-	 */
-	protected static $beta_features = array(
-		'navigation',
-		'settings',
 	);
 
 	/**
@@ -56,13 +45,17 @@ class Features {
 	 * Constructor.
 	 */
 	public function __construct() {
+
 		$this->register_internal_class_aliases();
+
+		if ( ! self::should_load_features() ) {
+			return;
+		}
+
 		// Load feature before WooCommerce update hooks.
 		add_action( 'init', array( __CLASS__, 'load_features' ), 4 );
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'maybe_load_beta_features_modal' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'load_scripts' ), 15 );
 		add_filter( 'admin_body_class', array( __CLASS__, 'add_admin_body_classes' ) );
-		add_filter( 'update_option_woocommerce_allow_tracking', array( __CLASS__, 'maybe_disable_features' ), 10, 2 );
 	}
 
 	/**
@@ -113,12 +106,14 @@ class Features {
 		$feature       = str_replace( '-', '', ucwords( strtolower( $feature ), '-' ) );
 		$feature_class = 'Automattic\\WooCommerce\\Admin\\Features\\' . $feature;
 
-		if ( class_exists( $feature_class ) ) {
+		$should_autoload_class = self::should_load_features();
+
+		if ( class_exists( $feature_class, $should_autoload_class ) ) {
 			return $feature_class;
 		}
 
 		// Handle features contained in subdirectory.
-		if ( class_exists( $feature_class . '\\Init' ) ) {
+		if ( class_exists( $feature_class . '\\Init', $should_autoload_class ) ) {
 			return $feature_class . '\\Init';
 		}
 
@@ -129,6 +124,10 @@ class Features {
 	 * Class loader for enabled WooCommerce Admin features/sections.
 	 */
 	public static function load_features() {
+		if ( ! self::should_load_features() ) {
+			return;
+		}
+
 		$features = self::get_features();
 		foreach ( $features as $feature ) {
 			$feature_class = self::get_feature_class( $feature );
@@ -136,6 +135,14 @@ class Features {
 			if ( $feature_class ) {
 				new $feature_class();
 			}
+		}
+
+		if ( FeaturesUtil::feature_is_enabled( 'blueprint' ) ) {
+			new \Automattic\WooCommerce\Admin\Features\Blueprint\Init();
+		}
+
+		if ( FeaturesUtil::feature_is_enabled( 'order-detail-redesign' ) ) {
+			new \Automattic\WooCommerce\Internal\Features\OrderDetailRedesign\Init();
 		}
 	}
 
@@ -228,22 +235,6 @@ class Features {
 	}
 
 	/**
-	 * Disable features when opting out of tracking.
-	 *
-	 * @param string $old_value Old value.
-	 * @param string $value New value.
-	 */
-	public static function maybe_disable_features( $old_value, $value ) {
-		if ( 'yes' === $value ) {
-			return;
-		}
-
-		foreach ( self::$beta_features as $feature ) {
-			self::disable( $feature );
-		}
-	}
-
-	/**
 	 * Adds the Features section to the advanced tab of WooCommerce Settings
 	 *
 	 * @deprecated 7.0 The WooCommerce Admin features are now handled by the WooCommerce features engine (see the FeaturesController class).
@@ -269,33 +260,6 @@ class Features {
 	}
 
 	/**
-	 * Conditionally loads the beta features tracking modal.
-	 *
-	 * @param string $hook Page hook.
-	 */
-	public static function maybe_load_beta_features_modal( $hook ) {
-		if (
-			'woocommerce_page_wc-settings' !== $hook ||
-			! isset( $_GET['tab'] ) || 'advanced' !== $_GET['tab'] || // phpcs:ignore CSRF ok.
-			! isset( $_GET['section'] ) || 'features' !== $_GET['section'] // phpcs:ignore CSRF ok.
-		) {
-			return;
-		}
-		$tracking_enabled = get_option( 'woocommerce_allow_tracking', 'no' );
-
-		if ( empty( self::$beta_features ) ) {
-			return;
-		}
-
-		if ( 'yes' === $tracking_enabled ) {
-			return;
-		}
-
-		WCAdminAssets::register_style( 'beta-features-tracking-modal', 'style', array( 'wp-components' ) );
-		WCAdminAssets::register_script( 'wp-admin-scripts', 'beta-features-tracking-modal', array( 'wp-i18n', 'wp-element', WC_ADMIN_APP ) );
-	}
-
-	/**
 	 * Loads the required scripts on the correct pages.
 	 */
 	public static function load_scripts() {
@@ -308,7 +272,7 @@ class Features {
 		foreach ( $features as $key ) {
 			$enabled_features[ $key ] = self::is_enabled( $key );
 		}
-		wp_add_inline_script( WC_ADMIN_APP, 'window.wcAdminFeatures = ' . wp_json_encode( $enabled_features ), 'before' );
+		wp_add_inline_script( WC_ADMIN_APP, 'window.wcAdminFeatures = ' . wp_json_encode( $enabled_features, JSON_HEX_TAG | JSON_UNESCAPED_SLASHES ), 'before' );
 	}
 
 
@@ -353,7 +317,6 @@ class Features {
 			'Automattic\WooCommerce\Internal\Admin\Marketing' => 'Automattic\WooCommerce\Admin\Features\Marketing',
 			'Automattic\WooCommerce\Internal\Admin\MobileAppBanner' => 'Automattic\WooCommerce\Admin\Features\MobileAppBanner',
 			'Automattic\WooCommerce\Internal\Admin\RemoteInboxNotifications' => 'Automattic\WooCommerce\Admin\Features\RemoteInboxNotifications',
-			'Automattic\WooCommerce\Internal\Admin\SettingsNavigationFeature' => 'Automattic\WooCommerce\Admin\Features\Settings',
 			'Automattic\WooCommerce\Internal\Admin\ShippingLabelBanner' => 'Automattic\WooCommerce\Admin\Features\ShippingLabelBanner',
 			'Automattic\WooCommerce\Internal\Admin\ShippingLabelBannerDisplayRules' => 'Automattic\WooCommerce\Admin\Features\ShippingLabelBannerDisplayRules',
 			'Automattic\WooCommerce\Internal\Admin\WcPayWelcomePage' => 'Automattic\WooCommerce\Admin\Features\WcPayWelcomePage',
@@ -361,5 +324,30 @@ class Features {
 		foreach ( $aliases as $new_class => $orig_class ) {
 			class_alias( $new_class, $orig_class );
 		}
+	}
+
+	/**
+	 * Check if we're in an admin context where features should be loaded.
+	 *
+	 * @return boolean
+	 */
+	private static function should_load_features() {
+		$should_load = (
+			is_admin() ||
+			wp_doing_ajax() ||
+			wp_doing_cron() ||
+			( defined( 'WP_CLI' ) && WP_CLI ) ||
+			( WC()->is_rest_api_request() && ! WC()->is_store_api_request() ) ||
+			// Allow features to be loaded in frontend for admin users. This is needed for the use case such as the coming soon footer banner.
+			current_user_can( 'manage_woocommerce' )
+		);
+
+		/**
+		 * Filter to determine if admin features should be loaded.
+		 *
+		 * @since 9.6.0
+		 * @param boolean $should_load Whether admin features should be loaded. It defaults to true when the current request is in an admin context.
+		 */
+		return apply_filters( 'woocommerce_admin_should_load_features', $should_load );
 	}
 }

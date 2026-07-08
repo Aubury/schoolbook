@@ -473,6 +473,9 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                         ),
                     ),
                 ),
+                "pro_choices" => array(
+                    'gtin', 'brand', 'attr', 'tax', 'meta'
+                ),
                 "type"    => "table"
             );
 
@@ -725,6 +728,14 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                         "type"  => "toggler",
                         "depends_on" => array( "filter_type" => "complex" ),
                     ),
+                    'preselect' => array(
+                        "name"  => __( "Preselect", "advanced-woo-search" ),
+                        "desc"  => __( "Automatically preselect the relevant filter on its corresponding taxonomy archive page.", "advanced-woo-search" ),
+                        "id"    => "preselect",
+                        "value" => 'false',
+                        "type"  => "toggler",
+                        "depends_on" => array( "filter_type" => "complex" ),
+                    ),
                     'heading' => array(
                         "name"         => __( "Filtering Rules", "advanced-woo-search" ),
                         'heading_type' => 'text',
@@ -769,6 +780,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 ),
                 "type"    => "dynamic_table",
                 "section" => "quick_filters",
+                "only_pro" => true,
             );
 
             $options['suggestions'][] = array(
@@ -787,6 +799,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "type"  => "toggler",
                 "disabled" => $suggestions_disabled,
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['suggestions'][] = array(
@@ -801,6 +814,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     '1' => 'suggestion-1.png',
                 ),
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['suggestions'][] = array(
@@ -812,6 +826,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "min" => 1,
                 "type"  => "number",
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['suggestions'][] = array(
@@ -823,6 +838,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "min" => 1,
                 "type"  => "number",
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['suggestions'][] = array(
@@ -836,6 +852,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     'category' => __( 'Product category', 'advanced-woo-search' ) . $is_category_enabled,
                 ),
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['suggestions'][] = array(
@@ -846,6 +863,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "value" => 'false',
                 "type"  => "toggler",
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['suggestions'][] = array(
@@ -861,6 +879,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     'page' => __( 'Redirect to the search page', 'advanced-woo-search' ),
                 ),
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['results'][] = array(
@@ -882,6 +901,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     'style-big-grid' => __( "Big Grid Style", "advanced-woo-search" ),
                 ),
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['results'][] = array(
@@ -932,6 +952,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     'child'  => __( 'Show only child products', 'advanced-woo-search' ),
                 ),
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['results'][] = array(
@@ -946,6 +967,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     'not'   => __( "Show only not on-sale products", "advanced-woo-search" ),
                 ),
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['results'][] = array(
@@ -960,6 +982,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     'on_backorder' => __( 'On backorder', 'advanced-woo-search' ),
                 ),
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['results'][] = array(
@@ -980,6 +1003,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     'hidden'   => __( 'Hidden', 'advanced-woo-search' ),
                 ),
                 "section" => "main",
+                "only_pro" => true,
             );
 
             $options['results'][] = array(
@@ -1060,6 +1084,9 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                         ),
                     ),
                 ),
+                'pro_choices' => array(
+                    'archive_brand', 'archive_tax', 'archive_attr', 'archive_users'
+                ),
                 "type"    => "table",
                 "section" => "non_products",
             );
@@ -1072,6 +1099,56 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "value" => 10,
                 "min" => 0,
                 "type"  => "number",
+                "section" => "non_products",
+            );
+
+            $options['results'][] = array(
+                "name"    => __( "Show taxonomy name", "advanced-woo-search" ),
+                "desc"    => __( "Show the taxonomy name next to each result.", "advanced-woo-search" ),
+                "id"      => "search_archives_heading",
+                "inherit" => "true",
+                "value" => 'true',
+                "type"  => "toggler",
+                "section" => "non_products",
+            );
+
+            $options['results'][] = array(
+                "name"    => __( "Show hierarchy", "advanced-woo-search" ),
+                "desc"    => __( "Show parent terms for hierarchical taxonomies.", "advanced-woo-search" ),
+                "id"      => "search_archives_hierarchy",
+                "inherit" => "true",
+                "value" => 'false',
+                "type"  => "toggler",
+                "section" => "non_products",
+            );
+
+            $options['results'][] = array(
+                "name"  => __( "Show count", "advanced-woo-search" ),
+                "desc"  => __( "Show the number of products next to each item.", "advanced-woo-search" ),
+                "id"    => "search_archives_count",
+                "inherit" => "true",
+                "value" => 'true',
+                "type"  => "toggler",
+                "section" => "non_products",
+            );
+
+            $options['results'][] = array(
+                "name"  => __( "Show empty", "advanced-woo-search" ),
+                "desc"  => __( "Show archive pages that do not contain any products.", "advanced-woo-search" ),
+                "id"    => "search_archives_empty",
+                "inherit" => "true",
+                "value" => 'false',
+                "type"  => "toggler",
+                "section" => "non_products",
+            );
+
+            $options['results'][] = array(
+                "name"  => __( "Show images", "advanced-woo-search" ),
+                "desc"  => __( "Show images for archive page results, if available.", "advanced-woo-search" ),
+                "id"    => "search_archives_images",
+                "inherit" => "true",
+                "value" => 'true',
+                "type"  => "toggler",
                 "section" => "non_products",
             );
 
@@ -1113,7 +1190,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
             );
 
             $options['results'][] = array(
-                "name"  => __( "Show categories for results", "advanced-woo-search" ),
+                "name"  => __( "Show categories", "advanced-woo-search" ),
                 "desc"  => __( "Include categories in products search results.", "advanced-woo-search" ),
                 "id"    => "show_result_cats",
                 "inherit" => "true",
@@ -1130,6 +1207,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "value" => 'true',
                 "type"  => "toggler",
                 "section" => "content",
+                'only_pro' => true,
             );
 
             $options['results'][] = array(
@@ -1198,6 +1276,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "value" => 'false',
                 "type"  => "toggler",
                 "section" => "content",
+                'only_pro' => true,
             );
 
             $options['results'][] = array(
@@ -1207,6 +1286,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "value" => 'false',
                 "type"  => "toggler",
                 "section" => "content",
+                'only_pro' => true,
             );
 
             $options['results'][] = array(
@@ -1216,6 +1296,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "value" => 'false',
                 "type"  => "toggler",
                 "section" => "content",
+                'only_pro' => true,
             );
 
             $options['results'][] = array(
@@ -1226,6 +1307,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "type"  => "toggler",
                 "depends_on" => array( "show_cart" => "true" ),
                 "section" => "content",
+                'only_pro' => true,
             );
 
             $options['results'][] = array(
@@ -1259,7 +1341,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
             $options['results'][] = array(
                 "name"         => __( "Overview", "advanced-woo-search" ),
                 'heading_type' => 'text',
-                "desc"         => __( "Filtering rules for search results.", "advanced-woo-search" ),
+                "desc"         => __( "Filtering rules for search results.", "advanced-woo-search" ) . ' ' . __( "Only search results that match these rules will be displayed.", "advanced-woo-search" ),
                 "tip"         => __( "Filter search results. You can include/exclude search results based on different rules.", "advanced-woo-search" ) . '<br>' .
                     __( "Combine filter rules to AND or OR logical blocks to create advanced filter logic.", "advanced-woo-search" ) . '<br>' .
                     __( "Please try not to use too many filters overwise this can impact on search speed.", "advanced-woo-search" ),
@@ -1276,6 +1358,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "value"   => '',
                 "type"    => "filter_rules",
                 "section" => "filters",
+                "only_pro" => true,
             );
 
             $options['results'][] = array(
@@ -1287,6 +1370,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "value"   => '',
                 "type"    => "filter_rules",
                 "section" => "filters",
+                "only_pro" => true,
             );
 
             $options['results'][] = array(
@@ -1298,6 +1382,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "value"   => '',
                 "type"    => "filter_rules",
                 "section" => "filters",
+                "only_pro" => true,
             );
 
             $options['general'][] = array(
@@ -1330,43 +1415,152 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "choices" => array(
                     "title"    => array(
                         'label'      => __( "Title", "advanced-woo-search" ),
-                        'suboptions' => array(),
+                        'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 350,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
+                        ),
                     ),
                     "content"  => array(
                         'label'      => __( "Content", "advanced-woo-search" ),
-                        'suboptions' => array(),
+                        'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 100,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
+                        ),
                     ),
                     "sku"      => array(
                         'label'      => __( "SKU", "advanced-woo-search" ),
-                        'suboptions' => array(),
+                        'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 300,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
+                        ),
                     ),
                     "gtin"  => array(
                         'label'      => __( "GTIN, UPC, EAN, ISBN", "advanced-woo-search" ),
-                        'suboptions' => array(),
+                        'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 500,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
+                        ),
                     ),
                     "excerpt"  => array(
                         'label'      => __( "Short description", "advanced-woo-search" ),
-                        'suboptions' => array(),
+                        'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 100,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
+                        ),
                     ),
                     "brand"    => array(
                         'label'      => __( "Brand", "advanced-woo-search" ),
-                        'suboptions' => array(),
+                        'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 100,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
+                        ),
                     ),
                     "category"     => array(
                         'label'      => __( "Category", "advanced-woo-search" ),
-                        'suboptions' => array(),
+                        'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 35,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
+                        ),
                     ),
                     "tag"     => array(
                         'label'      => __( "Tag", "advanced-woo-search" ),
-                        'suboptions' => array(),
+                        'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 35,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
+                        ),
                     ),
                     "id"     => array(
                         'label'      => __( "ID", "advanced-woo-search" ),
-                        'suboptions' => array(),
+                        'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 300,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
+                        ),
                     ),
                     "attr"     => array(
                         'label'      => __( "Attributes", "advanced-woo-search" ),
                         'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 35,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
                             'fields' => array(
                                 "name"    => __( "Attributes", "advanced-woo-search" ),
                                 "desc"    => '',
@@ -1374,6 +1568,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                                 "id"      => "fields",
                                 "field_id"    => "attr",
                                 "value"   => array(),
+                                "columns" => array( 'weight' ),
                                 "type"    => "terms_select"
                             ),
                         ),
@@ -1381,12 +1576,23 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     "tax"      => array(
                         'label'      => __( "Taxonomies", "advanced-woo-search" ),
                         'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 35,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
                             'fields' => array(
                                 "name"    => __( "Taxonomies", "advanced-woo-search" ),
                                 "tip"    => __( "Choose product taxonomies that must be searchable.", "advanced-woo-search" ),
                                 "id"      => "fields",
                                 "field_id"    => "tax",
                                 "value"   => array(),
+                                "columns" => array( 'weight' ),
                                 "type"    => "terms_select"
                             ),
                         ),
@@ -1394,16 +1600,30 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     "meta"     => array(
                         'label'      => __( "Custom Fields", "advanced-woo-search" ),
                         'suboptions' => array(
+                            'weight' => array(
+                                "name"  => __( "Weight", "advanced-woo-search" ),
+                                "desc"  => '',
+                                "tip"   => __( "Weight of this search source. The higher the value, the more impact it has on product ranking. Range 1 - 999.", "advanced-woo-search" ),
+                                "id"    => "weight",
+                                "value" => 35,
+                                "min" => 1,
+                                "max" => 999,
+                                "type"  => "number"
+                            ),
                             'fields' => array(
                                 "name"    => __( "Fields", "advanced-woo-search" ),
                                 "tip"     => __( "Choose product custom fields that must be searchable.", "advanced-woo-search" ),
                                 "id"      => "fields",
                                 "field_id" => "meta",
                                 "value"   => array(),
+                                "columns" => array( 'weight' ),
                                 "type"    => "terms_select"
                             ),
                         ),
                     ),
+                ),
+                "pro_choices" => array(
+                    'gtin', 'brand', 'attr', 'tax', 'meta'
                 ),
                 "type"    => "table",
                 "section" => "engine",
@@ -1420,6 +1640,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     'and'  => __( 'AND. Show result if only all words exists in product.', 'advanced-woo-search' ),
                     //'exact'  => __( 'EXACT MATCH', 'Show result if product contains exact same phrase.' )
                 ),
+                "only_pro" => true,
                 "section" => "engine",
             );
 
@@ -1435,6 +1656,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     'false'  => __( 'No. Partial words match search.', 'advanced-woo-search' ),
                 ),
                 "section" => "engine",
+                "only_pro" => true,
             );
 
             $options['general'][] = array(
@@ -1466,6 +1688,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                     'excerpt'  => __( 'Short description', 'advanced-woo-search' ),
                 ),
                 "section" => "engine",
+                "only_pro" => true,
             );
 
             $options['general'][] = array(
@@ -1476,6 +1699,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "value" => 'false',
                 "type"  => "toggler",
                 "section" => "engine",
+                "only_pro" => true,
             );
 
             $options['general'][] = array(
@@ -1499,6 +1723,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 ),
                 "type"  => "sortable",
                 "section" => "engine",
+                "only_pro" => true,
             );
 
             $options['general'][] = array(
@@ -1510,6 +1735,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "type"  => "image",
                 'size'  => "thumbnail",
                 "section" => "engine",
+                "only_pro" => true,
             );
 
             $options['general'][] = array(
@@ -1614,45 +1840,6 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
             $options = array();
 
             $options['product'][] = array(
-                "name" => __( "Product", "advanced-woo-search" ),
-                "id"   => "product",
-                "type" => "callback",
-                "operators" => "equals",
-                "choices" => array(
-                    "callback" => "AWS_Admin_Filters_Helpers::search_for_products",
-                    'params' => array(),
-                    'ajax' => array(
-                        "action" => "aws-getSelectOptionValues",
-                        "input" => 3,
-                        "placeholder" => __( "Search for a product...", "advanced-woo-search" ),
-                        "value_callback"  => "AWS_Admin_Filters_Helpers::get_product",
-                    ),
-                ),
-            );
-
-            $options['product'][] = array(
-                "name" => __( "Product type", "advanced-woo-search" ),
-                "id"   => "product_type",
-                "type" => "callback",
-                "operators" => "equals",
-                "choices" => array(
-                    'callback' => 'AWS_Admin_Filters_Helpers::get_product_types',
-                    'params'   => array()
-                ),
-            );
-
-            $options['product'][] = array(
-                "name" => __( "Product stock status", "advanced-woo-search" ),
-                "id"   => "product_stock_status",
-                "type" => "callback",
-                "operators" => "equals",
-                "choices" => array(
-                    'callback' => 'AWS_Admin_Filters_Helpers::get_stock_statuses',
-                    'params'   => array()
-                ),
-            );
-
-            $options['product'][] = array(
                 "name" => __( "Product is on sale", "advanced-woo-search" ),
                 "id"   => "product_sale_status",
                 "type" => "bool",
@@ -1688,6 +1875,48 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
             );
 
             $options['product'][] = array(
+                "name" => __( "Product name", "advanced-woo-search" ),
+                "id"   => "product",
+                "type" => "callback",
+                "operators" => "lists",
+                "multiple" => true,
+                "choices" => array(
+                    "callback" => "AWS_Admin_Filters_Helpers::search_for_products",
+                    'params' => array(),
+                    'ajax' => array(
+                        "action" => "aws-getSelectOptionValues",
+                        "input" => 3,
+                        "placeholder" => __( "Search for a product...", "advanced-woo-search" ),
+                        "value_callback"  => "AWS_Admin_Filters_Helpers::get_product",
+                    ),
+                ),
+            );
+
+            $options['product'][] = array(
+                "name" => __( "Product type", "advanced-woo-search" ),
+                "id"   => "product_type",
+                "type" => "callback",
+                "operators" => "lists",
+                "multiple" => true,
+                "choices" => array(
+                    'callback' => 'AWS_Admin_Filters_Helpers::get_product_types',
+                    'params'   => array()
+                ),
+            );
+
+            $options['product'][] = array(
+                "name" => __( "Product stock status", "advanced-woo-search" ),
+                "id"   => "product_stock_status",
+                "type" => "callback",
+                "operators" => "lists",
+                "multiple" => true,
+                "choices" => array(
+                    'callback' => 'AWS_Admin_Filters_Helpers::get_stock_statuses',
+                    'params'   => array()
+                ),
+            );
+
+            $options['product'][] = array(
                 "name" => __( "Product SKU", "advanced-woo-search" ),
                 "id"   => "product_sku",
                 "type" => "text",
@@ -1707,7 +1936,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Product visibility", "advanced-woo-search" ),
                 "id"   => "product_visibility",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_visibilities',
                     'params'   => array()
@@ -1718,7 +1948,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Product brand", "advanced-woo-search" ),
                 "id"   => "product_brand",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_tax_terms',
                     'params'   => array( 'product_brand' ),
@@ -1735,7 +1966,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Product category", "advanced-woo-search" ),
                 "id"   => "product_category",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_tax_terms',
                     'params'   => array( 'product_cat' ),
@@ -1752,7 +1984,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Product tag", "advanced-woo-search" ),
                 "id"   => "product_tag",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_tax_terms',
                     'params'   => array( 'product_tag' ),
@@ -1769,7 +2002,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Product taxonomy", "advanced-woo-search" ),
                 "id"   => "product_taxonomy",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_tax_terms',
                     'params'   => array(),
@@ -1796,7 +2030,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Product attributes", "advanced-woo-search" ),
                 "id"   => "product_attributes",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_tax_terms',
                     'params'   => array(),
@@ -1823,7 +2058,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Product custom attributes", "advanced-woo-search" ),
                 "id"   => "product_custom_attributes",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_custom_attributes',
                     'params'   => array(),
@@ -1865,7 +2101,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Product shipping class", "advanced-woo-search" ),
                 "id"   => "product_shipping_class",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_tax_terms',
                     'params'   => array( 'product_shipping_class' ),
@@ -1889,7 +2126,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Term page taxonomy", "advanced-woo-search" ),
                 "id"   => "term_taxonomy",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_tax_terms',
                     'params'   => array(),
@@ -1931,10 +2169,18 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
             );
 
             $options['user'][] = array(
+                "name" => __( "User products count", "advanced-woo-search" ),
+                "id"   => "user_page_count",
+                "type" => "number",
+                "operators" => "equals_compare",
+            );
+
+            $options['user'][] = array(
                 "name" => __( "User", "advanced-woo-search" ),
                 "id"   => "user_page_user",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     "callback" => "AWS_Admin_Filters_Helpers::get_users",
                     'params' => array(),
@@ -1951,25 +2197,20 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "User role", "advanced-woo-search" ),
                 "id"   => "user_page_role",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_user_roles',
                     'params'   => array()
                 ),
-            );
-            
-            $options['user'][] = array(
-                "name" => __( "User products count", "advanced-woo-search" ),
-                "id"   => "user_page_count",
-                "type" => "number",
-                "operators" => "equals_compare",
             );
 
             $options['current_user'][] = array(
                 "name" => __( "Current user", "advanced-woo-search" ),
                 "id"   => "current_user",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     "callback" => "AWS_Admin_Filters_Helpers::get_users",
                     'params' => array(),
@@ -1986,7 +2227,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Current user role", "advanced-woo-search" ),
                 "id"   => "current_user_role",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_user_roles',
                     'params'   => array()
@@ -2008,7 +2250,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Current page", "advanced-woo-search" ),
                 "id"   => "current_page",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     "callback" => "AWS_Admin_Filters_Helpers::get_pages",
                     'params' => array(),
@@ -2025,7 +2268,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Current page template", "advanced-woo-search" ),
                 "id"   => "current_page_template",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_page_templates',
                     'params'   => array()
@@ -2036,7 +2280,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Current page type", "advanced-woo-search" ),
                 "id"   => "current_page_type",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_page_type',
                     'params'   => array()
@@ -2047,7 +2292,8 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                 "name" => __( "Current page archives", "advanced-woo-search" ),
                 "id"   => "current_page_archives",
                 "type" => "callback",
-                "operators" => "equals",
+                "operators" => "lists",
+                "multiple" => true,
                 "choices" => array(
                     'callback' => 'AWS_Admin_Filters_Helpers::get_page_archive_terms',
                     'params'   => array(),
@@ -2175,15 +2421,22 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
                                             $free_val = 0;
                                             if ( isset( $free_settings[$option_id] ) && isset( $free_settings[$option_id][$choices_name] ) ) {
                                                 if ( is_array( $free_settings[$option_id][$choices_name] ) ) {
-                                                    if (  isset( $free_settings[$option_id][$choices_name]['value'] ) && $free_settings[$option_id][$choices_name]['value'] === '1' ) {
+                                                    if ( isset( $free_settings[$option_id][$choices_name]['value'] ) && $free_settings[$option_id][$choices_name]['value'] === '1' ) {
                                                         $free_val = 1;
                                                     }
+
+                                                    // inherit weights from search_in option
+                                                    if ( isset( $tab_option['id'] ) && $tab_option['id'] === 'search_in' && isset( $free_settings[$option_id][$choices_name]['weight'] ) && $free_settings[$option_id][$choices_name]['weight'] ) {
+                                                        $options[$tab_name][$option_key]['choices'][$choices_name]['suboptions']['weight']['value'] = $free_settings[$option_id][$choices_name]['weight'];
+                                                    }
+
                                                 } else {
                                                     $free_val = intval( $free_settings[$option_id][$choices_name] );
                                                 }
                                             }
                                             $options[$tab_name][$option_key]['value'][$choices_name] = $free_val;
                                         }
+
                                     }
                                 } elseif ( isset( $free_settings[$option_id] ) ) {
                                     $options[$tab_name][$option_key]['value'] = $free_settings[$option_id];

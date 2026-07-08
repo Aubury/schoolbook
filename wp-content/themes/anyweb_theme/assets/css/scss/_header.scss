@@ -221,16 +221,17 @@
     }
 
     &:after {
-      background-color: var(--brand-orange);
-      width: 20px;
-      height: 20px;
-      top: -12px;
-      right: -18px;
-      border-radius: 50%;
-      @include flex-center;
-      font-family: var(--fm-base);
-      font-size: 11px;
-      font-weight: 700;
+      content: unset;
+      //background-color: var(--brand-orange);
+      //width: 20px;
+      //height: 20px;
+      //top: -12px;
+      //right: -18px;
+      //border-radius: 50%;
+      //@include flex-center;
+      //font-family: var(--fm-base);
+      //font-size: 11px;
+      //font-weight: 700;
     }
   }
 

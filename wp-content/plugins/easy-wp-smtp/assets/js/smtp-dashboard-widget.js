@@ -53,7 +53,9 @@ var EasyWPSMTPDashboardWidget = window.EasyWPSMTPDashboardWidget || ( function( 
 					show: false,
 				},
 				foreColor: '#50575E',
-				height: 285,
+				height: 303,
+				offsetY: -10,
+				parentHeightOffset: 0,
 			},
 			stroke: {
 				curve: 'smooth',

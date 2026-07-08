@@ -1,6 +1,4 @@
-<?php
-	wp_enqueue_script( 'Christmas-checkbox-hide-show-settings', WE_PLUGIN_PATH . '/../assets/js/christmas-checkbox-hide-show-settings.js', array( 'jquery' ), '', true );
-?>
+	wp_enqueue_script( 'Christmas-checkbox-hide-show-settings', AWPLIFE_WE_PLUGIN_PATH . 'assets/js/christmas-checkbox-hide-show-settings.js', array( 'jquery' ), '1.5.9', true );
 <!-- Christmas Falls Settings -->
 		<div id="christmas_weather_effect" class="tab-content">
 			<div class="row">&nbsp;&nbsp;&nbsp;

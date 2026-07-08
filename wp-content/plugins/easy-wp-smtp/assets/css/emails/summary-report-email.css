@@ -105,7 +105,6 @@
 	}
 
 	.light-img {
-		display: none;
 		display: none !important;
 	}
 
@@ -146,7 +145,6 @@
 }
 
 [data-ogsc] .light-img {
-	display: none;
 	display: none !important;
 }
 

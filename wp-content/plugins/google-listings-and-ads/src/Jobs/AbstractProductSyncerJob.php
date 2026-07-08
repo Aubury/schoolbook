@@ -33,7 +33,7 @@ abstract class AbstractProductSyncerJob extends AbstractActionSchedulerJob {
 	protected $merchant_center;
 
 	/**
-	 * SyncProducts constructor.
+	 * AbstractProductSyncerJob constructor.
 	 *
 	 * @param ActionSchedulerInterface  $action_scheduler
 	 * @param ActionSchedulerJobMonitor $monitor
@@ -62,6 +62,6 @@ abstract class AbstractProductSyncerJob extends AbstractActionSchedulerJob {
 	 * @return bool Returns true if the job can be scheduled.
 	 */
 	public function can_schedule( $args = [] ): bool {
-		return ! $this->is_running( $args ) && $this->merchant_center->should_push();
+		return ! $this->is_running( $args ) && $this->merchant_center->is_ready_for_syncing();
 	}
 }

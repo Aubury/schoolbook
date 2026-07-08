@@ -570,7 +570,7 @@ function swpsmtp_settings() {
 						);
 					?>
 					<div class="swpsmtp-stars-container">
-						<a href="https://wordpress.org/support/plugin/easy-wp-smtp/reviews/?filter=5" target="_blank"><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span>
+						<a href="https://wordpress.org/support/plugin/easy-wp-smtp/reviews/" target="_blank"><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span><span class="dashicons dashicons-star-filled"></span>
 						</a>
 					</div>
 				</div>

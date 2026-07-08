@@ -9,6 +9,7 @@
 use Automattic\Jetpack\Constants;
 use Automattic\WooCommerce\Admin\Features\Features;
 use Automattic\WooCommerce\Admin\Features\OnboardingTasks\TaskLists;
+use Automattic\WooCommerce\Internal\Admin\Onboarding\OnboardingProfile;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
@@ -24,7 +25,7 @@ if ( ! class_exists( 'WC_Admin_Dashboard_Setup', false ) ) :
 		/**
 		 * Check for task list initialization.
 		 */
-		private $initalized = false;
+		private bool $initialized = false;
 
 		/**
 		 * The task list.
@@ -91,6 +92,13 @@ if ( ! class_exists( 'WC_Admin_Dashboard_Setup', false ) ) :
 		 * @return string
 		 */
 		public function get_button_link( $task ) {
+			// Check if core profiler needs completion and redirect to it.
+			if ( class_exists( OnboardingProfile::class ) ) {
+				if ( OnboardingProfile::needs_completion() ) {
+					return wc_admin_url( '&path=/setup-wizard' );
+				}
+			}
+
 			$url = (string) $task->get_json()['actionUrl'];
 
 			if ( substr( $url, 0, 4 ) === 'http' ) {
@@ -108,12 +116,12 @@ if ( ! class_exists( 'WC_Admin_Dashboard_Setup', false ) ) :
 		 * @return array
 		 */
 		public function get_task_list() {
-			if ( $this->task_list || $this->initalized ) {
+			if ( $this->task_list || $this->initialized ) {
 				return $this->task_list;
 			}
 
 			$this->set_task_list( TaskLists::get_list( 'setup' ) );
-			$this->initalized = true;
+			$this->initialized = true;
 			return $this->task_list;
 		}
 

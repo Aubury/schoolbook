@@ -276,8 +276,8 @@ class Summary {
 					echo $this->get_stats_total_html( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						__( 'Sent Past Week', 'easy-wp-smtp' ),
 						'icon-check.png',
-						$reports->get_total_weekly_emails_sent( 'now' ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-						$reports->get_total_weekly_emails_sent( 'previous' ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						$reports->get_total_weekly_emails_sent( 'previous' ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						$reports->get_total_weekly_emails_sent( 'two_weeks_ago' ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					);
 					?>
 				</td>

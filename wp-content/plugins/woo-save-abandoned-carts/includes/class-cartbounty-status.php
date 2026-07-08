@@ -46,7 +46,7 @@ class CartBounty_System_Status{
 	 * Output system status information
 	 *
 	 * @since    6.1.2
-	 * @return   HTML
+	 * @return   Array
 	 */
 	public function get_system_status(){
 
@@ -113,12 +113,16 @@ class CartBounty_System_Status{
 		}
 
 		if( isset( $main_settings['notification_frequency'] ) ){
-			$interval_output = $main_settings['notification_frequency'] . ' ('. esc_html( $admin->convert_miliseconds_to_minutes( $main_settings['notification_frequency'] ) ) . ')';
+			$interval_output = $main_settings['notification_frequency'] . ' ('. esc_html( $admin->convert_milliseconds_to_minutes( $main_settings['notification_frequency'] ) ) . ')';
 			$settings[] = 'Notification frequency: ' . $interval_output;
 		}
 
 		if( $main_settings['notification_email'] ){
 			$settings[] = 'Notification emails: '. esc_html( $main_settings['notification_email'] );
+		}
+
+		if( $main_settings['email_consent'] ){
+			$settings[] = 'Enable email consent';
 		}
 
 		if( $main_settings['lift_email'] ){
@@ -167,10 +171,14 @@ class CartBounty_System_Status{
 			$ip_address = $_SERVER['LOCAL_ADDR'];
 		}
 
+		if( $ip_address == '127.0.0.1' ){ //Usually in case of a VPS being used - try to get VPS IP address
+			$ip_address = gethostbyname( $_SERVER['HTTP_HOST'] );
+		}
+
 		$environment = array(
 			'WordPress address (URL)' 	=> home_url(),
 			'Site address (URL)' 		=> site_url(),
-			'Site IP address' 				=> $ip_address,
+			'Site IP address' 			=> $ip_address,
 			'WordPress version' 		=> get_bloginfo( 'version' ),
 			'WordPress multisite' 		=> (is_multisite()) ? 'Yes' : '-',
 			'WooCommerce version' 		=> class_exists( 'WooCommerce' ) ? esc_html( WC_VERSION ) : '-',
@@ -213,7 +221,7 @@ class CartBounty_System_Status{
 							<td class="section-title"></td>
 						</tr>
 						<tr>
-							<td class="section-title">### '. CARTBOUNTY_ABREVIATION .' ###</td>
+							<td class="section-title">### '. CARTBOUNTY_ABBREVIATION .' ###</td>
 						</tr>';
 					foreach( $cartbounty_settings as $key => $value ){
 						$output .= '
@@ -249,6 +257,11 @@ class CartBounty_System_Status{
 					</tbody>';
 		$output .= '</table>';
 
-		wp_send_json_success( $output );
+		$response = array(
+			'container' => $admin->output_modal_container( 'report' ),
+			'report' 	=> $output
+		);
+
+		wp_send_json_success( $response );
 	}
 }

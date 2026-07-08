@@ -44,7 +44,7 @@ $inst_link = carbon_get_theme_option( 'inst' );
                         <div class="header-menu-block">
                             <div class="burger-title">
                                 <div class="burger-menu"></div>
-                                <span>MENU</span>
+                                <span>меню</span>
                             </div> <!-- end .burger-title -->
                             <div class="">
                                 <div class="modal-menu">

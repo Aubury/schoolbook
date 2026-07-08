@@ -2,24 +2,24 @@
 // Setting Page
 add_action( 'admin_menu', 'weather_effect' );
 function weather_effect() {
-	add_menu_page( 'Weather Effect Setting', __( 'Weather Effect', 'weather-effect' ), 'administrator', 'weather-effects-setting', 'weather_effect_setting_page', 'dashicons-cloud' );
-	add_submenu_page( 'weather-effects-setting', __( 'More Free Plugins', 'weather-effect' ), __( 'More Free Plugins', 'weather-effect' ), 'administrator', 'we-featured-plugins', 'we_featured_plugins_page_body' );
+	add_menu_page( 'Weather Effect Setting', __( 'Weather Effect', 'weather-effect' ), 'manage_options', 'weather-effects-setting', 'weather_effect_setting_page', 'dashicons-cloud' );
+	add_submenu_page( 'weather-effects-setting', __( 'Our Themes', 'weather-effect' ), __( 'Our Themes', 'weather-effect' ), 'manage_options', 'awplife-our-themes', 'awplife_we_our_themes_page_body' );
+	add_submenu_page( 'weather-effects-setting', __( 'Our Plugins', 'weather-effect' ), __( 'Our Plugins', 'weather-effect' ), 'manage_options', 'awplife-our-plugins', 'awplife_we_our_plugins_page_body' );
 }
 
 function weather_effect_setting_page() {
 	// js
-	wp_enqueue_script( 'jquery' );
-	wp_enqueue_script( 'awplife-we-snow-bootstrap-js', WE_PLUGIN_PATH . 'assets/js/bootstrap.js', array( 'jquery' ), '', true );
-	wp_enqueue_script( 'awplife-we-snow-christmas-snow-js', WE_PLUGIN_PATH . 'assets/js/christmas-snow/christmas-snow.js' );
-	wp_enqueue_script( 'awplife-we-snow-snow-falling-js', WE_PLUGIN_PATH . 'assets/js/snow-falling/snow-falling.js' );
-	wp_enqueue_script( 'awplife-we-snow-snowfall-master-js', WE_PLUGIN_PATH . 'assets/js/snowfall-master/snowfall-master.min.js', array( 'jquery' ), '', true );
-	wp_enqueue_script( 'awplife-we-snow-color-picker-js', WE_PLUGIN_PATH . 'assets/js/color-picker.js', array( 'jquery', 'wp-color-picker' ), '', true );
+	wp_enqueue_script( 'awplife-we-snow-bootstrap-js', AWPLIFE_WE_PLUGIN_PATH . 'assets/js/bootstrap.js', array( 'jquery' ), '', true );
+	wp_enqueue_script( 'awplife-we-snow-christmas-snow-js', AWPLIFE_WE_PLUGIN_PATH . 'assets/js/christmas-snow/christmas-snow.js' );
+	wp_enqueue_script( 'awplife-we-snow-snow-falling-js', AWPLIFE_WE_PLUGIN_PATH . 'assets/js/snow-falling/snow-falling.js' );
+	wp_enqueue_script( 'awplife-we-snow-snowfall-master-js', AWPLIFE_WE_PLUGIN_PATH . 'assets/js/snowfall-master/snowfall-master.min.js', array( 'jquery' ), '', true );
+
 
 	// toggle button CSS
-	wp_enqueue_style( 'awplife-we--bootstrap-css', WE_PLUGIN_PATH . 'assets/css/bootstrap.css' );
-	wp_enqueue_style( 'awplife-we--toogle-button-css', WE_PLUGIN_PATH . 'assets/css/toogle-button.css' );
-	wp_enqueue_style( 'awplife-we-snow-bootstrap-css', WE_PLUGIN_PATH . 'assets/css/sf-buttons-bootstrap.css' );
-	wp_enqueue_style( 'awplife-we-snow-font-awesome-css', WE_PLUGIN_PATH . 'assets/css/font-awesome.css' );
+	wp_enqueue_style( 'awplife-we-bootstrap-css', AWPLIFE_WE_PLUGIN_PATH . 'assets/css/bootstrap.css' );
+	wp_enqueue_style( 'awplife-we-toogle-button-css', AWPLIFE_WE_PLUGIN_PATH . 'assets/css/toogle-button.css' );
+	wp_enqueue_style( 'awplife-we-sf-bootstrap-css', AWPLIFE_WE_PLUGIN_PATH . 'assets/css/sf-buttons-bootstrap.css' );
+	wp_enqueue_style( 'awplife-we-font-awesome-css', AWPLIFE_WE_PLUGIN_PATH . 'assets/css/font-awesome.css' );
 	wp_enqueue_style( 'wp-color-picker' );
 
 	// get values from database
@@ -470,6 +470,7 @@ function weather_effect_setting_page() {
 			<a href="https://awplife.com/demo/weather-effect-premium-admin-demo/" target="_blank" class="button button-primary  button-hero">Try Pro Version</a>
 			<br><br><br>
 		</div>
+		</div>
 		<hr /><br /><br />
 		<style>
 			.awp_bale_offer {
@@ -501,38 +502,7 @@ function weather_effect_setting_page() {
 		</div>
 		<br><br>
 		<hr />
-		<div style="text-align: center;">
-			<p>
-				<h2>Try Out Other Free WordPress Plugins</h2>
-				<br>
-				<a href="https://wordpress.org/plugins/new-album-gallery/" target="_blank" class="button button-primary awplife-free-plugins">Album Gallery</a>
-				<a href="https://wordpress.org/plugins/wp-flickr-gallery/" target="_blank" class="button button-primary awplife-free-plugins">Flickr gallery</a>
-				<a href="https://wordpress.org/plugins/animated-live-wall/" target="_blank" class="button button-primary awplife-free-plugins">Animated Live Wall</a>
-				<a href="https://wordpress.org/plugins/blog-filter/" target="_blank" class="button button-primary awplife-free-plugins">Blog Filter</a>
-				<a href="https://wordpress.org/plugins/new-contact-form-widget/" target="_blank" class="button button-primary awplife-free-plugins">Contact Form Widget</a>
-				<a href="https://wordpress.org/plugins/customizer-login-page/" target="_blank" class="button button-primary awplife-free-plugins">Custom Login Page</a>
-				<a href="https://wordpress.org/plugins/event-monster/" target="_blank" class="button button-primary awplife-free-plugins">Event Monster</a>
-				<a href="https://wordpress.org/plugins/floating-news-headline/" target="_blank" class="button button-primary awplife-free-plugins">Floating News Headline</a>
-				<a href="https://wordpress.org/plugins/new-photo-gallery/" target="_blank" class="button button-primary awplife-free-plugins">Photo Gallery</a>
-				<a href="https://wordpress.org/plugins/new-grid-gallery/" target="_blank" class="button button-primary awplife-free-plugins">Grid Gallery</a>
-				<a href="https://wordpress.org/plugins/hash-converter/" target="_blank" class="button button-primary awplife-free-plugins">Hash Converter</a>
-				<a href="https://wordpress.org/plugins/new-image-gallery/" target="_blank" class="button button-primary awplife-free-plugins">Image Gallery</a>
-				<a href="https://wordpress.org/plugins/media-slider/" target="_blank" class="button button-primary awplife-free-plugins">Media Slider</a>
-				<a href="https://wordpress.org/plugins/modal-popup-box/" target="_blank" class="button button-primary awplife-free-plugins">Modal Popup Box</a>
-				<a href="https://wordpress.org/plugins/portfolio-filter-gallery/" target="_blank" class="button button-primary awplife-free-plugins">Portfolio Filter Gallery</a>
-				<a href="https://wordpress.org/plugins/abc-pricing-table/" target="_blank" class="button button-primary awplife-free-plugins">Pricing Table</a>
-				<a href="https://wordpress.org/plugins/facebook-likebox-widget-and-shortcode/" target="_blank" class="button button-primary awplife-free-plugins">Facebook Likebox</a>
-				<a href="https://wordpress.org/plugins/responsive-slider-gallery/" target="_blank" class="button button-primary awplife-free-plugins">Responsive Slider Gallery</a>
-				<a href="https://wordpress.org/plugins/right-click-disable-or-ban/" target="_blank" class="button button-primary awplife-free-plugins">Right Click Ban And Disable</a>
-				<a href="https://wordpress.org/plugins/slider-responsive-slideshow/" target="_blank" class="button button-primary awplife-free-plugins">Slider Responsive Slideshow</a>
-				<a href="https://wordpress.org/plugins/wp-instagram-feed-awplife/" target="_blank" class="button button-primary awplife-free-plugins">Instagram Feed</a>
-				<a href="https://wordpress.org/plugins/new-social-media-widget/" target="_blank" class="button button-primary awplife-free-plugins">Social Media Icon Widget</a>
-				<a href="https://wordpress.org/plugins/insta-type-gallery/" target="_blank" class="button button-primary awplife-free-plugins">Instagram Type Gallery</a>
-				<a href="https://wordpress.org/plugins/testimonial-maker/" target="_blank" class="button button-primary awplife-free-plugins">Testimonial</a>
-				<a href="https://wordpress.org/plugins/new-video-gallery/" target="_blank" class="button button-primary awplife-free-plugins">Video Gallery</a>
-				<a href="https://wordpress.org/plugins/weather-effect/" target="_blank" class="button button-primary awplife-free-plugins">Weather Effect</a>
-			</p>
-		</div>
+
 	</div>
 	<script>
 		function SnowSaveSettings() {
@@ -581,6 +551,9 @@ function weather_effect_setting_page() {
 	<?php
 	// save settings
 	if ( isset( $_POST['snow_action'] ) ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
 		$we_save_nonce_value = $_POST['security'];
 		if ( wp_verify_nonce( $we_save_nonce_value, 'we_save_nonce' ) ) {
 
@@ -810,12 +783,24 @@ function weather_effect_setting_page() {
 			);
 
 			update_option( 'weather_effect_settings', $weather_effect_settings );
+			?>
+			<div class="updated notice is-dismissible">
+				<p><strong><?php esc_html_e( 'Settings Saved.', 'weather-effect' ); ?></strong></p>
+			</div>
+			<?php
 		} // end of save if
 	}
 }//end weather_effect_setting_page()
 
 // doc page
-function we_featured_plugins_page_body() {
-	require_once 'featured-plugins/featured-plugins.php';
+
+function awplife_we_our_plugins_page_body() {
+	wp_enqueue_style( 'awplife-we-our-plugins-style', AWPLIFE_WE_PLUGIN_PATH . 'assets/css/our-plugins-style.css' );
+	require_once 'our-plugins.php';
 }
-?>
+
+function awplife_we_our_themes_page_body() {
+	wp_enqueue_style( 'awplife-we-our-plugins-style', AWPLIFE_WE_PLUGIN_PATH . 'assets/css/our-plugins-style.css' );
+	require_once 'our-themes.php';
+}
+

@@ -263,7 +263,7 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
             $html .= '<input type="hidden" size="40" name="'. esc_attr( $field['id'] ) .'" class="image-hidden-input" value="'. esc_attr( stripslashes( $this->current_opt_value ) ) .'" />';
             $html .= '<input '. $this->is_disabled .' class="button image-upload-btn" type="button" value="Upload Image" data-size="'. esc_attr( $field['size'] ) .'" />';
 
-            $html .= '<input class="button image-remove-btn" type="button" value="Remove Image" />';
+            $html .= '<input '. $this->is_disabled .' class="button image-remove-btn" type="button" value="Remove Image" />';
 
             return $html;
 
@@ -322,7 +322,7 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
             $html = '';
 
             $html .= '<label class="aws-toggle-label aws-toggler-field">';
-                $html .= '<input class="aws-toggler" type="checkbox" name="'. esc_attr( $field['id'] ) .'" '. $active .'>';
+                $html .= '<input '. $this->is_disabled .' class="aws-toggler" type="checkbox" name="'. esc_attr( $field['id'] ) .'" '. $active .'>';
             $html .= '</label>';
 
             return $html;
@@ -428,6 +428,11 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
                 $sortable_items = $field['value'];
             }
 
+            $disabled_class = '';
+            if ( $this->is_disabled ) {
+                $disabled_class = ' aws-disabled';
+            }
+
             $html = '';
 
             $html .= '<script>
@@ -441,7 +446,7 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
             </script>';
 
 
-            $html .= '<div class="sortable-container">';
+            $html .= '<div class="sortable-container'. $disabled_class .'">';
 
                 $html .= '<ul id="'. esc_attr( $field['id'] ) .'sort" class="aws-sotable">';
 
@@ -499,7 +504,7 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
 
                     if ( $show_weight_column ) {
                         $html .= '<div class="weight">';
-                            $html .= '<input type="number" value="" name="'. esc_attr( $field['id'] ) .'[%val][weight]">';
+                            $html .= '<input class="aws-term-weight" type="number" value="" name="'. esc_attr( $field['id'] ) .'[%val][weight]">';
                         $html .= '</div>';
                     }
 
@@ -551,7 +556,7 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
                             if ( $show_weight_column ) {
                                 $weight = isset( $params['weight'] ) && $params['weight'] ? $params['weight'] : '';
                                 $html .= ' <div class="weight">';
-                                    $html .= '<input min="0" max="999" type="number" value="'. esc_attr( $weight ) .'" name="'. esc_attr( $field['id'] ) .'['. esc_attr( $id ) .'][weight]">';
+                                    $html .= '<input class="aws-term-weight" min="0" max="999" type="number" value="'. esc_attr( $weight ) .'" name="'. esc_attr( $field['id'] ) .'['. esc_attr( $id ) .'][weight]">';
                                 $html .= '</div>';
                             }
 
@@ -587,9 +592,14 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
             $default_rule = new AWS_Admin_Filters( $rules[$filter_section][0], $id, $filter_section );
             $rules_container_class = $filters && ! empty($filters) && isset( $filters[$filter_section] ) && ! empty( $filters[$filter_section] ) ? '' : ' aws-rules-empty';
 
+            $disabled_class = '';
+            if ($this->is_disabled ) {
+                $disabled_class = ' aws-disabled';
+            }
+
             $html = '';
 
-            $html .= '<div class="aws-rules' . $rules_container_class . '">';
+            $html .= '<div class="aws-rules aws-select2-pending' . $rules_container_class . $disabled_class . '">';
 
             $html .= '<script id="awsRulesTemplate" type="text/html">';
 
@@ -668,6 +678,11 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
                 $table_action_buttons_html .='<a class="button alignright edit aws-tip" data-edit data-tip-text="' . $tip_edit . '" data-tip="' . $tip_edit . '" href="#">' . $tip_edit . '</a>';
             $table_action_buttons_html .= '</div>';
 
+            $disabled_class = '';
+            if ($this->is_disabled ) {
+                $disabled_class = ' aws-disabled';
+            }
+
             $html = '';
             $template_html = '';
 
@@ -709,6 +724,8 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
 
                         $template_html .= '</table>';
 
+                        $template_html .= '<span class="aws-dynamic-table-item-id">ID: {unque_id}</span>';
+
                     $template_html .= '</div>';
 
                 $template_html .= '</div>';
@@ -720,7 +737,7 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
 
             $html .= $template_html;
 
-            $html .= '<div data-table-name="'. esc_attr( $field_name ) .'" class="aws-dynamic-table'.$table_empty_class.'">';
+            $html .= '<div data-table-name="'. esc_attr( $field_name ) .'" class="aws-dynamic-table'.$table_empty_class.$disabled_class.'">';
 
                 if ( $table_head ) {
                     $html .= '<div class="aws-dynamic-table-head">';
@@ -783,6 +800,8 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
 
                                     $html .= '</table>';
 
+                                    $html .= '<span class="aws-dynamic-table-item-id">ID: '.$option_unique_id.'</span>';
+
                                 $html .= '</div>';
 
                             $html .= '</div>';
@@ -794,7 +813,7 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
 
             $html .= '</div>';
 
-            $html .= '<div class="aws-dynamic-table-btn">';
+            $html .= '<div class="aws-dynamic-table-btn'. $disabled_class .'">';
                 $html .= '<button data-add="'. esc_attr( $field_name ) .'" class="button">' . esc_html( $button_name ) . '</button>';
             $html .= '</div>';
 
@@ -839,9 +858,14 @@ if ( ! class_exists( 'AWS_Admin_Fields' ) ) :
                             }
                         }
 
+                        $disabled_class = '';
+                        if ( strpos( $val, ':disabled' ) !== false || ( isset( $field['pro_choices'] ) && array_search( $val, $field['pro_choices'] ) !== false ) ) {
+                            $disabled_class = ' aws-disabled';
+                        }
+
                         $field_name = $field['id'] .'['. $val .']';
 
-                        $html .= '<div class="aws-table-sources-item">';
+                        $html .= '<div class="aws-table-sources-item'. $disabled_class .'">';
 
                             $html .= '<div class="aws-name">';
 

@@ -11,13 +11,15 @@ use Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Merchant;
 use Automattic\WooCommerce\GoogleListingsAndAds\API\Google\Middleware;
 use Automattic\WooCommerce\GoogleListingsAndAds\Exception\ExceptionWithResponseData;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service;
+use Automattic\WooCommerce\GoogleListingsAndAds\Internal\ContainerAwareTrait;
+use Automattic\WooCommerce\GoogleListingsAndAds\Internal\Interfaces\ContainerAwareInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\AdsAccountState;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\MerchantAccountState;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareTrait;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\TransientsInterface;
-use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\Psr\Container\ContainerInterface;
+use Automattic\WooCommerce\GoogleListingsAndAds\Vendor\GuzzleHttp\Exception\BadResponseException;
 use Exception;
 
 defined( 'ABSPATH' ) || exit;
@@ -27,7 +29,6 @@ defined( 'ABSPATH' ) || exit;
  *
  * Container used to access:
  * - Ads
- * - AdsAccountState
  * - AdsConversionAction
  * - Connection
  * - Merchant
@@ -38,14 +39,10 @@ defined( 'ABSPATH' ) || exit;
  * @since 1.11.0
  * @package Automattic\WooCommerce\GoogleListingsAndAds\Ads
  */
-class AccountService implements OptionsAwareInterface, Service {
+class AccountService implements ContainerAwareInterface, OptionsAwareInterface, Service {
 
+	use ContainerAwareTrait;
 	use OptionsAwareTrait;
-
-	/**
-	 * @var ContainerInterface
-	 */
-	protected $container;
 
 	/**
 	 * @var AdsAccountState
@@ -55,11 +52,10 @@ class AccountService implements OptionsAwareInterface, Service {
 	/**
 	 * AccountService constructor.
 	 *
-	 * @param ContainerInterface $container
+	 * @param AdsAccountState $state
 	 */
-	public function __construct( ContainerInterface $container ) {
-		$this->state     = $container->get( AdsAccountState::class );
-		$this->container = $container;
+	public function __construct( AdsAccountState $state ) {
+		$this->state = $state;
 	}
 
 	/**
@@ -82,13 +78,16 @@ class AccountService implements OptionsAwareInterface, Service {
 
 		$status = [
 			'id'       => $id,
+			'ocid'     => $this->options->get( OptionsInterface::ADS_ACCOUNT_OCID ),
 			'currency' => $this->options->get( OptionsInterface::ADS_ACCOUNT_CURRENCY ),
-			'symbol'   => html_entity_decode( get_woocommerce_currency_symbol( $this->options->get( OptionsInterface::ADS_ACCOUNT_CURRENCY ) ) ),
+			'symbol'   => html_entity_decode( get_woocommerce_currency_symbol( $this->options->get( OptionsInterface::ADS_ACCOUNT_CURRENCY ) ), ENT_QUOTES ),
 			'status'   => $id ? 'connected' : 'disconnected',
 		];
 
 		$incomplete = $this->state->last_incomplete_step();
-		if ( ! empty( $incomplete ) ) {
+
+		// Ensure that if there is an incomplete step, but we don't have an Ads ID yet, the status is 'disconnected' instead of 'incomplete'.
+		if ( ! empty( $incomplete ) && ( $id || 'set_id' !== $incomplete ) ) {
 			$status['status'] = 'incomplete';
 			$status['step']   = $incomplete;
 		}
@@ -197,6 +196,26 @@ class AccountService implements OptionsAwareInterface, Service {
 				$step['status']  = AdsAccountState::STEP_ERROR;
 				$step['message'] = $e->getMessage();
 				$this->state->update( $state );
+
+				if ( $e->getPrevious() instanceof BadResponseException ) {
+					/** @var BadResponseException $prev */
+					$prev    = $e->getPrevious();
+					$body    = method_exists( $prev, 'getResponse' ) && $prev->getResponse() ? (string) $prev->getResponse()->getBody() : '';
+					$decoded = json_decode( $body, true );
+					$error   = is_array( $decoded ) ? ( $decoded['error'] ?? [] ) : [];
+					$message = is_array( $error ) && isset( $error['message'] ) ? (string) $error['message'] : $e->getMessage();
+
+					throw new ExceptionWithResponseData(
+						$message,
+						$e->getCode() ?: 400,
+						null,
+						[
+							'code' => 'API_ERROR',
+							'data' => $decoded,
+						]
+					);
+				}
+
 				throw $e;
 			}
 		}
@@ -306,7 +325,11 @@ class AccountService implements OptionsAwareInterface, Service {
 		$this->options->delete( OptionsInterface::ADS_ACCOUNT_STATE );
 		$this->options->delete( OptionsInterface::ADS_BILLING_URL );
 		$this->options->delete( OptionsInterface::ADS_CONVERSION_ACTION );
+		$this->options->delete( OptionsInterface::ADS_ENHANCED_CONVERSIONS_ENABLED );
+		$this->options->delete( OptionsInterface::ADS_EU_POLITICAL_DECLARATIONS_COMPLETE );
+		$this->options->delete( OptionsInterface::ADS_HAS_UNCLAIMED_INCENTIVE );
 		$this->options->delete( OptionsInterface::ADS_ID );
+		$this->options->delete( OptionsInterface::ADS_INCENTIVE_APPLY_ERROR );
 		$this->options->delete( OptionsInterface::ADS_SETUP_COMPLETED_AT );
 		$this->options->delete( OptionsInterface::CAMPAIGN_CONVERT_STATUS );
 		$this->container->get( TransientsInterface::class )->delete( TransientsInterface::ADS_CAMPAIGN_COUNT );
@@ -353,8 +376,11 @@ class AccountService implements OptionsAwareInterface, Service {
 		$mc_state = $this->container->get( MerchantAccountState::class );
 
 		// Create link for Merchant and accept it in Ads.
-		$this->container->get( Merchant::class )->link_ads_id( $this->options->get_ads_id() );
-		$this->container->get( Ads::class )->accept_merchant_link( $this->options->get_merchant_id() );
+		$waiting_acceptance = $this->container->get( Merchant::class )->link_ads_id( $this->options->get_ads_id() );
+
+		if ( $waiting_acceptance ) {
+			$this->container->get( Ads::class )->accept_merchant_link( $this->options->get_merchant_id() );
+		}
 
 		$mc_state->complete_step( 'link_ads' );
 	}

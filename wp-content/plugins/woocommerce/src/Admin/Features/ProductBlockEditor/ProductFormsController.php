@@ -7,8 +7,15 @@ namespace Automattic\WooCommerce\Admin\Features\ProductBlockEditor;
 
 /**
  * Handle retrieval of product forms.
+ *
+ * @deprecated 10.9.0 Product editor extension APIs will be removed in WooCommerce 11.0.
  */
 class ProductFormsController {
+
+	/**
+	 * Version that product editor APIs were deprecated in.
+	 */
+	const DEPRECATED_SINCE = '10.9.0';
 
 	/**
 	 * Product form templates.
@@ -59,7 +66,7 @@ class ProductFormsController {
 	}
 
 	/**
-	 * Create ot update a product_form post for each product form template.
+	 * Create or update a product_form post for each product form template.
 	 * If the post already exists, it will be updated.
 	 * If the post does not exist, it will be created even if the action is `update`.
 	 *
@@ -67,10 +74,20 @@ class ProductFormsController {
 	 * @return void
 	 */
 	public function migrate_product_form_posts( $action ) {
+		if ( has_filter( 'woocommerce_product_form_templates' ) ) {
+			wc_deprecated_hook(
+				'woocommerce_product_form_templates',
+				$this::DEPRECATED_SINCE,
+				null,
+				'This product editor extension filter will be removed in WooCommerce 11.0.'
+			);
+		}
+
 		/**
 		 * Allow extend the list of templates that should be auto-generated.
 		 *
 		 * @since 9.1.0
+		 * @deprecated 10.9.0 Product editor extension APIs will be removed in WooCommerce 11.0.
 		 * @param array $templates List of templates to auto-generate.
 		 */
 		$templates = apply_filters(

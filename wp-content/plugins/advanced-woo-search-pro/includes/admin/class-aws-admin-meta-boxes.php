@@ -37,7 +37,7 @@ if ( ! class_exists( 'AWS_Admin_Meta_Boxes' ) ) :
                                 $html .='2. ' . sprintf( esc_html__( 'Using shortcode %s', 'advanced-woo-search' ), '<code>[aws_search_form id="YOUR_FORM_ID"]</code>' ) . '<br>';
                                 $html .='3. ' . esc_html__( 'Using a page builder - locate the built-in search form widget and add it to the desired location on the page.', 'advanced-woo-search' ). '<br>';
                                 $html .='4. ' . sprintf( esc_html__( "Add search form as a widget. Go to %s and drag&drop 'AWS Widget' to one of your widget areas", 'advanced-woo-search' ), '<a href="' . admin_url( 'widgets.php' ) . '" target="_blank">' . __( 'Widgets Screen', 'advanced-woo-search' ) . '</a>' ) . '<br>';
-                                $html .='5. ' . sprintf( esc_html__( 'Add PHP code to the necessary files of your theme: %s', 'advanced-woo-search' ), "<code>&lt;?php aws_get_search_form( true, array( 'id' => YOUR_FORM_ID ) ); ?&gt;</code>" ) . '<br>';
+                                $html .='5. ' . sprintf( esc_html__( "Add search form to a menu. Go to %s and use the 'Advanced Woo Search' box", 'advanced-woo-search' ), '<a href="' . admin_url( 'nav-menus.php' ) . '" target="_blank">' . __( 'Menus Screen', 'advanced-woo-search' ) . '</a>' ) . '<br>';
                                 $html .= sprintf( esc_html__( 'Replace %s with ID of search form that you want to display', 'advanced-woo-search' ), "<code>YOUR_FORM_ID</code>" ) . '<br>';
                             $html .='</div>';
                         $html .='</div>';
@@ -268,15 +268,16 @@ if ( ! class_exists( 'AWS_Admin_Meta_Boxes' ) ) :
             echo '<div id="aws-admin-header">';
                 echo '<div class="inner">';
                     echo '<div class="logo">';
-                        echo '<img src="' . AWS_PRO_URL . '/assets/img/logo.png' . '" alt="' . esc_html( 'logo', 'advanced-woo-search' ) . '">';
+                        echo '<img src="' . AWS_PRO_URL . '/assets/img/logo-kramakit.png' . '" alt="' . esc_html( 'logo', 'advanced-woo-search' ) . '">';
                         echo '<span class="title">';
                             echo '<span class="separator">/</span>';
                             echo $submenu;
                         echo '</span>';
                     echo '</div>';
                     echo '<div class="btns">';
-                        echo '<a class="button button-docs" href="https://advanced-woo-search.com/guide/?utm_source=wp-plugin&utm_medium=header&utm_campaign=guide" target="_blank">' . esc_html( 'Documentation', 'advanced-woo-search' ) . '</a>';
-                        echo '<a class="button button-support" href="https://advanced-woo-search.com/contact/?utm_source=wp-plugin&utm_medium=header&utm_campaign=support" target="_blank">' . esc_html( 'Support', 'advanced-woo-search' ) . '</a>';
+                        echo '<a class="button-docs" href="https://advanced-woo-search.com/guide/?utm_source=wp-plugin&utm_medium=header&utm_campaign=guide" target="_blank">' . esc_html( 'Documentation', 'advanced-woo-search' ) . '</a>';
+                        echo '<a class="button-support" href="https://advanced-woo-search.com/contact/?utm_source=wp-plugin&utm_medium=header&utm_campaign=support" target="_blank">' . esc_html( 'Support', 'advanced-woo-search' ) . '</a>';
+                        echo '<span class="version">v'. AWS_PRO_VERSION .'</span>';
                     echo '</div>';
                 echo '</div>';
 

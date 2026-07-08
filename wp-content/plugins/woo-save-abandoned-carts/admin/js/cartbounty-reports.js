@@ -59,7 +59,7 @@
 			if( action == 'update_charts' ){
 				reportsContainer = jQuery('#cartbounty-charts-container');
 			}
-			
+
 			var data = {
 				nonce				: item.data('nonce'),
 				action				: action,
@@ -78,6 +78,7 @@
 			function(response){
 				if ( response.success == true ){
 					reportsContainer.html(response.data.report_data);
+
 					if( action == 'update_charts' ){
 						var chart_type = response.data.chart_type;
 						var active_charts = response.data.active_charts;
@@ -99,6 +100,24 @@
 			jQuery("#cartbounty-daypicker-apply").on("click", updateReports);
 			jQuery("#cartbounty-daypicker-close").on("click", closeCalendar);
 			jQuery(".cartbounty-progress").on("click", addLoadingIndicator );
+
+			//Display reports on first page load
+			setTimeout(function(){
+				updateReports.call(jQuery('#cartbounty-daypicker-apply'), null);
+			}, 300);
+
+		}
+
+		function getTipOptions(){
+			return {
+				tipShadow			: "drop-shadow(2px 2px 10px rgba(0,0,0,0.07))",
+				tipStrokeWidth		: 0.5,
+				tipStrokeOpacity	: 0.1,
+				tipTextPadding		: 20,
+				tipFontSize			: 13,
+				tipPointerSize		: 0,
+				tipPreferredAnchor	: "left",
+			};
 		}
 
 		function updateReports(e){
@@ -114,12 +133,14 @@
 			var chartContainer = jQuery('#cartbounty-charts-container');
 			var periodDropdownContainer = jQuery('#cartbounty-period-dropdown-container');
 			var topProductContainer = jQuery('#cartbounty-top-abandoned-products-container');
+			var map = jQuery('#cartbounty-abandoned-carts-by-country-container');
 			var skeletonScreenClass = 'cartbounty-loading-skeleton-screen';
 
 			quickContainer.addClass(skeletonScreenClass);
 			chartContainer.addClass(skeletonScreenClass);
 			periodDropdownContainer.addClass(skeletonScreenClass);
 			topProductContainer.addClass(skeletonScreenClass);
+			map.addClass(skeletonScreenClass);
 
 			var data = {
 				nonce				: element.data('nonce'),
@@ -133,16 +154,19 @@
 
 			jQuery.post(cartbounty_admin_data.ajaxurl, data,
 			function(response){
-				if ( response.success == true ){
+
+				if( response.success == true ){
 					element.removeClass('cartbounty-loading');
 					history.pushState({}, '', response.data.url);
 					periodDropdownContainer.html(response.data.period_dropdown);
 					quickContainer.html(response.data.report_data);
 					chartContainer.html(response.data.chart_data);
 					topProductContainer.html(response.data.top_products);
+					map.html(response.data.map_data); //Update map data
 					var chart_type = response.data.chart_type;
 					var active_charts = response.data.active_charts;
 					initializeCharts(chart_type, active_charts);
+					initializeMap();
 
 				}else{
 					console.log('An error occurred while updating the report period');
@@ -152,6 +176,7 @@
 				chartContainer.removeClass(skeletonScreenClass);
 				periodDropdownContainer.removeClass(skeletonScreenClass);
 				topProductContainer.removeClass(skeletonScreenClass);
+				map.removeClass(skeletonScreenClass);
 			});
 		}
 
@@ -213,6 +238,11 @@
 			});
 		}
 
+		//Function for formatting tip value
+		function formatTipValue(d){
+			return d.toString();
+		}
+
 		function initializeCharts(chartType = false, activeCharts = false){
 			if(typeof d3 !== 'undefined' && typeof Plot !== 'undefined'){
 				
@@ -269,10 +299,6 @@
 
 				function formatYTicks(d){
 					return d => d >= 1000 ? `${d / 1000}K` : d.toString();
-				}
-
-				function formatTipValue(d){
-					return d.toString();
 				}
 
 				function getNextEvenRoundNumber(value) {
@@ -360,15 +386,10 @@
 						opacity 			: 0.1,
 						labelArrow 			: 'none',
 						tickSize 			: 0,
-						tipShadow 			: "drop-shadow(2px 2px 10px rgba(0,0,0,0.07))",
-						tipStrokeWidth 		: 0.5,
-						tipStrokeOpacity 	: 0.1,
-						tipTextPadding 		: 20,
-						tipFontSize			: 13,
-						tipPointerSize 		: 0,
-						tipPreferredAnchor 	: "left",
 						pointerRadius 		: 500,
 					}
+
+					const tip = getTipOptions();
 
 					let emptyText = [];
 
@@ -435,13 +456,13 @@
 									y1 				: values.min,
 									y2 				: values.max,
 									title 			: (d) => [formatDate(d.End, options.locale), formatTipValue(d.Value)].join("\t\t"),
-									pathFilter 		: options.tipShadow,
-									strokeWidth 	: options.tipStrokeWidth,
-									strokeOpacity 	: options.tipStrokeOpacity,
-									textPadding 	: options.tipTextPadding,
-									fontSize		: options.tipFontSize,
-									pointerSize 	: options.tipPointerSize,
-									preferredAnchor : options.tipPreferredAnchor,
+									pathFilter 		: tip.tipShadow,
+									strokeWidth 	: tip.tipStrokeWidth,
+									strokeOpacity 	: tip.tipStrokeOpacity,
+									textPadding 	: tip.tipTextPadding,
+									fontSize		: tip.tipFontSize,
+									pointerSize 	: tip.tipPointerSize,
+									preferredAnchor : tip.tipPreferredAnchor,
 									maxRadius 		: options.pointerRadius,
 								})),
 								emptyText,
@@ -505,13 +526,13 @@
 									y1 				: values.min,
 									y2 				: values.max,
 									title 			: (d) => [formatDate(d.Date, options.locale), formatTipValue(d.Value)].join("\t\t"),
-									pathFilter 		: options.tipShadow,
-									strokeWidth 	: options.tipStrokeWidth,
-									strokeOpacity 	: options.tipStrokeOpacity,
-									textPadding 	: options.tipTextPadding,
-									fontSize		: options.tipFontSize,
-									pointerSize 	: options.tipPointerSize,
-									preferredAnchor : options.tipPreferredAnchor,
+									pathFilter 		: tip.tipShadow,
+									strokeWidth 	: tip.tipStrokeWidth,
+									strokeOpacity 	: tip.tipStrokeOpacity,
+									textPadding 	: tip.tipTextPadding,
+									fontSize		: tip.tipFontSize,
+									pointerSize 	: tip.tipPointerSize,
+									preferredAnchor : tip.tipPreferredAnchor,
 									maxRadius 		: options.pointerRadius,
 								})),
 								emptyText,
@@ -522,11 +543,123 @@
 					container.html(plot);
 				}
 			}
-		}		
+		}
+
+		//Function that displays country data on Dashboard
+		function initializeMap(){
+
+			if(typeof d3 !== 'undefined' && typeof Plot !== 'undefined'){
+				var container = jQuery('#cartbounty-country-map');
+
+				//Function for calculating how wide the map should be
+				function calculateMapWidth(){
+					var mapWidth = container.width();
+					return mapWidth || 640; //If map width is undefined, setting map width to 640
+				}
+
+				const mapWidth = calculateMapWidth();
+				const mapData = cartbounty_admin_data.countries;
+
+				fetch(mapData).then((response) => response.json()).then((countries) => {
+					//Exclude Antarctica from the dataset
+					const filteredFeatures = countries.features.filter((feature) => feature.properties.name !== "Antarctica");
+					const filteredCountries = {
+						...countries,
+						features: filteredFeatures,
+					};
+
+					createMap(filteredCountries);
+
+				}).catch((error) => console.error("Error loading GeoJSON data:", error));
+
+				function createMap(countries){
+					var abandonedCartData = [];
+
+					if(container.length > 0){ //If map element has been found
+						if (Array.isArray(window.abandoned_cart_country_data)) {
+							abandonedCartData = window.abandoned_cart_country_data;
+						} else {
+							abandonedCartData = [];
+						}
+
+					}
+
+					//Calculate map height based on desired aspect ratio
+					const aspectRatio = 16 / 10.5;
+					const mapHeight = mapWidth / aspectRatio;
+					const scaleFactor = 0.16;
+					const scale = mapWidth * scaleFactor;
+					const dataMap = new Map(abandonedCartData.map((d) => [d.country, +d.value]));
+
+				 	//Defining map colors based on cart count
+					const colorScale = d3.scaleQuantize()
+					.domain([0, d3.max(abandonedCartData, (d) => d.value)])
+					.range(["#bdbcbc", "#a09f9f", "#828282", "#676767", "#414141"]);
+
+					const options = {
+						tipPointerSize 	: 10,
+						pointerRadius 	: 50,
+					};
+
+					const tip = getTipOptions();
+
+					// Calculate centroids and prepare tooltip data
+					const centroids = countries.features.map((feature) => {
+						const countryName = feature.properties.name;
+						const countryCode = feature.id;
+						const countryValue = dataMap.get(countryCode) || 0;
+						const centroid = d3.geoCentroid(feature);
+
+						return {
+							name 		: countryName,
+							value 		: countryValue,
+							coordinates : centroid,
+						};
+					});
+
+					const map = Plot.plot({
+						projection: ({ width, height }) => d3.geoMercator()
+							.scale(scale) //Set scale
+							.translate([width / 2, height / 1.42]), //Center the map
+						marks: [
+							Plot.geo(countries, {
+								fill: (d) => {
+									const count = dataMap.get(d.id) || 0;
+									return count === 0 ? "#dcdcdc" : colorScale(count);
+								},
+								stroke: "#ffffff", // White stroke for boundaries
+								title: (d) => d.properties ? [`${d.properties.name}:`, formatTipValue(dataMap.get(d.id) || 0)].join("\t\t") : cartbounty_admin_data.report_translations.missing_chart_data,
+							}),
+							Plot.tip(centroids, Plot.pointer({
+								x 				: (d) => d.coordinates[0], 
+								y 				: (d) => d.coordinates[1],
+								title 			: (d) => d.value ? [`${d.name}:`, formatTipValue(d.value)].join("\t\t") : null,
+								fontSize 		: tip.tipFontSize,
+								textAnchor 		: "middle",
+								dy 				: "0",
+								pathFilter 		: tip.tipShadow,
+								strokeWidth 	: tip.tipStrokeWidth,
+								strokeOpacity 	: tip.tipStrokeOpacity,
+								textPadding 	: tip.tipTextPadding,
+								pointerSize 	: options.tipPointerSize,
+								preferredAnchor : tip.tipPreferredAnchor,
+								maxRadius 		: options.pointerRadius,
+							})),
+						],
+						width 	: mapWidth,
+						height 	: mapHeight,
+						margin 	: 0,
+					});
+
+					container.html(map);
+				}
+			}
+		}
 
 		initializeCharts();
+		initializeMap(); //Display map on Dashboard page load
 
-		jQuery("#cartbounty-abandoned-cart-stats-options input").on("change", updateReportsOptions );
+		jQuery(document).on('change', '#cartbounty-abandoned-cart-stats-options input', updateReportsOptions);
 		jQuery(".cartbounty-report-options-trigger").on("click", toggleReportOptions );
 		jQuery("#cartbounty-period-dropdown-container").on("click", toggleCalendar );
 		jQuery(".cartbounty-chart-type-trigger").on("click", switchActiveChart );

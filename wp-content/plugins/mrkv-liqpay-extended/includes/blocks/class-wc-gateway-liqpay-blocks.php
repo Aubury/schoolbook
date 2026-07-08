@@ -62,7 +62,7 @@ final class WC_Gateway_Morkva_Liqpay_Blocks extends AbstractPaymentMethodType
                 'wp-element',
                 'wp-html-entities',
             ),
-            null,
+            defined( 'LIQPAY_VERSION' ) ? LIQPAY_VERSION : '1.1.1',
             true
         );
 

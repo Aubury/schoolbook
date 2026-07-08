@@ -15,9 +15,13 @@ interface OptionsInterface {
 	public const ADS_ACCOUNT_CURRENCY                      = 'ads_account_currency';
 	public const ADS_ACCOUNT_OCID                          = 'ads_account_ocid';
 	public const ADS_ACCOUNT_STATE                         = 'ads_account_state';
+	public const ADS_ENHANCED_CONVERSIONS_ENABLED          = 'enhanced_conversions_enabled';
 	public const ADS_BILLING_URL                           = 'ads_billing_url';
+	public const ADS_HAS_UNCLAIMED_INCENTIVE               = 'ads_has_unclaimed_incentive';
 	public const ADS_ID                                    = 'ads_id';
+	public const ADS_INCENTIVE_APPLY_ERROR                 = 'ads_incentive_apply_error';
 	public const ADS_CONVERSION_ACTION                     = 'ads_conversion_action';
+	public const ADS_EU_POLITICAL_DECLARATIONS_COMPLETE    = 'ads_eu_political_declarations_complete';
 	public const ADS_SETUP_COMPLETED_AT                    = 'ads_setup_completed_at';
 	public const CAMPAIGN_CONVERT_STATUS                   = 'campaign_convert_status';
 	public const CLAIMED_URL_HASH                          = 'claimed_url_hash';
@@ -28,6 +32,7 @@ interface OptionsInterface {
 	public const GOOGLE_CONNECTED                          = 'google_connected';
 	public const GOOGLE_WPCOM_AUTH_NONCE                   = 'google_wpcom_auth_nonce';
 	public const INSTALL_TIMESTAMP                         = 'install_timestamp';
+	public const INSTALL_VERSION                           = 'install_version';
 	public const JETPACK_CONNECTED                         = 'jetpack_connected';
 	public const MC_SETUP_COMPLETED_AT                     = 'mc_setup_completed_at';
 	public const MERCHANT_ACCOUNT_STATE                    = 'merchant_account_state';
@@ -45,14 +50,24 @@ interface OptionsInterface {
 	public const UPDATE_ALL_PRODUCTS_LAST_SYNC             = 'update_all_products_last_sync';
 	public const WP_TOS_ACCEPTED                           = 'wp_tos_accepted';
 	public const WPCOM_REST_API_STATUS                     = 'wpcom_rest_api_status';
+	public const GTIN_MIGRATION_STATUS                     = 'gtin_migration_status';
+	public const YOUTUBE_ORDER_IDS_CACHE                   = 'youtube_export_order_ids';
+	public const YOUTUBE_EXPORT_FILES                      = 'youtube_export_files';
+	public const YOUTUBE_THIRD_PARTY_LINK                  = 'youtube_third_party_link';
+	public const ONBOARDING_COMPLETED_AT                   = 'onboarding_completed_at';
+	public const IS_SERVICE_BASED_MERCHANT                 = 'is_service_based_merchant';
 
 	public const VALID_OPTIONS = [
 		self::ADS_ACCOUNT_CURRENCY                      => true,
 		self::ADS_ACCOUNT_OCID                          => true,
 		self::ADS_ACCOUNT_STATE                         => true,
+		self::ADS_ENHANCED_CONVERSIONS_ENABLED          => true,
 		self::ADS_BILLING_URL                           => true,
+		self::ADS_HAS_UNCLAIMED_INCENTIVE               => true,
 		self::ADS_ID                                    => true,
+		self::ADS_INCENTIVE_APPLY_ERROR                 => true,
 		self::ADS_CONVERSION_ACTION                     => true,
+		self::ADS_EU_POLITICAL_DECLARATIONS_COMPLETE    => true,
 		self::ADS_SETUP_COMPLETED_AT                    => true,
 		self::CAMPAIGN_CONVERT_STATUS                   => true,
 		self::CLAIMED_URL_HASH                          => true,
@@ -61,6 +76,7 @@ interface OptionsInterface {
 		self::FILE_VERSION                              => true,
 		self::GOOGLE_CONNECTED                          => true,
 		self::INSTALL_TIMESTAMP                         => true,
+		self::INSTALL_VERSION                           => true,
 		self::JETPACK_CONNECTED                         => true,
 		self::MC_SETUP_COMPLETED_AT                     => true,
 		self::MERCHANT_ACCOUNT_STATE                    => true,
@@ -80,6 +96,12 @@ interface OptionsInterface {
 		self::WP_TOS_ACCEPTED                           => true,
 		self::WPCOM_REST_API_STATUS                     => true,
 		self::GOOGLE_WPCOM_AUTH_NONCE                   => true,
+		self::GTIN_MIGRATION_STATUS                     => true,
+		self::YOUTUBE_ORDER_IDS_CACHE                   => true,
+		self::YOUTUBE_EXPORT_FILES                      => true,
+		self::YOUTUBE_THIRD_PARTY_LINK                  => true,
+		self::ONBOARDING_COMPLETED_AT                   => true,
+		self::IS_SERVICE_BASED_MERCHANT                 => true,
 	];
 
 	public const OPTION_TYPES = [
@@ -146,11 +168,4 @@ interface OptionsInterface {
 	 * @return int
 	 */
 	public function get_ads_id(): int;
-
-	/**
-	 * If the WPCOM API is authorized
-	 *
-	 * @return bool
-	 */
-	public function is_wpcom_api_authorized(): bool;
 }

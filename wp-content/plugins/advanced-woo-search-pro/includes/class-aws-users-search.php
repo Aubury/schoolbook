@@ -62,6 +62,11 @@ if ( ! class_exists( 'AWS_Users_Search' ) ) :
         private $results_num = 10;
 
         /**
+         * @var AWS_Users_Search Show or not archive pages images
+         */
+        private $search_archives_images;
+
+        /**
          * @var AWS_Users_Search ID of current form instance $form_id
          */
         private $form_id = 0;
@@ -95,6 +100,7 @@ if ( ! class_exists( 'AWS_Users_Search' ) ) :
             $this->search_terms = isset( $data['search_terms'] ) ? $data['search_terms'] : array();
             $this->filters = isset( $data['adv_filters']['user'] ) ? $data['adv_filters']['user'] : array();
             $this->results_num = isset( $data['pages_results_num'] ) ? $data['pages_results_num'] : 10;
+            $this->search_archives_images = isset( $data['search_archives_images'] ) ? $data['search_archives_images'] : 'true';
             $this->form_id = isset( $data['form_id'] ) ? $data['form_id'] : 1;
             $this->filter_id = isset( $data['filter_id'] ) ? $data['filter_id'] : 1;
 
@@ -269,12 +275,17 @@ if ( ! class_exists( 'AWS_Users_Search' ) ) :
 
                 foreach ( $search_results as $result ) {
 
+                    $image = '';
+                    if ( $this->search_archives_images === 'true' ) {
+                        $image = get_avatar_url( $result->ID );
+                    }
+
                     $new_result = array(
                         'id'       => $result->ID,
                         'name'     => $result->display_name,
                         'link'     => get_author_posts_url( $result->ID ),
                         'excerpt'  => '',
-                        'image'    => get_avatar_url( $result->ID )
+                        'image'    => $image
                     );
 
                     $result_array[$result->ID][] = $new_result;

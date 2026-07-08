@@ -22,6 +22,11 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
         private $license_key = false;
 
         /**
+         * @var AWS_License_Notices License domain
+         */
+        private $is_license_domain_valid = '';
+
+        /**
          * @var AWS_License_Notices Plugin data
          */
         private $plugin_info = false;
@@ -67,6 +72,8 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
 
             add_action( 'admin_notices', array( $this, 'add_global_notices' ) );
 
+            add_action( 'admin_notices', array( $this, 'add_wholesite_notices' ) );
+
             add_action( 'admin_init', array( $this, 'hide_global_notices' ) );
 
         }
@@ -79,6 +86,16 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
                 $this->license_key = AWS_PRO()->license->get_license_key();
             }
             return $this->license_key;
+        }
+
+        /*
+         * Is license domain valid
+         */
+        private function is_license_domain_valid() {
+            if ( $this->is_license_domain_valid === '' ) {
+                $this->is_license_domain_valid = AWS_PRO()->license->is_license_domain_valid();
+            }
+            return $this->is_license_domain_valid;
         }
 
         /*
@@ -98,6 +115,7 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
 
             $license_key = $this->get_license_key();
             $plugin_info = $this->get_plugin_info();
+            $is_license_domain_valid = $this->is_license_domain_valid();
 
             $html = '';
 
@@ -106,7 +124,7 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
                 $html .= '<div class="aws-license-notice">';
                     $html .= '<div class="aws-license-notice--content">';
                         $html .= '<h2>' . __( 'License key inactive', 'advanced-woo-search' ) . '</h2>';
-                        $html .= '<p>' . sprintf( __( "Please activate your license key in the box below to receive plugin updates. If you don't know your license key - please %s.", 'advanced-woo-search' ), '<a target="_blank" href="https://advanced-woo-search.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license">' . __( 'contact support', 'advanced-woo-search' ) . '</a>' ) . '</p>';
+                        $html .= '<p>' . sprintf( __( "Activate your license key below to enable updates and access all Pro features. If you don't know your license key - please %s.", 'advanced-woo-search' ), '<a target="_blank" href="https://advanced-woo-search.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license">' . __( 'contact support', 'advanced-woo-search' ) . '</a>' ) . '</p>';
                     $html .= '</div>';
                 $html .= '</div>';
             }
@@ -132,6 +150,26 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
                         $html .= '<p>' . sprintf( __( 'Looks like you missed %s plugin updates. Please update the plugin to the latest version. It is very important to always use the latest plugin version as it can contain bugs/compatibility fixes and new cool features.', 'advanced-woo-search' ), '<strong style="color: #ff0000;">'.$plugin_info->updates_missed.'</strong>' ) . '</p>';
                     $html .= '</div>';
                 $html .= '</div>';
+            }
+
+            // show when current domain is different from the licensed associated one
+            if ( $license_key && ! $is_license_domain_valid ) {
+
+                $license_domain = AWS_PRO()->license->get_license_domain();
+
+                $html .= '<div class="aws-license-notice">';
+                    $html .= '<div class="aws-license-notice--content">';
+                        $html .= '<h2>' . __( 'Invalid domain', 'advanced-woo-search' ) . '</h2>';
+                        $html .= '<p>';
+                            $html .= __( "Your license was not activated for this domain. Most likely the problem occurs after your database migration to a new domain.", 'advanced-woo-search' ) . '<br>' .
+                                __( "Please deactivate your license on the current domain and activate it again via the box below.", 'advanced-woo-search' )  . '<br>' .
+                                sprintf(__( "Also, if the domain %s is not a staging site and you’re no longer using it, please consider deactivating the license for it as well.", 'advanced-woo-search' ), esc_url( $license_domain ) )  . '<br>' .
+                                sprintf( __( "You can also manage all activations in the %s.", 'advanced-woo-search' ), '<a target="_blank" href="https://portal.advanced-woo-search.com/">' . __( 'customers portal', 'advanced-woo-search' ) . '</a>' );
+                        $html .= '</p>';
+                    $html .= '</div>';
+                $html .= '</div>';
+
+
             }
 
             echo $html;
@@ -180,7 +218,7 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
         }
 
         /*
-         * Add global admin notices
+         * Add global admin notices for license page
          */
         public function add_global_notices() {
 
@@ -296,7 +334,79 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
 
             }
 
-            $html = $this->generate_global_notice_html( $notices );
+            $html = AWS_License_Helpers::generate_global_notice_html( $notices );
+
+            echo $html;
+
+        }
+
+        /*
+         * Global admin notices for whole wp-admin
+         */
+        public function add_wholesite_notices() {
+
+            if ( ! current_user_can( 'manage_options' ) ) {
+                return;
+            }
+
+            $license_key = $this->get_license_key();
+            $plugin_info = $this->get_plugin_info();
+            $is_license_expired = $license_key && $plugin_info && $plugin_info->license_status && $plugin_info->license_status === 'expired';
+
+            $notices = array();
+
+            // show when missed 20+ plugin updates and license is empty or expired
+            if ( ( $is_license_expired || ! $license_key ) && $plugin_info && property_exists( $plugin_info, 'updates_missed' ) && intval( $plugin_info->updates_missed ) > 20 ) {
+                if ( isset( $_GET['page'] ) && in_array( $_GET['page'], array( 'aws-options', 'aws-performance' ) ) ) {
+
+                    $notices[] = array(
+                        'id' => 'lic_plugin_outdated',
+                        'title' => __( 'Critical updates missing', 'advanced-woo-search' ),
+                        'message' => sprintf(
+                            __(
+                                "Your plugin version is %s updates behind the latest release. This means you are missing bug fixes, performance improvements, and security patches. Activate your license to restore updates and support. For any questions - please %s.",
+                                'advanced-woo-search'
+                            ),
+                            '<strong>' . $plugin_info->updates_missed . '</strong>',
+                            '<a target="_blank" href="https://advanced-woo-search.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license">' . __( 'contact support', 'advanced-woo-search' ) . '</a>'
+                        ),
+                        'type' => 'error',
+                        'buttons' => array(
+                            array(
+                                'text' => __( 'Purchase License', 'advanced-woo-search' ) ,
+                                'link' => 'https://advanced-woo-search.com/pricing/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license',
+                                'target' => '_blank'
+                            ),
+                        ),
+                        'hide_dismiss' => true,
+                    );
+
+                }
+            }
+            elseif( ! $license_key  ) {
+
+                // add license activate reminder inside plugin admin pages
+                if ( isset( $_GET['page'] ) && in_array( $_GET['page'], array( 'aws-options', 'aws-performance' ) ) ) {
+
+                    $notices[] = array(
+                        'id' => 'lic_inactive',
+                        'title' => __( 'License key inactive', 'advanced-woo-search' ),
+                        'message' => sprintf( __( "Activate your license key to enable updates and access all Pro features. If you don't know your license key - please %s.", 'advanced-woo-search' ), '<a target="_blank" href="https://advanced-woo-search.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license">' . __( 'contact support', 'advanced-woo-search' ) . '</a>' ),
+                        'type' => 'error',
+                        'buttons' => array(
+                            array(
+                                'text' => __( 'Activate License', 'advanced-woo-search' ) ,
+                                'link' => esc_url( admin_url('admin.php?page=aws-options-updates') ),
+                            ),
+                        ),
+                        'hide_dismiss' => true,
+                    );
+
+                }
+
+            }
+
+            $html = AWS_License_Helpers::generate_global_notice_html( $notices );
 
             echo $html;
 
@@ -316,59 +426,13 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
         }
 
         /*
-         * Generate global notices html
-         */
-        private function generate_global_notice_html( $notices ) {
-
-            $current_page_url = function_exists('wc_get_current_admin_url') ? wc_get_current_admin_url() : esc_url( admin_url('admin.php?page=aws-options'));
-            $dismiss_link = strpos( $current_page_url, '?' ) === false ? $current_page_url . '?' : $current_page_url . '&';
-
-            $html = '';
-
-            if ( is_array( $notices ) ) {
-                foreach( $notices as $notice ) {
-
-                    $id = isset( $notice['id'] ) ? 'aws_hide_global_msg_' . $notice['id'] : '';
-
-                    if ( get_option( $id ) ) {
-                        continue;
-                    }
-
-                    $buttons_html = '';
-
-                    if ( isset( $notice['buttons'] ) && is_array( $notice['buttons'] ) ) {
-                        foreach ( $notice['buttons'] as $button_props ) {
-                            $target = isset( $button_props['target'] ) ? 'target="' . $button_props['target'] . '"' : '';
-                            $buttons_html .= '<a href="' . $button_props['link'] . '" ' . $target . ' class="button button-primary">' . $button_props['text'] . '</a>&nbsp;&nbsp;';
-                        }
-                    }
-
-                    $type = isset( $notice['type'] ) ? 'notice-' . $notice['type'] : 'notice-error';
-
-                    $html .= '<div class="aws-license-notice notice ' . $type . '" style="position:relative;">';
-                        $html .= '<div class="aws-license-notice--content">';
-                            $html .= '<h2>Advanced Woo Search PRO: ' . $notice['title'] . '</h2>';
-                            $html .= '<p>' . $notice['message'] . '</p>';
-                            $html .= $buttons_html;
-                            $html .= '<div style="margin-bottom:15px;"></div>';
-                            $html .= '<a href="' . $dismiss_link . $id . '" title="' . __( 'Dismiss', 'advanced-woo-search'  ) . '" style="color:#787c82;text-decoration:none;font-size:16px;position:absolute;top:0;right:1px;border:none;margin:0;padding:9px;background:0 0;cursor:pointer;"><span style="font-size:16px;" class="dashicons dashicons-dismiss"></span></a>';
-                        $html .= '</div>';
-                    $html .= '</div>';
-
-                }
-            }
-
-            echo $html;
-
-        }
-
-        /*
          * Calculate number of license notices
          */
         private function calculate_notices_num() {
 
             $license_key = $this->get_license_key();
             $plugin_info = $this->get_plugin_info();
+            $is_license_domain_valid = $this->is_license_domain_valid();
 
             $num = 0;
 
@@ -381,6 +445,10 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
             }
 
             if ( $plugin_info && property_exists( $plugin_info, 'updates_missed' ) && intval( $plugin_info->updates_missed ) > 5 ) {
+                $num++;
+            }
+
+            if ( $license_key && ! $is_license_domain_valid ) {
                 $num++;
             }
 

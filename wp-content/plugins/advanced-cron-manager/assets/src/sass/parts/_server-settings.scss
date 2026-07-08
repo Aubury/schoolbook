@@ -1,0 +1,31 @@
+#server-scheduler-settings {
+	margin-top: 40px;
+
+	#server-settings-form {
+
+		label {
+			display: block;
+			margin-bottom: 15px;
+		}
+
+		.notice.inline {
+			margin: 15px 0;
+			padding: 10px;
+
+			p {
+				margin: 0;
+			}
+		}
+
+		input[disabled] {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+
+		label:has(input[disabled]) {
+			opacity: 0.8;
+		}
+
+	}
+
+}

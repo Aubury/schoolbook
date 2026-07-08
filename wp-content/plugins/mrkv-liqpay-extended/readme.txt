@@ -1,10 +1,10 @@
-=== Morkva Liqpay Extended ===
+=== morkva Liqpay Extended ===
 Contributors: bandido, dpmine
-Plugin Name: Morkva Liqpay Extended
+Plugin Name: morkva Liqpay Extended
 Tags: LiqPay, Ликпей, Лікпей
-Tested up to: 6.6
-Stable tag: 0.7.0
-WC tested up to: 8.8.0
+Tested up to: 7.0
+Stable tag: 1.0.5
+WC tested up to: 9.8.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,8 +29,75 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 * інтерфейс чекауту лише український
 
+* підтримка програми ["Національний кешбек"](https://docs.morkva.co.ua/uk/robota-z-saitom/natsional-nii-kieshbiek-iak-pidkliuchiti)
+
 
 Потрібна підтримка чи додатковий функціонал? support@morkva.co.ua
+
+= 1.0.5 =
+* [fix] виправили отримання callback
+
+= 1.0.4 =
+* [new] збільшили термін очищення логу
+
+= 1.0.3 =
+* [new] додали запис статуса оплати у мета
+
+= 1.0.2 =
+* [new] додали збереження логу запитів та callback від LiqPay
+* [new] додали скасування холду при зміні статусу
+
+= 1.0.1 =
+* WP 7.0 - сумісний
+
+= 1.0.0 =
+* [new] додали налаштування "призначення платежу"
+
+= 0.9.2 =
+* [new] розширили тестовий режим "Тільки для адмінів" 
+
+= 0.9.1 =
+* [ui] зміни в налаштуваннях
+
+= 0.9.0 =
+* [ui] зміни в інтерфейсі
+
+= 0.8.8 =
+* [new] додали підтримку статусу Платіж на перевірці
+
+= 0.8.7 =
+* [fix] змінили метод отримання замовлення по номеру
+
+= 0.8.6 =
+* [new] додали підтримку програми "Національний кешбек"
+
+= 0.8.5 =
+* WP 6.9 - сумісний
+
+= 0.8.4 =
+* [fix] виправили переклад
+
+= 0.8.3 =
+* [fix] прибрали очищення кошику перед оплатою
+
+= 0.8.2 =
+* WP 6.8 - сумісний
+* WooCommerce 9.8 - сумісний
+
+= 0.8.1 =
+* [new] додали налаштування Hold
+
+= 0.8.0 =
+* [new] додали запис параметрів rrn_debit та authcode_debit для формування чеків
+* [fix] виправили deprecated-функції
+* перевірили сумісність з WooCommerce 9.6
+
+= 0.7.2 =
+* [new] додали налаштування статуса замовлення після успішної оплати
+
+= 0.7.1 =
+* WP 6.7 - сумісний
+* WooCommerce 9.4 - сумісний
 
 = 0.7.0 =
 * [ui] невеликі зміни в інтерфейсі

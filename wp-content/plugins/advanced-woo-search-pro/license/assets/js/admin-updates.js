@@ -34,7 +34,7 @@ jQuery(document).ready(function ($) {
 
             if ( isActive && isActive === 'active' ) {
                 sendData.type = 'deactivate-license';
-                var proceedDeactivation = confirm("By deactivating your license you will no longer receive any plugin updates, but will enable activating the license on another site. Are you sure you want to proceed?");
+                var proceedDeactivation = confirm("If you deactivate your license, you will stop receiving plugin updates and may lose access to some Pro features. Are you sure you want to continue?");
                 if ( ! proceedDeactivation ) {
                     return;
                 }

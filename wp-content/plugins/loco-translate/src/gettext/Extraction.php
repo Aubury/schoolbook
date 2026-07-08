@@ -19,9 +19,8 @@ class Loco_gettext_Extraction {
 
     /**
      * Extra strings to be pushed into domains
-     * @var array
      */
-    private $extras = [];
+    private array $extras = [];
 
     /**
      * List of files skipped due to memory limit
@@ -31,9 +30,8 @@ class Loco_gettext_Extraction {
 
     /**
      * Size in bytes of largest file encountered
-     * @var int
      */
-    private $maxbytes = 0;
+    private int $maxbytes = 0;
 
 
     /**
@@ -126,29 +124,6 @@ class Loco_gettext_Extraction {
             }
         }
         return $this;
-    }
-    
-    
-    private function includeBlock( Loco_fs_File $file, $domain ) {
-        $def = json_decode( $file->getContents(), true );
-        if( ! is_array($def) || ! array_key_exists('$schema',$def) ){
-            return;
-        }
-        // adding dummy line number for well-formed file reference, not currently pulling line number.
-        $ref = $file->getRelativePath( $this->bundle->getDirectoryPath() ).':1';
-        foreach(['title','description','keywords'] as $key ){
-            if( ! array_key_exists($key,$def) ) {
-                continue;
-            }
-            $msgctxt = 'block '.rtrim($key,'s');
-            foreach( (array) $def[$key] as $msgid ){
-                if( is_string($msgid) && '' !== $msgid ){
-                    $str = new Loco_gettext_String($msgid,$msgctxt);
-                    $str->addFileReferences($ref);
-                    $this->addString($str,$domain);
-                }
-            }
-        }
     }
 
 

@@ -9,8 +9,6 @@ use Automattic\WooCommerce\GoogleListingsAndAds\Assets\AdminScriptWithBuiltDepen
 use Automattic\WooCommerce\GoogleListingsAndAds\Assets\AdminStyleAsset;
 use Automattic\WooCommerce\GoogleListingsAndAds\Assets\Asset;
 use Automattic\WooCommerce\GoogleListingsAndAds\Assets\AssetsHandlerInterface;
-use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\AdminConditional;
-use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Conditional;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Registerable;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\Service;
 use Automattic\WooCommerce\GoogleListingsAndAds\Infrastructure\ViewFactory;
@@ -19,21 +17,28 @@ use Automattic\WooCommerce\GoogleListingsAndAds\PluginHelper;
 use Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductSyncer;
 use Automattic\WooCommerce\GoogleListingsAndAds\Value\BuiltScriptDependencyArray;
 use Automattic\WooCommerce\GoogleListingsAndAds\View\ViewException;
+use Automattic\WooCommerce\GoogleListingsAndAds\Options\OnboardingCompleted;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareInterface;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsAwareTrait;
 use Automattic\WooCommerce\GoogleListingsAndAds\Options\OptionsInterface;
+use Automattic\WooCommerce\GoogleListingsAndAds\Options\ServiceBasedMerchantState;
 use Automattic\WooCommerce\Admin\PageController;
+use Automattic\WooCommerce\GoogleListingsAndAds\Assets\ScriptAsset;
+use Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductHelper;
+use Automattic\WooCommerce\GoogleListingsAndAds\Product\ProductMetaHandler;
+use Automattic\WooCommerce\GoogleListingsAndAds\Admin\MetaBox\ChannelVisibilityMetaBox;
+use Automattic\WooCommerce\GoogleListingsAndAds\Value\ChannelVisibility;
+use Automattic\WooCommerce\Utilities\OrderUtil;
 
 /**
  * Class Admin
  *
  * @package Automattic\WooCommerce\GoogleListingsAndAds\Pages
  */
-class Admin implements Service, Registerable, Conditional, OptionsAwareInterface {
+class Admin implements OptionsAwareInterface, Registerable, Service {
 
-	use AdminConditional;
-	use PluginHelper;
 	use OptionsAwareTrait;
+	use PluginHelper;
 
 	/**
 	 * @var AssetsHandlerInterface
@@ -56,18 +61,32 @@ class Admin implements Service, Registerable, Conditional, OptionsAwareInterface
 	protected $ads;
 
 	/**
+	 * @var OnboardingCompleted
+	 */
+	protected $onboarding_completed;
+
+	/**
+	 * @var ServiceBasedMerchantState
+	 */
+	protected $service_based_merchant_state;
+
+	/**
 	 * Admin constructor.
 	 *
-	 * @param AssetsHandlerInterface $assets_handler
-	 * @param ViewFactory            $view_factory
-	 * @param MerchantCenterService  $merchant_center
-	 * @param AdsService             $ads
+	 * @param AssetsHandlerInterface    $assets_handler
+	 * @param ViewFactory               $view_factory
+	 * @param MerchantCenterService     $merchant_center
+	 * @param AdsService                $ads
+	 * @param OnboardingCompleted       $onboarding_completed
+	 * @param ServiceBasedMerchantState $service_based_merchant_state
 	 */
-	public function __construct( AssetsHandlerInterface $assets_handler, ViewFactory $view_factory, MerchantCenterService $merchant_center, AdsService $ads ) {
-		$this->assets_handler  = $assets_handler;
-		$this->view_factory    = $view_factory;
-		$this->merchant_center = $merchant_center;
-		$this->ads             = $ads;
+	public function __construct( AssetsHandlerInterface $assets_handler, ViewFactory $view_factory, MerchantCenterService $merchant_center, AdsService $ads, OnboardingCompleted $onboarding_completed, ServiceBasedMerchantState $service_based_merchant_state ) {
+		$this->assets_handler               = $assets_handler;
+		$this->view_factory                 = $view_factory;
+		$this->merchant_center              = $merchant_center;
+		$this->ads                          = $ads;
+		$this->onboarding_completed         = $onboarding_completed;
+		$this->service_based_merchant_state = $service_based_merchant_state;
 	}
 
 	/**
@@ -117,10 +136,11 @@ class Admin implements Service, Registerable, Conditional, OptionsAwareInterface
 			return PageController::is_admin_page();
 		};
 
-		$assets[] = ( new AdminScriptWithBuiltDependenciesAsset(
+		$build_dir = "{$this->get_root_dir()}/js/build";
+		$assets[]  = ( new AdminScriptWithBuiltDependenciesAsset(
 			'google-listings-and-ads',
 			'js/build/index',
-			"{$this->get_root_dir()}/js/build/index.asset.php",
+			"{$build_dir}/index.asset.php",
 			new BuiltScriptDependencyArray(
 				[
 					'dependencies' => [],
@@ -137,15 +157,30 @@ class Admin implements Service, Registerable, Conditional, OptionsAwareInterface
 				'mcSupportedLanguage'      => $this->merchant_center->is_language_supported(),
 				'adsCampaignConvertStatus' => $this->options->get( OptionsInterface::CAMPAIGN_CONVERT_STATUS ),
 				'adsSetupComplete'         => $this->ads->is_setup_complete(),
+				'onboardingComplete'       => $this->onboarding_completed->is_onboarding_complete(),
 				'enableReports'            => $this->enableReports(),
 				'dateFormat'               => get_option( 'date_format' ),
 				'timeFormat'               => get_option( 'time_format' ),
 				'siteLogoUrl'              => wp_get_attachment_image_url( get_theme_mod( 'custom_logo' ), 'full' ),
+				'serviceBasedMerchant'     => $this->service_based_merchant_state->is_service_based_merchant(),
 				'initialWpData'            => [
 					'version' => $this->get_version(),
 					'mcId'    => $this->options->get_merchant_id() ?: null,
 					'adsId'   => $this->options->get_ads_id() ?: null,
 				],
+				'dataViewsScriptUrl'       => add_query_arg(
+					[
+						'version' => (string) filemtime( "{$this->get_root_dir()}/js/build/wp-dataviews-shim.js" ),
+					],
+					(
+						new ScriptAsset(
+							'gla-data-views-shim',
+							'js/build/wp-dataviews-shim',
+							[],
+							(string) filemtime( "{$this->get_root_dir()}/js/build/wp-dataviews-shim.js" ),
+						)
+					)->get_uri(),
+				),
 			]
 		);
 
@@ -165,7 +200,7 @@ class Admin implements Service, Registerable, Conditional, OptionsAwareInterface
 		$assets[] = ( new AdminScriptWithBuiltDependenciesAsset(
 			'gla-product-attributes',
 			'js/build/product-attributes',
-			"{$this->get_root_dir()}/js/build/product-attributes.asset.php",
+			"{$build_dir}/product-attributes.asset.php",
 			new BuiltScriptDependencyArray(
 				[
 					'dependencies' => [],
@@ -188,7 +223,113 @@ class Admin implements Service, Registerable, Conditional, OptionsAwareInterface
 			$product_condition
 		) );
 
+		$assets[] = ( new AdminScriptWithBuiltDependenciesAsset(
+			'gla-order-attribution',
+			'js/build/order-attribution',
+			"{$build_dir}/order-attribution.asset.php",
+			new BuiltScriptDependencyArray(
+				[
+					'dependencies' => [],
+					'version'      => (string) filemtime( "{$this->get_root_dir()}/js/build/order-attribution.js" ),
+				]
+			),
+			function (): bool {
+				return $this->is_wc_order_edit_screen();
+			}
+		) )->add_inline_script(
+			'glaData',
+			[
+				'slug'                   => $this->get_slug(),
+				'adsSetupComplete'       => $this->ads->is_setup_complete(),
+				'initialWpData'          => [
+					'version' => $this->get_version(),
+					'mcId'    => $this->options->get_merchant_id() ?: null,
+					'adsId'   => $this->options->get_ads_id() ?: null,
+				],
+				'channelVisibility'      => $this->get_channel_visibility_data(),
+				'orderAttributionSource' => $this->get_order_attribution_source_for_edit_screen(),
+				'serviceBasedMerchant'   => $this->service_based_merchant_state->is_service_based_merchant(),
+			]
+		);
+
+		$assets[] = ( new AdminScriptWithBuiltDependenciesAsset(
+			'gla-wc-product',
+			'js/build/channel-visibility-meta-box',
+			"{$this->get_root_dir()}/js/build/channel-visibility-meta-box.asset.php",
+			new BuiltScriptDependencyArray(
+				[
+					'dependencies' => [],
+					'version'      => (string) filemtime( "{$this->get_root_dir()}/js/build/channel-visibility-meta-box.js" ),
+				]
+			),
+			function (): bool {
+				return $this->is_wc_product_edit_screen();
+			}
+		) )->add_inline_script(
+			'glaData',
+			[
+				'slug'              => $this->get_slug(),
+				'adsSetupComplete'  => $this->ads->is_setup_complete(),
+				'initialWpData'     => [
+					'version' => $this->get_version(),
+					'mcId'    => $this->options->get_merchant_id() ?: null,
+					'adsId'   => $this->options->get_ads_id() ?: null,
+				],
+				'channelVisibility' => $this->get_channel_visibility_data(),
+			]
+		);
+
 		return $assets;
+	}
+
+	/**
+	 * Get the order attribution source (utm_source) for the order currently being edited.
+	 * Used only when the meta-boxes asset is loaded on the WooCommerce Edit Order screen.
+	 *
+	 * @return string|null The value persisted in the database (e.g. "google"), or null when not on order edit screen or no attribution.
+	 */
+	private function get_order_attribution_source_for_edit_screen(): ?string {
+		if ( ! $this->is_wc_order_edit_screen() ) {
+			return null;
+		}
+
+		// We use `id` when the setting for Order data storage (WooCommerce -> Settings -> Advanced -> Order data storage) is set to "High-performance order storage (recommended)".
+		// We use `post` when the setting for Order data storage is set to "WordPress posts storage (legacy)".
+		$order_id = 0;
+		if ( isset( $_GET['id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$order_id = absint( $_GET['id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		} elseif ( isset( $_GET['post'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$order_id = absint( $_GET['post'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		}
+
+		if ( 0 === $order_id ) {
+			return null;
+		}
+
+		$order = wc_get_order( $order_id );
+		if ( ! $order ) {
+			return null;
+		}
+
+		$source = $order->get_meta( '_wc_order_attribution_utm_source', true );
+		if ( $source === '' || $source === null ) {
+			return null;
+		}
+
+		return (string) $source;
+	}
+
+	/**
+	 * Check if the current screen is the WooCommerce orders edit screen.
+	 *
+	 * @return bool True if on the WC orders edit screen, false otherwise.
+	 */
+	protected function is_wc_order_edit_screen(): bool {
+		if ( null === get_current_screen() ) {
+			return false;
+		}
+
+		return OrderUtil::is_order_edit_screen( 'shop_order' );
 	}
 
 	/**
@@ -201,7 +342,7 @@ class Admin implements Service, Registerable, Conditional, OptionsAwareInterface
 		$plugin_links = [];
 
 		// Display settings url if setup is complete otherwise link to get started page
-		if ( $this->merchant_center->is_setup_complete() ) {
+		if ( $this->onboarding_completed->is_onboarding_complete() ) {
 			$plugin_links[] = sprintf(
 				'<a href="%1$s">%2$s</a>',
 				esc_attr( $this->get_settings_url() ),
@@ -348,5 +489,55 @@ class Admin implements Service, Registerable, Conditional, OptionsAwareInterface
 			);
 			$react_script->deps[] = 'wp-react-refresh-entry';
 		}
+	}
+
+	/**
+	 * Build channel visibility data for the current product edit screen.
+	 *
+	 * @return array
+	 */
+	protected function get_channel_visibility_data(): array {
+		if ( ! $this->is_wc_product_edit_screen() ) {
+			return [];
+		}
+
+		global $post;
+		if ( ! $post || ! isset( $post->ID ) ) {
+			return [];
+		}
+
+		try {
+			$product_helper = \woogle_get_container()->get( ProductHelper::class );
+			$meta_handler   = \woogle_get_container()->get( ProductMetaHandler::class );
+
+			/** @var \WC_Product $product */
+			$product = $product_helper->get_wc_product( absint( $post->ID ) );
+			if ( ! $product ) {
+				return [];
+			}
+
+			$field_id = sprintf( '%s_%s_%s', $this->get_slug(), ChannelVisibilityMetaBox::ID, ChannelVisibilityMetaBox::FIELD_VISIBILITY );
+
+			return [
+				'field_id'           => $field_id,
+				'product_is_visible' => (bool) $product->is_visible(),
+				'channel_visibility' => $product_helper->get_channel_visibility( $product ),
+				'sync_status'        => $meta_handler->get_sync_status( $product ),
+				'issues'             => $product_helper->get_validation_errors( $product ),
+				'options'            => ChannelVisibility::get_value_options(),
+			];
+		} catch ( \Throwable $e ) {
+			return [];
+		}
+	}
+
+	/**
+	 * Check if the current screen is a WooCommerce product edit screen.
+	 *
+	 * @return bool
+	 */
+	private function is_wc_product_edit_screen(): bool {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		return null !== $screen && 'product' === $screen->id;
 	}
 }

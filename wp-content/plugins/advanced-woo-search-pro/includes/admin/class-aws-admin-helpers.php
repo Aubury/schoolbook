@@ -242,8 +242,11 @@ if ( ! class_exists( 'AWS_Admin_Helpers' ) ) :
                         break;
 
                     case 'terms_select':
-                    case 'filter_rules':
                         $value = (array) $value;
+                        break;
+
+                    case 'filter_rules':
+                        $value = self::sanitize_filter_rules( $value );
                         break;
 
                     default:
@@ -254,6 +257,80 @@ if ( ! class_exists( 'AWS_Admin_Helpers' ) ) :
             }
 
             return $value;
+
+        }
+
+        /*
+         * Sanitize filter rules
+         * @param array $filters Filters array
+         * @return array
+         */
+        static public function sanitize_filter_rules( $filters ) {
+
+            if ( ! is_array( $filters ) ) {
+                return array();
+            }
+
+            foreach ( $filters as $section_id => $section_groups ) {
+                if ( ! is_array( $section_groups ) ) {
+                    unset( $filters[ $section_id ] );
+                    continue;
+                }
+
+                foreach ( $section_groups as $group_id => $group_rules ) {
+                    if ( ! is_array( $group_rules ) ) {
+                        unset( $filters[ $section_id ][ $group_id ] );
+                        continue;
+                    }
+
+                    foreach ( $group_rules as $rule_id => $rule_values ) {
+                        if ( ! is_array( $rule_values ) ) {
+                            unset( $filters[ $section_id ][ $group_id ][ $rule_id ] );
+                            continue;
+                        }
+
+                        $param = isset( $rule_values['param'] ) ? sanitize_text_field( $rule_values['param'] ) : '';
+                        $operator = isset( $rule_values['operator'] ) ? sanitize_text_field( $rule_values['operator'] ) : '';
+                        $suboption = isset( $rule_values['suboption'] ) ? $rule_values['suboption'] : '';
+                        $value = isset( $rule_values['value'] ) ? $rule_values['value'] : '';
+                        $rule = $param ? AWS_Admin_Filters_Helpers::include_filter_rule_by_id( $param ) : array();
+
+                        $filters[ $section_id ][ $group_id ][ $rule_id ] = array(
+                            'param' => $param,
+                            'operator' => $operator,
+                            'suboption' => is_array( $suboption ) ? array_map( 'sanitize_text_field', $suboption ) : sanitize_text_field( $suboption ),
+                            'value' => self::sanitize_filter_rule_value( $value, $rule ),
+                        );
+                    }
+                }
+            }
+
+            return $filters;
+
+        }
+
+        /*
+         * Sanitize filter rule value
+         * @param mixed $value Rule value
+         * @param array $rule  Rule config
+         * @return mixed
+         */
+        static public function sanitize_filter_rule_value( $value, $rule ) {
+
+            $is_multiple = isset( $rule['multiple'] ) && $rule['multiple'];
+
+            if ( $is_multiple ) {
+                $values = is_array( $value ) ? $value : array( $value );
+                $values = array_map( 'sanitize_text_field', $values );
+                $values = array_filter( $values, 'strlen' );
+                return array_values( $values );
+            }
+
+            if ( is_array( $value ) ) {
+                $value = reset( $value );
+            }
+
+            return sanitize_text_field( $value );
 
         }
 
@@ -303,8 +380,10 @@ if ( ! class_exists( 'AWS_Admin_Helpers' ) ) :
 
                         // get options values inside 'suboptions' array
                         foreach ( $val['suboptions'] as $suboption_key => $suboption_val ) {
-                            $new_value = $default ? $suboption_val['value'] : AWS_Admin_Helpers::get_new_option_value( $field, $key, $suboption_val['id'] );
-                            $current_option[$key][$suboption_val['id']] = AWS_Admin_Helpers::prepare_settings( $suboption_val, $new_value );
+                            $sub_field = $suboption_val;
+                            $sub_field['id'] = $field['id'];
+                            $new_value = $default ? $suboption_val['value'] : AWS_Admin_Helpers::get_new_option_value( $sub_field, $key, $suboption_val['id'] );
+                            $current_option[$key][$suboption_val['id']] = AWS_Admin_Helpers::prepare_settings( $sub_field, $new_value );
                         }
 
                     } else {

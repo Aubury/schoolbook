@@ -69,8 +69,9 @@ if ( ! class_exists( 'AWS_Updater' ) ) :
 
             add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 4 );
 
-        }
+            add_action( 'aws_new_plugin_version_released', array( $this, 'aws_new_plugin_version_released' ) );
 
+        }
 
         /**
          * Add our self-hosted autoupdate plugin to the filter transient
@@ -163,6 +164,14 @@ if ( ! class_exists( 'AWS_Updater' ) ) :
         }
 
         /*
+         * Force to update remote plugin info after plugins new version is installed
+         */
+        public function aws_new_plugin_version_released() {
+            delete_option( $this->remote_data_option );
+            $information = $this->get_plugin_remote_info_option();
+        }
+
+        /*
          * Return plugin info from remote server. Check option expiration time
          */
         public function get_plugin_remote_info_option() {
@@ -201,7 +210,9 @@ if ( ! class_exists( 'AWS_Updater' ) ) :
                 'slug' => $this->slug,
                 'installed_version' => $this->current_version,
                 'license' => AWS_PRO()->license->get_license_key(),
-                'ismu' => is_multisite()
+                'ismu' => is_multisite(),
+                'home_url' => home_url(),
+                'lang' => get_locale(),
             ) ) );
 
 
@@ -235,7 +246,10 @@ if ( ! class_exists( 'AWS_Updater' ) ) :
                 'slug' => $this->slug,
                 'license' => $license_key,
                 'installed_version' => $this->current_version,
-                'ismu' => is_multisite()
+                'ismu' => is_multisite(),
+                'home_url' => home_url(),
+                'lang' => get_locale(),
+                'api_ver' => '2'
             ) ) );
 
             $response_text = 'Invalid';
@@ -263,7 +277,9 @@ if ( ! class_exists( 'AWS_Updater' ) ) :
                 'slug' => $this->slug,
                 'license' => $license_key,
                 'installed_version' => $this->current_version,
-                'ismu' => is_multisite()
+                'ismu' => is_multisite(),
+                'home_url' => home_url(),
+                'lang' => get_locale(),
             ) ) );
 
             if ( ! is_wp_error( $request ) && wp_remote_retrieve_response_code( $request ) === 200 ) {

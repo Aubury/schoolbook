@@ -30,7 +30,7 @@ class Assets {
 	public $files;
 
 	/**
-	 * ScreenRegisterer
+	 * AdminScreen
 	 *
 	 * @var object
 	 */
@@ -39,16 +39,15 @@ class Assets {
 	/**
 	 * Constructor
 	 *
-	 * @param string           $version Plugin version.
-	 * @param Utils\Files      $files   Files object.
-	 * @param ScreenRegisterer $screen  ScreenRegisterer object.
+	 * @param string      $version Plugin version.
+	 * @param Utils\Files $files   Files object.
+	 * @param AdminScreen $screen  AdminScreen object.
 	 */
-	public function __construct( $version, Utils\Files $files, ScreenRegisterer $screen ) {
+	public function __construct( $version, Utils\Files $files, AdminScreen $screen ) {
 
 		$this->plugin_version = $version;
 		$this->files          = $files;
 		$this->screen         = $screen;
-
 	}
 
 	/**
@@ -76,7 +75,8 @@ class Assets {
 		wp_enqueue_script( 'advanced-cron-manager', $this->files->asset_url( 'js', 'scripts.min.js' ), array( 'jquery', 'sprintf', 'materialize', 'wp-hooks' ), $this->plugin_version, true );
 
 		wp_localize_script( 'advanced-cron-manager', 'advanced_cron_manager', array(
-			'i18n' => array(
+			'rerender_nonce' => wp_create_nonce( 'acm/rerender' ),
+			'i18n'           => array(
 				'executed_with_errors' => __( 'Event has been executed with errors', 'advanced-cron-manager' ),
 				'events'               => __( 'events', 'advanced-cron-manager' ),
 				'removing'             => __( 'Removing...', 'advanced-cron-manager' ),
@@ -86,7 +86,5 @@ class Assets {
 		) );
 
 		do_action( 'advanced-cron-manager/screen/enqueue', $current_page_hook );
-
 	}
-
 }

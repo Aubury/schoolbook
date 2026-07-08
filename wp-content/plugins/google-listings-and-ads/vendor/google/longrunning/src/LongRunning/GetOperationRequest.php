@@ -5,11 +5,12 @@
 namespace Google\LongRunning;
 
 use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\RepeatedField;
 
 /**
- * The request message for [Operations.GetOperation][google.longrunning.Operations.GetOperation].
+ * The request message for
+ * [Operations.GetOperation][google.longrunning.Operations.GetOperation].
  *
  * Generated from protobuf message <code>google.longrunning.GetOperationRequest</code>
  */

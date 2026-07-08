@@ -1332,6 +1332,73 @@ class AWS_PRO_Versions {
 
             }
 
+            if ( version_compare( $current_version, '3.59', '<' ) ) {
+
+                $settings = get_option( 'aws_pro_settings' );
+
+                if ( $settings ) {
+
+                    $update = false;
+
+                    foreach( $settings as $search_instance_num => $search_instance_settings ) {
+
+                        if ( isset( $search_instance_settings['search_in'] )  ) {
+
+                            $search_in_def_weights = AWS_Helpers::get_default_relevance_scores();
+
+                            foreach( $search_in_def_weights as $source_name => $source_weight ) {
+                                if ( isset( $search_instance_settings['search_in'][$source_name] ) && is_array( $search_instance_settings['search_in'][$source_name] ) && ! isset( $search_instance_settings['search_in'][$source_name]['weight'] ) ) {
+                                    $update = true;
+                                    $settings[$search_instance_num]['search_in'][$source_name]['weight'] = $source_weight;
+                                }
+                            }
+
+                        }
+
+                        if ( ! isset( $search_instance_settings['search_archives_count'] ) ) {
+                            $settings[$search_instance_num]['search_archives_count'] = 'true';
+                            $update = true;
+                        }
+
+                        if ( ! isset( $search_instance_settings['search_archives_empty'] ) ) {
+                            $settings[$search_instance_num]['search_archives_empty'] = 'false';
+                            $update = true;
+                        }
+
+                        if ( ! isset( $search_instance_settings['search_archives_images'] ) ) {
+                            $settings[$search_instance_num]['search_archives_images'] = 'true';
+                            $update = true;
+                        }
+
+                        if ( ! isset( $search_instance_settings['search_archives_heading'] ) ) {
+                            $settings[$search_instance_num]['search_archives_heading'] = 'false';
+                            $update = true;
+                        }
+
+                        if ( ! isset( $search_instance_settings['search_archives_hierarchy'] ) ) {
+                            $settings[$search_instance_num]['search_archives_hierarchy'] = 'false';
+                            $update = true;
+                        }
+
+                    }
+
+                    if ( $update ) {
+                        update_option( 'aws_pro_settings', $settings );
+                    }
+
+                }
+
+            }
+
+            if ( version_compare( $current_version, '3.60', '<' ) ) {
+                $this->update_multiselect_filter_rules();
+            }
+
+            if ( version_compare( $current_version, '3.61', '<' ) ) {
+                $this->update_multiselect_filter_rules();
+                $this->cleanup_empty_multiselect_rules();
+            }
+
         }
 
         if ( ! $current_version ) {
@@ -1339,6 +1406,10 @@ class AWS_PRO_Versions {
             AWS_Helpers::add_term_id_column();
             AWS_Helpers::add_on_sale_column();
 
+        }
+
+        if ( $current_version && $current_version !== AWS_PRO_VERSION ) {
+            do_action( 'aws_new_plugin_version_released', AWS_PRO_VERSION );
         }
 
         update_option( 'aws_pro_plugin_ver', AWS_PRO_VERSION );
@@ -1369,6 +1440,223 @@ class AWS_PRO_Versions {
             }
         }
         return $options;
+    }
+
+    /*
+     * Since version 3.60 - update multiselect filter values
+     */
+    private function update_multiselect_filter_rules() {
+
+        $settings = get_option( 'aws_pro_settings' );
+
+        if ( ! $settings || ! is_array( $settings ) ) {
+            return;
+        }
+
+        $updated = false;
+
+        foreach ( $settings as $search_instance_num => $search_instance_settings ) {
+
+            if ( isset( $search_instance_settings['adv_filters'] ) && is_array( $search_instance_settings['adv_filters'] ) ) {
+                $instance_updated = $this->update_multiselect_filter_groups( $search_instance_settings['adv_filters'] );
+
+                if ( $instance_updated ) {
+                    $settings[ $search_instance_num ]['adv_filters'] = $search_instance_settings['adv_filters'];
+                    $updated = true;
+                }
+            }
+
+            if ( isset( $search_instance_settings['filters'] ) && is_array( $search_instance_settings['filters'] ) ) {
+                foreach ( $search_instance_settings['filters'] as $filter_num => $filter_settings ) {
+                    if ( ! isset( $filter_settings['adv_filters'] ) || ! is_array( $filter_settings['adv_filters'] ) ) {
+                        continue;
+                    }
+
+                    $filter_updated = $this->update_multiselect_filter_groups( $filter_settings['adv_filters'] );
+
+                    if ( $filter_updated ) {
+                        $settings[ $search_instance_num ]['filters'][ $filter_num ]['adv_filters'] = $filter_settings['adv_filters'];
+                        $updated = true;
+                    }
+                }
+            }
+
+            if ( isset( $search_instance_settings['quick_filters'] ) && is_array( $search_instance_settings['quick_filters'] ) ) {
+                foreach ( $search_instance_settings['quick_filters'] as $filter_num => $filter_settings ) {
+                    if ( ! isset( $filter_settings['adv_filters'] ) || ! is_array( $filter_settings['adv_filters'] ) ) {
+                        continue;
+                    }
+
+                    $filter_updated = $this->update_multiselect_filter_groups( $filter_settings['adv_filters'] );
+
+                    if ( $filter_updated ) {
+                        $settings[ $search_instance_num ]['quick_filters'][ $filter_num ]['adv_filters'] = $filter_settings['adv_filters'];
+                        $updated = true;
+                    }
+                }
+            }
+
+        }
+
+        if ( $updated ) {
+            update_option( 'aws_pro_settings', $settings );
+        }
+
+    }
+
+    /*
+     * Update groups of filter rules with multiselect values
+     *
+     * @param array $filters Filter groups.
+     * @return bool
+     */
+    private function update_multiselect_filter_groups( &$filters ) {
+
+        if ( ! $filters || ! is_array( $filters ) ) {
+            return false;
+        }
+
+        $updated = false;
+
+        foreach ( $filters as $section => $group_rules ) {
+            if ( ! is_array( $group_rules ) ) {
+                continue;
+            }
+
+            foreach ( $group_rules as $group_id => $rules ) {
+                if ( ! is_array( $rules ) ) {
+                    continue;
+                }
+
+                foreach ( $rules as $rule_id => $rule_values ) {
+                    if ( ! isset( $rule_values['param'] ) ) {
+                        continue;
+                    }
+
+                    $rule = AWS_Admin_Filters_Helpers::include_filter_rule_by_id( $rule_values['param'] );
+                    $is_multiple = isset( $rule['multiple'] ) && $rule['multiple'];
+
+                    if ( ! $is_multiple ) {
+                        continue;
+                    }
+
+                    if ( isset( $rule_values['operator'] ) ) {
+                        if ( 'equal' === $rule_values['operator'] ) {
+                            $filters[ $section ][ $group_id ][ $rule_id ]['operator'] = 'in_list';
+                            $updated = true;
+                        } elseif ( 'not_equal' === $rule_values['operator'] ) {
+                            $filters[ $section ][ $group_id ][ $rule_id ]['operator'] = 'not_in_list';
+                            $updated = true;
+                        }
+                    }
+
+                    if ( isset( $rule_values['value'] ) && ! is_array( $rule_values['value'] ) ) {
+                        $value = sanitize_text_field( $rule_values['value'] );
+                        $filters[ $section ][ $group_id ][ $rule_id ]['value'] = '' !== $value ? array( $value ) : array();
+                        $updated = true;
+                    }
+                }
+            }
+        }
+
+        return $updated;
+
+    }
+
+    /*
+     * Since version 3.61 - remove adv_filter rules with empty value arrays left by the
+     * aws_any bug in the 3.60 migration, across all filter locations.
+     */
+    private function cleanup_empty_multiselect_rules() {
+
+        $settings = get_option( 'aws_pro_settings' );
+
+        if ( ! $settings || ! is_array( $settings ) ) {
+            return;
+        }
+
+        $updated = false;
+
+        foreach ( $settings as $search_instance_num => $search_instance_settings ) {
+
+            if ( isset( $search_instance_settings['adv_filters'] ) && is_array( $search_instance_settings['adv_filters'] ) ) {
+                if ( $this->remove_empty_value_filter_rules( $search_instance_settings['adv_filters'] ) ) {
+                    $settings[ $search_instance_num ]['adv_filters'] = $search_instance_settings['adv_filters'];
+                    $updated = true;
+                }
+            }
+
+            if ( isset( $search_instance_settings['quick_filters'] ) && is_array( $search_instance_settings['quick_filters'] ) ) {
+                foreach ( $search_instance_settings['quick_filters'] as $filter_num => $filter_settings ) {
+                    if ( ! isset( $filter_settings['adv_filters'] ) || ! is_array( $filter_settings['adv_filters'] ) ) {
+                        continue;
+                    }
+                    if ( $this->remove_empty_value_filter_rules( $filter_settings['adv_filters'] ) ) {
+                        $settings[ $search_instance_num ]['quick_filters'][ $filter_num ]['adv_filters'] = $filter_settings['adv_filters'];
+                        $updated = true;
+                    }
+                }
+            }
+
+        }
+
+        if ( $updated ) {
+            update_option( 'aws_pro_settings', $settings );
+        }
+
+    }
+
+    /*
+     * Remove adv_filter rules that are multiple-type and have an empty value array.
+     *
+     * @param array $filters Filter groups (passed by reference).
+     * @return bool Whether any rules were removed.
+     */
+    private function remove_empty_value_filter_rules( &$filters ) {
+
+        if ( ! $filters || ! is_array( $filters ) ) {
+            return false;
+        }
+
+        $updated = false;
+
+        foreach ( $filters as $section => $group_rules ) {
+            if ( ! is_array( $group_rules ) ) {
+                continue;
+            }
+
+            foreach ( $group_rules as $group_id => $rules ) {
+                if ( ! is_array( $rules ) ) {
+                    continue;
+                }
+
+                foreach ( $rules as $rule_id => $rule_values ) {
+                    if ( ! isset( $rule_values['param'] ) ) {
+                        continue;
+                    }
+
+                    $rule = AWS_Admin_Filters_Helpers::include_filter_rule_by_id( $rule_values['param'] );
+                    $is_multiple = isset( $rule['multiple'] ) && $rule['multiple'];
+
+                    if ( $is_multiple ) {
+                        // Remove multiple-type rules left with an empty value array by the broken aws_any migration.
+                        if ( isset( $rule_values['value'] ) && is_array( $rule_values['value'] ) && empty( $rule_values['value'] ) ) {
+                            unset( $filters[ $section ][ $group_id ][ $rule_id ] );
+                            $updated = true;
+                        }
+                    } else {
+                        // Remove non-multiple rules with an empty string value (e.g. "Term count → equal → ''").
+                        if ( isset( $rule_values['value'] ) && '' === $rule_values['value'] ) {
+                            unset( $filters[ $section ][ $group_id ][ $rule_id ] );
+                            $updated = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $updated;
+
     }
 
     /**

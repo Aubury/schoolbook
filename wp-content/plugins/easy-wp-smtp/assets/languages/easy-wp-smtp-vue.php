@@ -4,6 +4,7 @@ $generated_i18n_strings = array(
 	// Reference: src/plugins/setup-wizard-helper-plugin.js:106
 	__( 'Error Message:', 'easy-wp-smtp' ),
 
+	// Reference: src/modules/setup-wizard/mixins/connect-error-modal.js:32
 	// Reference: src/plugins/setup-wizard-helper-plugin.js:123
 	__( 'OK', 'easy-wp-smtp' ),
 
@@ -44,7 +45,7 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/settings/store/actions.js:11
 	__( 'It looks like we can\'t load existing settings.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/store/actions.js:114
+	// Reference: src/modules/settings/store/actions.js:123
 	__( 'It looks like we can\'t remove oAuth connection.', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/settings/store/actions.js:31
@@ -61,12 +62,12 @@ $generated_i18n_strings = array(
 	__( 'It looks like we can\'t send the feedback.', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/plugins/api/index.js:69
-	// Reference: src/modules/settings/api/index.js:204
+	// Reference: src/modules/settings/api/index.js:272
 	// Reference: src/modules/setup-wizard/api/index.js:39
 	/* Translators: Error status and error text. */
 	__( '%1$s, %2$s', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/api/index.js:208
+	// Reference: src/modules/settings/api/index.js:276
 	// Reference: src/modules/setup-wizard/api/index.js:43
 	__( 'You appear to be offline.', 'easy-wp-smtp' ),
 
@@ -103,7 +104,7 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/settings/api/index.js:172
 	__( 'It looks like we can\'t load authentication details.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/api/index.js:202
+	// Reference: src/modules/settings/api/index.js:270
 	__( 'It looks like we can\'t remove OAuth connection.', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/settings/api/index.js:21
@@ -133,13 +134,13 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:13
 	__( 'Choose Your SMTP Mailer', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:141
+	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:186
 	__( 'Mailer', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:151
+	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:196
 	__( 'I Understand, Continue', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:152
+	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:197
 	__( 'Choose a Different Mailer', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:15
@@ -147,21 +148,23 @@ $generated_i18n_strings = array(
 	__( 'Select the mailer you would like to use to send emails. Need more information on our mailers? See our %1$scomplete mailer guide%2$s for additional details.', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:16
+	// Reference: src/modules/setup-wizard/components/steps/WizardStepConfigureEmailLogs.vue:15
 	__( 'Save and Continue', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:17
+	// Reference: src/modules/setup-wizard/components/steps/WizardStepConfigureEmailLogs.vue:16
 	__( 'Previous Step', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:18
+	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:17
 	__( 'Your mailer is already configured in a Easy WP SMTP constant, so the options below have been disabled. To change your mailer, please edit or remove the <code>EasyWPSMTP_MAILER</code> constant in your <code>wp-config.php</code> file.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:196
+	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:207
 	__( 'is a PRO Feature', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:28
+	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:27
 	__( ' - Send your first 200 emails for free.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:70
+	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:85
 	__( 'Microsoft 365 / Outlook', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Postmark.vue:13
@@ -178,28 +181,34 @@ $generated_i18n_strings = array(
 	/* Translators: Link to the Postmark Message Stream ID settings. */
 	__( 'Message Stream ID is <strong>optional</strong>. By default <strong>outbound</strong> (Default Transactional Stream) will be used. More information can be found in our %1$sPostmark documentation%2$s.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendgrid.vue:22
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:18
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:23
 	__( 'From Name', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendgrid.vue:23
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:19
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:24
 	__( 'Force From Name', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendgrid.vue:24
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:20
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:25
 	__( 'From Email', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendgrid.vue:25
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:21
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:26
 	__( 'Force From Email', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendgrid.vue:26
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:22
 	__( 'If enabled, the From Name setting above will be used for all emails, ignoring values set by other plugins.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendgrid.vue:27
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:23
 	__( 'If enabled, the From Email setting above will be used for all emails, ignoring values set by other plugins.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendgrid.vue:28
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:24
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:29
 	__( 'The name that emails are sent from.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendgrid.vue:29
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:25
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:30
 	__( 'The email address that emails are sent from.', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Postmark.vue:27
@@ -208,10 +217,10 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/setup-wizard/Steps.vue:12
 	__( 'Close and exit the Setup Wizard', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendgrid.vue:13
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:13
 	__( 'API Key', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendgrid.vue:14
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendinblue.vue:14
 	__( 'Sending Domain', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendgrid.vue:16
@@ -250,7 +259,7 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/setup-wizard/components/steps/WizardStepHelpImprove.vue:15
 	__( 'Enter your email address to receive helpful suggestions from Easy WP SMTP. We’ll help you optimize your email deliverability and grow your business.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepLicense.vue:17
+	// Reference: src/modules/setup-wizard/components/steps/WizardStepHelpImprove.vue:17
 	__( 'Skip this Step', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/WizardStepHelpImprove.vue:19
@@ -364,7 +373,7 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/AmazonSES.vue:17
 	__( 'Secret Access Key', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/AmazonSES.vue:18
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:16
 	__( 'Region', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/AmazonSES.vue:19
@@ -373,10 +382,10 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/AmazonSES.vue:20
 	__( 'Please select the Amazon SES API region which is the closest to where your website is hosted. This can help to decrease network latency between your site and Amazon SES, which will speed up email sending.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/AmazonSES.vue:25
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:27
 	__( 'If enabled, your specified From Name will be used for all outgoing emails, regardless of values set by other plugins.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/AmazonSES.vue:26
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:28
 	__( 'If enabled, your specified From Email Address will be used for all outgoing emails, regardless of values set by other plugins.', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/AmazonSES.vue:29
@@ -385,41 +394,41 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/AmazonSES.vue:30
 	__( 'Amazon SES requires an SSL certificate, and so is not currently compatible with your site. Please contact your host to request a SSL certificate, or check out ', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:21
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/AmazonSES.vue:31
 	__( 'WPBeginner\'s tutorial on how to set up SSL', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:22
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/AmazonSES.vue:32
 	__( 'If you\'d prefer not to set up SSL, or need an SMTP solution in the meantime, please go back and select a different mailer option.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:15
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:17
 	__( 'Application ID', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:16
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:18
 	__( 'Application Password', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:17
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:19
 	__( 'Redirect URI', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:18
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:15
 	__( 'Authorization', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:19
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:21
 	__( 'Read how to set up Microsoft Outlook / 365', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:20
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:24
 	__( 'Outlook / 365 requires an SSL certificate, and so is not currently compatible with your site. Please contact your host to request a SSL certificate, or check out ', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:15
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:28
 	/* Translators: Link to the SendLayer API settings. */
 	__( '%1$sFollow this link%2$s to get an API Key for SendLayer.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:24
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:39
 	__( 'Get Started with SendLayer', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:25
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:40
 	__( 'Read how to set up SendLayer', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepLicense.vue:82
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:117
 	__( 'Verification Error!', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:24
@@ -428,22 +437,22 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:33
 	__( 'Gmail mailer requires a valid Easy WP SMTP Pro license. Please activate your license key.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepLicense.vue:36
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:34
 	__( 'Paste your license key here', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepLicense.vue:35
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:35
 	__( 'License key input', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepLicense.vue:26
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:36
 	__( 'Verify License Key', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepLicense.vue:27
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:37
 	__( 'The License Key format is incorrect. Please enter a valid key and try again.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/WizardStepLicense.vue:72
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:107
 	__( 'Successful Verification!', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:94
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:108
 	__( 'Now you can continue mailer configuration.', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/SmtpCom.vue:14
@@ -638,10 +647,10 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:31
 	__( 'Read how to set up Mailgun', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/SparkPost.vue:31
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:36
 	__( 'US', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/SparkPost.vue:35
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailgun.vue:40
 	__( 'EU', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/TheWizardHeader.vue:8
@@ -654,7 +663,9 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/settings/components/input/SettingsInputRadiosWithIcons.vue:14
 	__( 'Recommended', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsInputLongCheckbox.vue:20
+	// Reference: src/modules/settings/components/input/SettingsInputRadio.vue:33
+	// Reference: src/modules/settings/components/input/SettingsInputSelect.vue:38
+	// Reference: src/modules/settings/components/input/SettingsInputSwitch.vue:38
 	__( 'This setting is already configured with the Easy WP SMTP constant. To change it, please edit or remove the <code></code> constant in your <code>wp-config.php</code> file.', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/settings/components/input/SettingsInputText.vue:36
@@ -722,55 +733,55 @@ $generated_i18n_strings = array(
 	// Reference: src/modules/settings/components/input/SettingsAmazonSESIdentities.vue:60
 	__( 'Verify Email Address', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:102
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:111
 	__( 'There was an error while processing the authentication request. The state key is invalid. Please try again.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:105
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:117
 	__( 'There was an error while processing the authentication request.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:108
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:121
 	__( 'There was an error while processing the authentication request. Please recheck your Client ID and Client Secret and try again.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:111
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:128
 	__( 'There was an error while processing the authentication request. The nonce is invalid. Please try again.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:114
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:132
 	__( 'There was an error while processing the authentication request. The authorization code is missing. Please try again.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:117
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:135
 	__( 'You have successfully connected your site with your Gmail account. This site will now send emails via your Gmail account.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:120
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:138
 	__( 'You have successfully linked the current site with your Microsoft API project. Now you can start sending emails through Outlook.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:126
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:17
 	__( 'Successful Authorization', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:126
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:150
 	__( 'Authorization Error!', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:21
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:22
 	/* Translators: name of the oAuth provider (Google, Microsoft, ...). */
 	__( 'Connect to %s', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:22
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:23
 	__( 'Sign in with Google', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:23
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:25
 	__( 'Before continuing, you\'ll need to allow this plugin to send emails using your %s account.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:24
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:26
 	__( 'Remove OAuth Connection', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:26
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:28
 	/* Translators: link to the Google documentation page. */
 	__( 'If you want to use a different From Email address you can setup a Google email alias. %1$sFollow these instructions%2$s, then input the alias address in the From Email section below.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:28
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:30
 	/* Translators: name of the oAuth provider (Google, Microsoft, ...). */
 	__( 'Removing this OAuth connection will give you the ability to redo the OAuth connection or connect to different %s account.', 'easy-wp-smtp' ),
 
-	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:29
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:31
 	__( 'Connected as', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/settings/components/input/SettingsInputNumber.vue:38
@@ -794,10 +805,203 @@ $generated_i18n_strings = array(
 	/* Translators: Link to the SparkPost Account API section. */
 	__( '%1$sFollow this link%2$s to get an API Key for SparkPost.', 'easy-wp-smtp' ),
 
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/SMTP2GO.vue:14
+	/* Translators: Link to the SMTP2GO API settings. */
+	__( 'Generate an API key on the Sending → API Keys page in your %1$scontrol panel%2$s.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/SMTP2GO.vue:23
+	__( 'Read how to set up SMTP2GO', 'easy-wp-smtp' ),
+
 	// Reference: src/modules/setup-wizard/components/steps/WizardStepLicense.vue:30
 	__( 'Instant Email Alerts', 'easy-wp-smtp' ),
 
 	// Reference: src/modules/setup-wizard/components/steps/WizardStepLicense.vue:31
-	__( 'Get notifications via email, SMS, Slack, or webhook when emails fail to send.', 'easy-wp-smtp' )
+	__( 'Get notifications via email, SMS, Slack, or webhook when emails fail to send.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Zoho.vue:17
+	__( 'The data center location used by your Zoho account.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Zoho.vue:18
+	__( 'Client ID', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Zoho.vue:19
+	__( 'Client Secret', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Zoho.vue:26
+	__( 'Read how to set up Zoho Mail', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:114
+	__( 'There was an error while processing the authentication request. Please try again.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:124
+	__( 'There was an error while processing the authentication request. Please recheck your Region, Client ID and Client Secret and try again.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:144
+	__( 'You have successfully linked the current site with your Zoho Mail API project. Now you can start sending emails through Zoho Mail.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailjet.vue:15
+	/* Translators: Link to the SMTP2GO API settings. */
+	__( 'Follow this link to get the API key from Mailjet: %1$sAPI Key Management%2$s.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailjet.vue:16
+	__( 'Secret Key', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailjet.vue:17
+	__( 'Follow this link to get the Secret key from Mailjet: %1$sAPI Key Management%2$s.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mailjet.vue:26
+	__( 'Read how to set up Mailjet', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/WizardStepChooseMailer.vue:18
+	__( 'Your mailer is already configured in a Easy WP SMTP constant, so the options below have been disabled. To change your mailer, please edit or remove the <code>EASY_WP_SMTP_MAILER</code> constant in your <code>wp-config.php</code> file.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/ElasticEmail.vue:15
+	/* Translators: Link to the Elastic Email API settings. */
+	__( '%1$sFollow this link%2$s to get an API Key for Elastic Email.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/ElasticEmail.vue:25
+	__( 'Read how to set up Elastic Email', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:15
+	__( 'One-Click Setup', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:16
+	__( 'Provides a quick and easy way to connect to Outlook that doesn\'t require creating your own app.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:22
+	__( 'Enabled', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:23
+	__( 'Disabled', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Outlook.vue:40
+	__( 'One-Click Setup for Microsoft Outlook requires an active license. Verify your license to proceed with this One-Click Setup, please.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:141
+	__( 'You have successfully connected your site with your Outlook account. Now you can start sending emails through Outlook.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/settings/components/input/SettingsOAuthConnection.vue:24
+	__( 'Sign in with Outlook', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:14
+	__( 'Pro Plan Features', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:16
+	/* Translators: Link to the MailerSend API settings. */
+	__( '%1$sFollow this link%2$s to get an API Key for MailerSend.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:17
+	__( 'Enable if you have a Pro plan or higher to use advanced features like custom headers.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/MailerSend.vue:26
+	__( 'Read how to set up MailerSend', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mandrill.vue:14
+	__( 'Follow this link to get an API Key from Mandrill.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Mandrill.vue:23
+	__( 'Read how to set up Mandrill', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Resend.vue:15
+	/* Translators: Link to the Resend API settings. */
+	__( '%1$sFollow this link%2$s to get an API Key for Resend.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Resend.vue:24
+	__( 'Read how to set up Resend', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/SendlayerQuickConnectCard.vue:16
+	__( 'Easily start sending emails from your site in just a few clicks and enjoy your ', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/SendlayerQuickConnectCard.vue:17
+	__( 'first 200 emails absolutely free!', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:44
+	__( 'Quick Connect', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/SendlayerQuickConnectCard.vue:19
+	__( 'Connecting...', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/SendlayerQuickConnectCard.vue:25
+	__( 'Takes about 2 mins', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/SendlayerQuickConnectCard.vue:23
+	/* Translators: %1$s and %2$s are bold tag open/close. */
+	__( 'Easily start sending emails from your site in just a few clicks and enjoy your %1$sfirst 200 emails absolutely free!%2$s', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/api/index.js:94
+	__( 'An error occurred. Please try again.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/api/index.js:98
+	__( 'A server error occurred. Please try again.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:17
+	__( 'SendLayer connected!', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:16
+	__( 'Your site was successfully connected to SendLayer. Please configure other mailer settings before getting started.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:19
+	__( 'SendLayer Connection Failed!', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:20
+	__( 'Your site was not connected to SendLayer. You can retry or connect manually with API key. Our detailed documentation for manually connecting will walk you through the entire process.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:21
+	__( 'Retry Connecting', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:45
+	__( 'Read how to setup manually', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:18
+	__( 'Your site was successfully connected to SendLayer.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:17
+	__( 'Please configure other mailer settings before getting start', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:19
+	__( 'Please configure other mailer settings before getting started.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:38
+	/* Translators: %1$s/%2$s - link open/close for documentation. */
+	__( 'The email address that emails are sent from. You can customize your From Email by changing your domain later on SendLayer. %1$sLearn More%2$s', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:38
+	/* Translators: %1$s/%2$s - link open/close for SendLayer dashboard; %3$s/%4$s - link open/close for documentation. */
+	__( 'The email address that emails are sent from. You can customize your From Email by adding your domain on %1$sSendLayer dashboard%2$s. Check our %3$sdocumentation%4$s on how to add a custom domain.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:23
+	__( 'Error code', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/mixins/connect-error-modal.js:29
+	__( 'Error', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:22
+	__( 'Copy error code', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:39
+	__( 'Domain', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:40
+	__( 'Connected to', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:41
+	__( 'Change', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:43
+	/* Translators: %1$s/%2$s - link open/close for SendLayer dashboard; %3$s/%4$s - link open/close for documentation. */
+	__( 'This is a shared domain created for you via SendLayer Connect. You will need to register your own domain first on the %1$sSendLayer dashboard%2$s to change it here. Check our %3$sdocumentation%4$s on how to add a custom domain.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:26
+	__( 'Disconnect', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:18
+	__( 'Your site was successfully connected your site to SendLayer. This site will now send emails via your SendLayer account.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Sendlayer.vue:18
+	__( 'Your site was successfully connected to SendLayer. This site will now send emails via your SendLayer account.', 'easy-wp-smtp' ),
+
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/AmazonSES.vue:39
+	// Reference: src/modules/setup-wizard/components/steps/configure-mailer/Gmail.vue:38
+	__( 'Dismiss this notice', 'easy-wp-smtp' )
 );
 /* THIS IS THE END OF THE GENERATED FILE */
