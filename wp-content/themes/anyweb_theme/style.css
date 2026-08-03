@@ -2101,34 +2101,7 @@ span.rur span {
 .woocommerce-MyAccount-navigation-link--edit-address {
   display: none;
 }
-.aws-container .aws-search-field:focus {
-  background-color: transparent;
-}
-.aws-container .aws-search-field {
-  width: 98%;
-  max-width: 98%;
-  color: #ffffff;
-  padding: 6px;
-  line-height: 30px;
-  display: block;
-  font-size: 18px;
-  position: relative;
-  z-index: 2;
-  -webkit-appearance: none;
-  height: 100%;
-  margin: 0 !important;
-  border: none;
-  outline: 0;
-  background: transparent;
-}
-.aws-container .aws-search-form .aws-search-clear span {
-  color: transparent;
-}
 
-.aws-container .aws-search-form .aws-loader {
-  right: 30px;
-  top: 46%;
-}
 #wp-comment-cookies-consent {
   appearance: auto !important;
   position: relative !important;

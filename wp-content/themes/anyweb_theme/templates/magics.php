@@ -6,7 +6,7 @@ Template Name: magics
 get_header();
 ?>
 
-<main id="primary" class="site-main">
+<main id="primary" class="site-main magic">
 
 <div class="container bx-content-seection">
 
@@ -81,6 +81,8 @@ $pa_args = get_terms( $tax, array(
       'hide_empty' => false,
     )
  );
+
+ 
 
 $authors = array();
 

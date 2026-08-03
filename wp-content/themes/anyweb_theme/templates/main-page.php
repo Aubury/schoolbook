@@ -34,7 +34,11 @@ get_header();
             </div>
         </div>
     </div>
-    <div class="bottom-line-cell"></div>
+</div>
+
+<div class="green-line-banner"></div>
+<div class="bottom-line-cell">
+    <div class="line-cell"></div>
 </div>
 
 <main id="primary" class="site-main main-page">
@@ -51,7 +55,8 @@ get_header();
     ?>
     <div class="section">
         <div class="container <?php echo $preparing_class_slider . ' ' . $preparing_fox ?>">
-            <div class="recommendations preparing">
+
+            <div class="preparing-container">
                     <h2>Пер<span class="color-blue">е</span>дзамо<span class="color-orange">в</span>лення</h2>
 
                     <?php
@@ -59,9 +64,9 @@ get_header();
                     if ( $length === 1 ) :
                         $productID = $slider[0];?>
                          <div class="flex-two-column">
-                             <div class="column">
+                             <div class="column single-preorder">
                                  <?php
-                                    echo so_render_product($productID);
+                                    echo so_render_product_preorder($productID);
                                 ?>
                                  <div class="arrow-point-right"></div>
                              </div>
@@ -100,12 +105,12 @@ get_header();
                                                 </div>
                                            </div>
                                            <h3>
-                                                <span class="color-blue">Акція діє до: </span>'
+                                                <span class="color-blue">Акція <span class="text-normal">діє до:</span> </span>'
                                                 . date("d.m.Y", strtotime($custom_preorder_countdown)) .
                                            '</h3>
                                                 
                                            <div class="preparing-timer">
-                                                До закінчення акціі залишилось:
+                                                До початку офіційного продажу:
                                                 <span id="countdown" class="color-white"></span>
                                            </div>
                                            
@@ -135,27 +140,23 @@ get_header();
                                         });
                                         </script>';
 
-                        } else {
-
-                        }
-                                 ?>
-
-                                 <div class="arrow-preparing-up"></div>
+                        } else { } ?>
                              </div>
-
                          </div>
+
                     <?php else: ?>
-                       <div class="slider slick-slider">
+
+                       <div class="preparing slider slick-slider">
                            <?php
                            foreach ( $slider as $cnt => $item ):
-                               echo so_render_product($item);
+                               echo so_render_product_preorder($item);
                            endforeach;
                            ?>
                        </div><!-- end .slider -->
                     <?php endif; ?>
-
                 </div><!-- end .recommendations preparing -->
             <div class="bg-preparing-wrap"></div>
+            <div class="arrow-preparing-up"></div>
         </div><!-- end .container -->
     </div>
    <?php endif; ?>
@@ -217,19 +218,18 @@ get_header();
                         <?php
                         foreach ( $favorite_categories as $cnt => $item ): ?>
                             <div class="product-card">
-                                <div class="tow-image">
-                                    <div class="first-image">
-                                        <?php echo wp_get_attachment_image( $item['crb_image_first'], 'full' ); ?>
+                                <div class="product-card-header">
+                                    <div class="tow-image">
+
+                                            <?php echo wp_get_attachment_image( $item['crb_image_first'], 'full' ); ?>
+
                                     </div>
-                                    <div class="second-image">
-                                        <?php echo wp_get_attachment_image( $item['crb_image_second'], 'full' ); ?>
+                                    <div class="product-title">
+                                        <h3>
+                                            <?php echo $item['crb_title']; ?>
+                                        </h3>
+                                        <p><?php echo $item['crb_age']; ?></p>
                                     </div>
-                                </div>
-                                <div class="product-title">
-                                    <h3>
-                                        <?php echo $item['crb_title']; ?>
-                                    </h3>
-                                    <p><?php echo $item['crb_age']; ?></p>
                                 </div>
                                 <div class="button-to-buy">
                                     <?php $link = home_url() .  $item['crb_link']; ?>
@@ -254,9 +254,9 @@ get_header();
     $slider = carbon_get_post_meta( $post->ID, 'rcmnd_slider' );
     if ( ! empty( $slider ) ): ?>
         <div class="section">
-            <div class="anm-lady"></div>
             <div class="container">
                 <div class="recommendations">
+                    <div class="anm-lady"></div>
                     <h2>На<span class="color-blue">ш</span>і рекоменд<span class="color-orange">а</span>ції</h2>
                     <div class="slider slick-slider">
                         <?php
@@ -329,24 +329,6 @@ get_header();
             </div><!-- end .blog-bckgr-->
     <?php endif ?>
 
-
-    <?php if (have_posts()) : ?>
-        <div class="container">
-            <?php
-                while ( have_posts() ) :
-                    the_post();
-
-                    get_template_part( 'template-parts/content', 'page' );
-
-                    // If comments are open or we have at least one comment, load up the comment template.
-                    if ( comments_open() || get_comments_number() ) :
-                        comments_template();
-                    endif;
-
-                endwhile; // End of the loop.
-                ?>
-        </div><!-- end .container -->
-    <?php endif; ?>
 </main> <!-- #main -->
 
 <?php

@@ -3254,10 +3254,6 @@ input[type="radio"]:checked + span:before {
       height: 33px;
     }
 
-    .slick-dotted.slick-slider {
-      margin-top: 5px;
-    }
-
     .blog-items .img,
     .blog-section .img {
       height: auto;
@@ -6616,18 +6612,7 @@ div.catalog-box .product-item-title a {
 }
 /* End */
 
-/* Start:../components/bitrix/catalog.product.subscribe/.default/style.min.css?15357090163540*/
-.bx-catalog-subscribe-button {
-  margin-bottom: 6px;
-  display: inline-block;
-}
-.bx-catalog-subscribe-button i,
-.bx-catalog-subscribe-button span {
-  cursor: pointer;
-}
-.bx-catalog-subscribe-button span:hover {
-  border: transparent;
-}
+
 .bx-catalog-popup-content {
   width: 90%;
   max-width: 280px;
@@ -7989,18 +7974,7 @@ div.catalog-box .product-item-title a {
   }
 }
 
-/* Button */
-.bx-catalog-subscribe-button {
-  margin-bottom: 6px;
-  display: inline-block;
-}
-.bx-catalog-subscribe-button i,
-.bx-catalog-subscribe-button span {
-  cursor: pointer;
-}
-.bx-catalog-subscribe-button span:hover {
-  border: transparent;
-}
+
 .bx-catalog-popup-content {
   width: 90%;
   max-width: 280px;

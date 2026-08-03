@@ -196,23 +196,9 @@ $inst_link = carbon_get_theme_option( 'inst' );
 
             </div> <!-- end .footer-column-wrap-->
         </div> <!-- end .footer-content-wrap copyright-->
+
         <div class="footer-walk" style="margin-top: 15px;">
             <div class="paw"></div>
-            <div class="hidden-img">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/12.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/11.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/10.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/9.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/8.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/7.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/6.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/5.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/4.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/3.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/2.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/1.png' ); ?>" alt="walk">
-                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/image/walk/0.png' ); ?>" alt="walk">
-            </div> <!-- end .hidden-img -->
         </div> <!-- end .footer-walk -->
     </div> <!-- end .container -->
 
@@ -220,6 +206,8 @@ $inst_link = carbon_get_theme_option( 'inst' );
 
 	<span id="bcktotop" class="btn-up"></span>
 </footer>
+
+<div class="body-mask"></div>
 
 <div class="modal fade" id="modal-main" role="dialog">
     <div class="modal-dialog"></div>

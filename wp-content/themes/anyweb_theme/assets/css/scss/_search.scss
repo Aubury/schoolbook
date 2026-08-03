@@ -18,7 +18,7 @@
     align-items: center;
     height: 60px;
     width: 100%;
-    background: var(--brand-green-dark);
+    background: var(--brand-green-prymary);
     border-bottom: unset;
     border-radius: 1000px;
     flex: 1;
@@ -32,6 +32,10 @@
           transform: rotate(180deg);
         }
       }
+
+      .aws-search-field {
+        padding: 19px 5px 19px 31px;
+      }
     }
 
     @include down(#{$bp-xs}) {
@@ -43,12 +47,26 @@
   &.opened {
     position: absolute;
     width: 100%;
-    z-index: 150;
+    z-index: 1500;
+
+    @include down(#{$bp-xs}) {
+      .header-search-button {
+         margin-right: 3px;
+
+         &::before {
+           content: '';
+           background: url('../image/stroke-white.svg') no-repeat;
+           background-size: cover;
+         }
+      }
+
+      .aws-search-btn {
+         margin-right: 0;
+      }
+    }
 
     .aws-container {
       display: flex;
-
-
     }
   }
 
@@ -56,7 +74,18 @@
     width: 100%;
     height: 100%;
     padding: 20px 6px 20px 32px;
+    margin: 0 !important;
     max-width: unset;
+    color: var(--color-white);
+    line-height: 30px;
+    display: block;
+    font-size: 16px;
+    position: relative;
+    z-index: 2;
+    -webkit-appearance: none;
+    border: none;
+    outline: 0;
+    background: transparent;
 
     &::placeholder {
       color: var(--color-white);
@@ -66,6 +95,15 @@
       line-height: 120%;
       letter-spacing: 0;
       vertical-align: middle;
+
+      @include down(#{$bp-xs}) {
+        font-size: 14px;
+        line-height: 1;
+      }
+    }
+
+    @include down(#{$bp-xs}) {
+      padding-left: 20px;
     }
   }
 
@@ -92,6 +130,10 @@
         width: 122px;
         margin: 5px;
 
+        @include down(#{$bp-xs}) {
+          margin-right: 3px;
+        }
+
         &:before {
           content: 'Знайти';
           font-family: var(--fm-base);
@@ -115,15 +157,23 @@
         }
       }
 
-      .aws-search-clear {
-        display: block !important;
+      .custom-aws-clear {
+        position: absolute;
+        top: 0;
         right: 0;
-        z-index: 99;
-
-        span {
-          font-size: 28px !important;
-          color: var(--gray-light);
-        }
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        max-height: 100%;
+        height: 100%;
+        width: 38px;
+        z-index: 9999;
+        pointer-events: auto !important;
+        cursor: pointer;
+        padding: 0;
+        font-size: 28px !important;
+        color: var(--gray-light);
+        background: transparent;
       }
 
       .aws-search-field {
@@ -154,8 +204,8 @@
   .aws-wrapper {
     flex: 1;
     height: 100%;
+    position: relative;
   }
-
 
   .header-search-button {
     position: absolute;
@@ -167,8 +217,14 @@
     align-items: center;
     justify-content: center;
 
+    @include down(#{$bp-xs}) {
+      right: 0;
+    }
+
     &:before {
-      content: url('../image/stroke-white.svg');
+      content: '';
+      background: url('../image/stroke-white.svg') no-repeat ;
+      background-size: cover;
     }
 
     .search-icon {
@@ -181,6 +237,13 @@
   .aws-search-form {
     background: transparent;
 
+    &.aws-show-clear {
+      &.aws-form-active {
+        .aws-search-clear {
+          display: none !important;
+        }
+      }
+    }
     .aws-form-btn {
       display: none;
     }
@@ -192,24 +255,36 @@
     padding: 0 20px;
   }
 
+  scrollbar-width: thin;
+  scrollbar-color: var(--brand-green-prymary) transparent;
+
   &::-webkit-scrollbar {
-    width: 0 !important;
-    height: 0;
+    width: 4px !important;
   }
 
   &::-webkit-scrollbar-track {
     background: transparent !important;
+    min-height: 82px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: transparent !important;
+    background: #D9D9D9 !important;
+    border-radius: 100px;
+    min-height: 82px;
   }
 
-  &:hover {
-    &::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, .3) !important;
-    }
+  &::-webkit-scrollbar-button,
+  &::-webkit-scrollbar-button:vertical:start:decrement,
+  &::-webkit-scrollbar-button:vertical:end:increment {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
   }
+}
+
+.aws-form-active {
+  z-index: 2000;
 }
 
 .aws-search-result {
@@ -220,6 +295,11 @@
   border-left: 4px solid var(--brand-orange) !important;
   border-right: 5px solid var(--brand-orange) !important;
   border-radius: 10px 15px 30px 15px !important;
+  overflow: hidden;
+
+  &:focus-visible {
+    z-index: 2000;
+  }
 
   .aws_results {
     .aws_result_item {
@@ -293,6 +373,8 @@
     del {
       text-decoration: none !important;
       padding: 0 6px;
+      white-space: nowrap;
+
       & > span {
         font-family: var(--fm-base);
         font-weight: 400;
@@ -308,6 +390,8 @@
     ins {
       text-decoration: none;
       padding: unset;
+      white-space: nowrap;
+
       & > span {
         font-family: var(--fm-heading);
         font-weight: 400;
@@ -327,11 +411,18 @@
     width: 55px;
     height: 48px;
     position: absolute;
-    top: 2px;
+    top: 16px;
     right: 0;
     float: unset;
     text-align: unset;
     padding-top: unset;
+
+    @include down(#{$bp-xs}) {
+      width: 35px;
+      height: 26px;
+      left: 50px;
+      right: auto;
+    }
   }
 
   .aws_onsale {
@@ -356,9 +447,67 @@
       height: 100%;
       content: '';
       position: absolute;
-      background: url('../image/discount-label.png') no-repeat center;
+      background: url('../image/sale.svg') no-repeat center;
       background-size: contain;
     }
+  }
+
+  .aws_result_item {
+    &:hover {
+      background: unset;
+
+      .aws_result_title {
+        color: var(--brand-green-dark);
+      }
+    }
+
+    &.aws_search_more {
+      margin: 15px auto !important;
+      padding: unset;
+      position: relative;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: url("../image/stroke-search.svg") no-repeat;
+      background-size: cover;
+      width: 215px;
+      max-width: 215px;
+      height: 64px;
+      color: var(--brand-secondary);
+      font-family: var(--fm-base);
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 120%; /* 19.2px */
+
+
+
+      &:after {
+        position: relative;
+        content: "";
+        display: block;
+        flex: 0 0 15px;
+
+        width: 11px;
+        height: 11px;
+
+        background: url("../image/search-arrow.svg") no-repeat center;
+        background-size: contain;
+      }
+    }
+  }
+
+  .screen-reader-text {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
   }
 }
 

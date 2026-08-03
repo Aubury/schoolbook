@@ -47,7 +47,8 @@ $(function() {
                     autoplay: false,
                     autoplaySpeed: 2000,
                 }
-            }]
+            },
+            ]
     });
 })
 
@@ -104,7 +105,7 @@ $(function() {
         infinite: false,
         responsive: [
             {
-                breakpoint: 1300,
+                breakpoint: 1400,
                 settings: {
                     slidesToShow: 3,
                     slidesToScroll: 3,
@@ -137,6 +138,68 @@ $(function() {
                     autoplaySpeed: 2000,
                 }
             }]
+    });
+})
+
+$('.preparing-slider').each(function () {
+    const $slider = $(this);
+    const slidesCount = $slider.children().length;
+
+    if (slidesCount === 2) {
+        $slider.addClass('has-two-slides');
+    }
+
+    if (slidesCount === 3) {
+        $slider.addClass('has-three-slides');
+    }
+});
+
+$(function() {
+    $('.preparing').not('.slick-initialized').slick({
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        infinite: false,
+        variableWidth: false,
+        arrows: true,
+        responsive: [
+            {
+                breakpoint: 1300,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                    infinite: false,
+                    arrows: false,
+                    gap: 50
+                }
+            },
+            {
+                breakpoint: 1030,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3,
+                    gap: 50
+                }
+            },
+
+            {
+                breakpoint: 992,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2
+                }
+            },
+            {
+                breakpoint: 641,
+                settings: {
+                    arrows: true,
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: false,
+                    autoplaySpeed: 2000,
+                }
+            }
+
+            ]
     });
 })
 

@@ -1,6 +1,12 @@
-.bx-header {
+.header {
+  position: relative;
   width: 100%;
-  z-index: 201;
+}
+
+.header-top-container {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
 }
 
 .header-top-section {
@@ -8,12 +14,17 @@
   width: 100%;
   padding: 18px 0 30px;
   flex-shrink: 0;
+  background: url("../image/Menu-Background.svg") repeat center;
+
+  @include down(#{$bp-xs}) {
+    padding: 12px 0;
+  }
 }
 
 .header-left-section {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-self: start;
   gap: 52px;
 
   @include down(#{$bp-lg}) {
@@ -25,11 +36,16 @@
   }
 }
 
+.header-center-section {
+  justify-self: center;
+}
+
 .header-menu-block {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   width: fit-content;
+  z-index: 9999;
 
   .burger-menu {
     display: block;
@@ -49,6 +65,11 @@
       & ~ span {
         color: var(--color-link-active);
       }
+    }
+
+    @include down(#{$bp-lg}) {
+      width: 32px;
+      height: 32px;
     }
   }
 
@@ -74,6 +95,7 @@
   flex-direction: row;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
 
   span {
     @include down(#{$bp-lg}) {
@@ -117,13 +139,16 @@
   height: 82px;
 
   @include down(#{$bp-md}) {
-    width: 177px;
-    height: 70px;
+    width: 183px;
+    height: 72px;
   }
 }
 
 .header-right-section {
-  @include flex-center;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  justify-self: end;
   gap: 24px;
 
   @include down(#{$bp-md}) {
@@ -222,16 +247,6 @@
 
     &:after {
       content: unset;
-      //background-color: var(--brand-orange);
-      //width: 20px;
-      //height: 20px;
-      //top: -12px;
-      //right: -18px;
-      //border-radius: 50%;
-      //@include flex-center;
-      //font-family: var(--fm-base);
-      //font-size: 11px;
-      //font-weight: 700;
     }
   }
 
@@ -305,6 +320,7 @@
   @include flex-center;
   font-family: var(--fm-base);
   font-size: 11px;
+  line-height: 1;
   font-weight: 700;
   color: white;
 }
@@ -319,23 +335,26 @@
 
 .header-bottom-section {
    position: relative;
-   background-color: var(--brand-green-prymary);
-   padding: 15px 0 0;
+   background-color: var(--brand-green-light);
+   padding: 23px 0 0;
+   margin-top: 6px;
+
+  @include down(#{$bp-xs}) {
+    margin-top: 15px;
+  }
 
   &:before {
     content: '';
-    background: url("../image/top-line-cell.svg") no-repeat center top;
-    background-size: cover;
+    background: url("../image/top-line-green.svg") repeat center top;
     width: 100%;
-    height: 60px;
+    height: 10px;
     position: absolute;
     left: 0;
-    top: -28px;
-    z-index: -1;
+    top: -4px;
+    z-index: 1;
 
     @include down(#{$bp-md}) {
       background-size: auto 40px;
-      top: -20px;
     }
   }
 
@@ -344,13 +363,35 @@
     background: url("../image/bottom-line.svg") no-repeat center bottom;
     background-size: cover;
     width: 100%;
-    height: 20px;
+    height: 45px;
     position: absolute;
     left: 0;
-    bottom: -16px;
-    z-index: 1;
+    bottom: -23px;
+    z-index: -1;
   }
 
+}
+
+.top-cell {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -22px;
+  background: url("../image/top-cell.svg") no-repeat top center;
+  background-size: 1440px auto;
+  width: 1440px;
+  height: 24px;
+
+  @include down(#{$bp-xxl}) {
+    width: 100%;
+  }
+
+  @include down(#{$bp-xs}) {
+    width: 100%;
+    height: 18px;
+    top: -15px;
+    background-size: cover;
+  }
 }
 
 .ladybug {
@@ -362,14 +403,13 @@
   display: inline-block;
   position: absolute;
   z-index: 1;
-  top: -18px;
+  top: -14px;
   right: -9999px;
   animation: ladybug 11s 0.2s linear forwards;
 
   @include down(#{$bp-md}) {
     width: 24px;
     height: 12px;
-    top: -16px;
   }
 }
 
@@ -378,7 +418,7 @@
     right: 0;
   }
   100% {
-    right: 50%;
+    right: 400px;
   }
 }
 

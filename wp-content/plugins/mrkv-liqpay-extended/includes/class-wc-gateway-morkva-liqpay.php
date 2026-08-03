@@ -594,6 +594,23 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
         $log_message .= "------------------------";
 
         $logger->debug( $log_message, $context );
+
+        /*************** Costumer code ******/
+
+        if(isset($_POST['data'])){
+            $data = sanitize_text_field($_POST['data']);
+        }
+        # Get response signature
+        if(isset($_POST['signature'])){
+            $received_signature = sanitize_text_field($_POST['signature']);
+        }
+
+        $parsed_data = json_decode(base64_decode($data));
+        $_received_signature = json_decode(base64_decode($received_signature));
+        $order_id = $parsed_data->order_id;
+        $status = $parsed_data->status;
+
+        /********** END  Costumer code ********/
         
 
         # If payment success
@@ -631,8 +648,30 @@ class WC_Gateway_Morkva_Liqpay extends WC_Payment_Gateway
             $currency            = $parsed_data->currency ?? '';
             $transaction_id      = $parsed_data->transaction_id ?? '';
 
+
             # Get order data
             $order = wc_get_order($order_id);
+
+            /*************** Costumer code ******/
+
+            $payment_method = $order->get_payment_method();
+
+            update_post_meta($order_id, 'payment_status', $status);
+            file_put_contents(__DIR__.'/log/debug.log', date('d-m-Y H:i:s') . PHP_EOL . ' Status: ' .  print_r($status, 1), FILE_APPEND);
+
+
+            if ( $payment_method === 'cod' ) {
+                if ( $status === 'success' ) {
+                    update_post_meta($order_id, '_prepayment_status', 'Сплачено');
+                } else {
+                    update_post_meta($order_id, '_prepayment_status', 'Очікується оплата');
+                }
+            }
+
+            update_post_meta($order_id, '_payment_detail', $parsed_data);
+
+            /********** END  Costumer code ********/
+
 
             if(!$order_id)
             {

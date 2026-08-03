@@ -4,13 +4,14 @@
 
 $bp-xxl: 1400px;
 $bp-xl: 1281px;
+$bp-xlg: 1200px;
 $bp-lg: 1030px;
 $bp-md: 992px;
 $bp-xmd: 821px;
 $bp-sm: 769px;
 $bp-xs: 576px;
 $bp-xxs: 431px;
-$bp-xsl: 391px;
+$bp-xsl: 394px;
 
 :root {
   /* ---------- FONT FAMILIES ---------- */
@@ -27,7 +28,9 @@ $bp-xsl: 391px;
 
   --brand-green-prymary: #00B0A8;
   --brand-green-dark:    #009E97;
-  --brand-orange:        #EA5100;
+  --brand-green-light:   #00C1B8;
+  --brand-secondary:     #00B0A8;
+  --brand-orange:        #FF5A2D;
   --color-link:          #00B0A8;
   --color-link-active:   #EA5100;
   --gray-light:          #989898;

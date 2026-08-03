@@ -10,7 +10,7 @@
 
 .slick-dotted {
   &.promo-slider {
-    margin-bottom: 57px;
+    margin-bottom: 0;
   }
 }
 
@@ -173,7 +173,6 @@
   position: relative;
   top: 0;
   left: 0;
-  display: block;
   margin-left: auto;
   margin-right: auto;
 
@@ -241,6 +240,11 @@
   border: none;
   outline: none;
   background: transparent;
+
+  &::before,
+  &::after {
+    opacity: 1;
+  }
 }
 
 [dir="rtl"] {
@@ -255,44 +259,12 @@
   position: relative;
   width: 100%;
   height: auto;
-  background: var(--brand-green-prymary);
-  padding-top: 20px;
-  margin-bottom: 150px;
+  background: var(--brand-green-light);
+  z-index: 50;
 
   @include down(#{$bp-lg}) {
-    margin-bottom: 150px;
-  }
-
-  @include down(#{$bp-lg}) {
-    margin-bottom: 100px;
     padding-top: 10px;
     z-index: 20;
-  }
-
-  @include down(#{$bp-xxs}) {
-    margin-bottom: 60px;
-  }
-
-  .bottom-line-cell {
-    position: absolute;
-    left: 0;
-    bottom: -110px;
-    width: 100%;
-    height: 150px;
-    background: url("../image/bottom-line-cell.svg") no-repeat center bottom;
-    background-size: cover;
-    z-index: -1;
-    pointer-events: none;
-
-      @include down(#{$bp-lg}) {
-        height: 100px;
-        bottom: -80px;
-      }
-
-      @include down(#{$bp-xs}) {
-        height: 100px;
-        bottom: -65px;
-      }
   }
 }
 
@@ -302,9 +274,56 @@
   height: auto;
 
   @include down(#{$bp-xxs}) {
-    background: url('../image/banner.svg') no-repeat 50% 0;
-    background-size: auto 98%;
-    padding: 2px 0;
+    background: url('../image/mob-banner.svg') no-repeat 50% 0;
+    background-size: auto 100%;
+    padding: 8px 0 5px;
+  }
+
+  .container {
+    @include down(#{$bp-xxs}) {
+      padding-right: 0;
+      padding-left: 0;
+    }
+  }
+}
+
+.green-line-banner {
+  position: relative;
+  top: -10px;
+  width: 100%;
+  height: 35px;
+  background: url("../image/green-line-banner.svg") repeat center bottom;
+  z-index: -1;
+
+  @include down(#{$bp-lg}) {
+    height: 25px;
+  }
+}
+
+.bottom-line-cell {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  z-index: -5;
+  pointer-events: none;
+  overflow: hidden;
+
+  .line-cell {
+    position: relative;
+    width: 2560px;
+    height: 80px;
+    background: url("../image/bottom-line-cell.svg") no-repeat center bottom;
+    background-size: cover;
+
+    @include down(#{$bp-xs}) {
+      height: 60px;
+    }
   }
 }
 
@@ -313,25 +332,45 @@
 .promo-slider-wrap {
   width: 100%;
   height: auto;
-  background: url('../image/banner.png') no-repeat 50% 0;
-  background-size: 100% 100%;
 
-  @include down(#{$bp-xs}) {
-    background-size: 100% 98%;
+  @include down(#{$bp-xlg}) {
+    background: url('../image/banner.png') no-repeat 50% 0;
+    background-size: 100% 100%;
   }
 
   @include down(#{$bp-xxs}) {
     background: unset;
     background-size: 0;
+    padding: 3px 0;
   }
 }
 
 .promo-slider-holder {
+  width: 100%;
   position: relative;
-  margin: 0 0 -43px;
+  background: url('../image/banner.svg') no-repeat 50% 0;
+  background-size: 100% auto;
+  padding: 17px;
+
+  @include down(#{$bp-xxl}) {
+    padding: 15px;
+  }
+
+  @include down(#{$bp-xlg}) {
+    background: unset;
+    background-size: 0;
+  }
+
+  @include down(#{$bp-xlg}) {
+    padding: 13px 13px 5px;
+  }
+
+  @include down(#{$bp-xs}) {
+    padding: 10px 13px 5px;
+  }
 
   @include down(#{$bp-xxs}) {
-    margin: 0 0 -55px;
+    padding: 4px 0 1px;
   }
 }
 
@@ -358,8 +397,9 @@
 
   .slick-arrow {
     background: url('../image/arrow-red-slider.svg') no-repeat center center;
-    width: 49px;
-    height: 49px;
+    background-size: 21px 15px;
+    width: 50px;
+    height: 50px;
     z-index: 1;
     display: flex;
     align-items: center;
@@ -367,6 +407,7 @@
 
     &.slick-next {
       background: url('../image/arrow-left-slider.svg') no-repeat center center;
+      background-size: 21px 15px;
     }
 
     &:before {
@@ -386,8 +427,8 @@
       background-size: contain;
       display: inline-block;
       position: absolute;
-      width: 49px;
-      height: 49px;
+      width: 100%;
+      height: 100%;
       transition: transform 0.3s ease-in-out;
     }
 
@@ -397,50 +438,49 @@
   }
 
   .slick-prev {
-    left: 190px;
+    left: 170px;
 
     @include down(#{$bp-xxl}) {
-      left: 120px;
+      left: 140px;
+    }
+    @include down(#{$bp-xlg}) {
+      left: 130px;
     }
 
     @include down(#{$bp-lg}) {
-      left: 100px;
+      left: 112px;
     }
   }
 
   .slick-next {
-    right: 190px;
+    right: 170px;
 
     @include down(#{$bp-xxl}) {
-      right: 120px;
+      right: 140px;
+    }
+
+    @include down(#{$bp-xlg}) {
+      right: 130px;
     }
 
     @include down(#{$bp-lg}) {
-      right: 100px;
+      right: 112px;
     }
   }
 
   .slick-list {
-    padding: 15px 240px 10px 240px;
+    padding: 0 245px;
 
     @include down(#{$bp-xxl}) {
-      padding: 15px 140px 7px 140px;
+      padding: 0 130px;
     }
 
-    @include down(#{$bp-lg}) {
-      padding: 15px 140px 7px 140px;
-    }
-
-    @include down(#{$bp-md}) {
-      padding: 15px 100px 7px 100px;
-    }
-
-    @include down(#{$bp-xmd}) {
-      padding: 8px 80px 3px 80px;
+    @include down(#{$bp-xlg}) {
+      padding: 0 75px;
     }
 
     @include down(#{$bp-xs}) {
-      padding: 7px 70px 3px 70px;
+      padding: 0 50px;
     }
 
     @include down(#{$bp-xxs}) {
@@ -451,7 +491,7 @@
   .slick-dots {
     height: auto;
     position: relative;
-    top: 70px;
+    top: 76px;
     bottom: auto;
     margin-left: 0;
     display: flex;
@@ -459,6 +499,26 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+
+    @include up(2100px ) {
+      top: 76px;
+    }
+
+    @include down(#{$bp-xlg}) {
+      top: 65px;
+    }
+
+    @include down(#{$bp-lg}) {
+      top: 55px;
+    }
+
+    @include down(#{$bp-xs}) {
+      top: 43px;
+    }
+
+    @include down(#{$bp-xxs}) {
+      top: 49px;
+    }
 
     li {
       width: 8px;
@@ -469,42 +529,66 @@
       align-items: center;
       justify-content: center;
 
+      @include down(#{$bp-xs}) {
+        width: 6px;
+        height: 6px;
+      }
+
       button {
         width: 8px;
         height: 8px;
-
         padding: unset;
+
+        @include down(#{$bp-xs}) {
+          width: 6px;
+          height: 6px;
+        }
+
         &::before {
           content: unset;
         }
       }
     }
 
-    @include down(#{$bp-lg}) {
-      top: 55px;
-    }
-
-    @include down(#{$bp-xs}) {
-      top: 45px;
-    }
 
   }
 
   .item {
-    height: 368px;
+    height: 370px;
+    width: 806px;
     float: left;
 
+    @include down(#{$bp-xxl}) {
+       height: 317px;
+    }
+
+    @include down(#{$bp-xlg}) {
+      height: 250px;
+      width: auto;
+    }
+
     @include down(#{$bp-lg}) {
-       height: 300px;
+      height: 270px;
+      width: auto;
     }
 
     @include down(#{$bp-md}) {
-      height: 250px;
+      height: 230px;
       width: auto;
     }
 
     @include down(#{$bp-xs}) {
       height: 170px;
+    }
+
+    @include down(#{$bp-xxs}) {
+      width: 100%;
+      height: auto;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
     }
 
     img {
@@ -519,16 +603,15 @@
 .new-product,
 .recommendations {
   position: relative;
-  padding-bottom: 75px;
-  //padding: 42px 0;
+  padding-bottom: 89px;
   width: 100%;
+  @include flex-column;
+  gap: 30px;
 
-  @include down(#{$bp-lg}) {
+  @include down(#{$bp-xlg}) {
+    @include flex-column;
+    gap: 40px;
     padding-bottom: 0;
-  }
-
-  @include down(#{$bp-xs}) {
-    margin-top: 42px;
   }
 
   &::before {
@@ -538,14 +621,13 @@
     right: 25px;
     top: 0;
     height: 50%;
-    background: url('../image/top-line-dash.svg') no-repeat center top;
+    background: url('../image/top-line-dash.svg') no-repeat center 35px;
     background-size: 100%;
     z-index: -1;
 
-    @include down(#{$bp-lg}) {
+    @include down(#{$bp-xlg}) {
       content: unset;
     }
-
   }
 
   &::after {
@@ -559,7 +641,7 @@
     background-size: 100%;
     z-index: -1;
 
-    @include down(#{$bp-lg}) {
+    @include down(#{$bp-xlg}) {
       content: unset;
     }
   }
@@ -573,7 +655,6 @@
     text-align: center;
     vertical-align: middle;
     position: relative;
-    top: -35px;
     overflow-wrap: break-word; /* Розриває занадто довгі слова, якщо вони не вміщаються */
     word-wrap: break-word;     /* Застарілий синтаксис для сумісності зі старими браузерами */
     word-break: normal;
@@ -581,29 +662,27 @@
     &::after {
       content: '';
       position: absolute;
-      right: 15%;
-      top: -1px;
-      height: 33px;
+      right: 223px;
+      top: 5px;
+      height: 34px;
       width: 50px;
       background: url('../image/worm.svg') no-repeat center;
-      background-size: cover;
+      background-size: contain;
       z-index: 1;
       -webkit-animation: worm_book 0.9s 0.3s ease-in forwards;
       -moz-animation: worm_book 0.9s 0.3s ease-in forwards;
       animation: worm_book 0.9s 0.3s ease-in forwards;
 
-      @include down(#{$bp-xl}) {
-        right: 25%;
-      }
 
-      @include down(#{$bp-lg}) {
+      @include down(#{$bp-xlg}) {
         content: unset;
       }
     }
 
-    @include down(#{$bp-md}) {
+    @include down(#{$bp-xlg}) {
       margin: 0 70px;
       horiz-align: center;
+      top: 0;
     }
 
     @include down(#{$bp-xs}) {
@@ -621,14 +700,13 @@
 
   .slider {
     margin: 0 75px;
-    padding-bottom: 42px;
 
-    @include down(#{$bp-lg}) {
+    @include down(#{$bp-xlg}) {
       padding-bottom: 0;
     }
 
     @include down(#{$bp-md}) {
-      margin: 0 50px;
+      margin: 0 0;
     }
 
     @include down(#{$bp-xxs}) {
@@ -637,24 +715,40 @@
   }
 
   .slick-arrow {
-    width: 49px;
-    height: 49px;
+    width: 50px;
+    height: 50px;
     z-index: 1;
     @include flex-center;
     background: url('../image/arrow-red-slider.svg') no-repeat center center;
+    background-size: 26px 17px;
 
 
     &.slick-next {
       background: url('../image/arrow-left-slider.svg') no-repeat center center;
+      background-size: 26px 17px;
       right: -70px;
 
+      @include down(#{$bp-xlg}) {
+        top: -75px;
+      }
+
       @include down(#{$bp-md}) {
-        right: -50px;
-        background-size: 19px 14px;
+        right: 0;
+        background: url('../image/mob-arrow-right.svg') no-repeat center center;
+        background-size: contain;
+
+        &::after {
+          content: unset;
+        }
       }
 
       @include down(#{$bp-xs}) {
         right: 0;
+        top: -55px;
+      }
+
+      @include down(#{$bp-xsl}) {
+        top: -75px;
       }
 
       &::before {
@@ -665,13 +759,27 @@
     &.slick-prev {
       left: -70px;
 
+      @include down(#{$bp-xlg}) {
+        top: -75px;
+      }
+
       @include down(#{$bp-md}) {
-        left: -50px;
-        background-size: 19px 14px;
+        left: 0;
+        background: url('../image/mob-arrow-left.svg') no-repeat center center;
+        background-size: contain;
+
+        &::after {
+          content: unset;
+        }
       }
 
       @include down(#{$bp-xs}) {
         left: 0;
+        top: -55px;
+      }
+
+      @include down(#{$bp-xsl}) {
+        top: -75px;
       }
 
       &::before {
@@ -682,7 +790,7 @@
     &:after {
       content: "";
       background: url('../image/color-stroke.svg') no-repeat;
-      background-size: cover;
+      background-size: contain;
       display: inline-block;
       position: absolute;
       width: 72px;
@@ -695,6 +803,7 @@
       }
 
       @include down(#{$bp-xs}) {
+        background: url('../image/mob-stroke-button.png') no-repeat;
         width: 40px;
         height: 40px;
       }
@@ -704,8 +813,13 @@
       top: -75px;
     }
 
+    @include down(#{$bp-md}) {
+      width: 40px;
+      height: 40px;
+    }
+
     @include down(#{$bp-xs}) {
-      top: -45px;
+      top: -55px;
     }
 
     @include down(#{$bp-xsl}) {
@@ -715,8 +829,15 @@
 
   .slick-next,
   .slick-prev {
+    top: calc(50% + 15px);
+
     @include down(#{$bp-md}) {
       background-size: 19px 14px;
+    }
+
+    &::before,
+    &::after {
+      opacity: 1;
     }
 
     &:hover {
@@ -731,6 +852,11 @@
     display: flex !important;
     align-items: center;
     justify-content: center;
+    margin-top: 25px;
+
+    @include down(#{$bp-xxs}) {
+      padding-bottom: 5px;
+    }
   }
 }
 
@@ -739,7 +865,7 @@
     top: -40px;
   }
   100% {
-    top: -1px;
+    top: 5px;
   }
 }
 
@@ -753,7 +879,18 @@
 
 .preparing-slider {
   position: relative;
+  background-image: url('../image/stroke-preparing.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  @include flex-center;
   width: 100%;
+  padding-bottom: 76px;
+
+  @include down(#{$bp-lg}) {
+    background: unset;
+    padding-bottom: 0;
+  }
 
   @include down(#{$bp-xs}) {
     padding-bottom: 0;
@@ -761,16 +898,100 @@
     padding-left: var(--bs-gutter-x, .75rem);
   }
 
+  .bg-preparing-wrap {
+    display: none;
+  }
+
+  &.has-two-slides {
+    @include up(#{$bp-xs}) {
+      .slick-track {
+        width: 100% !important;
+      }
+    }
+  }
+
+  h2 {
+    font-family: var(--fm-heading);
+    font-weight: 400;
+    font-size: 70px;
+    line-height: 75px;
+    letter-spacing: 0;
+    text-align: center;
+    vertical-align: middle;
+    position: relative;
+    top: -35px;
+    overflow-wrap: break-word; /* Розриває занадто довгі слова, якщо вони не вміщаються */
+    word-wrap: break-word;     /* Застарілий синтаксис для сумісності зі старими браузерами */
+    word-break: normal;
+
+    @include down(#{$bp-lg}) {
+      margin: 0 50px;
+      horiz-align: center;
+      top: 0;
+    }
+
+    @include down(#{$bp-xs}) {
+      font-size: 42px;
+      line-height: 32px;
+      horiz-align: center;
+    }
+  }
+
   .slider {
-    margin: 0 0;
+
+    @include down(#{$bp-xmd}) {
+      top: unset;
+    }
+  }
+
+  .slick-list {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .slick-track {
+    display: flex;
+    margin: 0;
+
+    &:has(> :nth-child(2)):not(:has(> :nth-child(4))) {
+
+    }
+
+    @include down(#{$bp-xxl}) {
+      gap: unset;
+    }
+  }
+
+  .slick-slide {
+    height: auto;
+    width: auto;
   }
 
   .slick-arrow {
+    width: 50px;
+    height: 50px;
+    z-index: 1;
+    @include flex-center;
+    background: url('../image/arrow-red-slider.svg') no-repeat center center;
+
+    @include down(#{$bp-xs}) {
+      width: 40px;
+      height: 40px;
+    }
+
+
     &.slick-next {
+      background: url('../image/arrow-left-slider.svg') no-repeat center center;
       right: -70px;
 
       @include down(#{$bp-md}) {
         right: 0;
+        background: url('../image/mob-arrow-right.svg') no-repeat center center;
+        background-size: contain;
+
+        &::after {
+          content: unset;
+        }
       }
 
       @include down(#{$bp-xs}) {
@@ -787,6 +1008,12 @@
 
       @include down(#{$bp-md}) {
         left: 0;
+        background: url('../image/mob-arrow-left.svg') no-repeat center center;
+        background-size: contain;
+
+        &::after {
+          content: unset;
+        }
       }
 
       @include down(#{$bp-xs}) {
@@ -814,21 +1041,22 @@
       }
 
       @include down(#{$bp-xs}) {
+        background: url('../image/mob-stroke-button.png') no-repeat;
         width: 40px;
         height: 40px;
       }
     }
 
-    @include down(#{$bp-md}) {
+    @include down(#{$bp-lg}) {
       top: -75px;
     }
 
     @include down(#{$bp-xs}) {
-      top: -45px;
+      top: -55px;
     }
 
     @include down(#{$bp-xsl}) {
-      top: -65px;
+      top: -55px;
     }
   }
 
@@ -847,9 +1075,115 @@
   }
 
   .item {
+    width: auto;
+    position: relative;
     display: flex !important;
     align-items: start;
     justify-content: center;
+    z-index: 5;
+    margin-top: 23px;
+
+    h3 {
+      text-transform: unset;
+    }
+
+    .product-card{
+      @include down(#{$bp-xs}) {
+          width: 152px;
+
+        .img {
+          width: 100%;
+          height: 100%;
+        }
+
+        .sale_book {
+          top: 23px;
+          right: 16px;
+          width: 38px;
+          height: 34px;
+        }
+
+        .percent {
+          font-size: 22px;
+        }
+
+        .new_book {
+          width: 40px;
+          height: 40px;
+          right: 40px;
+          top: 0;
+          bottom: auto;
+        }
+
+        .preorder-book {
+          top: -25px;
+          left: -5px;
+          width: 80px;
+          height: 80px;
+        }
+      }
+    }
+
+  }
+
+  .button-to-buy {
+    width: 158px;
+    height: 57px;
+    background: url(../image/button-buy.svg) no-repeat;
+    background-size: 100% 100%;
+    transform: translate(0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+      background: url("../image/button-buy-red.svg") no-repeat;
+
+      span {
+        color: var(--color-white);
+      }
+    }
+
+    @include down(#{$bp-xs}) {
+      width: 150px;
+      height: 54px;
+      background: url(../image/button-buy.svg) no-repeat;
+      background-size: contain;
+
+      &::before {
+        content: unset;
+      }
+
+      .text-block {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+
+  .arrow-preparing-up {
+    display: none;
+  }
+}
+
+.preparing-container {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+
+  @include down(#{$bp-lg}) {
+    padding-bottom: 0;
+    gap: 40px;
+  }
+}
+
+.preparing {
+  margin: 0 50px;
+
+  @include down(#{$bp-lg}) {
+    margin: 0 0;
   }
 }
 

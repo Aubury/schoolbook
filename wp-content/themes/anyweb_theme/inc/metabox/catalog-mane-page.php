@@ -16,8 +16,7 @@ Container::make("post_meta", "Ваші улюблені категорії")
 
         Field::make( 'complex', 'crb_your_favorite_categories', 'Улюблені категорії' )->set_width(100)
             ->add_fields( array(
-                Field::make( 'image', 'crb_image_first', __( 'Перше зображення' ))->set_width(10),
-                Field::make( 'image', 'crb_image_second', __( 'Друге зображення' ))->set_width(10),
+                Field::make( 'image', 'crb_image_first', __( 'Зображення' ))->set_width(10),
                 Field::make( 'text', 'crb_title', __( 'Назва категорії' ))->set_width(100),
                 Field::make( 'text', 'crb_age', __( 'Вік' ))->set_width(100),
                 Field::make( 'text', 'crb_link', __( 'Посилання на сторінку' ))->set_width(100),

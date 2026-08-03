@@ -16,6 +16,14 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/monolog/monolog" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
+      <excludeFolder url="file://$MODULE_DIR$/.tmb" />
+      <excludeFolder url="file://$MODULE_DIR$/.vscode" />
+      <excludeFolder url="file://$MODULE_DIR$/.well-known" />
+      <excludeFolder url="file://$MODULE_DIR$/FTP_EXCHANGE" />
+      <excludeFolder url="file://$MODULE_DIR$/ftp-images" />
+      <excludeFolder url="file://$MODULE_DIR$/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/wp-content/backups-dup-lite" />
+      <excludeFolder url="file://$MODULE_DIR$/wp-content/uploads" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

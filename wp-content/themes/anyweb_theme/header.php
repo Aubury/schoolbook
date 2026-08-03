@@ -33,11 +33,11 @@ $inst_link = carbon_get_theme_option( 'inst' );
 <div id="page" class="site">
 	<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Skip to content', 'anyweb' ); ?></a>
 
-    <header class="bx-header">
+    <header class="header">
         <div class="header-top-section">
             <div class="container relative">
 
-                <div class="flex-between">
+                <div class="header-top-container">
 
                     <!-- .header-left-section -->
                     <div class="header-left-section">
@@ -263,6 +263,7 @@ $inst_link = carbon_get_theme_option( 'inst' );
 
         <div class="header-bottom-section">
             <span class="ladybug"></span>
+            <div class="top-cell"></div>
 
             <div class="container">
                 <div class="header-main-menu-section">
@@ -298,7 +299,7 @@ $inst_link = carbon_get_theme_option( 'inst' );
                     <?php
 
                     if ( ! empty( $video_link ) ):
-                        echo '<a href="'. $video_link . '" class="header-video-button">
+                        echo '<a href="'. $video_link . '" class="header-video-button" target="_blank">
                                     Відео-новини
                                     <span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="26" height="27" viewBox="0 0 26 27" fill="none">

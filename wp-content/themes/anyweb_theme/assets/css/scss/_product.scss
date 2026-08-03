@@ -5,6 +5,19 @@
   justify-content: center;
   gap: 32px;
 
+  .so_product-link {
+    padding: 8px;
+  }
+
+  .product-title-block {
+    display: flex;
+    padding: 0 8px;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+  }
+
   .img {
     width: 264px;
     height: 264px;
@@ -13,6 +26,7 @@
     img {
       width: 100%;
       height: auto;
+      transition: transform 0.3s ease;
     }
   }
 
@@ -56,9 +70,38 @@
     }
   }
 
+  .info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    @include down(#{$bp-xs}) {
+      gap: 4px;
+    }
+
+    p {
+      color: var(--color-gray);
+      text-align: center;
+      font-family: var(--fm-base);
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 120%; /* 21.6px */
+      text-transform: none;
+      min-height: calc(16px * 1.2);;
+
+      @include down(#{$bp-xs}) {
+        font-size: 14px;
+        min-height: calc(14px * 1.2);;
+      }
+
+    }
+  }
+
   &:hover {
     img {
-      scale: 1.1;
+      transition: transform 0.3s ease;
+      transform: scale(1.1);
     }
 
     h3 {
@@ -77,6 +120,208 @@
   }
 }
 
+.preorder {
+  .product-card {
+    @include down(#{$bp-xs}) {
+      .favorite-box {
+        display: none;
+      }
+    }
+  }
+}
+
+.single-preorder {
+  .product-card {
+    &.preorder {
+      width: 310px;
+      gap: 28px;
+
+      @include down(#{$bp-xs}) {
+        width: 266px;
+        padding: 0;
+        gap: 20px;
+
+        .sale_book {
+          top: 23px;
+          right: 16px;
+          width: 55px;
+          height: 48px;
+          font-size: 30px;
+        }
+
+        .percent {
+          font-size: 30px;
+        }
+
+        .new_book {
+          width: 67px;
+          height: 57px;
+          right: 62px;
+          bottom: 18px;
+        }
+
+        .preorder-book {
+          top: -30px;
+          left: -9px;
+          width: 126px;
+          height: 126px;
+        }
+
+        .favorite-box {
+          display: block;
+        }
+      }
+
+      .product-title-block {
+        display: flex;
+        padding: 0 8px;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        align-self: stretch;
+
+        @include down(#{$bp-xs}) {
+          gap: 4px;
+        }
+      }
+
+      .product-title {
+        gap: 14px;
+
+        @include down(#{$bp-xs}) {
+          gap: 8px;
+        }
+
+        h3 {
+          font-size: 22px;
+          height: calc(22px * 1.2 * 2);
+          display: -webkit-box;
+          -webkit-line-clamp: 2; // две строки
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-transform: unset;
+
+          @include down(#{$bp-xs}) {
+            font-size: 16px;
+            height: calc(16px * 1.2 * 2);
+          }
+        }
+      }
+
+      .img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .pr-info {
+        right: 50px;
+
+        @include down(#{$bp-xs}) {
+          right: 20px;
+        }
+      }
+
+      .info-block {
+        gap: 5px;
+
+        @include down(#{$bp-xs}) {
+          gap: 4px;
+        }
+
+        p {
+          font-size: 18px;
+          min-height: calc(18px * 1.2);
+
+          @include down(#{$bp-xs}) {
+            font-size: 14px;
+            min-height: calc(14px * 1.2);
+          }
+        }
+      }
+
+      .num {
+        ins {
+          font-size: 52px;
+
+          @include down(#{$bp-xs}) {
+            font-size: 40px;
+          }
+        }
+
+        del {
+          font-size: 18px;
+
+          @include down(#{$bp-xs}) {
+            font-size: 14px;
+          }
+        }
+      }
+
+      .button-to-buy {
+        width: 184px;
+        height: 65px;
+        background: url(../image/button-buy.svg) no-repeat;
+        background-size: 100% 100%;
+        transform: translate(0, 0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+
+        .text-block {
+          font-size: inherit;
+        }
+
+        &:hover {
+          background: url("../image/button-buy-red.svg") no-repeat;
+          background-size: 100% 100%;
+
+          span {
+            color: var(--color-white);
+          }
+        }
+
+        @include down(#{$bp-xs}) {
+          width: 150px;
+          height: 54px;
+          background: url(../image/button-buy.svg) no-repeat;
+          background-size: contain;
+          font-size: 16px;
+
+          &::before {
+            content: unset;
+          }
+
+          .text-block {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+    }
+
+    .so_product-link {
+      padding: 10px;
+    }
+
+    .woosw-btn {
+      width: 56px;
+      height: 56px;
+    }
+
+    .favorites-link {
+      .woosw-icon-8,
+      .woosw-icon-5 {
+        width: 27px;
+        height: 27px;
+        background-size: cover;
+      }
+    }
+  }
+}
+
 .product-title {
   @include flex-column;
   gap: 12px;
@@ -91,8 +336,14 @@
     vertical-align: middle;
     color: var(--color-base);
     margin-bottom: 0;
+    height: calc(18px * 1.2 * 2);
+    display: -webkit-box;
+    -webkit-line-clamp: 2; // две строки
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 
     @include down(#{$bp-xs}) {
+      height: calc(16px * 1.2 * 2);
       font-size: 16px;
     }
   }
@@ -115,23 +366,20 @@
   }
 
   @include down(#{$bp-xs}) {
-    gap: 4px;
+    gap: 8px;
   }
 }
 
 .favorite-basket-block {
   @include flex-center;
   gap: 16px;
-
-  @include down(#{$bp-xs}) {
-    gap: 12px;
-  }
 }
 
 .woosw-btn {
   @include flex-center;
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
   cursor: pointer;
 
   &::before {
@@ -148,14 +396,16 @@
 
   &::after {
     position: absolute;
-    left: 0;
-    top: 0;
-    content: url('../image/stroke.svg');
-    width: 100%;
-    height: 100%;
-    aspect-ratio: 1 / 1;
+    content: '';
+    display: block;
+    background-image: url('../image/stroke.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
     transition: transform 0.5s;
     transform: rotate(90deg);
+    -webkit-transform: rotate(-90deg);
+    inset: 0;
   }
 
   &:hover {
@@ -165,6 +415,31 @@
 
     .woosw-icon-5 {
       background: url('../image/green-heart.svg');
+    }
+  }
+
+  @include down(#{$bp-xs}) {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    padding: 0 !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: transparent !important;
+    background-image: url('../image/stroke.svg') !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: contain !important;
+
+    border: 0 !important;
+    appearance: none;
+    -webkit-appearance: none;
+
+    &:after {
+      content: unset;
     }
   }
 }
@@ -225,7 +500,7 @@
   cursor: pointer;
 
   .text-block {
-    font-family: var(--fm-bold);
+    font-family: var(--fm-base);
     font-weight: 600;
     font-size: 16px;
     color: var(--brand-orange);
@@ -298,16 +573,42 @@
 }
 
 .favorite_categories {
+  .flex-evenly-start-align {
+     align-items: stretch;
+  }
   .product-card {
-    width: 300px;
+    width: 309px;
     justify-content: center;
+    gap: 22px;
 
     @include down(#{$bp-xs}) {
+      align-items: stretch;
       width: 152px;
+      gap: 12px;
+    }
+
+    .product-title {
+      @include down(#{$bp-xs}) {
+        flex-grow: 1;
+        gap: 12px;
+
+        p {
+          margin-top: auto;
+        }
+      }
     }
 
     h3 {
+      display: block;
       text-transform: uppercase;
+      -webkit-line-clamp: unset;
+      -webkit-box-orient: unset;
+      overflow: unset;
+      height: auto;
+
+      @include down(#{$bp-xs}) {
+        height: auto;
+      }
     }
 
     &:hover {
@@ -315,6 +616,12 @@
         color: var(--brand-orange);
       }
     }
+  }
+
+  .product-card-header {
+    @include flex-column;
+    gap: 24px;
+    flex-grow: 1;
   }
 
   .button-to-buy {
@@ -362,7 +669,6 @@
   width: 309px;
   height: 309px;
   position: relative;
-  overflow: hidden;
   padding: 10px;
 
   @include down(#{$bp-xs}) {
