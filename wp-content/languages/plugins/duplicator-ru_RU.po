@@ -2,14 +2,55 @@
 # This file is distributed under the same license as the Plugins - Duplicator &#8211; Backups &amp; Migration Plugin &#8211; Cloud Backups, Scheduled Backups, &amp; More - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-08-12 13:21:07+0000\n"
+"PO-Revision-Date: 2026-07-17 07:09:24+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
-"X-Generator: GlotPress/4.0.1\n"
+"X-Generator: GlotPress/4.0.3\n"
 "Language: ru\n"
 "Project-Id-Version: Plugins - Duplicator &#8211; Backups &amp; Migration Plugin &#8211; Cloud Backups, Scheduled Backups, &amp; More - Stable (latest release)\n"
+
+#: template/mocks/staging/staging.php:124
+msgid "Staging sites are not available in Duplicator Lite!"
+msgstr "В Duplicator Lite доступна только возможность создания тестовых сайтов!"
+
+#: template/mocks/staging/staging.php:123
+msgid "Create staging sites to safely test changes!"
+msgstr "Создавайте тестовые сайты для безопасного тестирования изменений!"
+
+#: template/mocks/staging/content-popup.php:23
+msgid "Duplicator Pro creates an isolated staging site from a backup so you can freely test changes without any risk to your live site."
+msgstr "Duplicator Pro создаёт изолированный тестовый сайт на основе резервной копии, что позволяет вам свободно тестировать изменения без какого-либо риска для вашего сайта в реальном времени."
+
+#: template/mocks/staging/content-popup.php:14
+msgid "Staging sites let you create a full copy of your WordPress site to safely test updates, new plugins, theme changes and other modifications without affecting your live site."
+msgstr "Тестовые среды позволяют создать полную копию вашего сайта WordPress, чтобы безопасно тестировать обновления, новые плагины, изменения в темах и другие модификации, не затрагивая ваш сайт, работающий в реальном времени."
+
+#: src/Core/Bootstrap.php:315 src/Core/Bootstrap.php:316
+#: template/mocks/staging/staging.php:16
+msgid "Staging"
+msgstr "Постановка"
+
+#: template/admin_pages/settings/general/license.php:62
+msgid "This opens connect.duplicator.com where you'll securely connect to Duplicator Pro."
+msgstr "Откроется connect.duplicator.com где можно безопасно подключиться к Duplicator Pro."
+
+#: template/admin_pages/settings/general/license.php:55
+msgid "Already purchased? Connect to unlock <b>Duplicator PRO!</b>"
+msgstr "Уже оплатили? Подключитесь, чтобы разблокировать <b>Duplicator PRO!</b>"
+
+#: src/Core/Bootstrap.php:411
+msgid "Please try again or contact support if the issue persists."
+msgstr "Повторите попытку или обратитесь в службу поддержки, если проблема сохраняется."
+
+#: src/Core/Bootstrap.php:409
+msgid "Failed to connect to Duplicator Pro."
+msgstr "Не удалось подключиться к Duplicator Pro."
+
+#: src/Ajax/ServicesEducation.php:421
+msgid "Upgrade installation failed: %s. Please try again or install manually."
+msgstr "Ошибка установки обновления: %s. Попробуйте ещё раз или проведите установку вручную."
 
 #: views/tools/controller.php:27
 msgid "DB Reset Plugin"
@@ -35,6 +76,10 @@ msgstr "Сделано с ♥ командой Duplicator"
 msgid "Free Plugins"
 msgstr "Бесплатные плагины"
 
+#: template/parts/plugin-footer.php:36
+msgid "Migration Services"
+msgstr "Миграционные услуги"
+
 #: template/parts/plugin-footer.php:32
 msgid "Docs"
 msgstr "Документация"
@@ -43,11 +88,15 @@ msgstr "Документация"
 msgid "Clean & Reset WordPress Database"
 msgstr "Очистите и сбросьте базу данных WordPress"
 
+#: template/admin_pages/settings/misc/misc.php:194
+msgid "Save Misc Settings"
+msgstr "Сохранить разные настройки"
+
 #: template/admin_pages/settings/misc/misc.php:24
 msgid "Misc Settings Saved"
 msgstr "Сохранение различных настроек"
 
-#: template/admin_pages/settings/general/license.php:62
+#: template/admin_pages/settings/general/license.php:58
 msgid "Connect to Duplicator Pro"
 msgstr "Подключение к Duplicator Pro"
 
@@ -70,18 +119,18 @@ msgstr "Database Reset Pro - это самый безопасный и прос�
 msgid "Database Reset Pro"
 msgstr "Сброс базы данных Pro"
 
-#: template/parts/notices/drm_multisite_msg.php:38
+#: template/parts/notices/drm_multisite_msg.php:36
 msgid "Upgrade Now!"
 msgstr "Сменить тариф"
 
-#: template/parts/notices/drm_multisite_msg.php:30
+#: template/parts/notices/drm_multisite_msg.php:29
 msgctxt "1: name of pro plan, 2: name of elite plan"
 msgid "By upgrading to the Elite or Pro plans you will unlock the ability to create backups and do advanced migrations on multi-site installations!"
 msgstr "Перейдя на тарифы Elite или Pro, вы получите возможность создавать резервные копии и выполнять расширенную миграцию на несколько сайтов!"
 
 #: template/parts/notices/drm_multisite_msg.php:25
-msgid "Duplicator Lite does not officially support WordPress functionality"
-msgstr "Duplicator Lite официально не поддерживает функциональность WordPress"
+msgid "Duplicator Lite does not officially support WordPress multisite functionality"
+msgstr "Duplicator Lite официально не поддерживает функцию многосайтовости WordPress"
 
 #: src/Views/AdminNotices.php:340
 msgid "Upgrade failed. Please check if you have the necessary permissions to activate plugins."
@@ -110,10 +159,6 @@ msgstr "Начиная с <b>Duplicator %1$s</b>, для получения об
 #: src/Utils/DuplicatorPhpVersionCheck.php:63
 msgid "DUPLICATOR: Action Required - <b>PHP Version Update Needed</b>, Your site is running PHP version %s."
 msgstr "Duplicator: <b>Требуется обновление версии PHP</b>, ваш сайт работает под управлением PHP версии %s."
-
-#: src/Ajax/ServicesEducation.php:201
-msgid "Invalid license key."
-msgstr "Неверный лицензионный ключ."
 
 #: views/tools/diagnostics/logging.php:215
 msgid "Backup Logs"
@@ -232,7 +277,7 @@ msgstr "Сканирование резервной копии"
 msgid "Reset Backups"
 msgstr "Сбросить резервные копии"
 
-#: src/Core/Bootstrap.php:564
+#: src/Core/Bootstrap.php:575
 msgid "Manage Backups"
 msgstr "Управление резервными копиями"
 
@@ -606,35 +651,35 @@ msgstr ""
 "Невозможно включить Duplicator LITE, если уже включена версия PRO. Сначала деактивируйте Duplicator Pro, \n"
 "                    затем повторно активируйте версию LITE %1$sсо страницы плагинов%2$s."
 
-#: src/Core/Bootstrap.php:420
+#: src/Core/Bootstrap.php:431
 msgid "Unable to copy"
 msgstr "Невозможно скопировать"
 
-#: src/Core/Bootstrap.php:419
+#: src/Core/Bootstrap.php:430
 msgid "copied to clipboard"
 msgstr "скопировано в буфер обмена"
 
-#: src/Core/Bootstrap.php:418
+#: src/Core/Bootstrap.php:429
 msgid "Copy to clipboard"
 msgstr "Скопировать в буфер обмена"
 
-#: src/Core/Bootstrap.php:409
+#: src/Core/Bootstrap.php:420
 msgid "Failed to load help content!"
 msgstr "Не удалось загрузить содержимое справки!"
 
-#: src/Core/Bootstrap.php:387
+#: src/Core/Bootstrap.php:398
 msgid "Email subscription failed with message: "
 msgstr "Ошибка подписки по электронной почте: "
 
-#: src/Core/Bootstrap.php:386
+#: src/Core/Bootstrap.php:397
 msgid "Failed &#10007"
 msgstr "Ошибка &#10007"
 
-#: src/Core/Bootstrap.php:385
+#: src/Core/Bootstrap.php:396
 msgid "Subscribing..."
 msgstr "Подписка..."
 
-#: src/Core/Bootstrap.php:384
+#: src/Core/Bootstrap.php:395
 msgid "Subscribed &#10003"
 msgstr "Подписка оформлена &#10003"
 
@@ -1003,14 +1048,6 @@ msgstr "Back Blaze"
 msgid "Google Cloud Storage"
 msgstr "Облачное хранилище Google"
 
-#: template/admin_pages/settings/general/license.php:60
-msgid "Paste license key here"
-msgstr "Вставьте лицензионный ключ сюда"
-
-#: template/admin_pages/settings/general/license.php:55
-msgid "Already purchased? Simply enter your license key below to enable <b>Duplicator PRO!</b>"
-msgstr "Уже купили? Просто введите свой лицензионный ключ ниже, чтобы активировать <b>Duplicator PRO!</b>"
-
 #: views/packages/main/s2.scan3.php:678
 msgctxt "%1$s represents the memory limit value (e.g. 256MB)"
 msgid "If you want to build the Backup with mysqldump, increase the PHP <b>memory_limit</b> value in your php.ini file to at least %1$s."
@@ -1127,21 +1164,9 @@ msgstr "Компоненты резервного копирования поз�
 msgid "There was an error installing the upgrade. Please try again."
 msgstr "Произошла ошибка при установке обновления. Попробуйте еще раз."
 
-#: src/Core/Bootstrap.php:400
-msgid "Check the license key and try again, if the error persists proceed with manual activation."
-msgstr "Проверьте лицензионный ключ и повторите попытку. Если ошибка не исчезнет, ​​продолжите активацию вручную."
-
-#: src/Core/Bootstrap.php:399
+#: src/Core/Bootstrap.php:410
 msgid "Message: "
 msgstr "Сообщение: "
-
-#: src/Core/Bootstrap.php:398
-msgid "Failed to activate license for this website."
-msgstr "Не удалось активировать лицензию для этого сайта."
-
-#: src/Ajax/ServicesEducation.php:277
-msgid "Invalid license JSON data."
-msgstr "Недействительные данные лицензии в формате JSON."
 
 #: views/settings/controller.php:48
 msgid "Access"
@@ -1250,7 +1275,7 @@ msgstr "Доступно в Duplicator Pro!"
 msgid "Get tips and product updates straight to your inbox."
 msgstr "Получайте советы и новости о продукте прямо на почту."
 
-#: src/Core/Bootstrap.php:383 template/parts/Education/subscribe-form.php:26
+#: src/Core/Bootstrap.php:394 template/parts/Education/subscribe-form.php:26
 msgid "Subscribe"
 msgstr "Подписаться"
 
@@ -1971,11 +1996,11 @@ msgstr "Импорт с сервера на сервер"
 msgid "Secure File Encryption"
 msgstr "Безопасное шифрование файлов"
 
-#: src/Core/Bootstrap.php:340 template/admin_pages/about_us/tabs.php:17
+#: src/Core/Bootstrap.php:351 template/admin_pages/about_us/tabs.php:17
 msgid "About Us"
 msgstr "О нас"
 
-#: src/Core/Bootstrap.php:339
+#: src/Core/Bootstrap.php:350
 msgid "About Duplicator"
 msgstr "О Duplicator"
 
@@ -2133,7 +2158,7 @@ msgstr "Не совсем так"
 msgid "Are you enjoying %s?"
 msgstr "Тоже нравится %s?"
 
-#: src/Core/Bootstrap.php:269 src/Core/Bootstrap.php:544
+#: src/Core/Bootstrap.php:269 src/Core/Bootstrap.php:555
 msgid "Upgrade to Pro"
 msgstr "Обновить до Pro"
 
@@ -2619,7 +2644,7 @@ msgstr "Восстановление"
 msgid "Drag and Drop Import is not available in Duplicator Lite!"
 msgstr "Импорт методом перетаскивания недоступен в Duplicator Lite!"
 
-#: classes/package/class.pack.database.php:602
+#: classes/package/class.pack.database.php:644
 msgid "Shell mysql dump error. Change SQL Mode to the \"PHP Code\" in the Duplicator > Settings > Backups."
 msgstr "Ошибка выгрузки MySQL через командную оболочку. Замените «Режим SQL» на «Код PHP» в меню Duplicator > «Настройки» > «Резервные копии»."
 
@@ -2891,7 +2916,7 @@ msgstr "На эту страницу был отправлен недейств�
 
 #: views/packages/main/s2.scan2.php:194 views/packages/main/s2.scan2.php:199
 msgid "upgrade to pro"
-msgstr "улучшите до Про"
+msgstr "upgrade to pro"
 
 #: views/packages/main/s2.scan2.php:188
 msgid "Duplicator does not support WordPress multisite migrations.  We strongly recommend using Duplicator Pro which currently supports full multisite migrations and various other subsite scenarios."
@@ -3408,43 +3433,43 @@ msgstr "Ошибка сборки"
 msgid "Backup build appears stuck so marking Backup as failed. Is the Max Worker Time set too high?."
 msgstr "Кажется, процесс резервного копирования завис, и резервная копия отмечена как неудавшаяся. Возможно, установлено слишком длительное время выполнения задачи?"
 
-#: classes/package/class.pack.database.php:757
+#: classes/package/class.pack.database.php:799
 msgid "Please contact your DataBase administrator to fix the error."
 msgstr "Свяжитесь с администратором вашей БД, чтобы исправить ошибку."
 
-#: classes/package/class.pack.php:1039
+#: classes/package/class.pack.php:1044
 msgid "ARCHIVE CONSISTENCY TEST: Pass"
 msgstr "ТЕСТ ЛОГИКИ АРХИВА: Пройден"
 
 #: classes/package/class.pack.installer.php:844
-#: classes/package/class.pack.php:1029
+#: classes/package/class.pack.php:1034
 msgid "ERROR: Archive checksum is bad."
 msgstr "ОШИБКА: Неверная контрольная сумма архива."
 
 #: classes/package/class.pack.installer.php:841
-#: classes/package/class.pack.php:1024
+#: classes/package/class.pack.php:1029
 msgid "ERROR: Archive doesn't pass consistency check."
 msgstr "ОШИБКА: Архив не прошёл проверку логики."
 
 #: classes/package/class.pack.installer.php:838
-#: classes/package/class.pack.php:1020
+#: classes/package/class.pack.php:1025
 msgid "ERROR: Archive is not valid zip archive."
 msgstr "ОШИБКА: Архив не является корректным zip-файлом."
 
 #: classes/package/class.pack.installer.php:834
-#: classes/package/class.pack.php:1015
+#: classes/package/class.pack.php:1020
 msgid "ERROR: Cannot open created archive. Error code = %1$s"
 msgstr "ОШИБКА: Не удалось открыть созданный архив. Код ошибки = %1$s"
 
-#: classes/package/class.pack.php:967
+#: classes/package/class.pack.php:972
 msgid "ACTUAL FILE/DIRECTORY COUNT: %1$s"
 msgstr "ФАКТИЧЕСКОЕ КОЛИЧЕСТВО ФАЙЛОВ/КАТАЛОГОВ: %1$s"
 
-#: classes/package/class.pack.php:966
+#: classes/package/class.pack.php:971
 msgid "EXPECTED FILE/DIRECTORY COUNT: %1$s"
 msgstr "ОЖИДАЕМОЕ КОЛИЧЕСТВО ФАЙЛОВ/КАТОЛОГ: %1$s"
 
-#: classes/package/class.pack.php:945
+#: classes/package/class.pack.php:950
 msgid "Can't find Scanfile %s. Please ensure there no non-English characters in the Backup or schedule name."
 msgstr "Не удается найти файл сканирования %s. Убедитесь, что в названии резервной копии или расписания используются только английские символы."
 
@@ -5270,16 +5295,16 @@ msgstr "Duplicator Pro"
 msgid "Spread the Word"
 msgstr "Рассказать другим"
 
-#: src/Core/Bootstrap.php:565
+#: src/Core/Bootstrap.php:576
 msgid "Manage"
 msgstr "Управление"
 
-#: src/Core/Bootstrap.php:315 src/Core/Bootstrap.php:316
+#: src/Core/Bootstrap.php:326 src/Core/Bootstrap.php:327
 #: views/tools/controller.php:21
 msgid "Tools"
 msgstr "Инструменты"
 
-#: src/Core/Bootstrap.php:329 src/Core/Bootstrap.php:330
+#: src/Core/Bootstrap.php:340 src/Core/Bootstrap.php:341
 #: template/admin_pages/settings/general/general.php:91
 #: template/mocks/storage/storage.php:87 views/settings/controller.php:23
 msgid "Settings"

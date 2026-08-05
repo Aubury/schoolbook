@@ -208,16 +208,10 @@ main {
   width: 100%;
   min-height: 65px;
 
-  //&:not(:has(> :nth-child(2))) {
-  //  .sale_book {
-  //    top: 0;
-  //  }
-  //
-  //  .new_book {
-  //    top: 0;
-  //    right: 16px;
-  //  }
-  //}
+  @include down(#{$bp-xs}) {
+    top: -12px;
+    height: 54px;
+  }
 }
 
 .preorder-book {
@@ -251,10 +245,10 @@ main {
   @include flex-center;
 
   @include down(#{$bp-xs}) {
-    width: 40px;
-    height: 40px;
+    width: 51px;
+    height: 43px;
     top: 0;
-    right: 40px;
+    right: 32px;
     bottom: auto;
   }
 }
@@ -270,7 +264,7 @@ main {
   height: 48px;
   text-align: center;
   color: var(--color-white);
-  z-index: 999;
+  z-index: 100;
   font-family: var(--fm-heading);
   font-size: 32px;
   font-weight: 400;
@@ -281,6 +275,8 @@ main {
     width: 38px;
     height: 34px;
     font-size: 22px;
+    right: 0;
+    top: 17px;
   }
 }
 

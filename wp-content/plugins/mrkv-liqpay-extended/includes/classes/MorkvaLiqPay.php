@@ -1,5 +1,4 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * Morkva Liqpay Payment Module
  *
@@ -88,14 +87,14 @@ class MorkvaLiqPay
         if (empty($public_key)) 
         {
             # Stop job and show error
-            throw new InvalidArgumentException(esc_html__('Public Key is not entered in the settings', 'mrkv-liqpay-extended'));
+            throw new InvalidArgumentException(__('Public Key is not entered in the settings', 'mrkv-liqpay-extended'));
         }
 
         # Check Private Key
         if (empty($private_key)) 
         {
             # Stop job and show error
-            throw new InvalidArgumentException(esc_html__('Private Key is not entered in the settings', 'mrkv-liqpay-extended'));
+            throw new InvalidArgumentException(__('Private Key is not entered in the settings', 'mrkv-liqpay-extended'));
         }
 
         # Save Public Key
@@ -205,35 +204,35 @@ class MorkvaLiqPay
         if (!isset($params['version'])) 
         {
             # Show Error message
-            throw new InvalidArgumentException(esc_html__('The version value is not set', 'mrkv-liqpay-extended'));
+            throw new InvalidArgumentException(__('The version value is not set', 'mrkv-liqpay-extended'));
         }
 
         # Check Amount of order
         if (!isset($params['amount'])) 
         {
             # Show Error message
-            throw new InvalidArgumentException(esc_html__('The value of the request amount is not set', 'mrkv-liqpay-extended'));
+            throw new InvalidArgumentException(__('The value of the request amount is not set', 'mrkv-liqpay-extended'));
         }
 
         # Check Currency data
         if (!isset($params['currency'])) 
         {
             # Show Error message
-            throw new InvalidArgumentException(esc_html__('Currency value is not set', 'mrkv-liqpay-extended'));
+            throw new InvalidArgumentException(__('Currency value is not set', 'mrkv-liqpay-extended'));
         }
 
         # Check currency support
         if (!in_array($params['currency'], $this->_supportedCurrencies)) 
         {
             # Show Error message
-            throw new InvalidArgumentException(esc_html__('Currency is not supported', 'mrkv-liqpay-extended'));
+            throw new InvalidArgumentException(__('Currency is not supported', 'mrkv-liqpay-extended'));
         }
 
         # Check description data
         if (!isset($params['description'])) 
         {
             # Show Error message
-            throw new InvalidArgumentException(esc_html__('Description value is not set', 'mrkv-liqpay-extended'));
+            throw new InvalidArgumentException(__('Description value is not set', 'mrkv-liqpay-extended'));
         }
 
         # Return all params
@@ -278,89 +277,5 @@ class MorkvaLiqPay
 
         # Return signature
         return $signature;
-    }
-
-    public function mrkv_liqpay_hold_cancel($order_id, $amount)
-    {
-        $url = 'https://www.liqpay.ua/api/request';
-
-        $data_array = array(
-            'action'     => 'refund',
-            'version'    => 3,
-            'public_key' => $this->_public_key,
-            'order_id'   => $order_id,
-            'amount'     => $amount
-        );
-
-        $json_data = json_encode($data_array);
-        $data = base64_encode($json_data);
-
-        # Create the signature
-        $signature_str = $this->_private_key . $data . $this->_private_key;
-        $signature = base64_encode(sha1($signature_str, true));
-
-        # Prepare POST fields
-        $post_fields = http_build_query(array(
-            'data' => $data,
-            'signature' => $signature
-        ));
-
-        # Make the POST request using WordPress HTTP API
-        $response = wp_remote_post($url, array(
-            'method'    => 'POST',
-            'body'      => $post_fields,
-            'headers'   => array(
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ),
-            'timeout'   => 30
-        ));
-    }
-
-    public function mrkv_liqpay_hold_final($order_id, $amount)
-    {
-        $url = 'https://www.liqpay.ua/api/request';
-
-        $data_array = array(
-            'action'     => 'hold_completion',
-            'version'    => 3,
-            'public_key' => $this->_public_key,
-            'order_id'   => $order_id,
-            'amount'     => $amount
-        );
-
-        $json_data = json_encode($data_array);
-        $data = base64_encode($json_data);
-
-        # Create the signature
-        $signature_str = $this->_private_key . $data . $this->_private_key;
-        $signature = base64_encode(sha1($signature_str, true));
-
-        # Prepare POST fields
-        $post_fields = http_build_query(array(
-            'data' => $data,
-            'signature' => $signature
-        ));
-
-        # Make the POST request using WordPress HTTP API
-        $response = wp_remote_post($url, array(
-            'method'    => 'POST',
-            'body'      => $post_fields,
-            'headers'   => array(
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ),
-            'timeout'   => 30
-        ));
-
-        if (is_wp_error($response)) {
-            return array(
-                'success' => false,
-                'error'   => $response->get_error_message()
-            );
-        }
-
-        $body = wp_remote_retrieve_body($response);
-        $decoded = json_decode($body, true);
-
-        return $decoded;
     }
 }

@@ -138,7 +138,7 @@ function changePlaceholder() {
 
 	if (!input) return;
 
-	input.placeholder = window.innerWidth <= 768
+	input.placeholder = window.innerWidth <= 1200
 		? 'ПOШУК'
 		: 'ПOШУК за назвою книги, автором або категорією';
 }

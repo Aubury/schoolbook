@@ -382,6 +382,12 @@ main > .section {
   width: 100%;
   min-height: 65px;
 }
+@media (max-width: 576px) {
+  .pr-info-new {
+    top: -12px;
+    height: 54px;
+  }
+}
 
 .preorder-book {
   position: absolute;
@@ -418,10 +424,10 @@ main > .section {
 }
 @media (max-width: 576px) {
   .new_book {
-    width: 40px;
-    height: 40px;
+    width: 51px;
+    height: 43px;
     top: 0;
-    right: 40px;
+    right: 32px;
     bottom: auto;
   }
 }
@@ -437,7 +443,7 @@ main > .section {
   height: 48px;
   text-align: center;
   color: var(--color-white);
-  z-index: 999;
+  z-index: 100;
   font-family: var(--fm-heading);
   font-size: 32px;
   font-weight: 400;
@@ -451,6 +457,8 @@ main > .section {
     width: 38px;
     height: 34px;
     font-size: 22px;
+    right: 0;
+    top: 17px;
   }
 }
 
@@ -2442,7 +2450,7 @@ main > .section {
   background-size: cover;
 }
 .header-search .header-search-button .search-icon {
-  background: url("../image/search-white.svg");
+  background: url("../image/search-white.svg") no-repeat center;
 }
 
 .aws-container .aws-search-form {
@@ -3951,10 +3959,34 @@ main > .section {
   font-weight: 400;
   line-height: 120%; /* 21.6px */
   text-transform: none;
-  min-height: 19.2px;
 }
 @media (max-width: 576px) {
   .product-card .info-block p {
+    font-size: 14px;
+  }
+}
+.product-card .info-block .info-author {
+  height: 38.4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (max-width: 576px) {
+  .product-card .info-block .info-author {
+    font-size: 14px;
+    height: 33.6px;
+  }
+}
+.product-card .info-block .info-age {
+  min-height: 19.2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (max-width: 576px) {
+  .product-card .info-block .info-age {
     font-size: 14px;
     min-height: 16.8px;
   }

@@ -1,21 +1,104 @@
-# Translation of Plugins - Easy WP SMTP – WordPress SMTP and Email Logs: Gmail, Office 365, Outlook, Custom SMTP, and more - Stable (latest release) in Ukrainian
-# This file is distributed under the same license as the Plugins - Easy WP SMTP – WordPress SMTP and Email Logs: Gmail, Office 365, Outlook, Custom SMTP, and more - Stable (latest release) package.
+# Translation of Plugins - Easy WP SMTP – WordPress SMTP and Email Logs: Gmail SMTP, Office 365, Outlook, Custom SMTP, and more - Stable (latest release) in Ukrainian
+# This file is distributed under the same license as the Plugins - Easy WP SMTP – WordPress SMTP and Email Logs: Gmail SMTP, Office 365, Outlook, Custom SMTP, and more - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-07-17 05:30:57+0000\n"
+"PO-Revision-Date: 2026-03-02 20:47:29+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
-"X-Generator: GlotPress/4.0.1\n"
+"X-Generator: GlotPress/4.0.3\n"
 "Language: uk_UA\n"
-"Project-Id-Version: Plugins - Easy WP SMTP – WordPress SMTP and Email Logs: Gmail, Office 365, Outlook, Custom SMTP, and more - Stable (latest release)\n"
+"Project-Id-Version: Plugins - Easy WP SMTP – WordPress SMTP and Email Logs: Gmail SMTP, Office 365, Outlook, Custom SMTP, and more - Stable (latest release)\n"
+
+#: src/Providers/Resend/Options.php:123
+msgid "API Keys"
+msgstr "API ключі"
+
+#: src/Admin/Pages/AlertsTab.php:453
+msgid "Access Token"
+msgstr "Токен доступу"
+
+#: src/Admin/Pages/AlertsTab.php:436
+msgid "WhatsApp Alerts"
+msgstr "Сповіщення WhatsApp"
+
+#: src/Admin/Pages/AlertsTab.php:427
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#: assets/languages/easy-wp-smtp-vue.php:910
+msgid "Read how to set up Resend"
+msgstr "Дізнайтеся, як налаштувати Resend"
+
+#. translators: %s - link to get an API Key.
+#: src/Providers/Resend/Options.php:121
+msgid "Follow this link to get the API key from Resend: %s."
+msgstr "Перейдіть за цим посиланням, щоб отримати API ключ від Resend: %s."
+
+#. Translators: Link to the Resend API settings.
+#: assets/languages/easy-wp-smtp-vue.php:907
+msgid "%1$sFollow this link%2$s to get an API Key for Resend."
+msgstr "%1$sПерейдіть за цим посиланням%2$s, щоб отримати API ключ для Resend."
+
+#: src/Admin/Pages/AlertsTab.php:465
+msgid "Phone Number ID"
+msgstr "ID номера телефону"
+
+#. translators: %s - API key link.
+#: src/Providers/Mandrill/Options.php:116
+msgid "Follow this link to get an API Key from Mandrill: %s."
+msgstr "Перейдіть за цим посиланням, щоб отримати API ключ від Mandrill: %s."
+
+#: src/Providers/Mandrill/Options.php:60
+msgid "Mandrill"
+msgstr "Mandrill"
+
+#: src/Providers/MailerSend/Options.php:61
+msgid "MailerSend"
+msgstr "MailerSend"
+
+#: assets/languages/easy-wp-smtp-vue.php:875
+msgid "Disabled"
+msgstr "Вимкнено"
+
+#: src/Admin/Pages/AlertsTab.php:218 src/Admin/Pages/AlertsTab.php:227
+msgid "Discord"
+msgstr "Discord"
+
+#: assets/languages/easy-wp-smtp-vue.php:825
+msgid "Client ID"
+msgstr "ID клієнта"
+
+#: src/Admin/Pages/ControlTab.php:62
+msgid "Comments"
+msgstr "Коментарі"
+
+#: src/Admin/Pages/SmartRoutingTab.php:242
+#: src/Admin/Pages/SmartRoutingTab.php:297
+msgid "Add New Group"
+msgstr "Додати нову групу"
+
+#: src/Admin/Pages/SmartRoutingTab.php:177
+#: src/Admin/Pages/SmartRoutingTab.php:200
+#: src/Admin/Pages/SmartRoutingTab.php:230
+#: src/Admin/Pages/SmartRoutingTab.php:285
+msgid "And"
+msgstr "Та"
+
+#: src/Admin/Pages/SmartRoutingTab.php:134
+msgid "Conditions"
+msgstr "Умови"
+
+#: src/Admin/Pages/SmartRoutingTab.php:169
+msgid "Contains"
+msgstr "Містить"
 
 #: src/Helpers/UI.php:29
 msgid "Remove"
 msgstr "Видалити"
 
-#: src/Connect.php:55
+#: src/Admin/Area.php:518 src/Connect.php:55
 msgid "Activate"
 msgstr "Активувати"
 
@@ -23,24 +106,26 @@ msgstr "Активувати"
 msgid "Body"
 msgstr "Тіло"
 
-#: assets/languages/easy-wp-smtp-vue.php:547
-#: src/Admin/Pages/SettingsTab.php:216
+#: assets/languages/easy-wp-smtp-vue.php:556
+#: src/Admin/Pages/SettingsTab.php:207
 msgid "Connect"
 msgstr "З'єднати"
 
-#: src/Admin/SetupWizard.php:514
+#: src/Admin/SetupWizard.php:522
 msgid "Contact Us"
 msgstr "Зв'яжіться з нами"
 
-#: assets/languages/easy-wp-smtp-vue.php:518
+#: assets/languages/easy-wp-smtp-vue.php:527
 msgid "Continue"
 msgstr "Продовжити"
 
-#: assets/languages/easy-wp-smtp-vue.php:664
+#: assets/languages/easy-wp-smtp-vue.php:675
+#: src/Admin/EmailSendingErrors/EmailSendingErrors.php:647
 msgid "Copied!"
 msgstr "Скопійовано!"
 
-#: src/Admin/Pages/SettingsTab.php:300
+#: src/Admin/Pages/SettingsTab.php:291 src/Admin/Pages/TestTab.php:530
+#: src/Admin/Pages/TestTab.php:531 src/Providers/Sendlayer/QuickConnect.php:696
 msgid "Dismiss"
 msgstr "Відхилити"
 
@@ -52,7 +137,7 @@ msgstr "Експорт"
 msgid "Headers"
 msgstr "Headers"
 
-#: src/Admin/Pages/SettingsTab.php:119
+#: src/Admin/Pages/SettingsTab.php:108
 msgid "License"
 msgstr "Ліцензія"
 
@@ -60,11 +145,12 @@ msgstr "Ліцензія"
 msgid "Oops!"
 msgstr "Ой!"
 
-#: src/Admin/ConnectionSettings.php:135
+#: src/Admin/ConnectionSettings.php:147 src/Admin/Pages/GetProTab.php:221
+#: src/Admin/Pages/MiscTab.php:544 src/Admin/Pages/TestTab.php:469
 msgid "Pro"
 msgstr "Pro"
 
-#: assets/languages/easy-wp-smtp-vue.php:527
+#: assets/languages/easy-wp-smtp-vue.php:536
 msgid "Purchase Now"
 msgstr "Придбати зараз"
 
@@ -76,13 +162,16 @@ msgstr "Пошук"
 msgid "Status"
 msgstr "Статус"
 
-#: src/Admin/SetupWizard.php:235
+#: src/Admin/SetupWizard.php:243
 msgid "Upgrade to PRO"
 msgstr "Оновити до PRO"
 
-#: src/Admin/Area.php:312 src/Admin/Area.php:313 src/Admin/Area.php:410
-#: src/Admin/Pages/AlertsTab.php:85 src/Admin/Pages/ExportTab.php:80
-#: src/Admin/Pages/LogsTab.php:146 src/Admin/ParentPageAbstract.php:374
+#: src/Admin/Area.php:359 src/Admin/Area.php:360 src/Admin/Area.php:470
+#: src/Admin/Area.php:1620 src/Admin/Pages/AdditionalConnectionsTab.php:107
+#: src/Admin/Pages/AlertsTab.php:85 src/Admin/Pages/ControlTab.php:247
+#: src/Admin/Pages/ExportTab.php:80 src/Admin/Pages/GetProTab.php:339
+#: src/Admin/Pages/LogsTab.php:135 src/Admin/Pages/SettingsTab.php:404
+#: src/Admin/Pages/SmartRoutingTab.php:97 src/Admin/ParentPageAbstract.php:429
 #: src/Reports/Emails/Summary.php:312
 msgid "Upgrade to Pro"
 msgstr "Оновити до Pro"
@@ -92,7 +181,7 @@ msgid "Version"
 msgstr "Версія"
 
 #. Translators: Error status and error text.
-#: assets/languages/easy-wp-smtp-vue.php:67
+#: assets/languages/easy-wp-smtp-vue.php:68
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
@@ -105,7 +194,7 @@ msgstr "Деталі помилки"
 msgid "%s icon"
 msgstr "Іконка %s"
 
-#: src/Admin/DashboardWidget.php:583
+#: src/Admin/DashboardWidget.php:592
 msgid "Failed"
 msgstr "Невдало"
 
@@ -117,16 +206,18 @@ msgstr "Звертатися"
 msgid "From Address"
 msgstr "З адреси"
 
-#: assets/languages/easy-wp-smtp-vue.php:673
+#: assets/languages/easy-wp-smtp-vue.php:684
 msgid "Please enter a valid email address"
 msgstr "Будь ласка, введіть правильний email"
 
-#: assets/languages/easy-wp-smtp-vue.php:188
+#: assets/languages/easy-wp-smtp-vue.php:194
+#: src/Admin/Pages/SmartRoutingTab.php:187
+#: src/Admin/Pages/SmartRoutingTab.php:217
 msgid "From Email"
 msgstr "E-mail відправника"
 
 #. translators: %s: Directory path.
-#: src/Uploads.php:50
+#: src/Uploads.php:51
 msgid "Unable to create directory %s. Is its parent directory writable by the server?"
 msgstr "Неможливо створити теку %s. Чи доступна батьківська тека на запис?"
 
@@ -134,11 +225,12 @@ msgstr "Неможливо створити теку %s. Чи доступна �
 msgid "Additional Information"
 msgstr "Додаткова інформація"
 
-#: src/Connect.php:210 src/Connect.php:218 src/Connect.php:297
+#: src/Admin/Recommendations/RecommendedPlugins.php:415 src/Connect.php:210
+#: src/Connect.php:218 src/Connect.php:298
 msgid "Plugin installed & activated."
 msgstr "Плагін встановлено та активовано."
 
-#: assets/languages/easy-wp-smtp-vue.php:713
+#: assets/languages/easy-wp-smtp-vue.php:724
 msgid "Value"
 msgstr "Значення"
 
@@ -146,11 +238,11 @@ msgstr "Значення"
 msgid "Hi there,"
 msgstr "Привіт,"
 
-#: src/Admin/DashboardWidget.php:571
+#: src/Admin/DashboardWidget.php:580
 msgid "Confirmed"
 msgstr "Підтверджений"
 
-#: assets/languages/easy-wp-smtp-vue.php:530
+#: assets/languages/easy-wp-smtp-vue.php:539
 msgid "I'll do it later"
 msgstr "Я зроблю це пізніше"
 
@@ -159,36 +251,71 @@ msgstr "Я зроблю це пізніше"
 msgid "Scheduled Actions"
 msgstr "Заплановані дії"
 
-#: assets/languages/easy-wp-smtp-vue.php:17
+#: assets/languages/easy-wp-smtp-vue.php:18
 msgid "Settings Updated"
 msgstr "Налаштування оновлено"
 
-#: assets/languages/easy-wp-smtp-vue.php:254
+#: assets/languages/easy-wp-smtp-vue.php:263
 msgid "Skip this Step"
 msgstr "Пропустити цей крок"
 
 #. Translators: %1$s - the number of current step, %2$s - number of all steps.
-#: assets/languages/easy-wp-smtp-vue.php:652
+#: assets/languages/easy-wp-smtp-vue.php:661
 msgid "Step %1$s of %2$s"
 msgstr "Крок %1$s з %2$s"
 
-#: assets/languages/easy-wp-smtp-vue.php:502
+#: assets/languages/easy-wp-smtp-vue.php:511
 msgid "Submit Feedback"
 msgstr "Надіслати відгук"
 
-#: src/Admin/Area.php:526
+#: src/Admin/Pages/MiscTab.php:334
+msgid "Allow Usage Tracking"
+msgstr "Дозволити відстежувати дані про використання"
+
+#: src/Connect.php:56
+msgid "Almost Done"
+msgstr "Майже зроблено"
+
+#: assets/languages/easy-wp-smtp-vue.php:404
+msgid "Application ID"
+msgstr "ID додатку"
+
+#: src/Admin/Pages/ExportTab.php:242
+msgid "Attachments"
+msgstr "Вкладення"
+
+#: assets/languages/easy-wp-smtp-vue.php:589
+msgid "Authentication"
+msgstr "Автентифікація"
+
+#: assets/languages/easy-wp-smtp-vue.php:413
+msgid "Authorization"
+msgstr "Авторизація"
+
+#: src/Admin/Pages/ExportTab.php:306
+msgid "Clicked"
+msgstr "Натиснуто"
+
+#: src/Admin/Pages/ExportTab.php:228
+msgid "Created Date"
+msgstr "Дата створення"
+
+#: src/Admin/Area.php:648 src/WPCLI/Options/Help.php:186
 msgid "General"
 msgstr "Загальне"
 
-#: assets/languages/easy-wp-smtp-vue.php:212
-#: src/Providers/Sendgrid/Options.php:66
-#: src/Providers/Sendinblue/Options.php:97
-#: src/Providers/Sendlayer/Options.php:83 src/Providers/SMTPcom/Options.php:92
-#: src/Providers/SparkPost/Options.php:84
+#: assets/languages/easy-wp-smtp-vue.php:221
+#: src/Providers/ElasticEmail/Options.php:93
+#: src/Providers/MailerSend/Options.php:88 src/Providers/Mailjet/Options.php:92
+#: src/Providers/Mandrill/Options.php:89 src/Providers/Resend/Options.php:94
+#: src/Providers/Sendgrid/Options.php:67
+#: src/Providers/Sendinblue/Options.php:98
+#: src/Providers/Sendlayer/Options.php:181 src/Providers/SMTP2GO/Options.php:93
+#: src/Providers/SMTPcom/Options.php:93 src/Providers/SparkPost/Options.php:85
 msgid "API Key"
 msgstr "Ключ API"
 
-#: src/Admin/ConnectionSettings.php:295
+#: src/Admin/ConnectionSettings.php:332
 msgid "Advanced Settings"
 msgstr "Розширені налаштування"
 
@@ -196,7 +323,7 @@ msgstr "Розширені налаштування"
 msgid "All"
 msgstr "Всі"
 
-#: src/Admin/Area.php:402 src/Admin/Area.php:437
+#: src/Admin/Area.php:462 src/Admin/Area.php:501 src/Admin/Area.php:536
 #: src/Admin/Pages/DebugEventsTab.php:148
 msgid "Cancel"
 msgstr "Скасувати"
@@ -210,23 +337,23 @@ msgstr "Закрити"
 msgid "Content"
 msgstr "Вміст"
 
-#: src/Admin/Pages/TestTab.php:1609
-msgid "Copied"
-msgstr "Скопійовано"
-
 #: src/Admin/DebugEvents/Event.php:386 src/Admin/DebugEvents/Table.php:173
 msgid "Date"
 msgstr "Дата"
 
-#: src/Admin/ConnectionSettings.php:173
+#: assets/languages/easy-wp-smtp-vue.php:1005
+#: src/Admin/ConnectionSettings.php:185
+#: src/Admin/EmailSendingErrors/EmailSendingErrors.php:329
 msgid "Dismiss this notice"
 msgstr "Відхилити це сповіщення"
 
-#: src/Admin/Area.php:1093 src/Admin/Area.php:1258
+#: src/Admin/Area.php:1277 src/Admin/Area.php:1445
 msgid "Docs"
 msgstr "Документація"
 
-#: src/Admin/DebugEvents/Event.php:184
+#: assets/languages/easy-wp-smtp-vue.php:976 src/Admin/Area.php:510
+#: src/Admin/Area.php:523 src/Admin/DebugEvents/Event.php:184
+#: src/Admin/EmailSendingErrors/EmailSendingErrors.php:308
 msgid "Error"
 msgstr "Помилка"
 
@@ -234,70 +361,77 @@ msgstr "Помилка"
 msgid "Filter"
 msgstr "Фільтр"
 
-#: src/Admin/Pages/TestTab.php:181
+#: src/Admin/Pages/TestTab.php:210
 msgid "HTML"
 msgstr "HTML"
 
-#: src/Admin/Area.php:538
+#: src/Admin/Area.php:669
 msgid "Help"
 msgstr "Допомога"
 
-#: src/Admin/ConnectionSettings.php:306
+#: src/Admin/ConnectionSettings.php:343
 msgid "Hide"
 msgstr "Сховати"
 
-#: src/Admin/Area.php:434
+#: src/Admin/Area.php:498
 msgid "Icon"
 msgstr "Іконка"
 
-#: assets/languages/easy-wp-smtp-vue.php:784 src/Core.php:1005
+#: assets/languages/easy-wp-smtp-vue.php:795 src/Core.php:981
 msgid "Loading"
 msgstr "Завантаження"
 
-#: src/Admin/Pages/MiscTab.php:38
+#: src/Admin/Pages/MiscTab.php:39
 msgid "Misc"
 msgstr "Різне"
 
-#: src/Admin/DebugEvents/Event.php:244 src/WP.php:538
+#: src/Admin/DebugEvents/Event.php:244 src/WP.php:651
 msgid "N/A"
 msgstr "Н/Д"
 
-#: assets/languages/easy-wp-smtp-vue.php:710
+#: assets/languages/easy-wp-smtp-vue.php:721
 #: src/Admin/DebugEvents/Table.php:169
 msgid "Name"
 msgstr "Ім’я"
 
-#: src/Admin/Notifications.php:473
+#: src/Admin/Notifications.php:480
 msgid "Notifications"
 msgstr "Сповіщення"
 
-#: assets/languages/easy-wp-smtp-vue.php:8 src/Admin/Area.php:438
-#: src/Admin/Pages/DebugEventsTab.php:151 src/Connect.php:58
+#: assets/languages/easy-wp-smtp-vue.php:9 src/Admin/Area.php:502
+#: src/Admin/Area.php:524 src/Admin/Pages/DebugEventsTab.php:151
+#: src/Connect.php:58
 msgid "OK"
 msgstr "Гаразд"
 
 #: src/Admin/Pages/AlertsTab.php:163 src/Admin/Pages/AlertsTab.php:199
-#: src/Admin/Pages/AlertsTab.php:235 src/Admin/Pages/AlertsTab.php:271
-#: src/Admin/Pages/AlertsTab.php:333 src/Admin/Pages/MiscTab.php:100
-#: src/Admin/Pages/MiscTab.php:180 src/Admin/Pages/MiscTab.php:207
-#: src/Admin/Pages/MiscTab.php:244 src/Admin/Pages/MiscTab.php:276
-#: src/Admin/Pages/MiscTab.php:315 src/Admin/Pages/MiscTab.php:340
-#: src/Admin/Pages/MiscTab.php:365 src/Admin/Pages/MiscTab.php:390
-#: src/Admin/Pages/MiscTab.php:441 src/Admin/Pages/TestTab.php:188
-#: src/Admin/Pages/TestTab.php:206 src/Providers/OptionsAbstract.php:382
+#: src/Admin/Pages/AlertsTab.php:234 src/Admin/Pages/AlertsTab.php:269
+#: src/Admin/Pages/AlertsTab.php:305 src/Admin/Pages/AlertsTab.php:367
+#: src/Admin/Pages/AlertsTab.php:405 src/Admin/Pages/AlertsTab.php:443
+#: src/Admin/Pages/MiscTab.php:101 src/Admin/Pages/MiscTab.php:182
+#: src/Admin/Pages/MiscTab.php:209 src/Admin/Pages/MiscTab.php:246
+#: src/Admin/Pages/MiscTab.php:278 src/Admin/Pages/MiscTab.php:317
+#: src/Admin/Pages/MiscTab.php:345 src/Admin/Pages/MiscTab.php:370
+#: src/Admin/Pages/MiscTab.php:395 src/Admin/Pages/MiscTab.php:448
+#: src/Admin/Pages/MiscTab.php:501 src/Admin/Pages/MiscTab.php:548
+#: src/Admin/Pages/TestTab.php:217 src/Admin/Pages/TestTab.php:235
+#: src/Helpers/UI.php:89 src/Providers/OptionsAbstract.php:382
 #: src/Providers/OptionsAbstract.php:404
 msgid "Off"
 msgstr "Вимк"
 
 #: src/Admin/Pages/AlertsTab.php:162 src/Admin/Pages/AlertsTab.php:198
-#: src/Admin/Pages/AlertsTab.php:234 src/Admin/Pages/AlertsTab.php:270
-#: src/Admin/Pages/AlertsTab.php:332 src/Admin/Pages/MiscTab.php:99
-#: src/Admin/Pages/MiscTab.php:179 src/Admin/Pages/MiscTab.php:206
-#: src/Admin/Pages/MiscTab.php:243 src/Admin/Pages/MiscTab.php:275
-#: src/Admin/Pages/MiscTab.php:314 src/Admin/Pages/MiscTab.php:339
-#: src/Admin/Pages/MiscTab.php:364 src/Admin/Pages/MiscTab.php:389
-#: src/Admin/Pages/MiscTab.php:440 src/Admin/Pages/TestTab.php:187
-#: src/Admin/Pages/TestTab.php:205 src/Providers/OptionsAbstract.php:381
+#: src/Admin/Pages/AlertsTab.php:233 src/Admin/Pages/AlertsTab.php:268
+#: src/Admin/Pages/AlertsTab.php:304 src/Admin/Pages/AlertsTab.php:366
+#: src/Admin/Pages/AlertsTab.php:404 src/Admin/Pages/AlertsTab.php:442
+#: src/Admin/Pages/MiscTab.php:100 src/Admin/Pages/MiscTab.php:181
+#: src/Admin/Pages/MiscTab.php:208 src/Admin/Pages/MiscTab.php:245
+#: src/Admin/Pages/MiscTab.php:277 src/Admin/Pages/MiscTab.php:316
+#: src/Admin/Pages/MiscTab.php:344 src/Admin/Pages/MiscTab.php:369
+#: src/Admin/Pages/MiscTab.php:394 src/Admin/Pages/MiscTab.php:447
+#: src/Admin/Pages/MiscTab.php:500 src/Admin/Pages/MiscTab.php:547
+#: src/Admin/Pages/TestTab.php:216 src/Admin/Pages/TestTab.php:234
+#: src/Helpers/UI.php:88 src/Providers/OptionsAbstract.php:381
 #: src/Providers/OptionsAbstract.php:403
 msgid "On"
 msgstr "Увімк"
@@ -306,12 +440,12 @@ msgstr "Увімк"
 msgid "Primary"
 msgstr "Основний"
 
-#: assets/languages/easy-wp-smtp-vue.php:655
-#: src/Admin/ConnectionSettings.php:135
+#: assets/languages/easy-wp-smtp-vue.php:664
+#: src/Admin/ConnectionSettings.php:147
 msgid "Recommended"
 msgstr "Рекомендовані"
 
-#: src/Admin/ConnectionSettings.php:305
+#: src/Admin/ConnectionSettings.php:342
 msgid "Show"
 msgstr "Показувати"
 
@@ -327,63 +461,55 @@ msgstr "Інструменти"
 msgid "Type"
 msgstr "Тип"
 
-#: src/Admin/Pages/TestTab.php:1013
-msgid "no"
-msgstr "ні"
-
-#. translators: %d - days count.
-#: src/Admin/Pages/DebugEventsTab.php:565
-msgid "%d Day"
-msgid_plural "%d Days"
-msgstr[0] "%d день"
-msgstr[1] "%d днів"
-msgstr[2] "notFound"
-
-#: assets/languages/easy-wp-smtp-vue.php:645
-#: src/Providers/Mailgun/Options.php:145
-#: src/Providers/SparkPost/Options.php:142
+#: assets/languages/easy-wp-smtp-vue.php:654
+#: src/Providers/Mailgun/Options.php:154
+#: src/Providers/SparkPost/Options.php:151
 msgid "EU"
 msgstr "ЄС"
 
-#: src/Admin/Pages/MiscTab.php:50
+#: src/Admin/Pages/MiscTab.php:51
 msgid "Miscellaneous"
 msgstr "Різне"
 
-#: src/Admin/Pages/DebugEventsTab.php:548
+#: src/Admin/Pages/DebugEventsTab.php:594
 msgid "1 Month"
 msgstr "1 місяць"
 
-#: src/Admin/Pages/DebugEventsTab.php:547
+#: src/Admin/Pages/DebugEventsTab.php:593
 msgid "1 Week"
 msgstr "1 тиждень"
 
 #. translators: %s - Date.
-#: src/Admin/Pages/DebugEventsTab.php:429
+#: src/Admin/Pages/DebugEventsTab.php:475
 msgid "on %s"
 msgstr "на %s"
 
-#: src/Admin/Pages/DebugEventsTab.php:551
+#: src/Admin/Pages/DebugEventsTab.php:597
 msgid "1 Year"
 msgstr "1 рік"
 
-#: src/Providers/Sendlayer/Options.php:104
-#: src/Providers/SMTPcom/Options.php:112
-#: src/Providers/SparkPost/Options.php:108
+#: src/Providers/ElasticEmail/Options.php:122
+#: src/Providers/MailerSend/Options.php:117
+#: src/Providers/Mandrill/Options.php:118
+#: src/Providers/Sendlayer/Options.php:215
+#: src/Providers/SMTPcom/Options.php:121
+#: src/Providers/SparkPost/Options.php:117
 msgid "Get API Key"
 msgstr "Отримати ключ API"
 
-#: src/Providers/Sendlayer/Mailer.php:404
-#: src/Providers/SparkPost/Mailer.php:487
+#: src/Providers/Mandrill/Mailer.php:477 src/Providers/Resend/Mailer.php:446
+#: src/Providers/Sendlayer/Mailer.php:425
+#: src/Providers/SparkPost/Mailer.php:507
 msgid "API Key:"
 msgstr "Ключ API:"
 
-#: assets/languages/easy-wp-smtp-vue.php:368
-#: src/Providers/Mailgun/Options.php:122
-#: src/Providers/SparkPost/Options.php:119
+#: assets/languages/easy-wp-smtp-vue.php:377
+#: src/Providers/Mailgun/Options.php:131
+#: src/Providers/SparkPost/Options.php:128
 msgid "Region"
 msgstr "Регіон"
 
-#: src/Admin/Area.php:401 src/Admin/PageAbstract.php:191
+#: src/Admin/Area.php:461 src/Admin/PageAbstract.php:191
 msgid "Save Settings"
 msgstr "Зберегти налаштування"
 
@@ -391,11 +517,35 @@ msgstr "Зберегти налаштування"
 msgid "Debug"
 msgstr "Налагодження"
 
+#: src/Admin/Pages/DebugEventsTab.php:595
+msgid "3 Months"
+msgstr "3 місяці"
+
+#: src/Admin/Pages/DebugEventsTab.php:596
+msgid "6 Months"
+msgstr "6 місяців"
+
+#: src/Admin/Pages/MiscTab.php:235
+msgid "Announcements"
+msgstr "Оголошення"
+
+#: src/Admin/Notifications.php:484
+msgid "Dismiss this message"
+msgstr "Відхилити це повідомлення"
+
+#. translators: %d - days count.
+#: src/Admin/Pages/DebugEventsTab.php:611
+msgid "%d Day"
+msgid_plural "%d Days"
+msgstr[0] "%d день"
+msgstr[1] "%d дні"
+msgstr[2] "%d денів"
+
 #: inc/deprecated/class-easywpsmtp-admin.php:417
 msgid "Warning! This can't be undone."
 msgstr "Увага! Це не можна скасувати."
 
-#: inc/deprecated/class-easywpsmtp.php:543
+#: inc/deprecated/class-easywpsmtp.php:547
 msgid "Please refresh the page and try again."
 msgstr "Будь ласка, оновіть цю сторінку і спробуйте ще раз."
 
@@ -503,6 +653,10 @@ msgstr "Подобається плагін? Дайте нам %s"
 msgid "Rate Us"
 msgstr "Оцініть нас"
 
+#: inc/deprecated/class-easywpsmtp-admin.php:328
+msgid "when you click \"Save Changes\", your actual password is stored in the database and then used to send emails. This field is replaced with a gag (#easywpsmtpgagpass#). This is done to prevent someone with the access to Settings page from seeing your password (using password fields unmasking programs, for example)."
+msgstr "після натискання кнопки \"Зберегти зміни\" фактичний пароль зберігається в базі даних, а потім використовується для надсилання електронних листів. Це поле замінюється заглушкою (#easywpsmtpgagpass#). Це робиться, щоб запобігти тому, щоб хтось отримав доступ до сторінки \"Налаштування\" з вашим паролем (наприклад, використовуючи програми для розкривання паролю)."
+
 #: inc/deprecated/class-easywpsmtp-admin.php:568
 msgid "rating"
 msgstr "рейтинг"
@@ -517,7 +671,7 @@ msgctxt "%s is replaced by \"Support Forum\" link"
 msgid "Having issues or difficulties? You can post your issue on the %s"
 msgstr "Виникли проблеми чи труднощі? Ви можете опублікувати свою проблему на сайті %s"
 
-#: inc/deprecated/class-easywpsmtp-admin.php:541 src/Admin/Area.php:1247
+#: inc/deprecated/class-easywpsmtp-admin.php:541 src/Admin/Area.php:1434
 msgid "Support"
 msgstr "Підтримка"
 
@@ -526,13 +680,9 @@ msgid "Allows insecure and self-signed SSL certificates on SMTP server. It's hig
 msgstr "Дозволяє ненадійний і самостійно підписаний сертифікат SSL на сервері SMTP. Наполегливо рекомендуємо вимкнути цю опцію."
 
 #: inc/deprecated/class-easywpsmtp-admin.php:379
-#: src/Admin/Pages/MiscTab.php:169
+#: src/Admin/Pages/MiscTab.php:171
 msgid "Allow Insecure SSL Certificates"
 msgstr "Дозволити небезпечні сертифікати SSL"
-
-#: inc/deprecated/class-easywpsmtp-admin.php:328
-msgid "when you click \"Save Changes\", your actual password is stored in the database and then used to send emails. This field is replaced with a gag (#easywpsmtpgagpass#). This is done to prevent someone with the access to Settings page from seeing your password (using password fields unmasking programs, for example)."
-msgstr "після натискання кнопки \"Зберегти зміни\" фактичний пароль зберігається в базі даних, а потім використовується для надсилання електронних листів. Це поле замінюється заглушкою (#easywpsmtpgagpass#). Це робиться, щоб запобігти тому, щоб хтось отримав доступ до сторінки \"Налаштування\" з вашим паролем (наприклад, використовуючи програми для розкривання паролю)."
 
 #: inc/deprecated/class-easywpsmtp-admin.php:198
 msgid "SMTP Settings"
@@ -564,7 +714,7 @@ msgid "You have unsaved settings. In order to send a test email, you need to go 
 msgstr "У вас є незбережені налаштування. Щоб надіслати тестове повідомлення, потрібно повернутися до попередньої вкладки і спочатку натиснути кнопку \"Зберегти зміни\"."
 
 #: inc/deprecated/class-easywpsmtp-admin.php:362
-#: src/Admin/Pages/MiscTab.php:126
+#: src/Admin/Pages/MiscTab.php:127
 msgid "Block all emails"
 msgstr "Заблокувати всі листи"
 
@@ -592,16 +742,16 @@ msgstr "Не заміняти поле \"Від\""
 msgid "Additional Settings (Optional)"
 msgstr "Додаткові налаштування (необов'язково)"
 
-#: inc/deprecated/class-easywpsmtp-admin.php:26 src/Admin/Area.php:442
+#: inc/deprecated/class-easywpsmtp-admin.php:26 src/Admin/Area.php:506
 msgid "Log cleared."
 msgstr "Журнал видалено."
 
 #: inc/deprecated/class-easywpsmtp-admin.php:386
-#: src/Admin/Pages/MiscTab.php:196
+#: src/Admin/Pages/MiscTab.php:198
 msgid "Enable Debug Log"
 msgstr "Увімкнути журнал помилок"
 
-#: inc/deprecated/class-easywpsmtp-admin.php:25 src/Admin/Area.php:441
+#: inc/deprecated/class-easywpsmtp-admin.php:25 src/Admin/Area.php:505
 msgid "Are you sure want to clear log?"
 msgstr "Ви дійсно бажаєте видалити журнал?"
 
@@ -615,7 +765,7 @@ msgid "Test Email"
 msgstr "Тестове повідомлення"
 
 #: inc/deprecated/class-easywpsmtp-admin.php:393
-#: src/Admin/Pages/MiscTab.php:222
+#: src/Admin/Pages/MiscTab.php:224
 msgid "View Log"
 msgstr "Перегляд журналу"
 
@@ -627,7 +777,7 @@ msgstr "Список доменів, розділених комою. Прикл
 msgid "This option is usually used by developers only. SMTP settings will be used only if the site is running on following domain(s):"
 msgstr "Ця опція зазвичай використовується лише розробниками. Налаштування SMTP використовуватимуться лише в тому випадку, якщо сайт працює на таких доменах:"
 
-#: inc/deprecated/class-easywpsmtp-admin.php:355 src/Admin/Pages/MiscTab.php:87
+#: inc/deprecated/class-easywpsmtp-admin.php:355 src/Admin/Pages/MiscTab.php:88
 msgid "Enable Domain Check"
 msgstr "Увімкнути перевірку домену"
 
@@ -640,7 +790,7 @@ msgid "Optional. This email address will be used in the 'Reply-To' field of the 
 msgstr "Не обов'язково. Ця електронна адреса буде використовуватися в полі \"Відповісти до\" в електронній пошті. Залиште його порожнім, щоб використовувати електронну пошту як значення для відповіді."
 
 #: inc/deprecated/class-easywpsmtp-admin.php:393
-#: src/Admin/Pages/MiscTab.php:223
+#: src/Admin/Pages/MiscTab.php:225
 msgid "Clear Log"
 msgstr "Очистити журнал"
 
@@ -677,12 +827,12 @@ msgstr "Введіть дійсну адресу електронної пошт
 msgid "Save Changes"
 msgstr "Зберегти зміни"
 
-#: assets/languages/easy-wp-smtp-vue.php:601
+#: assets/languages/easy-wp-smtp-vue.php:610
 #: src/Providers/OptionsAbstract.php:341
 msgid "TLS"
 msgstr "TLS"
 
-#: assets/languages/easy-wp-smtp-vue.php:598
+#: assets/languages/easy-wp-smtp-vue.php:607
 #: src/Providers/OptionsAbstract.php:331
 msgid "SSL"
 msgstr "SSL"
@@ -690,8 +840,10 @@ msgstr "SSL"
 #. Plugin Name of the plugin
 #. Author of the plugin
 #: easy-wp-smtp.php inc/deprecated/class-easywpsmtp-admin.php:38
-#: src/Admin/Area.php:251 src/Admin/Area.php:252 src/Admin/Area.php:259
-#: src/Admin/Area.php:260 src/Admin/DashboardWidget.php:159
+#: src/Abilities/AbilityRegistrar.php:130 src/Admin/Area.php:294
+#: src/Admin/Area.php:295 src/Admin/Area.php:302 src/Admin/Area.php:303
+#: src/Admin/Area.php:1559 src/Admin/Area.php:1560
+#: src/Admin/DashboardWidget.php:159 src/Providers/Outlook/Provider.php:57
 #: src/SiteHealth.php:43
 msgid "Easy WP SMTP"
 msgstr "Easy WP SMTP"
@@ -702,12 +854,14 @@ msgid "Please configure your SMTP credentials in the <a href=\"%s\">settings men
 msgstr "Налаштуйте облікові дані SMTP у <a href=\"%s\">меню налаштувань</a>, щоб надсилати електронну пошту за допомогою плагину Easy WP SMTP."
 
 #: inc/deprecated/class-easywpsmtp-admin.php:513
-#: src/Admin/Pages/TestTab.php:261
+#: src/Admin/EmailSendingErrors/EmailSendingErrors.php:488
+#: src/Admin/EmailSendingErrors/EmailSendingErrors.php:505
+#: src/Admin/Pages/TestTab.php:290
 msgid "Send Test Email"
 msgstr "Надіслати тестовий електронний лист"
 
 #: inc/deprecated/class-easywpsmtp-admin.php:505
-#: src/Admin/Pages/TestTab.php:230
+#: src/Admin/Pages/TestTab.php:259
 msgid "Message"
 msgstr "Повідомлення"
 
@@ -716,7 +870,8 @@ msgid "Enter a subject for your message"
 msgstr "Введіть тему повідомлення"
 
 #: inc/deprecated/class-easywpsmtp-admin.php:498
-#: src/Admin/Pages/ExportTab.php:214 src/Admin/Pages/TestTab.php:217
+#: src/Admin/Pages/ExportTab.php:214 src/Admin/Pages/SmartRoutingTab.php:164
+#: src/Admin/Pages/TestTab.php:246
 msgid "Subject"
 msgstr "Тема"
 
@@ -724,7 +879,7 @@ msgstr "Тема"
 msgid "The password to login to your mail server"
 msgstr "Пароль для входу на ваш поштовий сервер"
 
-#: assets/languages/easy-wp-smtp-vue.php:589
+#: assets/languages/easy-wp-smtp-vue.php:598
 #: inc/deprecated/class-easywpsmtp-admin.php:324
 #: src/Providers/OptionsAbstract.php:432
 msgid "SMTP Password"
@@ -734,34 +889,19 @@ msgstr "Пароль SMTP"
 msgid "The username to login to your mail server"
 msgstr "Ім'я користувача для входу на поштовий сервер"
 
-#: assets/languages/easy-wp-smtp-vue.php:586
-#: inc/deprecated/class-easywpsmtp-admin.php:317
-#: src/Providers/OptionsAbstract.php:415
-msgid "SMTP Username"
-msgstr "І'мя користувача SMTP"
-
 #: inc/deprecated/class-easywpsmtp-admin.php:313
 msgid "This options should always be checked 'Yes'"
 msgstr "Ці параметри завжди повинні бути позначені \"Так\""
-
-#: inc/deprecated/class-easywpsmtp-admin.php:299
-#: src/Providers/OptionsAbstract.php:393
-msgid "SMTP Authentication"
-msgstr "Аутентифікація SMTP"
 
 #: inc/deprecated/class-easywpsmtp-admin.php:295
 msgid "The port to your mail server"
 msgstr "Порт вашого поштового сервера"
 
-#: assets/languages/easy-wp-smtp-vue.php:568
+#: assets/languages/easy-wp-smtp-vue.php:577
 #: inc/deprecated/class-easywpsmtp-admin.php:292
 #: src/Providers/OptionsAbstract.php:354
 msgid "SMTP Port"
 msgstr "Порт SMTP"
-
-#: inc/deprecated/class-easywpsmtp-admin.php:288
-msgid "For most servers SSL/TLS is the recommended option"
-msgstr "Для більшості серверів рекомендований варіант SSL / TLS"
 
 #: inc/deprecated/class-easywpsmtp-admin.php:268
 #: src/Providers/OptionsAbstract.php:310
@@ -772,7 +912,7 @@ msgstr "Тип шифрування"
 msgid "Your mail server"
 msgstr "Ваш поштовий сервер"
 
-#: assets/languages/easy-wp-smtp-vue.php:562
+#: assets/languages/easy-wp-smtp-vue.php:571
 #: inc/deprecated/class-easywpsmtp-admin.php:261
 #: src/Providers/OptionsAbstract.php:293
 msgid "SMTP Host"
@@ -782,9 +922,9 @@ msgstr "Cервер SMTP"
 msgid "This text will be used in the 'FROM' field"
 msgstr "Цей текст буде використовуватися в полі \"Від\""
 
-#: assets/languages/easy-wp-smtp-vue.php:182
+#: assets/languages/easy-wp-smtp-vue.php:186
 #: inc/deprecated/class-easywpsmtp-admin.php:227
-#: src/Admin/ConnectionSettings.php:247 src/Admin/Pages/ExportTab.php:207
+#: src/Admin/ConnectionSettings.php:282 src/Admin/Pages/ExportTab.php:207
 msgid "From Name"
 msgstr "Від імені"
 
@@ -793,17 +933,10 @@ msgid "This email address will be used in the 'From' field."
 msgstr "Ця адреса електронної пошти буде використана в полі \"Від\"."
 
 #: inc/deprecated/class-easywpsmtp-admin.php:220
-#: src/Admin/ConnectionSettings.php:207
+#: src/Admin/ConnectionSettings.php:221
+#: src/Providers/Sendlayer/QuickConnect.php:744
 msgid "From Email Address"
 msgstr "З електронної адреси"
-
-#: inc/deprecated/class-easywpsmtp-admin.php:71
-msgid "Easy WP SMTP Settings"
-msgstr "Нашалтування Easy WP SMTP"
-
-#: inc/deprecated/class-easywpsmtp-admin.php:149
-msgid "Please enter a valid port in the 'SMTP Port' field."
-msgstr "Введіть дійсний порт у полі \"Порт SMTP\"."
 
 #: inc/deprecated/class-easywpsmtp-admin.php:102
 msgid "Please enter a valid email address in the 'FROM' field."
@@ -813,21 +946,22 @@ msgstr "Введіть дійсну адресу електронної пошт
 msgid "Settings are not saved."
 msgstr "Налаштування не збережено."
 
-#: inc/deprecated/class-easywpsmtp.php:440
-#: inc/deprecated/class-easywpsmtp.php:448 src/Admin/Area.php:270
-#: src/Admin/Area.php:271 src/Admin/Area.php:1085
-#: src/Admin/Pages/SettingsTab.php:48
+#: inc/deprecated/class-easywpsmtp.php:444
+#: inc/deprecated/class-easywpsmtp.php:452 src/Admin/Area.php:313
+#: src/Admin/Area.php:314 src/Admin/Area.php:1269 src/Admin/Area.php:1602
+#: src/Admin/Area.php:1609 src/Admin/Pages/SettingsTab.php:48
 msgid "Settings"
 msgstr "Налаштування"
 
-#: assets/languages/easy-wp-smtp-vue.php:595
+#: assets/languages/easy-wp-smtp-vue.php:604
 #: inc/deprecated/class-easywpsmtp-admin.php:275
-#: src/Providers/OptionsAbstract.php:321
+#: src/Admin/Pages/SettingsTab.php:443 src/Providers/OptionsAbstract.php:321
 msgid "None"
 msgstr "Немає"
 
-#: inc/deprecated/class-easywpsmtp-admin.php:312 src/Admin/Area.php:436
-#: src/Admin/Pages/DebugEventsTab.php:150 src/Admin/UserFeedback.php:112
+#: inc/deprecated/class-easywpsmtp-admin.php:312 src/Admin/Area.php:500
+#: src/Admin/Area.php:535 src/Admin/Pages/DebugEventsTab.php:150
+#: src/Admin/UserFeedback.php:112
 msgid "Yes"
 msgstr "Так"
 
@@ -843,6 +977,29 @@ msgstr "Налаштування збережені."
 msgid "To"
 msgstr "До"
 
-#: src/Admin/ConnectionSettings.php:199
+#: src/Admin/ConnectionSettings.php:213
 msgid "General Settings"
 msgstr "Загальні налаштування"
+
+#: inc/deprecated/class-easywpsmtp-admin.php:288
+msgid "For most servers SSL/TLS is the recommended option"
+msgstr "Для більшості серверів рекомендований варіант SSL / TLS"
+
+#: inc/deprecated/class-easywpsmtp-admin.php:71
+msgid "Easy WP SMTP Settings"
+msgstr "Налаштування Easy WP SMTP"
+
+#: inc/deprecated/class-easywpsmtp-admin.php:149
+msgid "Please enter a valid port in the 'SMTP Port' field."
+msgstr "Будь ласка, введіть дійсний порт у полі \"Порт SMTP\"."
+
+#: inc/deprecated/class-easywpsmtp-admin.php:299
+#: src/Providers/OptionsAbstract.php:393
+msgid "SMTP Authentication"
+msgstr "Автентифікація SMTP"
+
+#: assets/languages/easy-wp-smtp-vue.php:595
+#: inc/deprecated/class-easywpsmtp-admin.php:317
+#: src/Providers/OptionsAbstract.php:415
+msgid "SMTP Username"
+msgstr "Ім'я користувача SMTP"

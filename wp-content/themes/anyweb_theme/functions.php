@@ -1989,6 +1989,20 @@ add_filter('woocommerce_get_price_html', function ($price) {
     return preg_replace('/\x{00A0}/u', '', $price);
 }, 999);
 
+add_filter('https_ssl_verify', 'schoolbook_disable_local_ssl_verify', 10, 2);
+add_filter('https_local_ssl_verify', 'schoolbook_disable_local_ssl_verify', 10, 2);
+function schoolbook_disable_local_ssl_verify($verify, $url = '') {
+
+    if ($url) {
+        $host = wp_parse_url($url, PHP_URL_HOST);
+
+        if ($host === 'schoolbook.local') {
+            return false;
+        }
+    }
+
+    return $verify;
+}
 
 // add_action( 'woocommerce_before_cart', function () {
 
