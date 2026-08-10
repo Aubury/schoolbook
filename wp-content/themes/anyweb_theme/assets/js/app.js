@@ -32,38 +32,6 @@ btn.on('click', function(e) {
 
 //////////////////////////////////////////////////////////////////////////
 
-// document.addEventListener('click', function (event) {
-// 	console.log('Клик по элементу:', event.target);
-//
-// 	const clearButton = event.target.closest('.aws-search-clear');
-//
-// 	if (!clearButton) {
-// 		return;
-// 	}
-//
-// 	console.log('Кнопка очистки найдена:', clearButton);
-// }, true);
-
-function cleanAwsPriceSpaces() {
-	document
-		.querySelectorAll('.aws_result_price .woocommerce-Price-amount bdi')
-		.forEach((element) => {
-			element.childNodes.forEach((node) => {
-				if (node.nodeType === Node.TEXT_NODE) {
-					node.textContent = node.textContent.replace(/\u00a0/g, '');
-				}
-			});
-		});
-}
-
-document.addEventListener('DOMContentLoaded', cleanAwsPriceSpaces);
-
-const awsObserver = new MutationObserver(cleanAwsPriceSpaces);
-
-awsObserver.observe(document.body, {
-	childList: true,
-	subtree: true
-});
 jQuery(function ($) {
 	$('.aws-search-form').each(function () {
 		const $form = $(this);

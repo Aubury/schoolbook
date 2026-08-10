@@ -57,6 +57,39 @@ svg {
   height: 100%;
 }
 
+img {
+  max-width: 100%;
+
+  &.pull-left {
+    padding: 5px 15px 5px 0;
+  }
+
+  &.pull-right {
+    padding: 5px 0 5px 15px;
+  }
+}
+
+i {
+  &.show_but {
+    font-size: 18px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 10px 10px 20px;
+
+    &.sub_dirs {
+      &:hover {
+        color: #17b0e9;
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.icon-empty {
+  opacity: 0;
+}
+
 button {
   border: unset;
 }
@@ -117,6 +150,7 @@ a {
   &:active,
   &:focus,
   &:hover {
+    outline: 0;
     border-color: transparent;
     text-decoration: none;
   }
@@ -136,6 +170,107 @@ a {
 
 .color-white {
   color: var(--color-white);
+}
+
+hr {
+  border: none;
+  border-bottom: 1px solid #ccc;
+
+  &.bxe-bolder {
+    border-bottom-width: 5px;
+  }
+
+  &.bxe-dashed {
+    border-bottom-style: dashed;
+    border-bottom-width: 2px;
+  }
+
+  &.bxe-light {
+    border-bottom-color: #e5e5e5;
+  }
+
+  &.bxe-dotted {
+    border-bottom-width: 2px;
+    border-bottom-style: dotted;
+  }
+}
+
+.alert {
+  border: none;
+  border-radius: 1px;
+  font-size: 14px;
+
+  &.alert-note {
+    background: #f2f2f3;
+  }
+
+  &.alert-sys {
+    background: #f5f2ec;
+    color: #81641f;
+  }
+
+  &.bxe-icon {
+    padding-left: 90px;
+    min-height: 100px;
+    position: relative;
+
+    &::after {
+      left: 22px;
+      top: 20px;
+      position: absolute;
+      content: " ";
+      width: 48px;
+      height: 48px;
+      background-image: url(../image/editor_sprite.png);
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    &.alert-success {
+      &::after {
+        background-position: 0 0;
+      }
+    }
+
+    &.alert-info {
+      &::after {
+        background-position: 0 -50px;
+      }
+    }
+
+    &.alert-warning {
+      &::after {
+        background-position: 0 -100px;
+      }
+    }
+
+    &.alert-danger {
+      &::after {
+        background-position: 0 -200px;
+      }
+    }
+
+    &.alert-note {
+      &::after {
+        background-position: 0 -150px;
+      }
+    }
+
+    &.alert-sys {
+      &::after {
+        background-position: 0 -250px;
+      }
+    }
+  }
+
+
+}
+
+tab,
+tabsection {
+  display: block;
+  padding: 5px;
+  border: 1px dashed #ccc;
 }
 
 .site-main {
@@ -443,7 +578,7 @@ main {
     @include down(#{$bp-xlg}) {
       width: 200px;
       height: 200px;
-      right: calc((100% - 1100px) / 2 + 23px);
+      right: calc((100% - 1100px) / 2 + 50px);
     }
 
     @include down(#{$bp-md}) {
@@ -530,8 +665,15 @@ main {
     right: 344px;
     bottom: 24px;
 
-    @include down(#{$bp-xl}) {
+    @include down(#{$bp-xxl}) {
       right: 250px;
+    }
+
+    @include down(#{$bp-xl}) {
+      width: 75px;
+      height: 117px;
+      right: 296px;
+      bottom: 22px;
     }
 
     @include down(#{$bp-xlg}) {
@@ -549,10 +691,13 @@ main {
   left: calc(100% + 16px);
   top: 340px;
 
-  @include down(#{$bp-xlg}) {
-    width: 120px;
-    height: 120px;
-    right: -40%;
+  @include down(#{$bp-xxl}) {
+    width: 170px;
+  }
+
+  @include down(#{$bp-xl}) {
+    width: 150px;
+    left: calc(100% + 1px);
   }
 
   @include down(#{$bp-lg}) {
@@ -741,45 +886,6 @@ main {
 
   span {
     display: block;
-  }
-}
-
-.fox-display {
-  .slick-track {
-    min-width: 1088px;
-    @include flex-evenly-start-align;
-
-    @include down(#{$bp-xl}) {
-      min-width: unset;
-    }
-  }
-
-  &::after {
-    content: '';
-    background: url("../image/preparing-fox.png") no-repeat center;
-    background-size: contain;
-    width: 300px;
-    height: 300px;
-    position: absolute;
-    right: calc((100% - 1440px) / 2 + 23px);
-    bottom: 10px;
-    @include flex-center;
-
-    @include down(#{$bp-xl}) {
-      width: 250px;
-      height: 250px;
-      right: calc((100% - 1280px) / 2 + 23px);
-    }
-
-    @include down(#{$bp-xlg}) {
-      width: 200px;
-      height: 200px;
-      right: calc((100% - 960px) / 2 + 23px);
-    }
-
-    @include down(#{$bp-lg}) {
-      display: none;
-    }
   }
 }
 

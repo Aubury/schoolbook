@@ -404,6 +404,7 @@
   height: 50px;
   flex: 0 0 50px;
   cursor: pointer;
+  position: relative;
 
   &::before {
     display: flex;
@@ -427,8 +428,10 @@
     background-size: contain;
     transition: transform 0.5s;
     transform: rotate(90deg);
-    -webkit-transform: rotate(-90deg);
+    -webkit-transform: rotate(90deg);
     inset: 0;
+    width: 100%;
+    height: 100%;
   }
 
   &:hover {

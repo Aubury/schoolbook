@@ -50,7 +50,11 @@ get_header();
         $length = count($slider);
         $preparing_class_slider = '';
         $length > 1 ? $preparing_class_slider = 'preparing-slider' : $preparing_class_slider = 'preparing-wrap';
-        $length === 2 ? $preparing_fox = 'fox-display' : $preparing_fox = '';
+        $preparing_fox = match ($length) {
+            2 => 'fox-display has-two-slides',
+            3 => 'has-three-slides',
+            default => '',
+        };
         if ( !empty($slider) ) :
     ?>
     <div class="section">
@@ -149,7 +153,7 @@ get_header();
                        <div class="preparing slider slick-slider">
                            <?php
                            foreach ( $slider as $cnt => $item ):
-                               echo so_render_product_preorder($item);
+                               echo so_render_product_preorder_slider($item);
                            endforeach;
                            ?>
                        </div><!-- end .slider -->
