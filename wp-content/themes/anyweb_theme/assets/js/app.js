@@ -1,4 +1,4 @@
-var btn = $('#bcktotop');
+const btn = $('#bcktotop');
  $(window).scroll(function() {
   if ($(window).scrollTop() > 300) {
     btn.addClass('fixed');
@@ -17,18 +17,18 @@ btn.on('click', function(e) {
 
 /////////////////////////////////////////////////////////////////////////
 
-    const bottom_line_cell = document.querySelector('.bottom-line-cell');
-	let bottom_position = 0;
-
-	if (bottom_line_cell) {
-		let box = bottom_line_cell.getBoundingClientRect();
-		const computedStyles = window.getComputedStyle(bottom_line_cell);
-		// console.log(box);
-		bottom_position = computedStyles.top;
-		console.log(bottom_position);
-		const banner = document.querySelector('.main-page');
-		banner.style.top = parseFloat(computedStyles.top) + 'px';
-	}
+    // const bottom_line_cell = document.querySelector('.bottom-line-cell');
+	// let bottom_position = 0;
+	//
+	// if (bottom_line_cell) {
+	// 	let box = bottom_line_cell.getBoundingClientRect();
+	// 	const computedStyles = window.getComputedStyle(bottom_line_cell);
+	// 	// console.log(box);
+	// 	bottom_position = computedStyles.top;
+	// 	console.log(bottom_position);
+	// 	const banner = document.querySelector('.main-page');
+	// 	banner.style.top = parseFloat(computedStyles.top) + 'px';
+	// }
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -253,7 +253,8 @@ $(document).ready(function () {
 			'.books-menu.opened, ' +
 			'.header.opened, ' +
 			'.modal-menu.opened, ' +
-			'.catalog-menu-section.opened'
+			'.catalog-menu-section.opened',
+			'.filters-modal.opened'
 		);
 
 		const button = $(
@@ -262,7 +263,8 @@ $(document).ready(function () {
 			'.books-button, ' +
 			'.burger-menu, ' +
 			'.catalog-menu-button, ' +
-			'.mobile-catalog-menu-button'
+			'.mobile-catalog-menu-button',
+			'.filter-sorting-holder'
 		);
 
 		if (
@@ -432,6 +434,20 @@ $(document).ready(function () {
 			$(this).removeClass('opened');
 		} else {
 			$(this).addClass('opened');
+		}
+	});
+
+	$('.filter-sorting-holder').on('click', function() {
+		if($(this).hasClass('opened')) {
+			$('.filters-modal').removeClass('opened');
+		} else {
+			$('.filters-modal').addClass('opened');
+		}
+	});
+
+	$('.filters-modal-close').on('click', function() {
+		if($(this).parents('.filters-modal').hasClass('opened')) {
+			$(this).parents('.filters-modal').removeClass('opened');
 		}
 	});
 
@@ -625,29 +641,7 @@ $("#search #title-search-input").keyup(function(event){
 		window.location.href='/catalog/?q='+$("#search #title-search-input").val();
 	}
 });
-/* filter */
-$(document).on('click', '.filter-btn', function() {
-	if($(this).hasClass('active')) {
-		$(this).removeClass('active');
-		$(this).parents('.catalog-section-holder').find('.filter-holder').removeClass('opened-filter');
-		$('body').removeClass('filter-is-open');
-	} else {
-		$(this).addClass('active');
-		$(this).parents('.catalog-section-holder').find('.filter-holder').addClass('opened-filter');
-		$('body').addClass('filter-is-open');
-	}
-});
-$(document).on('click', '.close-filter', function() {
-	if($(this).parents('.catalog-section-holder').find('.filter-btn').hasClass('active')) {
-		$(this).parents('.catalog-section-holder').find('.filter-btn').removeClass('active');
-		$(this).parents('.catalog-section-holder').find('.filter-holder').removeClass('opened-filter');
-		$('body').removeClass('filter-is-open');
-	} else {
-		$(this).parents('.catalog-section-holder').find('.filter-btn').addClass('active');
-		$(this).parents('.catalog-section-holder').find('.filter-holder').addClass('opened-filter');
-		$('body').addClass('filter-is-open');
-	}
-});
+
 
 /* modals */
 function initModal() {
@@ -882,6 +876,7 @@ function bugMove() {
 	return windowBottom >= block2Bottom;
 	}
 }
+
 function girlMove() {
 	if($('*').is(".blog-section")){
 	var $blockNew = $('.blog-section');
@@ -931,175 +926,6 @@ function addFavorite(id)
 			e.preventDefault()
 		});
 	}
-
-	// filters///////////////////////////////////////
-
-	let del_filter= document.querySelector("#del_filter");
-	let filter_chbx= document.querySelectorAll(".filter-chbx");
-	let countelementblock = document.querySelector('.countelementblock');
-	let h2_title = document.querySelector('.h2-title');
-	let product_item_container = document.querySelector('.products');
-	let countelement = document.querySelector('#countelement');
-	let bx_filter_text = document.querySelector('.bx-filter-text');
-	let step = 12;
-
-	if(del_filter){
-		del_filter.addEventListener('click', function(){
-			filter_chbx.forEach(element => {
-				if (element.checked) {
-					element.checked = false;
-                }
-            });
-
-            setCookie('products_filters', null);
-
-            arr = {};
-            arr = {
-                sort: ['news']
-            };
-
-            jQuery(document).ready( function( jQuery ){
-					var jqXHR = {
-						action:'sjax',
-						nonce_code: soJsLet.nonce,
-						category: h2_title.dataset.termslug,
-						filters: JSON.stringify(arr),
-                        flag: 'delete_filter',
-					}
-
-				  jQuery.post( soJsLet.ajaxurl, jqXHR, function( response){
-					// bx_filter_text.classList.remove("hidden-non");
-					let backResponse = JSON.parse(response);
-                    countelementblock.classList.add("hidden");
-					product_item_container.innerHTML = '';
-					product_item_container.innerHTML = backResponse[1];
-					setCookie('products', backResponse[2]);
-					  let arr = JSON.parse(backResponse[2]);
-					  let list = arr.length;
-
-					  if (list < step) {
-						  $('.woocommerce-pagination').css('display', 'none');
-					  } else {
-						  $('.woocommerce-pagination').css('display', 'block');
-					  }
-
-                      location.href = location.pathname;
-
-                  });
-			});
-
-		 })
-	}
-
-// sort
-	var radioButtons = document.querySelectorAll('input[type="radio"]');
-
-	radioButtons.forEach(function(radioButton) {
-		radioButton.addEventListener('change', function() {
-			// Удаляем класс checked у всех label-container
-			document.querySelectorAll('.label-container ').forEach(function(labelContainer) {
-				labelContainer.classList.remove('active');
-			});
-
-			// Проверяем, соотетствует ли label рдиокнопке, которя была выбрана
-			var labelForRadio = document.querySelector('label[for="' + this.id + '"]');
-			if (labelForRadio) {
-				labelForRadio.parentNode.classList.add('active');
-				selectedValue = this.value;
-				// console.log("Выбрано значение: " + selectedValue)
-			}
-		});
-	});
-
-// \sort
-
-	var arr = {};
-
-	if(filter_chbx){
-		filter_chbx.forEach(element => {
-			
-			arr[element.dataset.attribute_label] = [];
-
-            element.addEventListener('change', function (evt) {
-				var el = evt.target;
-				filter_chbx.forEach(element => {
-					if (element.checked) {
-						countelementblock.classList.remove("hidden");
-						var mayak = true
-
-					if (arr[element.dataset.attribute_label]!='') {
-						arr[element.dataset.attribute_label].forEach(ele => {
-							if(ele == element.value){
-								mayak = false
-							}
-						});
-
-						if(mayak) {
-							if(element.name == 'sorting'){
-								arr[element.dataset.attribute_label][0] = element.value;
-							}else{
-							arr[element.dataset.attribute_label].push( element.value)
-							}
-							mayak = true
-						}
-
-					} else {
-						if(element.name == 'sorting'){
-							arr[element.dataset.attribute_label][0] = element.value;
-						} else {
-						    arr[element.dataset.attribute_label].push( element.value);
-						}
-					}
-				}
-				});							
-				
-				if (el.checked) {
-
-				} else {
-					for (let index = 0 ; index < arr[element.dataset.attribute_label].length; index++) {
-						if(arr[element.dataset.attribute_label][index] == el.value){
-							arr[element.dataset.attribute_label].splice(index, 1)
-						}
-					}
-				}
-
-				console.log(arr);
-
-                setCookie('products_filters', JSON.stringify(arr));
-				
-				jQuery(document).ready( function( jQuery ){
-					var jqXHR = {
-						  action:'sjax',
-						  nonce_code: soJsLet.nonce,
-						  filters: JSON.stringify(arr),
-						  category: h2_title.dataset.termslug,
-					}
-					  jQuery.post( soJsLet.ajaxurl, jqXHR, function( response ){
-						bx_filter_text.classList.remove("hidden-non");
-						let backResponse = JSON.parse(response);
-						countelement.innerHTML = backResponse[0];
-						product_item_container.innerHTML = '';
-						product_item_container.innerHTML = backResponse[1];
-						setCookie('products', backResponse[2]);
-						let arr = JSON.parse(backResponse[2]);
-						let list = arr.length;
-
-						  if (list < step) {
-							  $('.woocommerce-pagination').css('display', 'none');
-						  } else {
-							  $('.woocommerce-pagination').css('display', 'block');
-						  }
-
-                      } );
-					} );   
-
-			}, false);
-          });
-	}
-
-		  
-
-		  
 
 
 	// filters\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -1152,130 +978,10 @@ function addFavorite(id)
 
 	  } );
 
-// 	$( "#preorder" ).on( "submit", function( event ) {
-// 		event.preventDefault();
-// 		var formData = {}
-// 		formData['id'] = document.getElementById('prodid').value;
-// 		formData['name'] = document.getElementById('name').value;
-// 		formData['phone'] = document.getElementById('phone').value;
-// 		// Выводим даные в консоль (дл демонстрации)
-// 		console.log(formData);
-// 		jQuery(document).ready( function( jQuery ){
-// 			var jqXHR = {
-// 				  action:'so_preorder',
-// 				  nonce_code: soJsLet.nonce,
-// 				  filds: formData
-// 			}
-// 			  jQuery.post( soJsLet.ajaxurl, jqXHR, function( response ){
-// 				let backResponse = JSON.parse(response)
-// 				document.querySelector('.modal-body').innerHTML = backResponse 
-
-// 			  } );
-// 			} );   
-// 			setTimeout(function() {
-// 				window.location.replace("/");
-// 			}, 5000);
-
-// 	  } );
 
 
-	document.addEventListener('DOMContentLoaded', function () {
-    var sortingElement = document.querySelector('.sorting');
 
-	if(sortingElement){
-        sortingElement.addEventListener('click', function () {
-            // Переключаем клас при каждом клике
-            sortingElement.classList.toggle('opened');
-        });
-	}
-});
-
-///////////////// PAGINATION //////////////////////////////
-
-if (getCookie('products') !== undefined) {
-	var cookie_products = JSON.parse(getCookie('products'));
-
-	var ul_products = $('.products');
-	var list_products = ul_products.find('.product-item-list-col-1');
-	var show_now = 12;
-	var nav = document.createElement('nav');
-	var button_more = document.createElement('button');
-
-	$(nav).addClass('woocommerce-pagination');
-	$(button_more).addClass('btn btn-primary btn-lg');
-	$(button_more).attr('id', 'load-more');
-	$(button_more).text('Завантажити ще');
-
-	var button = $( '#load-more' ),
-		products_on_page = $('.product-item-list-col-1').length,
-		maxPages = cookie_products.length;
-
-	if (products_on_page < maxPages)  {
-		button.click( function( event ) {
-			event.preventDefault();
-			cookie_products = JSON.parse(getCookie('products'));
-			products_on_page = $('.product-item-list-col-1').length,
-				maxPages = cookie_products.length;
-			var new_products = [];
-
-			for (var i = products_on_page; i < (products_on_page + step); i++) {
-				new_products.push(cookie_products[i]);
-			}
-
-			var data = {
-				action:'more_products',
-				nonce_code: add_more_object.nonce,
-				products: new_products,
-			}
-
-			$.ajax({
-				url : add_more_object.url, // обработчик
-				data: data,
-				type : 'POST', // тип запроса
-				success : function( request, xhr, status, error, data ){
-					if (xhr === "success") {
-						let backResponse = JSON.parse(request);
-						ul_products.append(backResponse);
-						if ($('.product-item-list-col-1').length === maxPages) {
-							$('.woocommerce-pagination').css('display', 'none');
-						}
-
-					}
-				},
-				error : function (error) {
-					console.log(error);
-				}
-			});
-
-		} );
-	}
-}
-
-// const lightbox = new PhotoSwipeLightbox({
-// 	gallery: '#products-gallery', // одна или несколько картинок
-// 	children: 'img',
-// 	showHideAnimationType: 'zoom',
-// 	doubleTapAction: 'zoom',
-// 	wheelToZoom: true,
-// 	pswpModule: PhotoSwipe,
-//
-// });
-//
-//
-// lightbox.addFilter('itemData', (itemData, index) => {
-// 	const img = itemData.element;
-// 	itemData.src = img.dataset.pswpSrc;
-// 	itemData.width = parseInt(img.dataset.pswpWidth, 10);
-// 	itemData.height = parseInt(img.dataset.pswpHeight, 10);
-// 	itemData.webpSrc = img.dataset.pswpWebpSrc;
-// 	return itemData;
-// });
-//
-//
-// lightbox.init();
-
-
-/////////////////////////////////
+//////////////////////////////////////////////////////
 function checkDelivery() {
     const deliveryMethods = document.getElementsByName('delivery');
     const checkoutBtn = document.getElementById('checkout-btn');

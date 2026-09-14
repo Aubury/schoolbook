@@ -254,21 +254,21 @@ class Kama_Breadcrumbs {
     // Параметры по умолчанию
     static $args = [
         // выводить крошки на главной странице
-        'on_front_page'   => true,
+        'on_front_page'   => false,
         // показывать ли название записи в конце (последний элемент). Для записей, страниц, вложений
         'show_post_title' => true,
         // показывать ли название элемента таксономии в конце (последний элемент). Для меток, рубрик и других такс
-        'show_term_title' => true,
+        'show_term_title' => false,
         // шаблон для последнего заголовка. Если включено: show_post_title или show_term_title
         'title_patt'      => '<span class="kb_title">%s</span>',
         // показывать последний разделитель, когда заголовок в конце не отображается
-        'last_sep'        => true,
+        'last_sep'        => false,
         // 'markup' - микроразметка. Может быть: 'rdf.data-vocabulary.org', 'schema.org', '' - без микроразметки
         // или можно указать свой массив разметки:
         // array( 'wrappatt'=>'<div class="kama_breadcrumbs">%s</div>', 'linkpatt'=>'<a href="%s">%s</a>', 'sep_after'=>'', )
         'markup'          => 'schema.org',
         // приоритетные таксономии, нужно когда запись в нескольких таксах
-        'priority_tax'    => [ 'category' ],
+        'priority_tax'    => array( 'product_cat', 'category' ),
         // 'priority_terms' - приоритетные элементы таксономий, когда запись находится в нескольких элементах одной таксы одновременно.
         // Например: array( 'category'=>array(45,'term_name'), 'tax_name'=>array(1,2,'name') )
         // 'category' - такса для которой указываются приор. элементы: 45 - ID термина и 'term_name' - ярлык.
@@ -286,13 +286,21 @@ class Kama_Breadcrumbs {
     function get_crumbs( $sep, $l10n, $args ){
         global $post, $wp_post_types;
 
+        // Получаем объект именно текущей страницы из главного запроса.
+        $q_obj = get_queried_object();
+
+        // Восстанавливаем правильный объект товара/записи.
+        if ( is_singular() && $q_obj instanceof WP_Post ) {
+            $post = $q_obj;
+        }
+
         self::$args['sep'] = $sep;
 
         // Фильтрует дефолты и сливает
         $loc = (object) array_merge( apply_filters( 'kama_breadcrumbs_default_loc', self::$l10n ), $l10n );
         $arg = (object) array_merge( apply_filters( 'kama_breadcrumbs_default_args', self::$args ), $args );
 
-        // $arg->sep = '<span class="kb_sep">' . $arg->sep . '</span>'; // дополним
+//         $arg->sep = '<span class="kb_sep">' . $arg->sep . '</span>'; // дополним
         $arg->sep = ''; // дополним
 
         // упростим
@@ -323,7 +331,16 @@ class Kama_Breadcrumbs {
             elseif( $mark === 'schema.org' ){
                 $mark = [
                     'wrappatt'  => '<div class="bx-breadcrumb" itemscope itemptype="http://schema.org/BreadcrumbList">%s</div>',
-                    'linkpatt'  => '<div class="bx-breadcrumb-item" itemprop="itemListElement" itemscope itemptype="http://schema.org/ListItem"><a href="%s" itemprop="item"><span itemprop="name">%s</span></a><i class="fa fa-angle-right"></i></div>',
+                    'linkpatt'  => '<div class="bx-breadcrumb-item" itemprop="itemListElement" itemscope itemptype="http://schema.org/ListItem">
+                                    <a href="%s" itemprop="item">
+                                    <span itemprop="name">%s</span>
+                                    </a>
+                                    <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="11" viewBox="0 0 8 11" fill="none">
+                                      <path d="M1 10L6 5.5L1 1" stroke="#989898" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    </span>
+                                    </div>',
                     'sep_after' => '',
                 ];
             }
@@ -338,8 +355,6 @@ class Kama_Breadcrumbs {
         }
 
         $linkpatt = $arg->linkpatt; // упростим
-
-        $q_obj = get_queried_object();
 
         // может это архив пустой таксы
         $ptype = null;
@@ -364,11 +379,15 @@ class Kama_Breadcrumbs {
         $out = '';
 
         if( is_front_page() ){
-            return $arg->on_front_page ? sprintf( $wrappatt, ( $paged_num ? sprintf( $linkpatt, get_home_url(), $loc->home ) . $pg_end : $loc->home ) ) : '';
+            return $arg->on_front_page
+                ? sprintf( $wrappatt, ( $paged_num ? sprintf( $linkpatt, get_home_url(), $loc->home ) . $pg_end : $loc->home ) )
+                : '';
         }
         // страница записей, когда для главной установлена отдельная страница.
         elseif( is_home() ){
-            $out = $paged_num ? ( sprintf( $linkpatt, get_permalink( $q_obj ), esc_html( $q_obj->post_title ) ) . $pg_end ) : esc_html( $q_obj->post_title );
+            $out = $paged_num
+                ? ( sprintf( $linkpatt, get_permalink( $q_obj ), esc_html( $q_obj->post_title ) ) . $pg_end )
+                : esc_html( $q_obj->post_title );
         }
         elseif( is_404() ){
             $out = $loc->_404;
@@ -378,14 +397,18 @@ class Kama_Breadcrumbs {
         }
         elseif( is_author() ){
             $tit = sprintf( $loc->author, esc_html( $q_obj->display_name ) );
-            $out = ( $paged_num ? sprintf( $linkpatt, get_author_posts_url( $q_obj->ID, $q_obj->user_nicename ) . $pg_end, $tit ) : $tit );
+            $out = ( $paged_num
+                ? sprintf( $linkpatt, get_author_posts_url( $q_obj->ID, $q_obj->user_nicename ) . $pg_end, $tit )
+                : $tit );
         }
         elseif( is_year() || is_month() || is_day() ){
             $y_url = get_year_link( $year = get_the_time( 'Y' ) );
 
             if( is_year() ){
                 $tit = sprintf( $loc->year, $year );
-                $out = ( $paged_num ? sprintf( $linkpatt, $y_url, $tit ) . $pg_end : $tit );
+                $out = ( $paged_num
+                    ? sprintf( $linkpatt, $y_url, $tit ) . $pg_end
+                    : $tit );
             }
             // month day
             else{
@@ -500,9 +523,42 @@ class Kama_Breadcrumbs {
                     }
                 }
                 // single
-                elseif( is_single() ){
-                    if( ! $out = apply_filters( 'post_tax_crumbs', '', $term, $this ) ){
-                        $_crumbs = $this->_tax_crumbs( $term, 'self' );
+                elseif ( is_single() ) {
+                    if ( ! $out = apply_filters( 'post_tax_crumbs', '', $term, $this ) ) {
+
+                        $post_title = trim(
+                            wp_strip_all_tags(
+                                html_entity_decode(
+                                    get_the_title( $post ),
+                                    ENT_QUOTES,
+                                    get_bloginfo( 'charset' )
+                                )
+                            )
+                        );
+
+                        $term_title = trim(
+                            wp_strip_all_tags(
+                                html_entity_decode(
+                                    $term->name,
+                                    ENT_QUOTES,
+                                    get_bloginfo( 'charset' )
+                                )
+                            )
+                        );
+
+                        /*
+                         * Если название категории совпадает с названием товара,
+                         * текущую категорию не выводим, но сохраняем:
+                         * - родительские категории;
+                         * - заголовок самого товара.
+                         */
+                        $start_from = $post_title === $term_title
+                            ? 'parent'
+                            : 'self';
+
+                        $_crumbs = $this->_tax_crumbs( $term, $start_from );
+
+                        // Заголовок товара остаётся последним элементом.
                         $out = $this->_add_title( $_crumbs, $post );
                     }
                 }
@@ -550,8 +606,23 @@ class Kama_Breadcrumbs {
 
         if( '' === $home_after ){
             // Ссылка на архивную страницу типа записи для: отдельных страниц этого типа; архивов этого типа; таксономий связанных с этим типом.
-            if( $ptype && $ptype->has_archive && ! in_array( $ptype->name, [ 'post', 'page', 'attachment' ] )
-                && ( is_post_type_archive() || is_singular() || ( is_tax() && in_array( $term->taxonomy, $ptype->taxonomies ) ) )
+            if(
+                $ptype
+                && $ptype->has_archive
+                && ! in_array(
+                    $ptype->name,
+                    array( 'post', 'page', 'attachment', 'product' ),
+                    true
+                )
+                && (
+                    is_post_type_archive()
+                    || is_singular()
+                    || (
+                        is_tax()
+                        && isset( $term->taxonomy )
+                        && in_array( $term->taxonomy, $ptype->taxonomies, true )
+                    )
+                )
             ){
                 $pt_title = $ptype->labels->name;
 
@@ -1523,6 +1594,7 @@ function so_render_product_preorder_slider($product_id){
         </div>";
     }
 }
+
 function get_products_with_preorder_date() {
     global $wpdb;
 
@@ -1828,6 +1900,12 @@ function schoolbook_disable_local_ssl_verify($verify, $url = '') {
 
     return $verify;
 }
+
+add_filter( 'woocommerce_account_menu_items', function ( $items ) {
+    unset( $items['downloads'] );
+
+    return $items;
+}, 99 );
 
 /**
  * УВЕДОМЛЕНИЕ ДЛЯ ПОЛЬЗОВАТЕЛЯ НА СТРАНИЦУ 'КОРЗИНА'

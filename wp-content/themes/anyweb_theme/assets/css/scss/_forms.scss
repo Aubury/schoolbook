@@ -1,3 +1,7 @@
+form {
+  margin-bottom: unset;
+}
+
 textarea {
   display: block;
   width: 100%;
@@ -22,4 +26,38 @@ input[type="text"] {
   border-radius: 2px;
   background: #f8fafc;
   outline: 0;
+}
+
+input[type="checkbox"] {
+  position: absolute;
+  left: -9999px;
+}
+
+
+input[type="checkbox"] + a:before,
+input[type="checkbox"] + span:before,
+input[type="radio"] + span:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  background: url('../image/checkbox.svg') no-repeat;
+}
+
+input[type="checkbox"]:checked + a:before,
+input[type="checkbox"]:checked + span:before {
+  background: url('../image/mingcute_check-fill.svg') no-repeat;
+}
+
+.checkbox label input[type="checkbox"] + a,
+.checkbox label input[type="checkbox"] + span,
+.radio label input[type="radio"] + span {
+  padding: 0 0 0 10px;
+}
+
+.checkbox label input[type="checkbox"] + a:before,
+.checkbox label input[type="checkbox"] + span:before {
+  left: -16px;
 }

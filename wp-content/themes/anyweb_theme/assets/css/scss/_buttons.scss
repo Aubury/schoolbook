@@ -1,0 +1,41 @@
+.catalog-load-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 213px;
+  height: 64px;
+  background-image: url("../image/bg-btn-more.svg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: transparent;
+  color: var(--brand-secondary);
+  font-family: var(--fm-base);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 120%; /* 19.2px */
+
+  svg {
+    width: 11px;
+    height: 8px;
+    color: currentColor;
+  }
+
+  &.disabled {
+    cursor: unset;
+    color: #CDCDCD;
+    background-image: url("../image/bg-btn-more-disabled.svg");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: transparent;
+
+    svg {
+      width: 11px;
+      height: 8px;
+      color: currentColor;
+    }
+  }
+}

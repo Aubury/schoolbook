@@ -17,17 +17,12 @@ get_header();
 
 <main id="primary" class="site-main">
 
-    <div class="container bx-content-seection">
-        <div class="row">
-            <div class="col-lg-12" id="navigation">
-                <div class="bx-breadcrumb" itemprop="http://schema.org/breadcrumb" itemscope="" itemtype="http://schema.org/BreadcrumbList">
-                    <?php if( function_exists('kama_breadcrumbs') ) kama_breadcrumbs(''); ?>
-            </div>
+    <div class="container">
+        <div id="navigation" class="flex-row-start" itemprop="http://schema.org/breadcrumb" itemscope="" itemtype="http://schema.org/BreadcrumbList">
+            <?php if( function_exists('kama_breadcrumbs') ) kama_breadcrumbs(''); ?>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="bx-content">
+        <div class="row">
+            <div class="bx-content">
                 <?php
                 while ( have_posts() ) :
                     the_post();
@@ -41,9 +36,9 @@ get_header();
 
                 endwhile; // End of the loop.
                 ?>
+            </div>
         </div>
-	</div>
-
+    </div>
 </main><!-- #main -->
 
 <?php

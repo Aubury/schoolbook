@@ -115,6 +115,34 @@ h6 {
 
 }
 
+.catalog-title {
+  color: var(--gray-dark);
+  font-family: var(--fm-heading);
+  font-size: 60px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 65px; /* 108.333% */
+
+  &__letter {
+    display: inline;
+  }
+
+  // Буква «г» в слове «Книги»
+  &__letter:nth-child(4) {
+    color: var(--brand-green-prymary);
+  }
+
+  // Буква «і» в слове «дошкільнят»
+  &__letter:nth-child(15) {
+    color: var(--brand-orange);
+  }
+
+  @include down(#{$bp-xs}) {
+    font-size: 42px;
+    line-height: 32px; /* 76.19% */
+  }
+}
+
 p {
   font-family: var(--fm-base);
   font-size: 14px;
@@ -278,6 +306,7 @@ tabsection {
 }
 
 main {
+  margin-top: 23px;
   padding-bottom: 132px;
 
   @include down(#{$bp-xs}) {
@@ -927,11 +956,28 @@ main {
   .flex-evenly-start-align {
     flex-wrap: wrap;
     row-gap: 60px;
-    //column-gap: 25px;
 
     @include down(#{$bp-lg}) {
       row-gap: 40px;
       column-gap: 18px;
     }
+  }
+}
+
+.catalog-section-holder {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.catalog-holder {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+
+  .catalog-title {
+    margin-bottom: 24px;
   }
 }
