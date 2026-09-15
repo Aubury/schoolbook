@@ -321,6 +321,7 @@ function get_count_products() {
        countElementBlock.classList.remove('hidden');
        countElement.classList.remove('hidden');
        countElement.innerHTML = total;
+       bx_filter_text.classList.remove('hidden-non');
    }
 
     if (mobileResultCount) {

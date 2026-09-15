@@ -9,7 +9,8 @@
       row-gap: 90px;
       width: 100%;
 
-      &::before {
+      &::before,
+      &::after {
         content: unset;
       }
 

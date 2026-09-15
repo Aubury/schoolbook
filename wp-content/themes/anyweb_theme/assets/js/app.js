@@ -253,8 +253,7 @@ $(document).ready(function () {
 			'.books-menu.opened, ' +
 			'.header.opened, ' +
 			'.modal-menu.opened, ' +
-			'.catalog-menu-section.opened',
-			'.filters-modal.opened'
+			'.catalog-menu-section.opened'
 		);
 
 		const button = $(
@@ -263,8 +262,7 @@ $(document).ready(function () {
 			'.books-button, ' +
 			'.burger-menu, ' +
 			'.catalog-menu-button, ' +
-			'.mobile-catalog-menu-button',
-			'.filter-sorting-holder'
+			'.mobile-catalog-menu-button'
 		);
 
 		if (

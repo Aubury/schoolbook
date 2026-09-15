@@ -5318,6 +5318,12 @@ input[type=checkbox]:checked + span:before {
   align-items: center;
   justify-content: center;
   gap: 36px;
+  margin-top: 90px;
+}
+@media (max-width: 576px) {
+  .woocommerce-pagination {
+    margin-top: 60px;
+  }
 }
 .woocommerce-pagination.pagination-hidden {
   display: none !important;
@@ -5998,7 +6004,7 @@ input[type=checkbox]:checked + span:before {
   row-gap: 90px;
   width: 100%;
 }
-.woocommerce ul.products::before {
+.woocommerce ul.products::before, .woocommerce ul.products::after {
   content: unset;
 }
 @media (max-width: 1200px) {
