@@ -9,6 +9,15 @@
     display: none;
   }
 }
+
+.mob-filters-container {
+  position: relative;
+  align-self: stretch;
+  width: 310px;
+  min-width: 310px;
+  height: 100%;
+}
+
 .filter-holder {
   position: sticky;
   top: 80px;
@@ -473,6 +482,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: start;
+      align-self: center;
       gap: 4px;
       margin-top: 24px;
     }
