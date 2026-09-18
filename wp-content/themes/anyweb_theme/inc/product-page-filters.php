@@ -135,9 +135,6 @@ function so_render_catalog_product($product_id){
                 WC()->cart->generate_cart_id($product_id)
             );
 
-        if($data->is_new){
-            $isnew = '<span class="new_book">new</span>';
-        }
 
         $price = str_replace('> грн<', '>грн<', $data->price);
         $price = '<div class="price"><span class="num">' . $price . '</span></div>';

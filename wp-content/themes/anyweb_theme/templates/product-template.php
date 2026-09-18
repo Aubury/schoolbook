@@ -6,365 +6,408 @@
  *
  * @package anyweb
  */
-
+global $product;
 get_header();
 ?>
 
-    <main id="primary" class="site-main product-temp">
+    <main id="primary" class="site-main product-template">
 
-        <div class="container bx-content-seection">
+        <div class="container">
 
-            <div class="row">
-
-                <div class="col-lg-12" id="navigation">
-                    <div class="bx-breadcrumb" itemprop="http://schema.org/breadcrumb" itemscope="" itemtype="http://schema.org/BreadcrumbList">
-
-                        <?php if( function_exists('kama_breadcrumbs') ) kama_breadcrumbs(''); ?>
-
-                    </div>
-                </div>
+            <div id="navigation" class="flex-row-start" itemprop="http://schema.org/breadcrumb" itemscope="" itemtype="http://schema.org/BreadcrumbList">
+                <?php if( function_exists('kama_breadcrumbs') ) kama_breadcrumbs(''); ?>
             </div>
 
-            <div class="row">
+            <div class="page-content">
 
-                <div class="bx-content">
-                    <div class="">
-                        <div class="">
-                            <div class="bx-catalog-element">
+                <?php
+                $series = "";
+
+                while ( have_posts() ) :
+                    the_post();
+
+                    $product = wc_get_product($post->ID);
+
+                    $attributes = $product->get_attributes();
+
+                    if (isset($attributes["pa_book-series"]) && is_array($attributes["pa_book-series"])) :
+                        $pa_color = $attributes["pa_book-series"];
+
+                        if ( !empty($pa_color->get_slugs()) ) :
+                            $series = $pa_color->get_slugs()[0];
+                        endif;
+                     endif;
+
+                    $productID = $post->ID;
+                    $single_image_id = intval($product->get_image_id("woocommerce_single"));
+                    $data = (object) [
+                        "permalink" => esc_url($product->get_permalink()),
+                        "gallery" => array_merge(array($single_image_id), $product->get_gallery_image_ids())
+                    ];
+
+                    ?>
+
+                    <div class="product-content-section">
+
+                        <div class="product-item-detail-slider-container">
+
+                               <div class="product-gallery-container">
+                                   <div class="product-item-detail-slider-controls-block slick-slider slick-vertical">
+                                       <?php
+                                           foreach ($data->gallery as $key => $item) :
+                                               echo   '<div class="product-item-detail-slider-controls-image'; if ( $key == 0 ) { echo ' active'; }
+                                               echo '"data-entity="slider-control">' .  wp_get_attachment_image($item, 'post-thumbnail', 'true', array()) . '</div>';
+                                           endforeach;
+                                       ?>
+                                   </div> <!-- .product-item-detail-slider-controls-image -->
+                               </div>
+
+                               <?php
+                                   $is_new = get_post_meta($productID, '_is_new', true);
+                                   $custom_preorder = get_post_meta($productID, '_custom_preorder', true);
+
+                                   $current_date = date('Y-m-d');
+
+                                   $custom_preorder > $current_date
+                                       ? $preorder = '<span class="preorder-book"></span>'
+                                       : $preorder = '';
+
+                                   $is_new
+                                       ? $is_new = '<span class="new_book"></span>'
+                                       : $is_new = '';
+
+                                   $is_sale = '';
+                                   if ($product->is_on_sale()) {
+                                       $regular_price = $product->get_regular_price();
+                                       $sale_price = $product->get_sale_price();
+                                       $discount_percentage = round((($regular_price - $sale_price) / $regular_price) * 100);
+                                       $is_sale = '<span class="sale_book">-' . $discount_percentage . '<span class="percent">%</span></span>';
+                                   }
+
+
+                               ?>
+
+                               <div class="product-item-detail-slider-block" data-entity="images-slider-block">
+                                   <div id="products-gallery"
+                                        class="product-item-detail-slider-images-container "
+                                        data-entity="images-container"
+                                        style="cursor: zoom-in;">
+
+                                       <?php
+
+                                                foreach ($data->gallery as $key => $item) :
+
+                                                    $full_image = wp_get_attachment_image_src($item, 'full'); // Получаем полный размер
+                                                    $thumb = wp_get_attachment_image_src($item, 'post-thumbnail'); // эскиз
+                                                    echo '<div class="product-item-detail-slider-image' . ($key === 0 ? ' active firstImage' : '') . '" data-entity="image">';
+
+
+                                                        // Вставляем <img> с нужными data-атрибутами
+                                                        echo '<img src="' . esc_url($thumb[0]) . '" 
+                                                                   data-pswp-src="' . esc_url($full_image[0]) . '" 
+                                                                   data-pswp-width="' . esc_attr($full_image[1]) . '" 
+                                                                   data-pswp-height="' . esc_attr($full_image[2]) . '" 
+                                                                   class="zoomable-image"
+                                                                   alt="img" />';
+
+                                                    echo '</div>'; // .product-item-detail-slider-image
+
+                                               endforeach;
+                                        ?>
+
+                                   </div> <!-- .product-item-detail-slider-images-container -->
+
+                                   <div class="pr-info-new">
+                                       <?php
+                                       echo $preorder;
+                                       echo $is_new;
+                                       echo $is_sale;
+                                       ?>
+                                   </div>
+                               </div> <!-- .product-item-detail-slider-block -->
+
+
+                           </div> <!-- .product-item-detail-slider-container -->
+
+                        <div class="product-info-section">
+                            <?php
+                                 $custom_royalty = get_post_meta($productID, '_custom_royalty', true);
+
+                                // Если флажок "роялти" установлен, выводим текст из поля "статус"
+                                if ($custom_royalty === 'yes' && !$product->is_on_backorder()) :
+                                    $custom_status = get_post_meta($productID, '_custom_status', true);
+
+                                    // Выводим текст статуса
+                                    echo '<span class="available"> ' . esc_html($custom_status) . '</span>';
+
+                                elseif (!$product->is_in_stock()) :
+                                    echo '<span class="available soldout">Немає в наявності</span>';
+                                else :
+
+                                    if ($product->get_stock_status() == 'onbackorder') :
+                                        echo '<span class="available pre-order">На замовлення</span>';
+                                    else :
+                                        echo '<span class="available">Є в наявності</span>';
+                                    endif;
+                                endif;
+
+                            ?>
+
+                            <div class="product-content-title">
+
                                 <?php
-                                $series = "";
 
-                                while ( have_posts() ) :
-                                the_post();
-                                $product = wc_get_product($post->ID);
+                                    the_title( '<h1 class="product-page-title">', '</h1>' );
 
-                                $attributes = $product->get_attributes();
+                                ?>
 
-                                if (isset($attributes["pa_book-series"]) && is_array($attributes["pa_book-series"])) {
-                                    $pa_color = $attributes["pa_book-series"];
+                            </div> <!-- end of .product-content-title -->
 
-                                    if (!empty($pa_color->get_slugs())) {
-                                        $series = $pa_color->get_slugs()[0];
-                                    }
-                                }
+                            <div class="product-description-price-section">
+                                <div class="product-description-section">
 
+                                    <div class="description-text-holder">
+                                        <div class="text-holder">
 
-                                $productID = $post->ID;
-                                $single_image_id = intval($product->get_image_id("woocommerce_single"));
-                                $data = (object) [
-                                    "permalink" => esc_url($product->get_permalink()),
-                                    "gallery" => array_merge(array($single_image_id), $product->get_gallery_image_ids())
-                                ];
+                                            <?php
 
+                                            $attribute_slug = 'pa_korotkij-opis';
+                                            $product        = wc_get_product( $post->ID );
 
-                        echo '<div class="bx-catalog-element">
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                             <div class="bx-title-row">';
-                                                the_title( '<h1 class="bx-title">', '</h1>' );
-                                                echo ' <div class="product-rate">
-                                                           <div class="rate-items">';
-                                                                $rating_count = $product->get_rating_count();
+                                            if ( $product ) {
+                                                $attribute_value = $product->get_attribute(
+                                                    $attribute_slug
+                                                );
 
-                                                                for ($i=5; $i > 0; $i--) {
-                                                                    if($rating_count){
-                                                                        echo '<span class="full"></span>';
-                                                                        $rating_count--;
-                                                                    } else {
-                                                                        echo '<span></span>';
-                                                                    }
-                                                                }
-                                                                echo '	
-                                                                </div>
-                                                                <span class="rate-value">'.$rating_count.'</span>
-                                                           </div>';
+                                                $product_description = $product->get_description();
 
-                                                            $review_count = $product->get_review_count();
-                                                            $average      = $product->get_average_rating();
-                                                            $rozmir = '';
-                                                            if ($product->get_attribute('rozmir')) {
-                                                                // Получаем значение атрибута "rozmir"
-                                                                $rozmir = $product->get_attribute('rozmir');}
-                                                            $parts = explode(' ', $rozmir);
-                                                            $numbers = array();
+                                                if ( ! empty( $attribute_value ) ) :
+                                                    echo esc_html(
+                                                        schoolbook_trim_text(
+                                                            $attribute_value,
+                                                            34
+                                                        )
+                                                    );
+                                                else :
+                                                    echo esc_html(
+                                                        schoolbook_trim_text(
+                                                            $product_description,
+                                                            34
+                                                        )
+                                                    );
+                                                endif;
+                                            }
+                                            ?>
 
-                                                            foreach ($parts as $part) {
-                                                                if (preg_match_all('/\d+/', $part, $matches)) {
-                                                                    foreach ($matches[0] as $number) {
-                                                                        $numbers[] = intval($number);
-                                                                    }
-                                                                }
-                                                            }
+                                        </div> <!-- end of .text-holder -->
 
-                                                            echo '</div>
-                                                            </div>
-                                                        </div>
-								
-                                <div class="product-card-section">
-                                    <div class="product-view">
-                                        <div class="product-item-detail-slider-container">
-                                             <span class="product-item-detail-slider-close" data-entity="close-popup"></span>
-                                            <div class="product-item-detail-slider-block" data-entity="images-slider-block">
-                                                <div id="products-gallery" 
-                                                     class="product-item-detail-slider-images-container " 
-                                                     data-entity="images-container" 
-                                                     style="cursor: zoom-in;">';
+                                        <a href="#title-info" class="more-link" style="display: inline;">докладний опис</a>
+                                    </div>
 
-                                                    $size = '<div class="product-size-height">
-                                                                <span class="product-size-text">'
-                                                                  .( isset($numbers[0]) ? $numbers[0] : "" ).' мм
-                                                                </span>
-                                                            </div> <!-- .product-size-height -->
-                                                            
-                                                            <div class="product-size-width">
-                                                                <span class="product-size-text">'
-                                                                    .( isset( $numbers[1]) ? $numbers[1] : "" ).' мм
-                                                                </span>
-                                                            </div> '; //.product-size-width
+                                    <div class="author-info">
+                                        <span class="row-title">Автор:</span>
+                                        <span  class="row-value name"><?php echo $product->get_attribute('author-book') ?></span>
+                                    </div> <!-- end .book-info -->
 
-                                                                foreach ($data->gallery as $key => $item) {
-                                                                    $full_image = wp_get_attachment_image_src($item, 'full'); // Получаем полный размер
-                                                                    $thumb = wp_get_attachment_image_src($item, 'post-thumbnail'); // эскиз
-                                                                    echo '<div class="product-item-detail-slider-image' . ($key === 0 ? ' active firstImage' : '') . '" data-entity="image">';
+                                    <div class="age-info">
+                                        <?php
+                                        $age = implode(', ', wc_get_product_terms(@$productID, 'pa_vik', ['fields' => 'names']));
+                                        ?>
 
-                                                                        if ($key === 0 && isset($numbers[0])) {
-                                                                            echo $size;
-                                                                        }
+                                        <span class="row-title">Вік:</span>
+                                        <span  class="row-value name"><?php echo $age; ?></span>
+                                    </div>
 
-                                                                        // Вставляем <img> с нужными data-атрибутами
-                                                                        echo '<img src="' . esc_url($thumb[0]) . '" 
-                                                                                   data-pswp-src="' . esc_url($full_image[0]) . '" 
-                                                                                   data-pswp-width="' . esc_attr($full_image[1]) . '" 
-                                                                                   data-pswp-height="' . esc_attr($full_image[2]) . '" 
-                                                                                   class="zoomable-image"
-                                                                                   alt="img" />';
+                                </div> <!-- end of .product-description-section -->
 
-                                                                    echo '</div>'; // .product-item-detail-slider-image
+                                <?php
+                                $custom_preorder = get_post_meta($productID, '_custom_preorder', true);
+                                $custom_preorder_countdown = get_post_meta($productID, '_custom_preorder_countdown', true);
+                                $current_date = date('Y-m-d');
 
-                                                                }
+                                function display_countdown_timer() {
+                                    // Установим дату окончания акции (формат: год-месяц-день час:мин:сек)
+                                    global $custom_preorder_countdown;
+                                    $end_date = $custom_preorder_countdown;
 
-                                                                echo '</div> <!-- .product-size-width -->
-                                                                  </div>
-                                                                  
-                                                                  <div class="product-item-detail-slider-controls-block slick-slider slick-vertical">';
+                                    // Преобразуем дату в формат для JavaScript
+                                    $end_date_js = date('Y-m-d H:i:s', strtotime($end_date));
 
-                                                                        foreach ($data->gallery as $key => $item) {
-                                                                            echo   '<div class="product-item-detail-slider-controls-image'; if ( $key == 0 ) {echo ' active';}
-                                                                            echo '"data-entity="slider-control">' .  wp_get_attachment_image($item, 'post-thumbnail', 'true', array()) . '</div>';
-                                                                        }
-
-                                                                      echo '</div>'; // .product-item-detail-slider-controls-image
-
-                                                                  echo  '</div> <!-- .product-item-detail-slider-container -->
-                                                                 </div>'; // .product-view
-
-                                                                ?>
-
-                                <div class="product-info-section">
-                                    <div class="product-about">
-                                        <div class="book-info">
-                                            <div class="book-row">
-                                                <span class="row-title">Автор</span>
-                                                <span  class="row-value name"><?php echo $product->get_attribute('author-book') ?></span>
-                                            </div>
-                                        </div>
-                                        <div class="product-item-detail-pay-block">
-                                            <div class="product-item-detail-info-container">
-                                                <div class="product-item-detail-price-old" id="bx_117848907_17177_old_price" style="display: none;">
-                                                    <span></span>
-                                                    <span class="currency">грн</span>
-                                                </div>
-                                                <div class="product-item-detail-price-current" id="bx_117848907_17177_price" style="font-size: 29px;">
-                                                    <?php
-                                                    $price = floatval($product->get_price());
-                                                    $regular_price = floatval($product->get_regular_price());
-
-                                                    if($price != $regular_price){
-
-                                                        echo
-                                                            '<span class="product-item-price-current">
-                                                                    <del aria-hidden="true">
-                                                                    <span class="woocommerce-Price-amount amount"><bdi>' . $regular_price . 'грн</bdi></span>
-                                                                </del>
-                                                                    <ins>
-                                                                    <span class="woocommerce-Price-amount amount"><bdi>' . $price . '<span class="currency">грн</span></bdi></span>
-                                                                </ins>
-                                                                </span>';
-
-                                                    }else{
-                                                        echo
-                                                            '<span class="woocommerce-Price-amount amount">
-                                                                <bdi>' . $price . '<span class="currency">грн</span></bdi>
-                                                                </span>';
-
-                                                    }
-                                                    ?>
-                                                </div>
-                                            </div>
-                                            <div data-entity="main-button-container">
-                                                <div id="bx_117848907_17177_basket_actions" style="display: ;">
-
-
-                                                    <?php
-                                                    $custom_royalty = get_post_meta($productID, '_custom_royalty', true);
-                                                    $custom_preorder = get_post_meta($productID, '_custom_preorder', true);
-                                                    $custom_preorder_countdown = get_post_meta($productID, '_custom_preorder_countdown', true);
-                                                    $current_date = date('Y-m-d');
-
-                                                    // Если флажок "роялти" установлен, выводим текст из поля "статус"
-                                                    if ($custom_royalty === 'yes' && !$product->is_on_backorder()) {
-                                                        $custom_status = get_post_meta($productID, '_custom_status', true);
-
-                                                        // Выводим текст статуса
-                                                        echo '<div class="availability"><span class="available"> ' . esc_html($custom_status) . '</span></div>';
-                                                    } else {
-
-                                                        function display_countdown_timer() {
-                                                            // Установим дату окончания акции (формат: год-месяц-день час:мин:сек)
-                                                            global $custom_preorder_countdown;
-                                                            $end_date = $custom_preorder_countdown;
-
-                                                            // Преобразуем дату в формат для JavaScript
-                                                            $end_date_js = date('Y-m-d H:i:s', strtotime($end_date));
-
-                                                            // Передаем дату в JavaScript
-                                                            echo "<script type='text/javascript'>
+                                    // Передаем дату в JavaScript
+                                    echo "<script type='text/javascript'>
                                                                     var endDate = new Date('{$end_date_js}').getTime();
                                                                 </script>";
-                                                        }
+                                }
 
-                                                        add_action('wp_footer', 'display_countdown_timer');
+                                add_action('wp_footer', 'display_countdown_timer');
 
-                                                        if ($custom_preorder_countdown > $current_date ) {
-                                                            echo '<div class="availability">
-                                                                    <span class="available">
-                                                                        <span class="soldout">
-                                                                            Унікальна можливість придбати книгу до початку офіціального продажу за спеціальною ціною
-                                                                        </span>
-                                                                    </span>
-                                                               </div>
-                                                               <h5>Акція діє до: ' . date("d.m.Y", strtotime($custom_preorder_countdown)) .'</h5>
-                                                               <div class="mt-3 mb-3 p-2 border rounded-3" style="border-color: #ff6840 !important;">
-                                                                    <h6 class="text-center" style="color: #ff6840;">До закінчення акціі залишилось:</h6>
-                                                                    <h5 id="countdown" class="text-center" style="color: #ff6840;"></h5>
-                                                               </div>
-                                                               
-                                                               <div class="product-item-detail-info-container">
-                                                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#preorder">ЗАМОВИТИ</button>
-                                                               </div>
-                                                            <script type="text/javascript">
-                                                            document.addEventListener("DOMContentLoaded", function() {
-                                                                // Обновляем таймер каждую секунду
-                                                                var x = setInterval(function() {
-                                                                    var now = new Date().getTime();
-                                                                    var distance = endDate - now;
+                                if ($custom_preorder_countdown > $current_date ) {
 
-                                                                    // Расчет дней, часов, минут и секунд
-                                                                    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                                                                    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                                                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                                                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                                                                    // Отображение результата
-                                                                    document.getElementById("countdown").innerHTML = days + " дн. " + hours + " год. "
-                                                                        + minutes + " хв. " + seconds + " сек.";
-
-                                                                    // Если обратный отсчет закончился
-                                                                    if (distance < 0) {
-                                                                        clearInterval(x);
-                                                                        document.getElementById("countdown").innerHTML = "Акцію завершено!";
-                                                                    }
-                                                                }, 1000);
-                                                            });
-                                                            </script>';
-
-                                                        } else {
-                                                            ?>
-                                                            <div class="availability"><span class="available">
-                                                         <?php
-                                                         if ( !$product->is_in_stock() ) {
-                                                             echo '<span class="soldout">Немає в наявності</span>';
-                                                         }else{
-
-                                                             if($product->get_stock_status()=='onbackorder'){
-                                                                 echo 'На замовлення';
-                                                             }else{
-                                                                 echo 'Є в наявності';
-                                                             }
-                                                         }
-                                                         ?>
-
-                                                        </span></div>
-                                                            <div class="product-item-detail-info-container">
-                                                                <a class="ga_buy_btn_detail btn btn-default product-item-detail-buy-button add_to_cart_ajx" id="<?php echo $post->ID; ?>" href="">
-                                                                    <span>До кошика</span>
-                                                                </a>
-                                                            </div>
-                                                            <?php
-                                                        }}
-                                                    ?>
+                                    echo '<div class="column-auto">
+                                            <div class="preorder-red-stroke">
+                                                <div class="animation-stroke">
+                                                    <div class="preorder-text">
+                                                        <span class="color-orange">Унікальна</span>
+                                                         <span class="color-blue">можливість</span>
+                                                         <span class="color-orange">придбати книгу</span>
+                                                          до офіційного  початку розпродажу 
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="links-row">
-                                            <div class="favorite-box">
-                                                 <span id="favorite_17177" class="favorites-link bx-catalog-subscribe-button " style="">
+                                               
+                                          
+                                           <h3>
+                                                <span class="color-blue">Акція <span class="text-normal">діє до:</span> </span>'
+                                        . date("d.m.Y", strtotime($custom_preorder_countdown)) .
+                                        '</h3>
+                                                
+                                           <div class="preparing-timer">
+                                                До початку офіційного продажу:
+                                                <span id="countdown" class="color-white"></span>
+                                           </div></div>
+                                           
+                                        <script type="text/javascript">
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            // Обновляем таймер каждую секунду
+                                            var x = setInterval(function() {
+                                                var now = new Date().getTime();
+                                                var distance = endDate - now;
+        
+                                                // Расчет дней, часов, минут и секунд
+                                                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+                                                // Отображение результата
+                                                document.getElementById("countdown").innerHTML = days + " дн. " + hours + " год. "
+                                                    + minutes + " хв. " + seconds + " сек.";
+        
+                                                // Если обратный отсчет закончился
+                                                if (distance < 0) {
+                                                    clearInterval(x);
+                                                    document.getElementById("countdown").innerHTML = "Акцію завершено!";
+                                                }
+                                            }, 1000);
+                                        });
+                                        </script>';
+                                }
+
+                                ?>
+
+                                <div class="product-price-basket-section">
+                                    <div class="product-item-detail-price-current">
+                                        <?php
+
+                                        $price = floatval($product->get_price());
+                                        $regular_price = floatval($product->get_regular_price());
+
+                                        if ($price != $regular_price) : ?>
+                                            <span class="product-item-price-current">
+                                            <del aria-hidden="true">
+                                                <span class="woocommerce-Price-amount amount">
+                                                    <bdi><?php echo $regular_price ?> грн</bdi>
+                                                </span>
+                                            </del>
+                                            <ins>
+                                                <span class="woocommerce-Price-amount amount">
+                                                    <bdi><?php echo $price ?><span class="currency"> грн</span></bdi>
+                                                </span>
+                                            </ins>
+                                        </span>
+                                        <?php
+                                        else :  ?>
+                                            <span class="woocommerce-Price-amount amount">
+                                            <bdi><?php echo $price ?><span class="currency"> грн</span></bdi>
+                                        </span>
+                                        <?php
+                                        endif; ?>
+
+                                    </div> <!-- .product-item-detail-price-current -->
+
+                                    <?php
+                                        $in_cart = WC()->cart &&
+                                            WC()->cart->find_product_in_cart(
+                                                WC()->cart->generate_cart_id($productID)
+                                            );
+
+                                        $basketHTML= '<span class="text-block">До кошика</span>';
+
+                                        if ($in_cart) :
+                                            $basketHTML= '<span class="text-block">У кошику</span><span class="icon-block icon-red-backed"></span>';
+                                        elseif ($custom_preorder_countdown > $current_date )  :
+                                            $basketHTML= '<span class="text-block">Замовити</span><span class="icon-block"></span>';
+                                        else :
+                                            $basketHTML= '<span class="text-block">До кошика</span><span class="icon-block"></span>';
+                                        endif;
+                                    ?>
+
+                                    <div class="product-item-detail-info-container">
+                                        <div class="favorite-box">
+                                             <span id="favorite_17177" class="favorites-link bx-catalog-subscribe-button " style="">
                                                  <i class="icon-favorite">
                                                      <?php
                                                      echo do_shortcode( '[woosw id='.$post->ID.']' );
                                                      ?>
                                                  </i>
-                                                 <span class="favorite-text">Вподобати</span>
-                                                 </span>
-                                            </div>
-                                            <div class="social-links">
-                                                <a href="<?php echo get_permalink($post->ID) ?>"
-                                                   class="inlaked" target="_blank"
-                                                   onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=<?php echo get_permalink($post->ID) ?>','','height=500,width=500') ">
-                                                    <i class="icon-fb"></i>
-                                                </a>
-                                            </div>
+                                             </span>
                                         </div>
 
-                                        <?php
-                                        if(!$product->is_on_backorder()) :
-                                            echo '<a class="vidosik" href="http://'
-                                                . get_post_meta($post->ID, '_video_link', true)
-                                                . '">Переглянути<br> відосик</a>';
-                                        endif; ?>
-
-                                        <div class="text-descr">
-                                            <div class="text-holder">
-                                                <div class="inner-box">
-                                                    <p>
-                                                        <?php
-
-                                                        $attribute_slug = 'pa_korotkij-opis';
-                                                        $product = wc_get_product($post->ID);
-                                                        $attribute_value = $product->get_attribute($attribute_slug);
-                                                        if (!empty($attribute_value)) {
-                                                            echo esc_html($attribute_value);
-                                                        }
-
-                                                        ?>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <a href="#title-info" class="more-link" style="display: inline;">Детальніше</a>
-                                        </div>
-                                    </div>
+                                        <a class="product-item-detail-buy-button add_to_cart_ajx" id="<?php echo $post->ID; ?>" href="">
+                                            <?php echo $basketHTML; ?>
+                                        </a>
+                                    </div> <!-- end .product-item-detail-info-container  -->
                                 </div>
 
+                            </div> <!-- end of .product-description-price-section -->
 
-                            </div>
+                            <?php
 
-                        </div>
+                            if ($custom_preorder_countdown < $current_date ) :
+                                if ( !$product->is_on_backorder() ) : ?>
+                                    <div class="product-video-section">
+                                        <a class="vidosik" href="http://<?php echo get_post_meta($post->ID, '_video_link', true)?>">Відео-огляд на книгу</a>
+                                    </div>
 
-                        <div class="description-and-info">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <span class="title-info" id='title-info'>Детальна інформація</span>
+                                    <?php
+                                endif;
+                            endif; ?>
+
+
+                        </div> <!-- end of .product-info-section -->
+
+                        <div class="description-and-info"  id='title-info'>
+
+                            <div class="description-section">
+                                <span class="title-info">Опис</span>
+                                <div class="product-item-description" itemprop="description">
+                                    <?php
+
+                                    // Получаем описание товара
+                                    $product_description = $product->get_description();
+
+                                    // Проверяем, что описание не пусто и является строкой JSON
+                                    if (!empty($product_description) && is_string($product_description)) :
+                                        // Декодируем JSON в массив
+                                        $description_data = json_decode($product_description, true);
+
+                                        // Проверяем успешность декодирования
+                                        if ($description_data !== null) :
+                                            // Выводим данные из массива
+                                            echo  $description_data;
+                                        else :
+                                            // Обработка ошибки декодирования
+                                            echo $product->get_description();
+                                        endif;
+                                    endif;
+
+                                    ?>
+
+                                </div> <!-- end of .product-item-description -->
+                            </div> <!-- end of .description-section -->
+
+                            <div class="description-section">
+                                    <span class="title-info">Детальна інформація</span>
                                     <div class="table-info">
                                         <table>
                                             <tbody>
@@ -394,211 +437,162 @@ get_header();
                                                 'pa_standart-packi'
                                             ];
 
-                                            foreach ($attribute_map as $item) {
+                                            foreach ($attribute_map as $item) :
 
                                                 $attribute_slug = $item;
                                                 $value_html      = '';
 
-                                                if ( $attribute_slug === 'ISBN' ) {
+                                                if ( $attribute_slug === 'ISBN' ) :
 
                                                     $attribute_name  = 'ISBN';
                                                     $value_html      = $product->get_sku();
 
-                                                } elseif ( $attribute_slug === 'Вага' ) {
+                                                elseif ( $attribute_slug === 'Вага' ) :
 
                                                     $attribute_name  = 'Вага';
                                                     $value_html      = $product->get_weight();
 
-                                                } else {
+                                                else :
                                                     // Проверка, что слаг атрибута не равен "korotkij-opis"
                                                     if ($attribute_slug === 'pa_korotkij-opis'
                                                         || strpos($attribute_slug, 'pa_kt') === 0
-                                                        || $attribute_slug === 'pa_author-book') {
+                                                        || $attribute_slug === 'pa_author-book') :
                                                         continue; // Пропускаем вывод для этого атрибута
-                                                    }
+                                                    endif;
 
                                                     $attribute_name  = wc_attribute_label($attribute_slug, $product);
                                                     $raw_value       = $product->get_attribute($attribute_slug); // строка значений через запятую
 
-                                                    if (taxonomy_is_product_attribute($attribute_slug) && in_array($attribute_slug, $linkable_taxonomies, true)) {
+                                                    if (taxonomy_is_product_attribute($attribute_slug) && in_array($attribute_slug, $linkable_taxonomies, true)) :
+
                                                         $terms = wc_get_product_terms($product->get_id(), $attribute_slug, ['fields' => 'all']);
 
+                                                        if ( !is_wp_error($terms) && $terms ) :
 
-                                                        if (!is_wp_error($terms) && $terms) {
-                                                            $links = array_map(function($t){
+                                                            $links = array_map(function($t) {
                                                                 $url = get_term_link($t);
-                                                                if (is_wp_error($url)) {
+
+                                                                if (is_wp_error($url)) :
                                                                     return esc_html($t->name);
-                                                                }
+                                                                endif;
+
                                                                 return '<a href="' . esc_url($url) . '">' . esc_html($t->name) . '</a>';
                                                             }, $terms);
+
                                                             $value_html = implode(', ', $links);
-                                                        }
-                                                    }
+                                                        endif;
+
+                                                    endif;
 
                                                     // Если не таксономия (или не удалось получить термины) — показываем как есть
-                                                    if ($value_html === '') {
+                                                    if ($value_html === '') :
                                                         // Фолбэк: если это один из «кликабельных», но он кастомный текст — сделаем ссылку на поиск
-                                                        if (in_array($attribute_slug, $linkable_taxonomies, true) && !empty($raw_value)) {
+                                                        if (in_array($attribute_slug, $linkable_taxonomies, true) && !empty($raw_value)) :
+
                                                             $search_url = add_query_arg(
                                                                 ['s' => $raw_value, 'post_type' => 'product'],
                                                                 home_url('/')
                                                             );
                                                             $value_html = '<a href="' . esc_url($search_url) . '">' . esc_html($raw_value) . '</a>';
-                                                        } else {
+
+                                                        else :
                                                             $value_html = esc_html($raw_value);
-                                                        }
-                                                    }
-                                                }
-                                                
+                                                        endif;
+                                                    endif;
+
+                                                endif;
+
                                                 if ($value_html !== '') : ?>
-                                                <tr>
-                                                    <td class="heading"><?php echo esc_html($attribute_name); ?></td>
-                                                    <td class="value"><?php echo wp_kses_post($value_html); ?></td>
-                                                </tr>
-                                                
+                                                    <tr>
+                                                        <td class="heading"><?php echo esc_html($attribute_name); ?></td>
+                                                        <td class="value"><?php echo wp_kses_post($value_html); ?></td>
+                                                    </tr>
+
                                                 <?php
                                                 endif;
-                                            }
+                                            endforeach;
 
                                             ?>
 
                                             </tbody>
                                         </table>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <span class="title-info">Опис</span>
-                                    <div class="product-item-dscription" itemprop="description">
+                                    </div> <!-- end of .table-info -->
+                                </div> <!-- end of .col-md-6 -->
+
+
+
+                        </div> <!-- end of .description-and-info -->
+
+                    </div>  <!-- end of .product-content-section -->
+                <?php
+                    endwhile;  ?>
+
+                    <!--///////////////////////// Наші рекомендації /////////////////////////    -->
+
+                <?php
+                    $front_page_id = (int) get_option('page_on_front');
+                    $slider = carbon_get_post_meta( $front_page_id, 'rcmnd_slider' );
+                    if ( ! empty( $slider ) ): ?>
+                        <div class="section">
+                            <div class="container">
+                                <div class="recommendations product-page">
+                                    <h2>Ва<span class="color-blue">м</span>
+                                        м<span class="color-orange">о</span>же
+                                        сподо<span class="color-blue">б</span>атися</h2>
+                                    <div class="slider slick-slider">
                                         <?php
-
-                                        // Получаем описание товара
-                                        $product_description = $product->get_description();
-
-                                        // Проверяем, что описание не пусто и является строкой JSON
-                                        if (!empty($product_description) && is_string($product_description)) {
-                                            // Декодируем JSON в массив
-                                            $description_data = json_decode($product_description, true);
-
-                                            // Проверяем успешность декодирования
-                                            if ($description_data !== null) {
-                                                // Выводим данные из массива
-                                                echo  $description_data[0]['text'];
-                                            } else {
-                                                // Обработка ошибки декодирования
-                                                echo $product->get_description();
-                                            }
-                                        }
-
+                                        foreach ( $slider as $cnt => $item ):
+                                            echo so_render_product($item['rcmnd_product_id']);
+                                        endforeach;
                                         ?>
-
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    <?php endif;
 
-                        <?php
-                        $upsells = $product->get_upsell_ids();
-                        if(!empty($upsells)):
-                            ?>
-                            <div class="catalog-section bx-blue upsale" data-entity="container-1">
-                                <div class="slider-block recommendations">
-                                    <p class="h2-title">
-                                        З цим
-                                        <span class="color-orange"> т</span>
-                                        оваром зазв
-                                        <span class="color-blue">и</span>
-                                        чай купують
-                                    </p>
-                                    <div class="slider slick-slider">
-                                        <?php
 
-                                        if ( ! empty( $upsells ) ):
-                                            foreach ( $upsells as $cnt => $item ):
-                                                echo so_render_product($item);
-                                            endforeach;
-                                        endif;
 
-                                        ?>
+                $viewed_products = viewed_products();
+                $viewed_products_length = count($viewed_products);
+                $viewed_products_length > 4
+                    ? $viewed_class_slider = 'has-more-four-slides'
+                    : $viewed_class_slider = 'has-less-four-slides';
 
-                                    </div>
-                                </div>
-                            </div>
-                        <?php
-                        endif;
-                        endwhile;
-                        wp_reset_query();
+                if( $viewed_products ) : ?>
+                    <div class="viewed-catalog-section <?php echo $viewed_class_slider; ?>" data-entity="container-1">
+                        <h2>Р<span class="color-blue">а</span>ніше пере<span class="color-orange">г</span>лянуті</h2>
 
-                        $args = array(
-                            'post_type' => array('product'),
-                            'tax_query' => array(
-                                'relation' => 'OR',
-                                array(
-                                    'taxonomy' => 'pa_book-series',
-                                    'field' => 'slug',
-                                    'terms' => array($series),
-                                    'operator' => 'IN',
-                                )
-                            )
-                        );
+                           <div class="slider slick-slider">
+                               <?php
 
-                        $q = new WP_Query( $args );
+                                foreach ($viewed_products as $item) :
+                                    echo so_render_product($item);
+                                endforeach;
 
-                        if( $q->have_posts() ) :
+                                ?>
+                           </div>
 
-                        echo '<div class="catalog-section bx-blue upsale" data-entity="container-1">
-                                 <div class="slider-block series">
-                                    <p class="h2-title">Кни<span class="color-orange">г</span>и з цієї <span class="color-blue">с</span>ерії</p>
-                                 <div class="slider slick-slider">';
-
-                        while( $q->have_posts() ) : $q->the_post();
-
-                            echo so_render_product($post->ID) ;
-
-                        endwhile; ?>
                     </div>
-                </div>
-            </div>
+            <?php endif; ?>
 
-            <?php
-            endif;
-            wp_reset_query();
 
-            $viewed_products = viewed_products();
 
-            if( $viewed_products ) {
-                echo '<div class="catalog-section bx-blue upsale" data-entity="container-1">
-                          <div class="slider-block viewed_products">
-                            <p class="h2-title">Пере<span class="color-orange">г</span>лянуті то<span class="color-blue">в</span>ари</p>
-                           <div class="slider slick-slider">';
+               <?php
 
-                        foreach ($viewed_products as $item) {
-                            echo so_render_product($item);
-                        }
+                // If comments are open or we have at least one comment, load up the comment template.
+                if ( comments_open() || get_comments_number() ) :
+                    comments_template();
+                endif;
+                // End of the loop.
+                ?>
 
-                echo ' </div>
-                </div>
-            </div>';
-            }
-    ?>
-        </div>
-   </div>
+            </div>  <!-- end of .page-content -->
 
-        <?php
-
-        // If comments are open or we have at least one comment, load up the comment template.
-        if ( comments_open() || get_comments_number() ) :
-            comments_template();
-        endif;
-        // End of the loop.
-        ?>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
+        </div>  <!-- end of .container -->
 
     </main><!-- #main -->
+
     <div class="modal fade" id="preorder" tabindex="-1" aria-labelledby="preorderLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

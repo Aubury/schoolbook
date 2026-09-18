@@ -445,9 +445,7 @@ i.show_but.sub_dirs:hover {
 .product-item-big-card .product-item-price-container {
   text-align: center;
 }
-.product-item-big-card .product-item-price-current {
-  font: 45px/45px "pf_playskool_proregular", sans-serif;
-}
+
 
 .catalog-section .btn.btn-default {
   background: #ff6840;

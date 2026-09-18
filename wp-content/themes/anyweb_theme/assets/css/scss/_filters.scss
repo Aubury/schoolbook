@@ -453,10 +453,6 @@
   display: none;
   transition: all 300ms ease-in-out;
 
-  //@include down(#{$bp-lg}) {
-  //  display: block;
-  //}
-
   &.opened {
     position: fixed;
     top: 0;

@@ -15,20 +15,190 @@ btn.on('click', function(e) {
 
 });
 
+////////////////////////////////////////////////////////////////////////
+
+function initMobileDescription() {
+	const description = document.querySelector(
+		'.product-item-description'
+	);
+
+	if (!description) {
+		return;
+	}
+
+	const limit = 180;
+
+	// Сохраняем полный текст только один раз.
+	if (!description.dataset.fullText) {
+		description.dataset.fullText =
+			description.textContent.trim();
+	}
+
+	const fullText = description.dataset.fullText;
+
+	let button = document.querySelector(
+		'.product-description-toggle'
+	);
+
+	if (!button) {
+		button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'product-description-toggle';
+
+		description.insertAdjacentElement(
+			'afterend',
+			button
+		);
+	}
+
+	// На десктопе выводим полный текст без кнопки.
+	if (window.innerWidth > 576) {
+		description.textContent = fullText;
+		description.classList.remove('is-expanded');
+		button.hidden = true;
+
+		return;
+	}
+
+	// Если текст и так короткий.
+	if (fullText.length <= limit) {
+		description.textContent = fullText;
+		button.hidden = true;
+
+		return;
+	}
+
+	button.hidden = false;
+
+	const shortText = fullText
+		.slice(0, limit)
+		.replace(/\s+\S*$/, '')
+		.trim();
+
+	const renderDescription = function (expanded) {
+		description.classList.toggle(
+			'is-expanded',
+			expanded
+		);
+
+		description.textContent = expanded
+			? fullText
+			: shortText + '…';
+
+		button.innerHTML = expanded
+			? `
+                <span>Згорнути</span>
+                <span class="product-description-toggle__arrow">
+					<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
+					  <path d="M1 3L5.5 8L10 3" stroke="#525252" stroke-width="2" stroke-linecap="round"/>
+					</svg>
+				</span>
+              `
+			: `
+                <span>Читати більше</span>
+                <span class="product-description-toggle__arrow">
+					<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
+					  <path d="M1 3L5.5 8L10 3" stroke="#525252" stroke-width="2" stroke-linecap="round"/>
+					</svg>
+				</span>
+              `;
+
+		button.setAttribute(
+			'aria-expanded',
+			String(expanded)
+		);
+	};
+
+	renderDescription(
+		description.classList.contains('is-expanded')
+	);
+
+	if (!button.dataset.initialized) {
+		button.dataset.initialized = 'true';
+
+		button.addEventListener('click', function () {
+			const expanded =
+				button.getAttribute('aria-expanded') === 'true';
+
+			renderDescription(!expanded);
+		});
+	}
+}
+
+document.addEventListener(
+	'DOMContentLoaded',
+	initMobileDescription
+);
+
+window.addEventListener(
+	'resize',
+	initMobileDescription
+);
+
 /////////////////////////////////////////////////////////////////////////
 
-    // const bottom_line_cell = document.querySelector('.bottom-line-cell');
-	// let bottom_position = 0;
-	//
-	// if (bottom_line_cell) {
-	// 	let box = bottom_line_cell.getBoundingClientRect();
-	// 	const computedStyles = window.getComputedStyle(bottom_line_cell);
-	// 	// console.log(box);
-	// 	bottom_position = computedStyles.top;
-	// 	console.log(bottom_position);
-	// 	const banner = document.querySelector('.main-page');
-	// 	banner.style.top = parseFloat(computedStyles.top) + 'px';
-	// }
+function initProductInfoTables() {
+	document.querySelectorAll('.table-info').forEach(function (wrapper) {
+		const table = wrapper.querySelector('table');
+		const rows = wrapper.querySelectorAll('tbody tr');
+
+		if (!table || rows.length <= 6) {
+			return;
+		}
+
+		// Защита от повторного создания кнопки.
+		if (wrapper.querySelector('.table-info-show-all')) {
+			return;
+		}
+
+		wrapper.classList.add('table-info--collapsed');
+
+		const button = document.createElement('button');
+
+		button.type = 'button';
+		button.className = 'table-info-show-all';
+		button.setAttribute('aria-expanded', 'false');
+		button.innerHTML = `
+            <span class="table-info-show-all__text">
+                Показати всі
+            </span>
+            <span class="table-info-show-all__arrow" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 11 11" fill="none">
+				  <path d="M1 3L5.5 8L10 3" stroke="#525252" stroke-width="2" stroke-linecap="round"/>
+				</svg>
+            </span>
+        `;
+
+		button.addEventListener('click', function () {
+			const isExpanded = wrapper.classList.toggle(
+				'table-info--expanded'
+			);
+
+			wrapper.classList.toggle(
+				'table-info--collapsed',
+				!isExpanded
+			);
+
+			button.setAttribute(
+				'aria-expanded',
+				String(isExpanded)
+			);
+
+			button.querySelector(
+				'.table-info-show-all__text'
+			).textContent = isExpanded
+				? 'Згорнути'
+				: 'Показати всі';
+		});
+
+		table.insertAdjacentElement('afterend', button);
+	});
+}
+
+document.addEventListener(
+	'DOMContentLoaded',
+	initProductInfoTables
+);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -235,11 +405,6 @@ if (typeof first_lid_grab_time == 'undefined') {
 
 }
 
-
-function videonews_border_none() {
-	console.log('click');
-	$('.videonews').css('border', 'none');
-}
 
 $(document).ready(function () {
 	// let newDiv;

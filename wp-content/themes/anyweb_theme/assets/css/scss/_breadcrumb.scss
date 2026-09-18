@@ -1,11 +1,14 @@
 .bx-breadcrumb {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 16px;
   margin: 30px 0;
+  max-width: 100%;
+  overflow: hidden;
 
   @include down(#{$bp-xs}) {
-    margin: 24px 0 40px;
+    margin: 24px 0 32px;
   }
 }
 
@@ -13,6 +16,8 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  flex: 0 0 auto;
+  min-width: 0;
 
   span {
     color: var(--gray-dark);
@@ -26,8 +31,39 @@
       text-transform: uppercase;
     }
   }
+
+  a {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &::last-of-type {
+    flex: 1 1 0;
+
+    a {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
 }
 
 .kb_title {
   color: var(--gray-light);
+  min-width: 0;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  @include down(#{$bp-xs}) {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: calc(16px * 1.2);
+  }
 }

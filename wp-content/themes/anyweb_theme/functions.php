@@ -1907,6 +1907,26 @@ add_filter( 'woocommerce_account_menu_items', function ( $items ) {
     return $items;
 }, 99 );
 
+function schoolbook_trim_text( $text, $limit = 100 ) {
+    $text = trim( wp_strip_all_tags( $text ) );
+
+    if ( mb_strlen( $text, 'UTF-8' ) <= $limit ) {
+        return $text;
+    }
+
+    $text = mb_substr(
+        $text,
+        0,
+        $limit,
+        'UTF-8'
+    );
+
+    // Удаляем последнее неполное слово.
+    $text = preg_replace( '/\s+\S*$/u', '', $text );
+
+    return rtrim( $text, " \t\n\r\0\x0B,.;:-" ) . '…';
+}
+
 /**
  * УВЕДОМЛЕНИЕ ДЛЯ ПОЛЬЗОВАТЕЛЯ НА СТРАНИЦУ 'КОРЗИНА'
  */

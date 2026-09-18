@@ -10,9 +10,9 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see     https://woo.com/document/template-structure/
+ * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 3.3.1
+ * @version 9.3.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

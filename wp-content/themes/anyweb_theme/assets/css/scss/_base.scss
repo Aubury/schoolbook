@@ -457,20 +457,6 @@ main {
   }
 }
 
-.vidosik {
-  font-family: var(--fm-heading);
-  font-weight: normal;
-  color: white;
-  background-image: url('../image/cloud-big_new.png');
-  background-repeat: no-repeat;
-  background-size: contain;
-  display: inline-block;
-  line-height: 21px;
-  text-align: center;
-  padding: 15px;
-  width: 160px;
-}
-
 .anm-lady {
   position: absolute;
   width: 43px;
@@ -979,5 +965,14 @@ main {
 
   .catalog-title {
     margin-bottom: 24px;
+  }
+}
+
+.page-content {
+  @include flex-column;
+  gap: 132px;
+
+  @include down(#{$bp-xs}) {
+    gap: 88px;
   }
 }

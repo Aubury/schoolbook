@@ -1,0 +1,22 @@
+/* Error: Undefined mixin.
+ *    ,
+ * 70 | /     @include media(mobile-only) {
+ * 71 | |         padding-left: calc(0.5 * var(--global--spacing-horizontal));
+ * 72 | | 
+ * 73 | |         &:before {
+ * 74 | |             left: 0;
+ * 75 | |         }
+ * 76 | \     }
+ *    '
+ *   blockquote.scss 70:2  root stylesheet */
+
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: Undefined mixin.\a    \2577 \a 70 \2502  \250c      @include media(mobile-only) {\a 71 \2502  \2502          padding-left: calc(0.5 * var(--global--spacing-horizontal));\a 72 \2502  \2502  \a 73 \2502  \2502          &:before {\a 74 \2502  \2502              left: 0;\a 75 \2502  \2502          }\a 76 \2502  \2514      }\a    \2575 \a   blockquote.scss 70:2  root stylesheet";
+}
