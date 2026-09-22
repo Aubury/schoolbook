@@ -315,9 +315,9 @@ window.addEventListener('resize', changePlaceholder);
 			basketHTML =  '<span class="icon-block icon-red-backed"><span>';
 		}
 
-		$(element).hasClass('product-preorder') ? element.innerHTML = '<span>Перейти до кошика<span>' : element.innerHTML = basketHTML;
+		$(element).hasClass('product-preorder') ? element.innerHTML = '<span>У кошику<span>' : element.innerHTML = basketHTML;
 
-		// element.innerHTML = '<span>У кошику<span>'
+		element.innerHTML = '<span>У кошику<span>'
 		bubble.innerHTML = backResponse[0]
 		basket_link_wrap.innerHTML = backResponse[1]
 		element.href = "/cart"

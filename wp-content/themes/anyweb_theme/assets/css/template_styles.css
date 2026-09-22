@@ -726,11 +726,6 @@ blockquote.bxe-quote:after {
   font-family: "Open Sans", "Helvetica Neue", Arial, Helvetica, sans-serif;
 }
 
-textarea {
-  max-width: 100%;
-}
-
-
 .bxd-title,
 body.bx-opened {
   overflow: hidden;
@@ -2354,10 +2349,6 @@ input[type="radio"]:checked + span:before {
   height: 14px;
   top: -15px;
   right: -30px;
-}
-
-.modal-backdrop {
-  background-color: #015c7f;
 }
 
 #modal-main .modal-body {

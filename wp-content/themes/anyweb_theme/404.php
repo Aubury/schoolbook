@@ -13,11 +13,15 @@ get_header();
 	<main id="primary" class="site-main">
 
 		<section class="error-404 not-found">
+
 			<header class="page-header">
-				<h1 class="page-title"><?php esc_html_e( 'Oops! That page can&rsquo;t be found.', 'anyweb' ); ?></h1>
+                <div class="container">
+				    <h1 class="page-title"><?php esc_html_e( 'Oops! That page can&rsquo;t be found.', 'anyweb' ); ?></h1>
+                </div>
 			</header><!-- .page-header -->
 
 			<div class="page-content">
+                <div class="container">
 				<p><?php esc_html_e( 'It looks like nothing was found at this location. Maybe try one of the links below or a search?', 'anyweb' ); ?></p>
 
 					<?php
@@ -50,7 +54,7 @@ get_header();
 
 					the_widget( 'WP_Widget_Tag_Cloud' );
 					?>
-
+                </div>
 			</div><!-- .page-content -->
 		</section><!-- .error-404 -->
 

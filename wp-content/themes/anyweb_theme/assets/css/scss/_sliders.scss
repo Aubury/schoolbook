@@ -1436,7 +1436,8 @@
 }
 
 ////////////////////////////////
-.viewed-catalog-section {
+.viewed-catalog-section,
+.recommendations-product-page {
   position: relative;
   padding-bottom: 86px;
   width: 100%;
@@ -1453,7 +1454,7 @@
     padding-bottom: 0;
   }
 
-  &.has-more-four-slides {
+  &.has-slider-arrows {
     &::before {
       content: '';
       position: absolute;
@@ -1488,7 +1489,7 @@
 
   }
 
-  &.has-less-four-slides {
+  &.has-no-slider-arrows {
     position: relative;
     background-image: url('../image/bg-dotter-no-slider.png');
     background-size: 100% calc(100% - 35px);

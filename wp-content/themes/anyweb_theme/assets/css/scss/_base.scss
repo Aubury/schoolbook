@@ -339,8 +339,28 @@ main {
 
   &.opened {
    display: block;
-    position: absolute;
-    top: 0;
+   position: absolute;
+   top: 0;
+  }
+}
+
+.modal-backdrop {
+  background-color: rgba(0,0,0,0.4);
+
+  &.show {
+    opacity: unset;
+  }
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 24px 32px;
+  gap: 24px;
+
+  &.product-description-price-section {
+    align-items: center;
+    justify-content: center;
   }
 }
 

@@ -334,7 +334,9 @@ get_header();
                                         $basketHTML= '<span class="text-block">До кошика</span>';
 
                                         if ($in_cart) :
-                                            $basketHTML= '<span class="text-block">У кошику</span><span class="icon-block icon-red-backed"></span>';
+                                            $basketHTML= '<span class="text-block">У кошику</span>
+                                                             <span class="icon-block icon-red-backed">                                    
+                                                            </span>';
                                         elseif ($custom_preorder_countdown > $current_date )  :
                                             $basketHTML= '<span class="text-block">Замовити</span><span class="icon-block"></span>';
                                         else :
@@ -353,9 +355,20 @@ get_header();
                                              </span>
                                         </div>
 
-                                        <a class="product-item-detail-buy-button add_to_cart_ajx" id="<?php echo $post->ID; ?>" href="">
-                                            <?php echo $basketHTML; ?>
-                                        </a>
+                                        <?php
+                                            if ($custom_preorder_countdown > $current_date ) : ?>
+                                                <button type="button" class="product-item-detail-buy-button" data-bs-toggle="modal" data-bs-target="#preorder">
+                                                    <?php echo $basketHTML; ?>
+                                                </button>
+                                            <?php
+                                            else : ?>
+                                                <a class="product-item-detail-buy-button ga_buy_btn_detail add_to_cart_ajx" id="<?php echo $post->ID; ?>" href="">
+                                                    <?php echo $basketHTML; ?>
+                                                </a>
+                                            <?php
+                                            endif;
+                                        ?>
+
                                     </div> <!-- end .product-item-detail-info-container  -->
                                 </div>
 
@@ -519,8 +532,6 @@ get_header();
                                     </div> <!-- end of .table-info -->
                                 </div> <!-- end of .col-md-6 -->
 
-
-
                         </div> <!-- end of .description-and-info -->
 
                     </div>  <!-- end of .product-content-section -->
@@ -535,11 +546,11 @@ get_header();
                     if ( ! empty( $slider ) ): ?>
                         <div class="section">
                             <div class="container">
-                                <div class="recommendations product-page">
+                                <div class="recommendations-product-page js-slick-slider">
                                     <h2>Ва<span class="color-blue">м</span>
                                         м<span class="color-orange">о</span>же
                                         сподо<span class="color-blue">б</span>атися</h2>
-                                    <div class="slider slick-slider">
+                                    <div class="slider slick-sliders">
                                         <?php
                                         foreach ( $slider as $cnt => $item ):
                                             echo so_render_product($item['rcmnd_product_id']);
@@ -560,7 +571,7 @@ get_header();
                     : $viewed_class_slider = 'has-less-four-slides';
 
                 if( $viewed_products ) : ?>
-                    <div class="viewed-catalog-section <?php echo $viewed_class_slider; ?>" data-entity="container-1">
+                    <div class="viewed-catalog-section js-slick-slider <?php echo $viewed_class_slider; ?>" data-entity="container-1">
                         <h2>Р<span class="color-blue">а</span>ніше пере<span class="color-orange">г</span>лянуті</h2>
 
                            <div class="slider slick-slider">
@@ -599,13 +610,15 @@ get_header();
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <h3 class="modal-title text-center" id="preorderModalLabel">
-                        ВІДПРАВЛЕННЯ ОЧІКУЄТЬСЯ З <br><span><?php echo date('d.m.Y', strtotime($custom_preorder_countdown)) ?></span>
+                <div class="modal-body product-description-price-section">
+                    <h3 class="text-center" id="preorderModalLabel">
+                        <span class="color-blue">ВІДПРАВЛЕННЯ</span>
+                        ОЧІКУЄТЬСЯ З <br>
+                        <span class="color-blue"><?php echo date('d.m.Y', strtotime($custom_preorder_countdown)) ?></span>
                     </h3>
                     <!-- Форма -->
-                    <div class="mt-2 product-item-detail-info-container d-flex align-items-center justify-content-center">
-                        <a class="product-preorder ga_buy_btn_detail btn btn-primary product-item-detail-buy-button add_to_cart_ajx"
+                    <div class="product-item-detail-info-container d-flex align-items-center justify-content-center">
+                        <a class="product-preorder ga_buy_btn_detail product-item-detail-buy-button add_to_cart_ajx"
                            id="<?php echo $post->ID ?>"
                            href="">
                             <span>ЗАМОВИТИ</span>
