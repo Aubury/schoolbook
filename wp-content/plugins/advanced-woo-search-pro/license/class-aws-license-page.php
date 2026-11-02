@@ -259,7 +259,7 @@ if ( ! class_exists( 'AWS_License_Page' ) ) :
 
                                     echo $plugin_changelog;
 
-                                    echo '<a href="https://advanced-woo-search.com/guide/premium-version/" target="_blank">' . esc_html__( 'View all changelog', 'advanced-woo-search' ) . '</a>';
+                                    echo '<a href="https://kramakit.com/guide/premium-version/" target="_blank">' . esc_html__( 'View all changelog', 'advanced-woo-search' ) . '</a>';
 
                                 echo '</td>';
 

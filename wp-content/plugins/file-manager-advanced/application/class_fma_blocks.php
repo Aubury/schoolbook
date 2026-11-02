@@ -444,7 +444,7 @@ class class_fma_blocks
 						file_manager_advanced_popup(
 							'https://advancedfilemanager.com/pricing/?utm_source=plugin&utm_medium=blocks_feature&utm_campaign=plugin',
 							'Get advanced features with Advanced File Manager Pro!',
-							'Get Pro Now'
+							'Upgrade Now'
 						);
 					} else {
 						// Fallback if popup function not available

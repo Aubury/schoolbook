@@ -1,44 +1,26 @@
 <?php
 
-/**
- *
- * @package templates/default
- */
+
 
 defined('ABSPATH') || defined('DUPXABSPATH') || exit;
 
+use Duplicator\Installer\Core\InstState;
 use Duplicator\Installer\Core\Params\PrmMng;
-use Duplicator\Installer\Utils\InstallerUpsell;
 
 $paramsManager = PrmMng::getInstance();
 ?>
-<div class="help-target">
-    <?php //DUPX_View_Funcs::helpIconLink('step3'); ?>
-</div>
-<div class="hdr-sub3">
-    WP-Config File Setup
-    <sup
-        class="pro-flag pro-flag-close"
-        data-tooltip-title="Upgrade Features"
-        data-tooltip="<?php echo DUPX_U::esc_attr(
-            '<p>Quickly and easily edit all your WordPress wp-config.php settings directly from the installer with Duplicator Pro</p>' .
-            InstallerUpsell::getCampaignTooltipHTML(array('utm_medium' => 'installer', 'utm_content' => "WP-Config File Setup"))
-        ); ?>"
-        aria-expanded="false">*
-    </sup>
-</div>
-<div  class="dupx-opts">
+
+<div class="hdr-sub3">SETTINGS: For wp-config.php file</div>
+<div  class="dupx-opts margin-top">
     <?php
-    if (DUPX_InstallerState::isRestoreBackup()) {
+    if (InstState::isRestoreBackup()) {
         dupxTplRender('parts/restore-backup-mode-notice');
     } else {
         ?>
-
-        <small>
+        <p>
             See the <a href="https://wordpress.org/support/article/editing-wp-config-php/" target="_blank">WordPress documentation</a>
-            for more information and specifications.  All items are fully editable in Duplicator Pro.
-        </small>
-
+            <i class="fas fa-external-link-square-alt"></i> for more information and specifications.
+        </p>
         <div class="hdr-sub3 margin-top-2">CONTENT <small class="silver">Posts/Pages</small></div>
         <?php
         $paramsManager->getHtmlFormParam(PrmMng::PARAM_WP_CONF_DISALLOW_FILE_EDIT);

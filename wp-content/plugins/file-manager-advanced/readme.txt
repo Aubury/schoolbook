@@ -1,20 +1,20 @@
-=== Advanced File Manager – Ultimate File Manager for WordPress And Document Library Solution ===
+ === Advanced File Manager – Ultimate File Manager for WordPress And Document Library Solution ===
 Contributors: wpexpertsio, saadiqbal
 Tags: file-manager, wp-file-manager, document management, ftp, advance-file-manager
 Requires at least: 4.0
-Tested up to: 7.0
+Tested up to: 7.1.3
 Requires PHP: 7.0
-Stable tag: 5.4.12
+Stable tag: 6.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Use Advanced File Manager to manage WordPress files, create archives, and build document libraries—all directly from your WordPress dashboard!
+Use Advanced File Manager to manage WordPress files, create archives, monitor storage limits, and build document libraries all directly from your WordPress dashboard!
 
 == Description ==
 
 [Buy Pro](https://advancedfilemanager.com/pricing/?utm_source=wp_org&utm_medium=readme&utm_campaign=buy_now) | [Live Demo](https://filemanageradvanced-demo.instawp.xyz/?utm_source=wp_org&utm_medium=readme&utm_campaign=live_demo) | [Documentation](https://advancedfilemanager.com/documentation/?utm_source=wp_org&utm_medium=readme&utm_campaign=documentation) | [Support](https://objectsws.atlassian.net/servicedesk/customer/portal/37)
 
-**Manage WordPress files and create document libraries with ease!**
+**Manage WordPress files and folders with ease all from your dashboard!**
 
 Are you tired of managing your WordPress site files via FTP clients or hosting control panels like cPanel, hPanel, Plesk, DirectAdmin, or other hosting panels? 😖
 
@@ -24,17 +24,15 @@ With this WordPress file manager plugin, you can perform multiple file operation
 
 The best part is that this WordPress file manager plugin also allows you to access files outside of the WordPress root directory, which means you can create a fully functional document library with download controls as well. 😃
 
-
 Whether you are a developer or a beginner, this file management plugin has something for everyone.
 
-
 ### ⚡  Key Features That Make This WordPress File Manager a Complete File Management Solution!
+
+✅ **Storage Limit Dashboard:** Monitor storage usage and access file manager settings directly from the dashboard for convenient file management.
 
 ✅ **Flexible Root Directory Access:** You can easily set and modify the root directory path, which allows you to access specific files according to your development requirements.
 
 ✅ **Access to Internal and External Directories:** Gain complete control over files located both within and outside your WordPress root directory, making file management more flexible.
-
-✅ **Frontend File Management [Pro]:** Use the dedicated Advanced File Manager block or shortcode to provide logged-in and non-logged-in users access to manage files on the front end. You can also control access by user roles and permissions.
 
 ✅ **Complete File Operations:** Perform all essential file operations such as copy, paste, rename, edit, delete, upload, download, and even create an archive (Zip archive) directly from your WordPress dashboard.
 
@@ -56,11 +54,13 @@ Whether you are a developer or a beginner, this file management plugin has somet
 
 ✅ **Keyboard Shortcuts:** Speed up your file management tasks by using a range of keyboard shortcuts for common operations.
 
-✅ **Debug in Code Editor:** Identify and fix issues directly in the file editor (code editor) to prevent fatal errors and ensure smooth site performance.
+✅ **Code Editor:** Edit and customize files directly within the File Manager using the built-in code editor.
 
 ✅ **Media Previews:** Simplify media file management by previewing video and audio files instantly.
 
 ✅ **Large Files & Folder Upload Support:** The file manager allows you to upload large files and folders quickly by uploading them in chunks, ensuring a smoother file transfer process.
+
+✅  **Maximum Upload File Size Limit:** Set the maximum upload file size through Advanced File Manager settings to control file uploads according to your requirements. The effective limit is also subject to your WordPress and hosting server configurations.
 
 ✅ **Advanced File Search and Sorting:** Quickly find and organize your files with a smart file organizer for WordPress.
 
@@ -70,7 +70,7 @@ Whether you are a developer or a beginner, this file management plugin has somet
 
 ✅ **Multi-Selection:** Select multiple files or folders at once to perform bulk operations and improve folder structure.
 
-✅ **Responsive Design:** The plugin’s responsive design ensures that it works flawlessly on tablets and smartphones, providing a consistent experience across all devices.
+✅ **Seamless UI/UX:** Enjoy a streamlined interface with intuitive navigation and convenient access to file management tools, making everyday file operations easier from your WordPress dashboard.
 
 ✅ **Image and File Editing:** Edit images and files directly within the plugin, making quick changes without needing additional tools.
 
@@ -82,29 +82,35 @@ Whether you are a developer or a beginner, this file management plugin has somet
 
 ✅ **Email Notifications:** Get notified by email whenever a file or folder is created or deleted. Admins receive alerts for this activity, and users are informed when their files are removed, keeping everyone updated without needing to check manually.
 
-✅ **Slack Notifications:** Stay informed right in Slack when files or folders are added or deleted. Admins get instant updates, helping teams respond quickly and stay in sync without switching tools.
+✅ **Flexible View Options (Grid/List):** Switch between grid and list views for better navigation of file manager and document libraries/download manager that adapts to various user preferences.
 
-###⚡ **Manage and Display Document Libraries and File Manager in Front-end [Pro Version]— Key Features**
+✅ **PHP Debug in Code Editor:**Enables developers to run and debug PHP code directly inside the file manager’s editor for quick troubleshooting.
 
-The premium version of Advanced File Manager unlocks even more possibilities by providing a range of customizable features for managing WordPress files, creating document libraries, and offering cloud integration with WordPress file manager.
+###⚡ **Manage and Display Document Libraries and File Manager on the Frontend [Pro] — Key Features**
+
+The premium version of Advanced File Manager unlocks even more possibilities by providing a range of customizable features for managing WordPress files, creating document libraries, and offering cloud integration with the WordPress file manager.
 Below are the key premium features:
 
+
+✔️ **Frontend File Management:** Allow users to manage files from your website’s frontend using the dedicated Advanced File Manager block or shortcode.
+
+✔️ **Role-Based Access Control:** Control file management access based on WordPress user roles and permissions.
+
+✔️ **Slack Notifications:** Receive Slack notifications when files or folders are added or deleted to keep your team informed of file management activity.
 
 ✔️ **Frontend Access for Logged-In Users:** Enable a secure frontend file manager for logged-in users.
 
 ✔️ **Elementor, Divi, and WordPress Block Support:**  Display your Document library or file manager on the front end of your favorite page builder via Advanced File Manager Block or shortcode.
 
-✔️ **PHP Debug in Code Editor:**Enables developers to run and debug PHP code directly inside the file manager’s editor for quick troubleshooting.
-
 ✔️ **WordPress Database Access (Adminer Data Manager):**With WP Adminer integration, you can securely access and manage the WordPress database.
 
-✔️ **File Logs:** Get detailed logs of complete file operations, including Log ID, User, Date & Time, Event Type, File Path, File Type, and IP Address. It helps you track changes, errors, and activities for better transparency and auditing.
+✔️ **File Logs:** Get detailed logs of complete file operations, including Log ID, User, Date & Time, Event Type, File Path, File Type, and IP Address. Helps you track changes, errors, and activity for better transparency and auditing.
 
 ✔️ **Public File Access for Visitors:** Enable visitors (non-logged-in users) to access resources through a structured document library.
 
 ✔️ **Role-Based File Access Control:** Implement role-based access control to restrict file access by user roles, allowing you to define who can view, edit, or delete files on your website.
 
-✔️ **Individual User Access Control:** Control file access access on a user-by-user basis, blocking or restricting specific users from accessing particular files or folders.
+✔️ **Individual User Access Control:** Control file access on a user-by-user basis, blocking or restricting specific users from accessing particular files or folders.
 
 ✔️ **Private Folder Access:** Create secure folders within your document library for specific users or groups, ensuring only authorized individuals can access sensitive files.
 
@@ -112,37 +118,33 @@ Below are the key premium features:
 
 ✔️ **Personalized User Folders:** Assign users personal folders using this flexible file organizer for WordPress, helping them organize and manage their files in a secure, individualized space.
 
-✔️ **Themes Selection:** Choose from a variety of themes to match the front-end file manager and document library/download manager with your site’s design and branding.
+✔️ **Theme Selection:** Choose from a variety of themes to match the front-end file manager and document library/download manager with your site’s design and branding.
 
 ✔️ **Multilingual Support for Global Access:** Enable language customization to present the file manager interface in your visitors’ preferred language, ideal for global users.
 
 ✔️ **Operations Control for Users:** Manage file access permissions to control which actions users can perform, such as uploading, downloading, or deleting files, via shortcode for precise file management.
 
-✔️ **Flexible View Options (Grid/List):** Switch between grid and list views for better navigation of file manager and document libraries/download manager that adapts to various user preferences.
+✔️ **AI Integration:** Use the built-in AI assistant in the Code Editor to generate, edit, and customize code without leaving the File Manager.
 
-✔️ **Dropbox:** Enable seamless cloud storage integration with Dropbox to sync files directly from your dashboard.
+✔️ **Dropbox:** Connect Dropbox to WordPress to manage and sync files directly from your dashboard.
 
-✔️ **Google Drive:** Improve productivity with cloud storage integration for Google Drive 
+✔️ **Google Drive:** Connect Google Drive to WordPress to access and manage cloud files from the File Manager.
 
-✔️ **OneDrive:**Use cloud storage integration to manage OneDrive files inside WordPress.
+✔️ **OneDrive:** Integrate Microsoft OneDrive to manage cloud-stored files directly from WordPress.
 
-✔️ **Amazon S3:**Activate cloud storage integration to connect Amazon S3 with WordPress.
+✔️ **Amazon S3:** Connect Amazon S3 to WordPress to manage files stored in your cloud storage buckets.
 
-✔️ **pCloud:** Seamlessly connect your pCloud account to WordPress and manage, upload, and organize files directly from the File Manager, no external tabs or tools required.
+✔️ **pCloud:** Connect pCloud to upload, organize, and manage cloud files directly from the File Manager.
 
-✔️ **Cloudflare R2:** Seamlessly connect your Cloudflare R2 storage to WordPress and manage, upload, and organize files directly from the File Manager, with no external tabs or tools required.
+✔️ **Cloudflare R2:** Connect Cloudflare R2 to manage files in your cloud storage buckets from WordPress.
 
-✔️ **Digital Ocean (Coming Soon):** Seamlessly connect your DigitalOcean Spaces account to WordPress and manage, upload, and organize files directly from the File Manager, no external tabs or tools required.
+✔️ **Wasabi Hot Cloud Storage:** Connect Wasabi to manage files stored in your cloud storage buckets directly from WordPress.
 
+✔️ **Google Cloud Storage:** Integrate Google Cloud Storage to access and manage files stored in your cloud buckets.
 
-✔️ **pCloud:** Seamlessly connect your pCloud account to WordPress and manage, upload, and organize files directly from the File Manager, no external tabs or tools required.
+✔️ **DigitalOcean Spaces (Coming Soon):** Connect DigitalOcean Spaces to manage files stored in your cloud storage buckets from WordPress.
 
-✔️ **Cloudflare R2:** Seamlessly connect your Cloudflare R2 storage to WordPress and manage, upload, and organize files directly from the File Manager, with no external tabs or tools required.
-
-✔️ **Digital Ocean (Coming Soon):** Seamlessly connect your DigitalOcean Spaces account to WordPress and manage, upload, and organize files directly from the File Manager, no external tabs or tools required.
-
-
-✔️ **AI Integration:** Effortlessly enhance your coding experience with the built-in AI Agent in the Code Editor—create, edit, and customize code instantly without leaving the File Manager.
+✔️ **Azure Blob Storage (Coming Soon):** Connect Azure Blob Storage to manage files stored in your Azure storage containers.
 
 
 **Get ✨[Advanced File Manager Pro](https://advancedfilemanager.com/pricing/?utm_source=wp_org&utm_medium=afm_product_page)✨ Now!**
@@ -150,8 +152,8 @@ Below are the key premium features:
 
 ### Benefits of Using a WordPress File Manager Plugin Instead of an FTP
 
- Using a WordPress file manager like Advanced File Manager offers numerous advantages over traditional FTP tools.:
-Ease of Use: No need for technical expertise or additional software—everything is accessible from your WordPress dashboard.
+ Using a WordPress file manager like Advanced File Manager offers numerous advantages over traditional FTP tools. 
+**Ease of Use:** No need for technical expertise or additional software; everything is accessible from your WordPress dashboard.
 
 * **No FTP Configuration:** Avoid the hassle of configuring FTP settings or dealing with firewalls and port issues.
 
@@ -171,7 +173,7 @@ Here are some of the compelling reasons to install the Advanced File Manager plu
 
 🌟 **Effortless File Management**
 
-* Manage files directly from the WordPress dashboard.
+* Access file management tools and settings from the dedicated dashboard.
 
 * Perform file operations with a few clicks.
 
@@ -223,6 +225,8 @@ Here are some of the compelling reasons to install the Advanced File Manager plu
 
 * Upload large files and folders with ease.
 
+* Set the maximum upload file size through the File Manager settings. 
+
 
 🌟 **High-Performance & User-Friendly Interface**
 
@@ -235,10 +239,12 @@ Here are some of the compelling reasons to install the Advanced File Manager plu
 * Make quick modifications using the integrated file editor (code editor).
 
 ### AI-Powered Coding Assistant (NEW)
-For developers, we have added an AI-powered coding assistant right into the code editor. You can now write functions, generate CSS or PHP, debug safely, and get instant explanations. It’s like having a coding partner, right inside your WordPress dashboard.
+For developers, we added an AI-powered coding assistant directly in the code editor. You can now write functions, generate CSS or PHP, debug safely, and get instant explanations. It’s like having a coding partner, right inside your WordPress dashboard.
 ### ☁️ **Cloud Apps Integration with WordPress**
 
 You can integrate your favorite cloud apps with WordPress to manage files and document libraries. The list of cloud storage apps is as follows:
+
+* [Wasabi Hot Cloud Storage](https://advancedfilemanager.com/pricing/?utm_source=wp_org&utm_medium=readme&utm_campaign=wasabi) **(Newly Added)**
 
 * [DropBox](https://advancedfilemanager.com/pricing/?utm_source=wp_org&utm_medium=readme&utm_campaign=dropbox)
 
@@ -276,7 +282,7 @@ To install and use the Advanced File Manager plugin, make sure that your WordPre
 
 ### 🔑 **How to Use/Install the Advanced File Manager Plugin**
 
-Using the Advanced File Manager plugin is straightforward. Here’s a step-by-step guide to the install the WordPress file manager plugin:
+Using the Advanced File Manager plugin is straightforward. Here’s a step-by-step guide to install the WordPress file manager plugin:
 
 **Step #1: Install the Plugin:**
 
@@ -339,8 +345,14 @@ Yes, you can access folders outside the WordPress root directory. Just go to the
 
 Yes, the plugin allows you to connect supported cloud storage apps like Dropbox, Google Drive, OneDrive, Amazon S3, pCloud, Cloudflare R2, and Google Cloud. Once connected, you can browse, upload, download, and organize your cloud files directly from the WordPress dashboard without switching tabs or using external tools.
 
+= What is the Advanced File Manager Dashboard? =
+The Advanced File Manager Dashboard provides a convenient overview of your file management tools and settings in one place, helping you manage files and configure the plugin more efficiently.
+
 = Can I create a ZIP archive of any folder or file and download it? =
 Yes, you can zip and extract archives of any folder or file instantly.
+
+= How can I set the maximum upload file size? =
+You can configure the maximum upload file size through the Max Upload Size Limit setting in Advanced File Manager settings. Set the limit according to your requirements, keeping in mind that your WordPress and hosting server upload limits may also apply.
 
 = Does the plugin work like an FTP client? =
 Yes, the plugin offers a similar experience to FTP clients. You can preview, edit, and manage files or folders directly from your WordPress dashboard without using any external software.
@@ -353,7 +365,7 @@ Please report security bugs found in the source code of the Advanced File Manage
 If you face any issues, reach out to our expert support team. You can contact us directly via the support page for prompt assistance.
 
 = Can I manage files on the front end of my website? =
-Yes, with the Pro version, you can manage files using a powerful frontend file manager for logged-in and non-logged-in users using shortcodes.
+Yes, with the Pro version, you can manage files using a powerful front-end file manager via shortcodes for logged-in and non-logged-in users.
 
 = Is Advanced File Manager a secure alternative to FTP? =
 Yes, Advanced File Manager is a secure alternative. It offers features like user role restrictions, path privacy, and controlled file operations to enhance site security.
@@ -368,7 +380,7 @@ Yes, you can preview PDFs, images, and media files directly in the file manager 
 Yes, the plugin supports chunked uploads, which allows you to upload large files and entire folders without issues.
 
 = Can I use Advanced File Manager to manage document libraries? =
-Yes, with the Pro version and Shortcode Addon, you can create and manage document libraries with flexible access control.
+Yes, with the Pro version and the Blocks Addon, you can create and manage document libraries with flexible access control.
 
 = Can I control file access based on user roles? =
 Yes, the Pro version lets you set role-based access control, ensuring that only authorized users can view or manage files.
@@ -397,29 +409,47 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 
 == Screenshots ==
 
-1. File Manager View - Light Theme.
-2. File Manager View - Dark Theme.
-3. Settings
-4. Image Editor
-5. PDF Preview
-6. Compress Files and Folders
-7. Download Files
-8. ACE Editor
-9. Code Mirror
-10. Multiple Themes for File Manager
-11. Multiple Languages for File Manager
+1. Personalized AFM Dashboard.
+2. File and Folder Management.
+3. AI Code Editor (Code Pilot)
+4. Frontend Block Support
+5. File Activity Notifications
+6. Cloud Storage Integrations
+7. Built-in Code Editor (ACE)
+8. File Manager Themes
+9. Php Code debug 
+10. File Preview (PDF)
+11. File Manager Configuration Settings.
+12. Frontend Block Preview.
+13. Role-based Access Control Block
+14. Archive File 
+15. File Activity Logs
+16. Max Upload Limit & File Upload
+17. DB Adminer - Database Management.
+18. Advanced Search & Sorting
 
 
 == Changelog ==
 
-= 5.4.12 - June 09, 2026 =
+= 6.0.0 - Oct 14, 2026 =
+* New – Introduced a redesigned dashboard featuring hosting storage statistics, an overview of file management, and a quick setup guide.
+* New – Introduced an updated admin UI for settings, integrations, logs, and notifications.
+* Update – Updated the Freemius SDK to the latest version.
+* Security – Improved access control to strengthen plugin security and protect against unauthorized access.
+
+5.4.13 – August 12, 2026
+* Security Fix – Fixed a missing authorization vulnerability in file manager AJAX actions.
+* Security Fix – Fixed a Reflected Cross-Site Scripting (XSS) vulnerability through the `postMessage` `soundFile` parameter.
+* Fix – Resolved an issue preventing files from being deleted when the folder name contains an apostrophe.
+* Fix – Fixed an error that occurred when copying and pasting folders.
+
+5.4.12 – June 09, 2026
 * Fix – Resolved compatibility issues with WordPress 7.0.
 * Fix – Fixed an issue preventing direct PDF downloads for non-logged-in users.
-* Fix – Resolved the `Cannot redeclare fpassthru()` fatal error.
+* Fix – Resolved the Cannot redeclare fpassthru() fatal error.
 * Fix – Corrected strings using an incorrect text domain and updated hard-coded strings for proper localization.
 * Fix – Resolved an issue where the File Manager plugin could modify PHP source code when files were opened and saved through the plugin editor.
 * Fix – Updated the elFinder library to address a security vulnerability.
-
 
 = 5.4.11 - March 18, 2026 =
 * Fix – Security enhancement.

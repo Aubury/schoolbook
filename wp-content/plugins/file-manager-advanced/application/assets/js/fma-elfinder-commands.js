@@ -5,6 +5,42 @@
     $(document).ready(function () {
         if (typeof elFinder !== 'undefined' && elFinder.prototype && elFinder.prototype.commands) {
 
+            // AFM-989: paste.js blocks PHP via uploadMimeCheck (uploadDeny). Allow paste/copy
+            // of existing PHP files; real uploads still go through the upload command checks.
+            if (elFinder.prototype.commands.paste && !elFinder.prototype.commands.paste._afmPhpPastePatched) {
+                var OrigPaste = elFinder.prototype.commands.paste;
+                elFinder.prototype.commands.paste = function () {
+                    OrigPaste.apply(this, arguments);
+                    var origExec = this.exec;
+                    this.exec = function (select, cOpts) {
+                        var fm = this.fm;
+                        var origCheck = fm.uploadMimeCheck;
+                        fm.uploadMimeCheck = function (mime, target) {
+                            if (mime && String(mime).toLowerCase().indexOf('php') !== -1) {
+                                return true;
+                            }
+                            return origCheck.call(fm, mime, target);
+                        };
+                        var ret;
+                        try {
+                            ret = origExec.call(this, select, cOpts);
+                        } catch (err) {
+                            fm.uploadMimeCheck = origCheck;
+                            throw err;
+                        }
+                        if (ret && typeof ret.always === 'function') {
+                            ret.always(function () {
+                                fm.uploadMimeCheck = origCheck;
+                            });
+                        } else {
+                            fm.uploadMimeCheck = origCheck;
+                        }
+                        return ret;
+                    };
+                };
+                elFinder.prototype.commands.paste._afmPhpPastePatched = true;
+            }
+
             // Icon CSS
             var pluginUrl = (typeof afm_object !== 'undefined') ? afm_object.plugin_url : '';
             if (!pluginUrl) {
@@ -84,6 +120,15 @@
                         return -1;
                     }
 
+                    // AFM-989: hide Replace for PHP (and other write:false / locked files)
+                    // shown to non-admins and shortcode guests — overwrite must stay blocked.
+                    if (file.write === false || file.locked) {
+                        return -1;
+                    }
+                    if (file.name && /\.(php\d?|phtml)$/i.test(file.name)) {
+                        return -1;
+                    }
+
                     return fm.isCommandEnabled('upload', sel[0]) ? 0 : -1;
                 };
 
@@ -106,14 +151,15 @@
                             formData.append('cmd', 'upload');
                             formData.append('target', file.phash);
                             formData.append('overwrite', '1');
+                            formData.append('hashes[' + file.name + ']', sel[0]);
+                            formData.append('mtime[]', selectedFile.lastModified ? Math.round(selectedFile.lastModified / 1000) : 0);
                             formData.append('upload[]', selectedFile, file.name);
 
                             // Add custom data (nonce, action, etc. required by WordPress and the plugin)
-                            var customData = fm.options.customData || {};
+                            var customData = fm.customData || fm.options.customData || {};
                             if (typeof customData === 'function') {
                                 customData = customData('upload', fm);
                             }
-
 
                             for (var key in customData) {
                                 if (customData.hasOwnProperty(key)) {
@@ -123,6 +169,8 @@
                                 }
                             }
 
+                            var ajaxHeaders = $.extend({}, fm.customHeaders || {});
+
                             // Use jQuery.ajax directly for upload to avoid elFinder request stripping FormData issues
                             $.ajax({
                                 url: fm.options.url,
@@ -130,6 +178,7 @@
                                 data: formData,
                                 processData: false,
                                 contentType: false,
+                                headers: ajaxHeaders,
                                 beforeSend: function () {
                                     fm.notify({ type: 'upload', cnt: 1, hide: false });
                                 },
@@ -163,6 +212,47 @@
                                 },
                                 error: function (xhr, status, error) {
                                     fm.notify({ type: 'upload', cnt: -1, hide: true });
+                                    var response = null;
+                                    try {
+                                        response = JSON.parse(xhr.responseText);
+                                    } catch (e) { }
+
+                                    if (xhr.status === 403 && response && response.csrfReload && typeof fm.refreshCsrfToken === 'function') {
+                                        fm.refreshCsrfToken().done(function () {
+                                            $.ajax({
+                                                url: fm.options.url,
+                                                type: 'POST',
+                                                data: formData,
+                                                processData: false,
+                                                contentType: false,
+                                                headers: $.extend({}, fm.customHeaders || {}),
+                                                success: function (retryData) {
+                                                    fm.notify({ type: 'upload', cnt: -1, hide: true });
+                                                    if (typeof retryData === 'string') {
+                                                        try {
+                                                            retryData = JSON.parse(retryData);
+                                                        } catch (e) { }
+                                                    }
+                                                    if (retryData && retryData.error) {
+                                                        fm.error(retryData.error);
+                                                    } else {
+                                                        fm.notify({ type: 'info', msg: 'File replaced successfully!', hide: 3000 });
+                                                        if (typeof fm.exec === 'function') {
+                                                            fm.exec('reload');
+                                                        }
+                                                        if (typeof fm.sync === 'function') {
+                                                            fm.sync();
+                                                        }
+                                                    }
+                                                },
+                                                error: function () {
+                                                    fm.notify({ type: 'error', msg: 'Failed to replace file.', hide: 3000 });
+                                                }
+                                            });
+                                        });
+                                        return;
+                                    }
+
                                     console.error('FMA Replace Error:', error, xhr.responseText);
                                     fm.notify({
                                         type: 'error',

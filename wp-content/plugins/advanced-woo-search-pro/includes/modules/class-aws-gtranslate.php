@@ -97,6 +97,11 @@ if (!class_exists('AWS_GTranslate')) :
                 $this->google_api_key = AWS_GTRANSLATE_GOOGLE_API_KEY;
             }
 
+            if ( $this->enable_integration !== 'false' ) {
+                // current language is detected by this integration, hooks of other language plugins must not be used
+                add_filter( 'aws_disable_multilangs_hooks', '__return_true' );
+            }
+
             add_filter( 'aws_pre_normalized_search_string', array( $this, 'aws_pre_normalized_search_string' ), 10, 2 );
 
             add_filter( 'aws_search_data_parameters', array( $this, 'aws_search_data_parameters' ) );
@@ -164,6 +169,7 @@ if (!class_exists('AWS_GTranslate')) :
 
                 if ( $s_translated && is_array( $s_translated ) ) {
                     $this->data['has_translation'] = true;
+                    $this->data['s_original'] = $s;
                     $s = implode( ' ', $s_translated );
                 }
 
@@ -185,10 +191,56 @@ if (!class_exists('AWS_GTranslate')) :
                 }
 
                 if ( $this->disable_misspelling === 'true' ) {
-                    $this->data['fuzzy'] = 'false';
+                    $data['fuzzy'] = 'false';
                 }
 
+                $data = $this->add_original_terms( $data );
+
             }
+
+            return $data;
+
+        }
+
+        /*
+         * Search for words that user typed together with their translation
+         * With AND logic all words must be found inside one product, so translated
+         * and original words together will give no results at all
+         */
+        private function add_original_terms( $data ) {
+
+            if ( empty( $this->data['s_original'] ) || empty( $data['search_terms'] ) ) {
+                return $data;
+            }
+
+            if ( ! isset( $data['search_logic'] ) || $data['search_logic'] === 'and' ) {
+                return $data;
+            }
+
+            /**
+             * Filters search for original search words together with their translation
+             * @since 3.71
+             * @param bool $add_original Search or not for original words
+             */
+            if ( ! apply_filters( 'aws_gtranslate_search_original_terms', true ) ) {
+                return $data;
+            }
+
+            $original_terms = explode( ' ', AWS_Helpers::normalize_string( $this->data['s_original'] ) );
+            $original_terms = AWS_Helpers::filter_stopwords( $original_terms );
+
+            if ( ! $original_terms ) {
+                return $data;
+            }
+
+            $search_terms = array_values( array_unique( array_merge( $data['search_terms'], array_filter( $original_terms ) ) ) );
+
+            // same limit of words as main search uses
+            if ( ! empty( $data['search_words_num'] ) && count( $search_terms ) > intval( $data['search_words_num'] ) ) {
+                $search_terms = array_slice( $search_terms, 0, intval( $data['search_words_num'] ) );
+            }
+
+            $data['search_terms'] = $search_terms;
 
             return $data;
 
@@ -337,7 +389,7 @@ if (!class_exists('AWS_GTranslate')) :
 
             $options['gtranslate'][] = array(
                 "name"    => __( "GTranslate integration", "advanced-woo-search" ),
-                "desc"    => __( "Advanced integration with GTranslate plugin. Allows you to search for products in the current site language.", "advanced-woo-search" ) . ' <a href="https://advanced-woo-search.com/guide/gtranslate/?utm_source=wp-plugin&utm_medium=settings&utm_campaign=guide" target="_blank">' . __( 'Learn more.', 'advanced-woo-search' ) . '</a>',
+                "desc"    => __( "Advanced integration with GTranslate plugin. Allows you to search for products in the current site language.", "advanced-woo-search" ) . ' <a href="https://kramakit.com/guide/gtranslate/?utm_source=wp-plugin&utm_medium=settings&utm_campaign=guide" target="_blank">' . __( 'Learn more.', 'advanced-woo-search' ) . '</a>',
                 "type"    => "heading"
             );
 
@@ -367,7 +419,7 @@ if (!class_exists('AWS_GTranslate')) :
 
             $options['gtranslate'][] = array(
                 "name"  => __( "Google API key", "advanced-woo-search" ),
-                "desc"  => __( "API key to use Google translation service.", "advanced-woo-search" ) . ' <a href="https://advanced-woo-search.com/guide/gtranslate/?utm_source=wp-plugin&utm_medium=settings&utm_campaign=guide#how-to-get-google-api-key" target="_blank">' . __( 'How to get it.', 'advanced-woo-search' ) . '</a>' . $disable_google_api_key_text,
+                "desc"  => __( "API key to use Google translation service.", "advanced-woo-search" ) . ' <a href="https://kramakit.com/guide/gtranslate/?utm_source=wp-plugin&utm_medium=settings&utm_campaign=guide#how-to-get-google-api-key" target="_blank">' . __( 'How to get it.', 'advanced-woo-search' ) . '</a>' . $disable_google_api_key_text,
                 "id"    => "gtranslate_google_api_key",
                 "value" => '',
                 "disabled" => $disable_google_api_key,
@@ -382,7 +434,7 @@ if (!class_exists('AWS_GTranslate')) :
 
             $options['gtranslate'][] = array(
                 "name"  => __( "TranslateX API key", "advanced-woo-search" ),
-                "desc"  => __( "API key to use TranslateX translation service.", "advanced-woo-search" ) . ' <a href="https://advanced-woo-search.com/guide/gtranslate/?utm_source=wp-plugin&utm_medium=settings&utm_campaign=guide#how-to-get-translatex-api-key" target="_blank">' . __( 'How to get it.', 'advanced-woo-search' ) . '</a>' . $disable_translatex_api_key_text,
+                "desc"  => __( "API key to use TranslateX translation service.", "advanced-woo-search" ) . ' <a href="https://kramakit.com/guide/gtranslate/?utm_source=wp-plugin&utm_medium=settings&utm_campaign=guide#how-to-get-translatex-api-key" target="_blank">' . __( 'How to get it.', 'advanced-woo-search' ) . '</a>' . $disable_translatex_api_key_text,
                 "id"    => "gtranslate_translatex_api_key",
                 "value" => '',
                 "disabled" => $disable_translatex_api_key,

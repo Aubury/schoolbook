@@ -1,0 +1,31 @@
+.tranzly-compare__table {
+  table-layout: fixed;
+}
+.tranzly-compare__table td,
+.tranzly-compare__table th {
+  vertical-align: top;
+}
+.tranzly-compare__table th:last-child,
+.tranzly-compare__table td:last-child {
+  inline-size: 12rem;
+}
+
+.tranzly-compare__source {
+  white-space: pre-wrap;
+  padding-block: 0.5rem;
+}
+
+.tranzly-compare__state {
+  display: inline-block;
+  padding-block: 0.15rem;
+  padding-inline: 0.5rem;
+  border-radius: 999px;
+  background: #f0f0f1;
+  font-size: 0.85em;
+}
+.tranzly-compare__state--human {
+  background: #d7f0dd;
+}
+.tranzly-compare__state--untranslated, .tranzly-compare__state--missing {
+  background: #fcf0e3;
+}

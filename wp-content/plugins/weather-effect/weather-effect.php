@@ -1,9 +1,14 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 /*
 Plugin Name: Weather Effect
 Plugin URI: https://awplife.com/
 Description: This is Weather Effect Widget.
-Version: 1.6.0
+Version: 1.6.1
+Requires at least: 4.5
+Requires PHP: 5.6
 Author: A WP Life
 Author URI: https://awplife.com/
 License: GPLv2 or later
@@ -25,7 +30,8 @@ along with User Registration. If not, see https://www.gnu.org/licenses/gpl-2.0.h
 */
 
 define( 'AWPLIFE_WE_PLUGIN_PATH', plugin_dir_url( __FILE__ ) );
-define("AWPLIFE_WEP_PLUGIN_DIR_PATH", plugin_dir_path(__FILE__));
+define( 'AWPLIFE_WEP_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
+define( 'AWPLIFE_WE_VERSION', '1.6.1' );
 
 // Plugin Text Domain
 define( 'AWPLIFE_WE_TXTD', 'weather-effect' );
@@ -40,7 +46,7 @@ function awplife_we_load_textdomain() {
 // Default settings
 function awplife_we_default_settings() {
     $default_settings = array(
-        'enable_weather_effect' => 1,
+        'enable_weather_effect' => 0,
     );
 
     if ( get_option( 'weather_effect_settings' ) === false ) {
@@ -54,12 +60,12 @@ function awplife_we_enqueue_scripts() {
     
     // Enqueue frontend scripts only when effects are enabled
     $weather_effect_settings = get_option( 'weather_effect_settings' );
-    $enable_weather_effect = isset( $weather_effect_settings['enable_weather_effect'] ) ? $weather_effect_settings['enable_weather_effect'] : 1;
+    $enable_weather_effect = isset( $weather_effect_settings['enable_weather_effect'] ) ? $weather_effect_settings['enable_weather_effect'] : 0;
 
     if ( $enable_weather_effect == 1 ) {
-        wp_enqueue_script( 'awplife-we-snow-christmas-snow-js', AWPLIFE_WE_PLUGIN_PATH . 'assets/js/christmas-snow/christmas-snow.js', array( 'jquery' ), '1.5.9', true );
-        wp_enqueue_script( 'awplife-we-snow-snow-falling-js', AWPLIFE_WE_PLUGIN_PATH . 'assets/js/snow-falling/snow-falling.js', array( 'jquery' ), '1.5.9', true );
-        wp_enqueue_script( 'awplife-we-snow-snowfall-master-js', AWPLIFE_WE_PLUGIN_PATH . 'assets/js/snowfall-master/snowfall-master.min.js', array( 'jquery' ), '1.5.9', true );
+        wp_enqueue_script( 'awplife-we-snow-christmas-snow-js', AWPLIFE_WE_PLUGIN_PATH . 'assets/js/christmas-snow/christmas-snow.js', array( 'jquery' ), '1.6.1', true );
+        wp_enqueue_script( 'awplife-we-snow-snow-falling-js', AWPLIFE_WE_PLUGIN_PATH . 'assets/js/snow-falling/snow-falling.js', array( 'jquery' ), '1.6.1', true );
+        wp_enqueue_script( 'awplife-we-snow-snowfall-master-js', AWPLIFE_WE_PLUGIN_PATH . 'assets/js/snowfall-master/snowfall-master.min.js', array( 'jquery' ), '1.6.1', true );
     }
 }
 add_action( 'wp_enqueue_scripts', 'awplife_we_enqueue_scripts' );

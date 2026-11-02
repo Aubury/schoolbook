@@ -35,6 +35,16 @@
     max-width: calc( 100% - 343px );
 }
 
+/* React admin shell hides the right banner — use full width */
+.toplevel_page_file_manager_advanced_ui .afm__left-side {
+    width: 100% !important;
+    max-width: none !important;
+    float: none;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #f0f0f1;
+}
+
 .afm__right-side {
     position: relative;
     float: right;
@@ -153,72 +163,140 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0,0,0,0.1);
-    backdrop-filter: blur(1px);
-    z-index: 1234;
+    padding: 20px;
+    box-sizing: border-box;
+    background: rgba(0, 56, 68, 0.28);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 100050;
 }
 
-.fma__pro-popup-wrapper {
-    width: 378px;
-    height: 255px;
-    border-radius: 5px;
-    background: url( ../images/popup-grid-lines.png ), #fff;
+/* Figma 825:3775 card (shared with React ProOverlay) */
+.fma__pro-popup .afm-pro-popup {
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 400px;
+    max-width: 100%;
+    height: 300px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 20px;
+    background: linear-gradient(to top, #a9e5bb 0%, #f6fcf8 72%);
+    box-shadow: 0 8px 28px rgba(0, 56, 68, 0.14);
+    flex-shrink: 0;
 }
 
-.fma__pro-close-button {
+.fma__pro-popup .afm-pro-popup__logo {
     position: absolute;
-    top: 18px;
-    right: 18px;
-    cursor: pointer;
+    left: 80px;
+    top: 53px;
+    width: 239px;
+    height: 58px;
+    line-height: 0;
 }
 
-.fma__pro-close-button a {
-    text-decoration: none;
-    color: #000;
-    box-shadow: none;
+.fma__pro-popup .afm-pro-popup__logo img {
+    display: block;
+    max-width: none;
 }
 
-.fma__pro-close-button a img {
-    width: 28px;
-}
-
-.fma__pro-popup-content {
-    width: 230px;
-    height: 180px;
-}
-
-.afmp__pro-popup-desc p {
-    color: #6a788b;
+.fma__pro-popup .afm-pro-popup__desc {
+    position: absolute;
+    left: 50%;
+    top: 137px;
+    transform: translateX(-50%);
+    width: 315px;
+    max-width: calc(100% - 40px);
+    margin: 0;
+    padding: 0;
+    color: #003844;
     font-size: 16px;
-    font-weight: 400;
-}
-
-.fma__pro-popup-content {
+    font-weight: 500;
+    line-height: 1.35;
     text-align: center;
 }
 
-.fma__pro-popup-cta {
-    padding: 10px 26px;
-    background: #e17351;
-    border-radius: 73px;
-}
-
-.fma__pro-popup-cta a {
-    color: #fff;
+.fma__pro-popup .afm-pro-popup__cta {
+    position: absolute;
+    left: 50%;
+    top: 200.5px;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 235px;
+    max-width: calc(100% - 48px);
+    box-sizing: border-box;
+    padding: 15px 20px;
+    border: 1.778px solid #3f6972;
+    border-radius: 12px;
+    background: #3f6972;
+    color: #fff !important;
     font-size: 16px;
-    font-weight: 600;
-    line-height: 10px;
-    text-decoration: none;
-}
-
-.fma__pro-popup-cta a:focus {
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none !important;
     box-shadow: none;
     outline: none;
+    cursor: pointer;
+}
+
+.fma__pro-popup .afm-pro-popup__cta:hover,
+.fma__pro-popup .afm-pro-popup__cta:focus {
+    background: #2d4f57;
+    border-color: #2d4f57;
+    color: #fff !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.fma__pro-popup .afm-pro-popup__cta img {
+    display: block;
+    flex-shrink: 0;
+}
+
+.fma__pro-popup .afm-pro-popup__cta span {
+    white-space: nowrap;
+}
+
+.afm-pro-popup__close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
     border: none;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    line-height: 0;
+}
+
+.afm-pro-popup__close:hover,
+.afm-pro-popup__close:focus {
+    background: rgba(0, 56, 68, 0.06);
+    outline: none;
+    box-shadow: none;
+}
+
+.afm-pro-popup__close img {
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+/* Legacy wrapper — keep selectors harmless if old markup remains */
+.fma__pro-popup-wrapper,
+.fma__pro-close-button,
+.fma__pro-popup-content,
+.afmp__pro-popup-desc,
+.fma__pro-popup-cta {
+    display: none;
 }
 
 .fma__left {

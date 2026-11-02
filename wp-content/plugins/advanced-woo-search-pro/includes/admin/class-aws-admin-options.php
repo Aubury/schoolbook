@@ -645,7 +645,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
             $options['form'][] = array(
                 "name"    => __( "Quick Filters", "advanced-woo-search" ),
                 "id"      => "quick_filters",
-                "desc"    => __( "Create pre-defined search bar filters.", "advanced-woo-search" ) . ' <a target="_blank" href="https://advanced-woo-search.com/features/filters-button/">'. __( "Learn more.", "advanced-woo-search" ) .'</a>',
+                "desc"    => __( "Create pre-defined search bar filters.", "advanced-woo-search" ) . ' <a target="_blank" href="https://kramakit.com/guide/filters/">'. __( "Learn more.", "advanced-woo-search" ) .'</a>',
                 "type"    => "heading",
                 "section" => "quick_filters",
             );
@@ -1740,7 +1740,7 @@ if ( ! class_exists( 'AWS_Admin_Options' ) ) :
 
             $options['general'][] = array(
                 "name"  => __( "Use Google Analytics", "advanced-woo-search" ),
-                "desc"   => __( "Enable Google Analytics integration.", "advanced-woo-search" ) . ' <a href="https://advanced-woo-search.com/guide/google-analytics/" target="_blank">' . __( 'More info', 'advanced-woo-search' ) . '</a>',
+                "desc"   => __( "Enable Google Analytics integration.", "advanced-woo-search" ) . ' <a href="https://kramakit.com/guide/google-analytics/" target="_blank">' . __( 'More info', 'advanced-woo-search' ) . '</a>',
                 "tip"  => __( "Use google analytics to track searches. You need google analytics to be installed on your site.", "advanced-woo-search" ) .
                     '<br>' . __( "Data will be visible inside Google Analytics 'Site Search' report. Need to activate 'Site Search' feature inside GA.", "advanced-woo-search" ) .
                     '<br>' . __( "Also will send event with category - 'AWS search', action - 'AWS Search Form {form_id}' and label of value of search term.", "advanced-woo-search" ),

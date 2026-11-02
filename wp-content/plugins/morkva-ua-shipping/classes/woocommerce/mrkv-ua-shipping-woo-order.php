@@ -105,6 +105,7 @@ if (!class_exists('MRKV_UA_SHIPPING_WOO_ORDER'))
 	            	$order_already_created = $order_status != 'auto-draft' ? true : false;
 
 	            	$available_methods = WC()->shipping->load_shipping_methods();
+		            	$current_shipping_method = '';
 	            	?>
 	            		<h3><?php echo esc_html__('Change shipping method', 'mrkv-ua-shipping'); ?></h3>
 	            		<div class="mrkv-ua-shipping-line-choose-method">
@@ -230,11 +231,11 @@ if (!class_exists('MRKV_UA_SHIPPING_WOO_ORDER'))
 			            				{
 			            					case 'nova-poshta':
 				            					?>
-				            						<a target="blanc" href="<?php echo esc_url(MRKV_UA_SHIPPING_LIST[$key]['invoice_links']['invoice_pdf'] . $mrkv_ua_ship_invoice . MRKV_UA_SHIPPING_LIST[$key]['invoice_links']['invoice_link_end'] . $shipping_settings['api_key']); ?>">
+				            						<a target="_blank" href="<?php echo esc_url(MRKV_UA_SHIPPING_LIST[$key]['invoice_links']['invoice_pdf'] . $mrkv_ua_ship_invoice . MRKV_UA_SHIPPING_LIST[$key]['invoice_links']['invoice_link_end'] . $shipping_settings['api_key']); ?>">
 				            							<img src="<?php echo esc_url(MRKV_UA_SHIPPING_IMG_URL . '/global'); ?>/printer-icon.svg" alt="<?php echo esc_html__('Print invoice', 'mrkv-ua-shipping'); ?>" title="<?php echo esc_html__('Print invoice', 'mrkv-ua-shipping'); ?>">
 				            							<?php echo esc_html__('Print invoice', 'mrkv-ua-shipping'); ?>
 			            							</a>
-				            						<a target="blanc" href="<?php echo esc_url(MRKV_UA_SHIPPING_LIST[$key]['invoice_links']['invoice_sticker'] . $mrkv_ua_ship_invoice . MRKV_UA_SHIPPING_LIST[$key]['invoice_links']['invoice_link_end'] . $shipping_settings['api_key']); ?>">
+				            						<a target="_blank" href="<?php echo esc_url(MRKV_UA_SHIPPING_LIST[$key]['invoice_links']['invoice_sticker'] . $mrkv_ua_ship_invoice . MRKV_UA_SHIPPING_LIST[$key]['invoice_links']['invoice_link_end'] . $shipping_settings['api_key']); ?>">
 				            							<img src="<?php echo esc_url(MRKV_UA_SHIPPING_IMG_URL . '/global'); ?>/sticker-icon.svg" alt="<?php echo esc_html__('Print sticker', 'mrkv-ua-shipping'); ?>" title="<?php echo esc_html__('Print sticker', 'mrkv-ua-shipping'); ?>">
 				            							<?php echo esc_html__('Print sticker', 'mrkv-ua-shipping'); ?>
 			            							</a>
@@ -326,6 +327,11 @@ if (!class_exists('MRKV_UA_SHIPPING_WOO_ORDER'))
 					    							$default_value = $order->get_meta($field_val['old_slug']);
 					    						}
 					    					}
+
+											if($id == '_city' && !$default_value)
+											{
+												$default_value = $order->get_shipping_city();
+											}
 
 				            				$field_val['default'] = $default_value;
 				            			}

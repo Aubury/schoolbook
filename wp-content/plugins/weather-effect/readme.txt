@@ -1,11 +1,11 @@
-=== AWPLife Weather Effects ===
+=== Weather Effect ===
 Contributors: awordpresslife, razipathhan, hanif0991, muhammadshahid, fkfaisalkhan007, sharikkhan007, zishlife, FARAZFRANK
 Donate link: https://paypal.me/awplife
 Tags: weather, snow, snowfall, christmas, halloween
-Requires at least: 4.0
-Tested up to: 7.0
+Requires at least: 4.5
+Tested up to: 7.1
 Requires PHP: 5.6
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,10 +19,8 @@ The plugin works by overlaying animated elements on your pages. Visitors see the
 
 = Demo and Documentation =
 
-* [Free Version Demo](https://awplife.com/demo/weather-effect-wordpress-plugin/)
 * [Pro Version Demo](https://awplife.com/demo/weather-effect/)
-* [Try Admin Demo](https://awplife.com/demo/weather-effect-premium-admin-demo/)
-* [Documentation](https://awplife.com/wordpress-plugins/weather-effect-wordpress-plugin/)
+* [Pro Version Details Page](https://awplife.com/wordpress-plugins/weather-effect-wordpress-plugin/)
 * [Get Pro Version](https://awplife.com/account/signup/weather-effect-premium)
 
 https://www.youtube.com/watch?v=0ffKTyBsVbw
@@ -159,6 +157,17 @@ Post your questions on the [WordPress.org support forum](https://wordpress.org/s
 
 == Changelog ==
 
+= 1.6.1 =
+* Enhancement: Added dynamic Live Preview auto-update on dashboard settings modification.
+* Enhancement: Added live background color picker to the Live Preview card header.
+* Enhancement: Displayed the plugin version dynamically in the dashboard settings header.
+* UI Fix: Removed button text underlines on all settings buttons.
+* UI Fix: Enhanced text color contrast on primary button hover/focus/active states.
+* UI Fix: Removed horizontal scrollbar overflow on "Our Themes" and "Our Plugins" sub-pages.
+* UI Fix: Removed the cloud icon from the admin settings loading screen.
+* Link Fix: Updated the "BUY NOW" button to direct to the premium signup page.
+* Clean Up: Removed the obsolete "Try Pro Version" link.
+
 = 1.6.0 =
 * Security: Hardened administrative settings with capability checks and nonces.
 * Security: Implemented robust output escaping and sanitization across all frontend effects.
@@ -202,6 +211,9 @@ Post your questions on the [WordPress.org support forum](https://wordpress.org/s
 * Tested: WordPress 6.4.2 compatibility
 
 == Upgrade Notice ==
+
+= 1.6.1 =
+Added dynamic Live Preview auto-updates, a background color picker to the preview card, version display, and various UI/contrast improvements. Recommended update.
 
 = 1.6.0 =
 Major security and performance refactor. Recommended update for all users.

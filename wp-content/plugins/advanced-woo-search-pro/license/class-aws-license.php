@@ -93,7 +93,7 @@ if ( ! class_exists( 'AWS_License' ) ) :
             }
 
             if ( ! $this->get_license_key() ) {
-                echo '<br />' . sprintf( esc_html__('To enable updates, please enter your license key on the %s updates %s page. If you don\'t have a licence key, please visit  %s plugin page %s.', 'advanced-woo-search'), '<a href="'.admin_url('admin.php?page=aws-options-updates').'">', '</a>', '<a href="https://advanced-woo-search.com/" target="_blank">', '</a>' );
+                echo '<br />' . sprintf( esc_html__('To enable updates, please enter your license key on the %s updates %s page. If you don\'t have a licence key, please visit  %s plugin page %s.', 'advanced-woo-search'), '<a href="'.admin_url('admin.php?page=aws-options-updates').'">', '</a>', '<a href="https://kramakit.com/plugins/advanced-woo-search/" target="_blank">', '</a>' );
             }
 
         }

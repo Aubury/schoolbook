@@ -3,8 +3,8 @@ Contributors: timwhitlock
 Tags: translation, language, multilingual, l10n, i18n
 Requires at least: 6.6
 Requires PHP: 7.4
-Tested up to: 7.0
-Stable tag: 2.8.5
+Tested up to: 7.1.2
+Stable tag: 2.8.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -100,6 +100,28 @@ We don't collect your data or track you. See the [plugin privacy notice](https:/
 
 
 == Changelog ==
+
+= 2.8.9 =
+* Base directory restriction for all file reads, with a second setting for writes.
+* Download endpoint allows only po/mo/pot files as per info tab
+* Fixed unescaped HTML loophole in the file path placeholder UI
+* JSON and PHP source only viewable if parsed as a valid l10n schema.
+* Fixed bug in backup restoration that allowed copying of an invalid PO target.
+* Bumped WordPress compatibility to 7.1.2
+
+= 2.8.8 =
+* Disabled links in all editor notes and error fields; fixes CVE-2026-15066
+* Identified one fix required for PHP 8.5
+* Bumped WordPress compatibility to 7.0.2
+
+= 2.8.7 =
+* Critical fix for Windows file paths
+
+= 2.8.6 =
+* Fixed incorrect Ace editor script reference.
+* Translator role is only created when explicitly granted `loco_admin`.
+* Users with `manage_options` no longer inherit `loco_admin` unless super user.
+* Fix for CVE-2026-15005: Thanks mikemyers.
 
 = 2.8.5 =
 * Added `fs_basedir` setting to restrict writeable locations
@@ -611,7 +633,7 @@ We don't collect your data or track you. See the [plugin privacy notice](https:/
 
 == Upgrade Notice ==
 
-= 2.8.5 =
+= 2.8.9 =
 * Various improvements and bug fixes
 
 

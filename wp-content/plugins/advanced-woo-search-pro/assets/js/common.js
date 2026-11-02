@@ -578,8 +578,10 @@ AwsHooks.filters = AwsHooks.filters || {};
                     self[0].dispatchEvent( eShowResults );
                 }
 
-                // send analytics event
-                if ( ! ( ( typeof cachedResponse[d.filter] != 'undefined' ) && cachedResponse[d.filter].hasOwnProperty( searchFor ) ) ) {
+                // send analytics event once for each search term
+                var analyticsKey = d.filter + ':' + searchFor;
+                if ( ! analyticsSent.hasOwnProperty( analyticsKey ) ) {
+                    analyticsSent[analyticsKey] = true;
                     methods.analytics( searchFor, false, resultNum !== 0 );
                 }
 
@@ -1128,6 +1130,7 @@ AwsHooks.filters = AwsHooks.filters || {};
             searchFor          = '',
             lastSearchFor      = null,
             keyupTimeout,
+            analyticsSent      = {},
             cachedResponse     = new Array();
 
 

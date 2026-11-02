@@ -31,7 +31,73 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 		    ]);
 		}
 
+		private function mrkv_ua_shipping_scheduled_recurrence($hook, $timestamp)
+		{
+			$crons = _get_cron_array();
+
+			if ( ! isset($crons[$timestamp][$hook]) || ! is_array($crons[$timestamp][$hook]) ) {
+				return '';
+			}
+
+			foreach ( $crons[$timestamp][$hook] as $event ) {
+				if ( isset($event['schedule']) && $event['schedule'] ) {
+					return $event['schedule'];
+				}
+			}
+
+			return '';
+		}
+
+		private function mrkv_ua_shipping_apply_status($order_id, $new_status)
+		{
+			$new_status = str_replace('wc-', '', (string) $new_status);
+
+			if ('' === $new_status) {
+				return false;
+			}
+
+			$order = wc_get_order($order_id);
+
+			if (!$order) {
+				return false;
+			}
+
+			if ($order->get_status() === $new_status) {
+				return false;
+			}
+
+			$order->update_status($new_status);
+
+			return true;
+		}
+
+		private function mrkv_ua_shipping_run_locked($lock_key, $job)
+		{
+			$lock_key = 'mrkv_ua_shipping_lock_' . $lock_key;
+
+			if ( get_transient($lock_key) ) {
+				return false;
+			}
+
+			set_transient($lock_key, 1, 10 * MINUTE_IN_SECONDS);
+
+			try {
+				call_user_func($job);
+			} finally {
+				delete_transient($lock_key);
+			}
+
+			return true;
+		}
+
 		public function mrkv_ua_shipping_check_ttn($request)
+		{
+			$this->mrkv_ua_shipping_run_locked('np_check_ttn', function () {
+				$this->mrkv_ua_shipping_check_ttn_run();
+			});
+		}
+
+		private function mrkv_ua_shipping_check_ttn_run()
 		{
 			$log_file_date = dirname(__FILE__) . '/cron-log/cron-mrkv-ttn-status.log';
 			$log_file_offset = dirname(__FILE__) . '/cron-log/cron-mrkv-ttn-status-offset.log';
@@ -128,7 +194,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$orders = $wpdb->get_results(
 					$wpdb->prepare(
-						"SELECT ordermeta.meta_value as invoice, ordermeta.post_id as order_id
+						"SELECT MAX(ordermeta.meta_value) as invoice, ordermeta.post_id as order_id
 						FROM {$wpdb->prefix}postmeta as ordermeta
 						INNER JOIN (
 							SELECT orderitemmeta.meta_value as rate_id, orderitem.order_id as order_id
@@ -166,7 +232,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 				$orders = $wpdb->get_results(
 					$wpdb->prepare(
-						"SELECT ordermeta.meta_value as invoice, ordermeta.order_id
+						"SELECT MAX(ordermeta.meta_value) as invoice, ordermeta.order_id
 						FROM {$wpdb->prefix}wc_orders_meta as ordermeta
 						INNER JOIN (
 							SELECT orderitemmeta.meta_value as rate_id, orderitem.order_id as order_id
@@ -189,7 +255,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 						AND orders.status = %s
 						AND orders.date_created_gmt >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL %d DAY)
 						GROUP BY ordermeta.order_id
-						ORDER BY orders.date_created_gmt ASC
+						ORDER BY MAX(orders.date_created_gmt) ASC
 						LIMIT %d OFFSET 0",
 						'mrkv_ua_shipping_nova-poshta%', 
 						'nova_poshta_shipping_method%',  
@@ -208,18 +274,13 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 
 			$message .= "Orders: " . wp_json_encode( $orders, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) . "\r\n";
 
-			
-
 			if(is_array($orders) && empty($orders))
 			{
 				do_action('mrkv_ua_shipping_log_cron', $message);
 				file_put_contents($log_file_offset, '');
 				file_put_contents($log_file_date, current_time('mysql'));
 				return;
-			}
-
-
-			require_once MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-api-nova-poshta.php';				
+			}				
 		
 			$api_class = MRKV_UA_SHIPPING_LIST['nova-poshta']['api_class'];
 			$nova_api = new $api_class($settings);
@@ -246,6 +307,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 			$updated_status_refused = (isset($settings['automation']['status']['refused']) && $settings['automation']['status']['refused']) ? $settings['automation']['status']['refused'] : false;
 			$updated_status_canceled = (isset($settings['automation']['status']['canceled']) && $settings['automation']['status']['canceled']) ? $settings['automation']['status']['canceled'] : false;
 			$updated_status_shipping = (isset($settings['automation']['status']['shipping']) && $settings['automation']['status']['shipping']) ? $settings['automation']['status']['shipping'] : false;
+			$updated_status_destroyed = (isset($settings['automation']['status']['124']) && $settings['automation']['status']['124']) ? $settings['automation']['status']['124'] : false;
 
 			$message .= "Orders with status: " . wp_json_encode( $orders, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) . "\r\n";
 			do_action('mrkv_ua_shipping_log_cron', $message);
@@ -259,33 +321,25 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 				        	case '9':
 				        		if($updated_status_received)
 				        		{
-				        			$order_for_status = wc_get_order( $order->order_id );
-				        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_received));
-				        			$order_for_status->save();
+				        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_received );
 				        		}
 				        	break;
 				        	case '10':
-				        		if($updated_status_received)
+				        		if($updated_status_moneysms)
 				        		{
-				        			$order_for_status = wc_get_order( $order->order_id );
-				        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_moneysms));
-				        			$order_for_status->save();
+				        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_moneysms );
 				        		}
 				        	break;
 				        	case '11':
 				        		if($updated_status_money)
 				        		{
-				        			$order_for_status = wc_get_order( $order->order_id );
-				        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_money));
-				        			$order_for_status->save();
+				        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_money );
 				        		}
 				        	break;
 				        	case '111':
 				        		if($updated_status_canceled)
 				        		{
-				        			$order_for_status = wc_get_order( $order->order_id );
-				        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_canceled));
-				        			$order_for_status->save();
+				        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_canceled );
 				        		}
 				        	break;
 				        	case '103':
@@ -293,17 +347,19 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 				        	case '105':
 				        		if($updated_status_refused)
 				        		{
-				        			$order_for_status = wc_get_order( $order->order_id );
-				        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_refused));
-				        			$order_for_status->save();
+				        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_refused );
 				        		}
 				        	break;
 				        	case '5':
 				        		if($updated_status_shipping)
 				        		{
-				        			$order_for_status = wc_get_order( $order->order_id );
-				        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_shipping));
-				        			$order_for_status->save();
+				        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_shipping );
+				        		}
+				        	break;
+							case '124':
+				        		if($updated_status_destroyed)
+				        		{
+				        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_destroyed );
 				        		}
 				        	break;
 				        }
@@ -334,11 +390,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 					$timestamp = wp_next_scheduled($hook);
 
 					if ( $timestamp ) {
-					    $crons = _get_cron_array();
-
-					    $current_schedule = $crons[$timestamp][$hook]['schedule'] ?? '';
-
-					    if ( $current_schedule !== $cron_frequency ) {
+					    if ( $this->mrkv_ua_shipping_scheduled_recurrence($hook, $timestamp) !== $cron_frequency ) {
 					        wp_clear_scheduled_hook($hook);
 					        wp_schedule_event(time(), $cron_frequency, $hook);
 					    }
@@ -358,6 +410,13 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 
 		public function mrknp_ua_shipping_nova_poshta_statuses_run()
 		{
+			$this->mrkv_ua_shipping_run_locked('np_statuses', function () {
+				$this->mrkv_ua_shipping_nova_poshta_statuses_do_run();
+			});
+		}
+
+		private function mrkv_ua_shipping_nova_poshta_statuses_do_run()
+		{
 			$settings = get_option('nova-poshta_m_ua_settings');
 			$change_status = (isset($settings['automation']['status']['enabled']) && $settings['automation']['status']['enabled'] == 'on'  && (!isset($settings['automation']['cron']['type']) || $settings['automation']['cron']['type'] != 'server_cron')) ? true : false;
 
@@ -374,7 +433,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 					$orders = $wpdb->get_results(
 						$wpdb->prepare(
-							"SELECT ordermeta.meta_value as invoice, ordermeta.post_id as order_id
+							"SELECT MAX(ordermeta.meta_value) as invoice, ordermeta.post_id as order_id
 							FROM {$wpdb->prefix}postmeta as ordermeta
 							INNER JOIN (
 								SELECT orderitemmeta.meta_value as rate_id, orderitem.order_id as order_id
@@ -411,7 +470,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 					$orders = $wpdb->get_results(
 						$wpdb->prepare(
-							"SELECT ordermeta.meta_value as invoice, ordermeta.order_id
+							"SELECT MAX(ordermeta.meta_value) as invoice, ordermeta.order_id
 							FROM {$wpdb->prefix}wc_orders_meta as ordermeta
 							INNER JOIN (
 								SELECT orderitemmeta.meta_value as rate_id, orderitem.order_id as order_id
@@ -449,7 +508,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, PluginCheck.Security.DirectDB.UnescapedDBParameter
 					$orders = $wpdb->get_results(
 						$wpdb->prepare(
-							"SELECT ordermeta.meta_value as invoice, ordermeta.post_id as order_id
+							"SELECT MAX(ordermeta.meta_value) as invoice, ordermeta.post_id as order_id
 							FROM {$wpdb->prefix}postmeta as ordermeta
 							INNER JOIN (
 								SELECT orderitemmeta.meta_value as rate_id, orderitem.order_id as order_id
@@ -482,8 +541,6 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 					);
 				}
 
-				require_once MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-api-nova-poshta.php';				
-			
 				$api_class = MRKV_UA_SHIPPING_LIST['nova-poshta']['api_class'];
 				$nova_api = new $api_class($settings);
 
@@ -502,6 +559,7 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 				$updated_status_refused = (isset($settings['automation']['status']['refused']) && $settings['automation']['status']['refused']) ? $settings['automation']['status']['refused'] : false;
 				$updated_status_canceled = (isset($settings['automation']['status']['canceled']) && $settings['automation']['status']['canceled']) ? $settings['automation']['status']['canceled'] : false;
 				$updated_status_shipping = (isset($settings['automation']['status']['shipping']) && $settings['automation']['status']['shipping']) ? $settings['automation']['status']['shipping'] : false;
+				$updated_status_destroyed = (isset($settings['automation']['status']['124']) && $settings['automation']['status']['124']) ? $settings['automation']['status']['124'] : false;
 
 				if(is_array($orders) && !empty($orders))
 				{
@@ -512,33 +570,25 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 					        	case '9':
 					        		if($updated_status_received)
 					        		{
-					        			$order_for_status = wc_get_order( $order->order_id );
-					        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_received));
-					        			$order_for_status->save();
+					        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_received );
 					        		}
 					        	break;
 					        	case '10':
-					        		if($updated_status_received)
+					        		if($updated_status_moneysms)
 					        		{
-					        			$order_for_status = wc_get_order( $order->order_id );
-					        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_moneysms));
-					        			$order_for_status->save();
+					        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_moneysms );
 					        		}
 					        	break;
 					        	case '11':
 					        		if($updated_status_money)
 					        		{
-					        			$order_for_status = wc_get_order( $order->order_id );
-					        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_money));
-					        			$order_for_status->save();
+					        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_money );
 					        		}
 					        	break;
 					        	case '111':
 					        		if($updated_status_canceled)
 					        		{
-					        			$order_for_status = wc_get_order( $order->order_id );
-					        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_canceled));
-					        			$order_for_status->save();
+					        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_canceled );
 					        		}
 					        	break;
 					        	case '103':
@@ -546,19 +596,21 @@ if (!class_exists('MRKV_UA_SHIPPING_METHODS_CRON'))
 				        		case '105':
 					        		if($updated_status_refused)
 					        		{
-					        			$order_for_status = wc_get_order( $order->order_id );
-					        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_refused));
-					        			$order_for_status->save();
+					        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_refused );
 					        		}
 					        	break;
 					        	case '5':
 					        		if($updated_status_shipping)
 					        		{
-					        			$order_for_status = wc_get_order( $order->order_id );
-					        			$order_for_status->update_status(str_replace("wc-", "", $updated_status_shipping));
-					        			$order_for_status->save();
+					        			$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_shipping );
 					        		}
 					        	break;
+								case '124':
+									if($updated_status_destroyed)
+									{
+										$this->mrkv_ua_shipping_apply_status( $order->order_id, $updated_status_destroyed );
+									}
+								break;
 					        }
 					}
 				}

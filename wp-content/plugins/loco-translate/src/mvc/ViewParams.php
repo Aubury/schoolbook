@@ -3,14 +3,17 @@
  * 
  */
 class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
-    
+
+    /**
+     * Encoding flags for JSON. JSON_UNESCAPED_SLASHES deliberately absent to ensure, e.g. "<\/script>"
+     */
+    private const JSON_FLAGS = JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT;
+
     /**
      * Default escape function for view type is HTML
-     * @param string $text
-     * @return string
      */
-    public function escape( $text ){
-        return htmlspecialchars( (string) $text, ENT_COMPAT, 'UTF-8' );
+    public function escape( ?string $text ):string {
+        return htmlspecialchars( $text??'', ENT_COMPAT, 'UTF-8' );
     }
 
 
@@ -75,7 +78,7 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
     /**
      * Test if a property exists, even if null
      */
-    public function has( string  $p ):bool {
+    public function has( string $p ):bool {
         return $this->offsetExists($p);
     }
 
@@ -86,6 +89,20 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
     public function truthy( string $p ):bool {
         return $this->offsetExists($p) && $this->offsetGet($p);
     }
+    
+    
+    
+    public function getArrayProp( string $p ):array {
+        $value = $this->__get($p);
+        if( is_array($value) ){
+            return $value;
+        }
+        if( ! is_null($value) && loco_debugging() ){
+            Loco_error_Debug::trace( sprintf('Property %s is not an array', $p) );
+        }
+        return [];
+    }
+    
 
 
     /**
@@ -95,7 +112,7 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
      */
     public function e( string $p ):string {
         $text = $this->__get($p);
-        echo $this->escape( $text );
+        echo $this->escape($text);
         return '';
     }
 
@@ -147,7 +164,7 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
      * @return string empty string
      */
     public function j( string $p ):string {
-        echo json_encode($this->__get($p) );
+        echo json_encode( $this->__get($p), self::JSON_FLAGS );
         return '';
     }
 
@@ -165,7 +182,7 @@ class Loco_mvc_ViewParams extends ArrayObject implements JsonSerializable {
      * Fetch whole object as JSON
      */
     public function exportJson():string {
-        return json_encode( $this->jsonSerialize() );
+        return json_encode( $this->jsonSerialize(), self::JSON_FLAGS );
     }
     
     

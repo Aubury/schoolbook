@@ -170,43 +170,31 @@ defined( 'ABSPATH' ) || exit;
     </div>
 </div>
 
-<div class="fma__pro-popup" style="display: none;" id="fma__pro_popup">
-    <div class="fma__pro-popup-wrapper">
-
-        <div class="fma__pro-close-button">
-            <a id="close-popup-btn" href="#">
-                <img src="<?php echo plugin_dir_url( __FILE__ ) ?>../application/assets/images/close-popup.svg" alt="">
-            </a>
+<div class="fma__pro-popup" style="display: none;" id="fma__pro_popup" role="presentation">
+    <div class="afm-pro-popup" role="dialog" aria-modal="true" aria-labelledby="afm-pro-popup-title">
+        <button type="button" class="afm-pro-popup__close" id="close-popup-btn" aria-label="Close">
+            <img src="<?php echo esc_url( FMA_PLUGIN_URL . 'application/assets/images/shell/pro-popup-close.svg' ); ?>" alt="" width="20" height="20">
+        </button>
+        <div class="afm-pro-popup__logo">
+            <img src="<?php echo esc_url( FMA_PLUGIN_URL . 'application/assets/images/shell/pro-popup-logo.svg' ); ?>" alt="Advanced File Manager" width="239" height="58">
         </div>
-
-        <div class="fma__pro-popup-content">
-
-            <div>
-                <img src="<?php echo FMA_PLUGIN_URL ?>application/assets/images/fma-logo.svg" alt="">
-            </div>
-
-            <div class="afmp__pro-popup-desc">
-                <p>
-                    Get advanced features with Advanced File Manager Pro!
-                </p>
-            </div>
-
-            <div class="fma__pro-popup-cta">
-                <a target="_blank" href="https://advancedfilemanager.com/pricing/?utm_source=plugin&utm_medium=db_access_banner&utm_campaign=plugin">
-                    <img style="width: 20px;margin-bottom: -3px;" src="<?php echo FMA_PLUGIN_URL ?>application/assets/images/crown.svg" alt="">
-                    Get Pro Now
-                    <img style="width: 10px;margin-bottom: -2px;" src="<?php echo FMA_PLUGIN_URL ?>application/assets/images/right-arrow.svg" alt="">
-                </a>
-            </div>
-
-        </div>
-
+        <p id="afm-pro-popup-title" class="afm-pro-popup__desc">
+            Get advanced features with Advanced File Manager Pro!
+        </p>
+        <a
+            class="afm-pro-popup__cta"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://advancedfilemanager.com/pricing/?utm_source=plugin&utm_medium=db_access_banner&utm_campaign=plugin"
+        >
+            <img src="<?php echo esc_url( FMA_PLUGIN_URL . 'application/assets/images/shell/pro-popup-crown.svg' ); ?>" alt="" width="18" height="15">
+            <span>Upgrade Now</span>
+        </a>
     </div>
 </div>
 
 <script>
     jQuery( document ).ready( function() {
-
         jQuery( '.dropbox__heading, .afm__adminer-wrapper' ).on( 'click', function() {
             jQuery( '#fma__pro_popup' ).show();
         } );
@@ -214,6 +202,12 @@ defined( 'ABSPATH' ) || exit;
         jQuery( '#close-popup-btn' ).on( 'click', function( e ) {
             e.preventDefault();
             jQuery( '#fma__pro_popup' ).hide();
+        } );
+
+        jQuery( '#fma__pro_popup' ).on( 'click', function( e ) {
+            if ( e.target === this ) {
+                jQuery( this ).hide();
+            }
         } );
     } );
 </script>

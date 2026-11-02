@@ -1,6 +1,157 @@
+/**
+ * Content search uses elFinder's built-in SearchTag radio (commandsOptions.search.searchTypes).
+ * That radio is only usable when scope is "Here" (current folder); Volume/All disable it.
+ * Do not use customData as a function — this elFinder build ignores it (no action on requests).
+ */
+(function () {
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    window.fmaInstallContentSearchUi = function (fm) {
+        if (!fm || fm._fmaContentSearchWired) {
+            return;
+        }
+        fm._fmaContentSearchWired = true;
+
+        function nsId(name) {
+            return fm.namespace + fm.escape(name);
+        }
+
+        function searchScopeIsHere() {
+            var $cwd = jQuery('#' + nsId('SearchFromCwd'));
+            if (!$cwd.length) {
+                return true;
+            }
+            return $cwd.prop('checked') === true;
+        }
+
+        function updateContentSearchAvailability() {
+            var $tag = jQuery('#' + nsId('SearchTag'));
+            if (!$tag.length) {
+                return;
+            }
+            var here = searchScopeIsHere();
+            $tag.prop('disabled', !here);
+            $tag.next('label').toggleClass('ui-state-disabled', !here);
+            if (!here && $tag.prop('checked')) {
+                jQuery('#' + nsId('SearchName')).prop('checked', true).trigger('change');
+            }
+        }
+
+        var evNs = 'fmacs-' + String(fm.namespace || 'ns').replace(/[^\w-]/g, '');
+        fm.getUI().on('change.' + evNs + ' click.' + evNs, 'input[name="serchfrom"]', function () {
+            setTimeout(updateContentSearchAvailability, 0);
+        });
+
+        fm.bind('open', function () {
+            setTimeout(updateContentSearchAvailability, 0);
+        });
+
+        fm.bind('destroy', function () {
+            try {
+                fm.getUI().off('.' + evNs);
+            } catch (ignore) { }
+        });
+
+        var cmd = fm.getCommand('search');
+        if (cmd && !cmd._fmaExecWrapped) {
+            cmd._fmaExecWrapped = true;
+            var origExec = cmd.exec;
+            cmd.exec = function (q, target, mime, type) {
+                type = (type === undefined || type === null) ? '' : type;
+                if (type === 'SearchTag') {
+                    if (!searchScopeIsHere()) {
+                        fm.error('Content search is only available when the search scope is the current folder (Here).');
+                        return jQuery.Deferred().reject();
+                    }
+                    // Dual-safe payload: keep SearchTag and also prefix q marker.
+                    // If PHP drops trailing POST vars (e.g. max_input_vars), backend can still detect content search from q.
+                    if (typeof q === 'string' && q.length && q.indexOf('__CONTENT_SEARCH__:') !== 0) {
+                        q = '__CONTENT_SEARCH__:' + q;
+                    }
+                }
+                return origExec.call(this, q, target, mime, type);
+            };
+        }
+    };
+}());
+
+(function () {
+    function normalizeAjaxUrl(url) {
+        if (!url || typeof url !== 'string') {
+            return url;
+        }
+        try {
+            var parsed = new URL(url, window.location.origin);
+            parsed.protocol = window.location.protocol;
+            parsed.host = window.location.host;
+            return parsed.toString();
+        } catch (e) {
+            if (url.charAt(0) === '/') {
+                return window.location.origin + url;
+            }
+            return url;
+        }
+    }
+
+    window.analyzePHPDebug = function analyzePHPDebug(code, filename, callback) {
+        var afm = window.afm_object || {};
+        return jQuery.ajax({
+            url: normalizeAjaxUrl(afm.ajaxurl),
+            type: 'POST',
+            data: {
+                action: 'fma_debug_php',
+                nonce: afm.nonce,
+                php_code: code,
+                filename: filename,
+            },
+            success: function (response) {
+                if (callback && typeof callback === 'function') {
+                    callback(response, 'success');
+                }
+            },
+            error: function (xhr, status) {
+                if (status === 'abort') {
+                    if (callback && typeof callback === 'function') {
+                        callback(null, 'abort');
+                    }
+                    return;
+                }
+                if (callback && typeof callback === 'function') {
+                    callback({
+                        valid: false,
+                        errors: [{ line: 1, message: 'Failed to analyze PHP code', type: 'error' }],
+                        debug_info: {},
+                        message: 'Failed to analyze PHP code',
+                    }, 'error');
+                }
+            },
+        });
+    };
+}());
+
 jQuery(document).ready(function () {
-    // Check if debug feature is enabled
-    var debugEnabled = afm_object && afm_object.debug_enabled === '1';
+    function normalizeToCurrentOrigin(url) {
+        if (!url || typeof url !== 'string') return url;
+        try {
+            var parsed = new URL(url, window.location.origin);
+            parsed.protocol = window.location.protocol;
+            parsed.host = window.location.host;
+            return parsed.toString();
+        } catch (e) {
+            if (url.charAt(0) === '/') {
+                return window.location.origin + url;
+            }
+            return url;
+        }
+    }
+
+    // Function to check if debug feature is enabled (check dynamically)
+    function isDebugEnabled() {
+        var enabled = window.afm_object && window.afm_object.debug_enabled;
+        return enabled === '1' || enabled === 1 || enabled === true;
+    }
 
     // Global variables for error tracking
     var hasErrors = false;
@@ -10,6 +161,7 @@ jQuery(document).ready(function () {
     var tooltipTimeout = null;
     var lastTooltipLine = null;
     var isSaveButtonClicked = false;
+    var forceSaveWithErrors = false;
 
     // CSS styles for error highlighting
     var errorStyles = `
@@ -39,14 +191,14 @@ jQuery(document).ready(function () {
             pointer-events: none !important;
         }
         .fma-error-tooltip {
-            position: absolute;
+            position: fixed;
             background: #2d3748;
             color: white;
             padding: 8px 12px;
             border-radius: 6px;
             font-size: 12px;
             font-family: 'Courier New', monospace;
-            z-index: 10000;
+            z-index: 100150;
             pointer-events: none;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             max-width: 300px;
@@ -105,67 +257,113 @@ jQuery(document).ready(function () {
     var fmakey = afm_object.nonce;
     var fma_locale = afm_object.locale;
     var fma_cm_theme = afm_object.cm_theme;
+    var afmAjaxUrl = normalizeToCurrentOrigin(afm_object.ajaxurl);
 
-    // PHP Debug Analysis function
-    function analyzePHPDebug(code, filename, callback) {
-        jQuery.ajax({
-            url: afm_object.ajaxurl,
-            type: 'POST',
-            data: {
-                action: 'fma_debug_php',
-                nonce: fmakey,
-                php_code: code,
-                filename: filename
-            },
-            success: function (response) {
-                if (callback && typeof callback === 'function') {
-                    callback(response);
-                }
-            },
-            error: function () {
-                if (callback && typeof callback === 'function') {
-                    callback({
-                        valid: false,
-                        debug_info: {},
-                        message: 'Failed to analyze PHP code'
-                    });
-                }
+    function escapeHtml(text) {
+        return jQuery('<div>').text(text || '').html();
+    }
+
+    function getErrorForLine(lineNumber) {
+        if (!currentErrors || currentErrors.length === 0) {
+            return null;
+        }
+        var oneBased = lineNumber + 1;
+        for (var i = 0; i < currentErrors.length; i++) {
+            var errLine = currentErrors[i].line;
+            if (!errLine || errLine < 1) {
+                errLine = 1;
             }
+            if (errLine === oneBased) {
+                return currentErrors[i];
+            }
+        }
+        return null;
+    }
+
+    function wireEditorErrorTooltips(editor) {
+        if (!editor || editor._fmaTooltipWired) {
+            return;
+        }
+
+        editor._fmaTooltipWired = true;
+        var wrapper = editor.getWrapperElement();
+        if (!wrapper) {
+            return;
+        }
+
+        jQuery(wrapper).on('mousemove.fma-error-tooltip', function (e) {
+            if (!hasErrors || !currentErrors || !currentErrors.length) {
+                hideErrorTooltip();
+                return;
+            }
+
+            var pos = editor.coordsChar({ left: e.clientX, top: e.clientY }, 'window');
+            var error = getErrorForLine(pos.line);
+
+            if (error) {
+                showErrorTooltip(e, error);
+            } else {
+                hideErrorTooltip();
+            }
+        });
+
+        jQuery(wrapper).on('mouseleave.fma-error-tooltip', function () {
+            hideErrorTooltip();
         });
     }
 
-    // Highlight error lines in CodeMirror
+    function clearMarkedErrorLines(editor) {
+        if (!editor || !editor._fmaErrorLines || !editor._fmaErrorLines.length) {
+            return;
+        }
+        editor._fmaErrorLines.forEach(function (lineNumber) {
+            editor.removeLineClass(lineNumber, 'background', 'fma-error-line');
+            editor.removeLineClass(lineNumber, 'text', 'fma-error-underline');
+            editor.setGutterMarker(lineNumber, 'fma-error-gutter', null);
+        });
+        editor._fmaErrorLines = [];
+    }
+
+    // Highlight error lines in CodeMirror (only touches affected lines — safe for large files)
     function highlightErrorLines(editor, errors) {
-        if (!editor || !errors || errors.length === 0) {
+        if (!editor) {
+            return;
+        }
+
+        if (!errors || errors.length === 0) {
             clearErrorHighlights(editor);
             return;
         }
 
         currentErrors = errors;
+        clearMarkedErrorLines(editor);
 
-        for (var i = 0; i < editor.lineCount(); i++) {
-            editor.removeLineClass(i, 'background', 'fma-error-line');
-            editor.removeLineClass(i, 'text', 'fma-error-underline');
-            editor.setGutterMarker(i, 'fma-error-gutter', null);
-        }
-
+        var marked = [];
         errors.forEach(function (error) {
-            if (error.line && error.line > 0) {
-                var lineNumber = error.line - 1;
+            var reportedLine = error.line && error.line > 0 ? error.line : 1;
+            var lineNumber = reportedLine - 1;
+            if (lineNumber >= 0 && lineNumber < editor.lineCount()) {
+                marked.push(lineNumber);
                 editor.addLineClass(lineNumber, 'background', 'fma-error-line');
                 editor.addLineClass(lineNumber, 'text', 'fma-error-underline');
 
                 var marker = document.createElement('div');
                 marker.className = 'fma-error-marker';
-                marker.innerHTML = '⚠️';
-                marker.title = error.message;
+                marker.innerHTML = '!';
+                marker.title = error.message || 'PHP Error';
                 editor.setGutterMarker(lineNumber, 'fma-error-gutter', marker);
-
-                // Markers have titles which browser handles, but for the line text we use tooltips
             }
         });
 
+        if (marked.length === 0 && errors.length > 0) {
+            hasErrors = true;
+            updateSaveCloseButton();
+            return;
+        }
+
+        editor._fmaErrorLines = marked;
         hasErrors = true;
+        wireEditorErrorTooltips(editor);
         updateSaveCloseButton();
     }
 
@@ -173,100 +371,221 @@ jQuery(document).ready(function () {
     function clearErrorHighlights(editor) {
         if (!editor) return;
 
-        for (var i = 0; i < editor.lineCount(); i++) {
-            editor.removeLineClass(i, 'background', 'fma-error-line');
-            editor.removeLineClass(i, 'text', 'fma-error-underline');
-            editor.setGutterMarker(i, 'fma-error-gutter', null);
-        }
-
-        hideErrorTooltip();
+        // Clear currentErrors first to prevent tooltip from showing
         currentErrors = [];
         hasErrors = false;
+
+        // Hide any visible tooltip immediately
+        hideErrorTooltip();
+
+        clearMarkedErrorLines(editor);
         updateSaveCloseButton();
     }
 
+    // Make functions globally available for FileManagerPanel reinitialization
+    window.highlightErrorLines = highlightErrorLines;
+    window.clearErrorHighlights = clearErrorHighlights;
+
+
     // Show error tooltip on hover
     function showErrorTooltip(event, error) {
-        if (tooltipTimeout) clearTimeout(tooltipTimeout);
-
-        if (lastTooltipLine === error.line) {
-            // Just update position if moving within same line
-            var tooltip = jQuery('.fma-error-tooltip');
-            if (tooltip.length) {
-                var x = event.pageX + 10;
-                var y = event.pageY - 15;
-                tooltip.css({ left: x + 'px', top: (y - tooltip.outerHeight()) + 'px' });
-            }
+        // Double-check that we still have errors before showing tooltip
+        if (!currentErrors || currentErrors.length === 0 || !hasErrors) {
+            hideErrorTooltip();
             return;
         }
 
+        // Verify the error still exists in currentErrors
+        var errorExists = false;
+        for (var i = 0; i < currentErrors.length; i++) {
+            if (currentErrors[i].line === error.line) {
+                errorExists = true;
+                break;
+            }
+        }
+
+        if (!errorExists) {
+            hideErrorTooltip();
+            return;
+        }
+
+        // Clear existing timeout
+        if (tooltipTimeout) {
+            clearTimeout(tooltipTimeout);
+        }
+
+        var errLine = error.line && error.line > 0 ? error.line : 1;
+
+        // Check if we're already showing tooltip for this line
+        if (lastTooltipLine === errLine && jQuery('.fma-error-tooltip').length) {
+            return;
+        }
+
+        // Debounce tooltip showing
+        var clientX = event.clientX;
+        var clientY = event.clientY;
         tooltipTimeout = setTimeout(function () {
+            // Double-check again before showing (errors might have been cleared)
+            if (!currentErrors || currentErrors.length === 0 || !hasErrors) {
+                hideErrorTooltip();
+                return;
+            }
+
+            // Remove existing tooltip
             jQuery('.fma-error-tooltip').remove();
+
+            var safeMessage = escapeHtml(error.message || 'PHP Error');
             var tooltipHtml = `
                 <div class="fma-error-tooltip">
-                    <div class="error-title">⚠️ PHP Error</div>
-                    <div class="error-message">${error.message}</div>
-                    <div class="error-line">Line ${error.line}</div>
+                    <div class="error-title">PHP Error</div>
+                    <div class="error-message">${safeMessage}</div>
+                    <div class="error-line">Line ${errLine}</div>
                 </div>
             `;
+
             var tooltip = jQuery(tooltipHtml).appendTo('body');
-            var x = event.pageX + 10;
-            var y = event.pageY - 15;
-            tooltip.css({ left: x + 'px', top: (y - tooltip.outerHeight()) + 'px' });
-            lastTooltipLine = error.line;
-        }, 50); // Faster response
+
+            // Position above cursor (fixed — works in fullscreen / body-moved dialog)
+            var tooltipWidth = tooltip.outerWidth();
+            var tooltipHeight = tooltip.outerHeight();
+            var windowWidth = jQuery(window).width();
+            var windowHeight = jQuery(window).height();
+            var x = clientX + 12;
+            var y = clientY - tooltipHeight - 12;
+
+            if (x + tooltipWidth > windowWidth - 8) {
+                x = Math.max(8, windowWidth - tooltipWidth - 8);
+            }
+            if (y < 8) {
+                y = clientY + 16;
+            }
+            if (y + tooltipHeight > windowHeight - 8) {
+                y = Math.max(8, windowHeight - tooltipHeight - 8);
+            }
+
+            tooltip.css({
+                left: x + 'px',
+                top: y + 'px'
+            });
+
+            lastTooltipLine = errLine;
+        }, 150);
     }
 
     // Hide error tooltip
     function hideErrorTooltip() {
-        if (tooltipTimeout) clearTimeout(tooltipTimeout);
+        // Clear timeout
+        if (tooltipTimeout) {
+            clearTimeout(tooltipTimeout);
+        }
+
+        // Remove tooltip
         jQuery('.fma-error-tooltip').remove();
+
+        // Reset tracking
         lastTooltipLine = null;
     }
 
-    // Get error for specific line number
-    function getErrorForLine(lineNumber) {
-        for (var i = 0; i < currentErrors.length; i++) {
-            if (currentErrors[i].line === lineNumber + 1) return currentErrors[i];
-        }
-        return null;
-    }
-
-    // Update Save & Close button state
+    // Update Save & Close button state based on error status
     function updateSaveCloseButton() {
+        // Check if state has changed to avoid unnecessary updates
         var currentState = hasErrors ? 'disabled' : 'enabled';
-        if (lastButtonState === currentState) return;
+        if (lastButtonState === currentState) {
+            return; // No change needed
+        }
         lastButtonState = currentState;
 
+        // Find the Save & Close button with multiple selectors
         var selectors = [
-            '.elfinder-button-save-close', '.elfinder-button-save',
-            '[title*="Save"]', '[title*="save"]',
-            'button[title*="Save"]', 'button[title*="save"]',
-            'button:contains("Save")', 'button:contains("save")'
+            '.elfinder-button-save-close',
+            '.elfinder-button-save',
+            '[title*="Save"]',
+            '[title*="save"]',
+            '.ui-button[title*="Save"]',
+            '.ui-button[title*="save"]',
+            'button[title*="Save"]',
+            'button[title*="save"]',
+            '.elfinder-toolbar button[title*="Save"]',
+            '.elfinder-toolbar button[title*="save"]',
+            '.elfinder-toolbar .ui-button[title*="Save"]',
+            '.elfinder-toolbar .ui-button[title*="save"]',
+            '.elfinder .ui-button[title*="Save"]',
+            '.elfinder .ui-button[title*="save"]',
+            '.elfinder button[title*="Save"]',
+            '.elfinder button[title*="save"]'
         ];
+
         var saveCloseBtn = jQuery(selectors.join(', ')).filter(':visible');
+
+        // Also try to find buttons by text content
+        if (saveCloseBtn.length === 0) {
+            var textSelectors = [
+                'button:contains("Save")',
+                'button:contains("save")',
+                '.ui-button:contains("Save")',
+                '.ui-button:contains("save")',
+                '.elfinder button:contains("Save")',
+                '.elfinder button:contains("save")',
+                '.elfinder .ui-button:contains("Save")',
+                '.elfinder .ui-button:contains("save")'
+            ];
+            saveCloseBtn = jQuery(textSelectors.join(', ')).filter(':visible');
+        }
 
         if (saveCloseBtn.length > 0) {
             if (hasErrors) {
-                saveCloseBtn.addClass('fma-save-close-disabled').attr('disabled', 'disabled');
-                saveCloseBtn.css({ opacity: '0.5', cursor: 'not-allowed' });
-                saveCloseBtn.off('click.fma-disable').on('click.fma-disable', function (e) {
-                    e.preventDefault(); return false;
+                // Disable button when errors exist
+                saveCloseBtn.addClass('fma-save-close-disabled');
+                saveCloseBtn.attr('disabled', 'disabled');
+                saveCloseBtn.attr('title', 'Please fix PHP errors before saving');
+                saveCloseBtn.css('opacity', '0.5');
+                saveCloseBtn.css('cursor', 'not-allowed');
+                saveCloseBtn.prop('disabled', true);
+                saveCloseBtn.off('click.fma-disable'); // Remove existing handlers
+                saveCloseBtn.on('click.fma-disable', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                });
+
+                // Track when save button is actually clicked
+                saveCloseBtn.on('click.fma-save-track', function (e) {
+                    isSaveButtonClicked = true;
+                    setTimeout(function () {
+                        isSaveButtonClicked = false;
+                    }, 1000);
                 });
             } else {
-                saveCloseBtn.removeClass('fma-save-close-disabled').removeAttr('disabled');
-                saveCloseBtn.css({ opacity: '1', cursor: 'pointer' });
-                saveCloseBtn.off('click.fma-disable');
+                // Enable button when no errors
+                saveCloseBtn.removeClass('fma-save-close-disabled');
+                saveCloseBtn.removeAttr('disabled');
+                saveCloseBtn.attr('title', 'Save & Close');
+                saveCloseBtn.css('opacity', '1');
+                saveCloseBtn.css('cursor', 'pointer');
+                saveCloseBtn.prop('disabled', false);
+                saveCloseBtn.off('click.fma-disable'); // Remove disable handlers
+
+                // Track when save button is actually clicked
+                saveCloseBtn.off('click.fma-save-track'); // Remove existing handlers
+                saveCloseBtn.on('click.fma-save-track', function (e) {
+                    isSaveButtonClicked = true;
+                    setTimeout(function () {
+                        isSaveButtonClicked = false;
+                    }, 1000);
+                });
             }
         }
     }
 
-    // Periodic check for Save button
+    // Periodic button check (since elFinder buttons load dynamically)
     setInterval(function () {
-        if (currentEditor && hasErrors) updateSaveCloseButton();
-    }, 5000);
+        if (currentEditor && hasErrors) {
+            // Only check when there are errors to avoid unnecessary updates
+            updateSaveCloseButton();
+        }
+    }, 10000); // Reduced frequency to every 10 seconds and only when errors exist
 
-    // Show error popup on save
+    // Show error popup on save attempt
     function showErrorSavePopup(errors, callback) {
         var errorList = errors.map(function (error) {
             return `Line ${error.line}: ${error.message}`;
@@ -275,378 +594,219 @@ jQuery(document).ready(function () {
         var popupHtml = `
             <div class="fma-modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; justify-content: center; align-items: center;">
                 <div class="fma-error-popup" style="background: white; border-radius: 8px; padding: 20px; max-width: 500px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
-                    <h3 style="color: #c53030;">PHP Syntax Errors Found</h3>
-                    <div style="background: #fed7d7; padding: 10px; border-radius: 4px; font-family: monospace;">${errorList}</div>
-                    <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end;">
-                        <button class="fma-error-okay" style="padding: 8px 15px;">Okay</button>
-                        <button class="fma-error-save-anyway" style="padding: 8px 15px; background: #c53030; color: white; border: none;">Save Anyway</button>
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="font-size: 24px; margin-right: 10px;">⚠️</div>
+                        <h3 style="margin: 0; color: #c53030; font-size: 18px;">PHP Syntax Errors Found</h3>
+                    </div>
+                    <div style="margin-bottom: 20px; color: #4a5568; line-height: 1.5;">
+                        <p style="margin: 0 0 10px 0;">Please fix the following errors before saving:</p>
+                        <div style="background: #fed7d7; padding: 10px; border-radius: 4px; border-left: 3px solid #c53030; font-family: monospace; font-size: 12px;">
+                            ${errorList}
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button class="fma-error-okay" style="background: #4299e1; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                            Okay
+                        </button>
+                        <button class="fma-error-save-anyway" style="background: #c53030; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                            Save Anyway
+                        </button>
                     </div>
                 </div>
             </div>
         `;
 
+        // Remove existing popup
         jQuery('.fma-modal-overlay').remove();
+
+        // Add new popup
         var popup = jQuery(popupHtml).appendTo('body');
 
+        // Okay button - close popup and return to editor
         popup.find('.fma-error-okay').on('click', function () {
             popup.remove();
-            if (callback) callback(false);
+            if (callback) callback(false); // Don't save
         });
 
+        // Save Anyway button - close popup and save file
         popup.find('.fma-error-save-anyway').on('click', function () {
             popup.remove();
-            if (callback) callback(true);
+            if (callback) callback(true); // Save anyway
+        });
+
+        // Close on overlay click
+        popup.find('.fma-modal-overlay').on('click', function (e) {
+            if (e.target === this) {
+                popup.remove();
+                if (callback) callback(false); // Don't save
+            }
         });
     }
 
-    // Success Modal
+    // Show simple success modal (with duplicate prevention)
     function showSuccessModal(message) {
-        if (jQuery('.fma-modal-overlay').length > 0) return;
+        // Prevent duplicate modals
+        if (jQuery('.fma-modal-overlay').length > 0) {
+            return;
+        }
+
         var modalHtml = `
             <div class="fma-modal-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10001; display: flex; align-items: center; justify-content: center;">
-                <div style="background: white; padding: 30px; border-radius: 8px; text-align: center;">
-                    <div style="color: #46b450; font-size: 40px;">✓</div>
-                    <p>${message}</p>
-                    <button class="fma-modal-close">OK</button>
+                <div class="fma-modal" style="background: white; border-radius: 8px; padding: 30px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-family: Arial, sans-serif;">
+                    <div style="color: #46b450; font-size: 48px; margin-bottom: 15px;">✓</div>
+                    <h3 style="margin: 0 0 10px 0; color: #46b450; font-size: 18px;">Success!</h3>
+                    <p style="margin: 0 0 20px 0; color: #333; font-size: 14px;">${message}</p>
+                    <button class="fma-modal-close" style="padding: 10px 20px; background: #46b450; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;">OK</button>
                 </div>
             </div>
         `;
+
         var modal = jQuery(modalHtml).appendTo('body');
-        modal.find('.fma-modal-close').on('click', function () { modal.remove(); });
-        setTimeout(function () { modal.remove(); }, 3000);
-    }
 
-    // Initialize elFinder
-    var elfinder_object = jQuery('#file_manager_advanced').elfinder({
-        cssAutoLoad: false,
-        url: afm_object.ajaxurl,
-        customData: {
-            action: 'fma_load_fma_ui',
-            _fmakey: fmakey,
-        },
-        defaultView: 'list',
-        height: 500,
-        lang: fma_locale,
-        ui: afm_object.ui,
-        commandsOptions: {
-            edit: {
-                mimes: [],
-                editors: [{
-                    mimes: ['text/plain', 'text/html', 'text/javascript', 'text/css', 'text/x-php', 'application/x-php'],
-                    info: { name: 'Code Editor' },
-                    load: function (textarea) {
-                        var mimeType = this.file.mime;
-                        var filename = this.file.name;
-                        var self = this;
-
-                        var editor = CodeMirror.fromTextArea(textarea, {
-                            mode: mimeType,
-                            indentUnit: 4,
-                            lineNumbers: true,
-                            theme: fma_cm_theme,
-                            gutters: ["CodeMirror-lint-markers", "CodeMirror-linenumbers"]
-                        });
-
-                        editor.fma_file_info = { filename: filename, mime: mimeType, hash: self.file.hash };
-
-                        if (debugEnabled && filename.toLowerCase().endsWith('.php')) {
-                            editor.on('change', function () {
-                                var code = editor.getValue();
-                                analyzePHPDebug(code, filename, function (result) {
-                                    if (result.valid) {
-                                        clearErrorHighlights(editor);
-                                    } else {
-                                        highlightErrorLines(editor, result.errors);
-                                    }
-                                });
-                            });
-                        }
-
-                        // Hover tooltip: CodeMirror coordsChar() "page" mode needs document coords (pageX/pageY)
-                        var wrapper = editor.getWrapperElement();
-                        jQuery(wrapper).on('mousemove.fma-debug', function (e) {
-                            if (!hasErrors || currentErrors.length === 0) return;
-
-                            var docLeft = e.pageX != null ? e.pageX : (e.clientX + (window.scrollX || document.documentElement.scrollLeft || 0));
-                            var docTop = e.pageY != null ? e.pageY : (e.clientY + (window.scrollY || document.documentElement.scrollTop || 0));
-                            var coords = editor.coordsChar({ left: docLeft, top: docTop }, 'page');
-                            if (coords.outside) return;
-                            var error = getErrorForLine(coords.line);
-
-                            if (error) {
-                                showErrorTooltip(e, error);
-                            } else {
-                                hideErrorTooltip();
-                            }
-                        });
-
-                        jQuery(wrapper).on('mouseleave.fma-debug', function () {
-                            hideErrorTooltip();
-                        });
-
-                        currentEditor = editor;
-                        return editor;
-                    },
-                    close: function (textarea, instance) {
-                        if (instance) clearErrorHighlights(instance);
-                        currentEditor = null;
-                    },
-                    save: function (textarea, editor) {
-                        var code = editor.getValue();
-                        var filename = editor.fma_file_info ? editor.fma_file_info.filename : 'unknown.php';
-
-                        if (filename.toLowerCase().endsWith('.php') && hasErrors) {
-                            analyzePHPDebug(code, filename, function (result) {
-                                if (!result.valid && result.errors) {
-                                    showErrorSavePopup(result.errors, function (saveAnyway) {
-                                        if (saveAnyway) {
-                                            jQuery(textarea).val(code);
-                                            if (typeof editor.save === 'function') editor.save();
-                                        }
-                                    });
-                                }
-                            });
-                            return false;
-                        }
-                        jQuery(textarea).val(code);
-                        return true;
-                    }
-                }]
+        // Close modal on click
+        modal.find('.fma-modal-close, .fma-modal-overlay').on('click', function (e) {
+            if (e.target === this) {
+                modal.remove();
             }
-        },
-        workerBaseUrl: afm_object.plugin_url + 'application/library/js/worker/',
-    });
+        });
 
-    // Override search command to add contentTag parameter for content search (after init)
-    function applyContentSearchOverride(fm) {
-        if (!fm || !fm._commands || !fm._commands.search) return;
-        if (fm._commands.search._fmaContentSearchPatched) return;
-        fm._commands.search._fmaContentSearchPatched = true;
-        var originalSearchExec = fm._commands.search.exec;
-
-            // Override exec method to add contentTag for SearchTag type
-            fm._commands.search.exec = function(q, target, mime, type) {
-                var self = this;
-                var sType = type || '';
-
-                // If SearchTag type, we need to send contentTag parameter
-                if (sType === 'SearchTag' && q) {
-                    var contentTag = q; // Store the tag
-                    var fm = this.fm;
-                    var reqDef = [];
-                    var onlyMimes = fm.options.onlyMimes;
-                    var phash, targetVolids = [];
-
-                    // Custom setType function that encodes tag in q parameter for SearchTag
-                    var setType = function(data) {
-                        if (sType && sType !== 'SearchName' && sType !== 'SearchMime') {
-                            data.type = sType;
-                        }
-                        if (sType === 'SearchTag') {
-                            data.q = '__CONTENT_SEARCH__:' + contentTag;
-                        }
-                        return data;
-                    };
-
-                    var rootCnt;
-
-                    // Process target
-                    if (typeof target == 'object') {
-                        mime = target.mime || '';
-                        target = target.target || '';
-                    }
-                    target = target ? target : '';
-
-                    // Process mimes
-                    if (mime) {
-                        mime = jQuery.trim(mime).replace(',', ' ').split(' ');
-                        if (onlyMimes.length) {
-                            mime = jQuery.map(mime, function(m) {
-                                m = jQuery.trim(m);
-                                return m && (jQuery.inArray(m, onlyMimes) !== -1
-                                    || jQuery.grep(onlyMimes, function(om) { return m.indexOf(om) === 0 ? true : false; }).length
-                                ) ? m : null;
-                            });
-                        }
-                    } else {
-                        mime = [].concat(onlyMimes);
-                    }
-
-                    fm.trigger('searchstart', setType({query: '', target: target, mimes: mime}));
-
-                    if (!onlyMimes.length || mime.length) {
-                        if (target === '' && fm.api >= 2.1) {
-                            rootCnt = Object.keys(fm.roots).length;
-                            jQuery.each(fm.roots, function(id, hash) {
-                                reqDef.push(fm.request({
-                                    data: setType({cmd: 'search', target: hash, mimes: mime}),
-                                    notify: {type: 'search', cnt: 1, hideCnt: (rootCnt > 1 ? false : true)},
-                                    cancel: true,
-                                    preventDone: true
-                                }));
-                            });
-                        } else {
-                            reqDef.push(fm.request({
-                                data: setType({cmd: 'search', target: target, mimes: mime}),
-                                notify: {type: 'search', cnt: 1, hideCnt: true},
-                                cancel: true,
-                                preventDone: true
-                            }));
-                            if (target !== '' && fm.api >= 2.1 && Object.keys(fm.leafRoots).length) {
-                                jQuery.each(fm.leafRoots, function(hash, roots) {
-                                    phash = hash;
-                                    while (phash) {
-                                        if (target === phash) {
-                                            jQuery.each(roots, function() {
-                                                var f = fm.file(this);
-                                                f && f.volumeid && targetVolids.push(f.volumeid);
-                                                reqDef.push(fm.request({
-                                                    data: setType({cmd: 'search', target: this, mimes: mime}),
-                                                    notify: {type: 'search', cnt: 1, hideCnt: false},
-                                                    cancel: true,
-                                                    preventDone: true
-                                                }));
-                                            });
-                                        }
-                                        phash = (fm.file(phash) || {}).phash;
-                                    }
-                                });
-                            }
-                        }
-                    } else {
-                        reqDef = [jQuery.Deferred().resolve({files: []})];
-                    }
-
-                    fm.searchStatus.mixed = (reqDef.length > 1) ? targetVolids : false;
-
-                    return jQuery.when.apply(jQuery, reqDef).done(function(data) {
-                        var argLen = arguments.length, i;
-                        data.warning && fm.error(data.warning);
-                        if (argLen > 1) {
-                            data.files = (data.files || []);
-                            for (i = 1; i < argLen; i++) {
-                                arguments[i].warning && fm.error(arguments[i].warning);
-                                if (arguments[i].files) {
-                                    data.files.push.apply(data.files, arguments[i].files);
-                                }
-                            }
-                        }
-                        data.files && data.files.length && fm.cache(data.files);
-                        fm.lazy(function() {
-                            fm.trigger('search', data);
-                        }).then(function() {
-                            return fm.lazy(function() {
-                                fm.trigger('searchdone');
-                            });
-                        }).then(function() {
-                            data.sync && fm.sync();
-                        });
-                    });
-                } else {
-                    return originalSearchExec.call(self, q, target, mime, type);
-                }
-            };
+        // Auto close after 3 seconds
+        setTimeout(function () {
+            modal.remove();
+        }, 3000);
     }
-    if (elfinder_object && elfinder_object.length) {
-        var fm = elfinder_object.elfinder('instance');
-        if (fm) {
-            fm.one('init', function() { applyContentSearchOverride(fm); });
-            applyContentSearchOverride(fm);
+
+    // Unsaved-changes warning when switching files in fullscreen explorer
+    function showUnsavedFileSwitchPopup(options, callback) {
+        options = options || {};
+        var currentName = escapeHtml(options.currentName || 'this file');
+        var nextName = escapeHtml(options.nextName || 'another file');
+
+        jQuery('.fma-unsaved-switch-overlay').remove();
+
+        var popupHtml =
+            '<div class="fma-unsaved-switch-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100150; display: flex; justify-content: center; align-items: center;">' +
+            '<div class="fma-unsaved-switch-popup" style="background: white; border-radius: 8px; padding: 24px; max-width: 480px; width: 90%; box-shadow: 0 4px 20px rgba(0,0,0,0.3); font-family: Arial, sans-serif;">' +
+            '<div style="display: flex; align-items: flex-start; margin-bottom: 16px;">' +
+            '<div style="font-size: 28px; margin-right: 12px; line-height: 1;">⚠️</div>' +
+            '<div>' +
+            '<h3 style="margin: 0 0 8px 0; color: #c05621; font-size: 18px;">Unsaved changes</h3>' +
+            '<p style="margin: 0; color: #4a5568; line-height: 1.5; font-size: 14px;">' +
+            '<strong>' +
+            currentName +
+            '</strong> has unsaved changes. Save before opening <strong>' +
+            nextName +
+            '</strong>, or your edits will be lost.' +
+            '</p>' +
+            '</div>' +
+            '</div>' +
+            '<div style="display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;">' +
+            '<button type="button" class="fma-unsaved-cancel" style="background: #e2e8f0; color: #2d3748; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-size: 14px;">Cancel</button>' +
+            '<button type="button" class="fma-unsaved-discard" style="background: #fff; color: #c53030; border: 1px solid #fc8181; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-size: 14px;">Discard changes</button>' +
+            '<button type="button" class="fma-unsaved-save" style="background: #3182ce; color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-size: 14px;">Save &amp; open</button>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+
+        var popup = jQuery(popupHtml).appendTo('body');
+
+        function finish(action) {
+            popup.remove();
+            if (callback) {
+                callback(action);
+            }
+        }
+
+        popup.find('.fma-unsaved-save').on('click', function () {
+            finish('save');
+        });
+        popup.find('.fma-unsaved-discard').on('click', function () {
+            finish('discard');
+        });
+        popup.find('.fma-unsaved-cancel').on('click', function () {
+            finish('cancel');
+        });
+        popup.on('click', function (e) {
+            if (e.target === popup[0]) {
+                finish('cancel');
+            }
+        });
+    }
+
+    window.highlightErrorLines = highlightErrorLines;
+    window.clearErrorHighlights = clearErrorHighlights;
+    window.showErrorSavePopup = showErrorSavePopup;
+    window.showUnsavedFileSwitchPopup = showUnsavedFileSwitchPopup;
+    window.updateSaveCloseButton = updateSaveCloseButton;
+    window.afmGetPhpDebugState = function () {
+        return {
+            hasErrors: hasErrors,
+            isSaveButtonClicked: isSaveButtonClicked,
+            forceSaveWithErrors: forceSaveWithErrors,
+            errors: currentErrors || [],
+        };
+    };
+
+    // One-shot bypass used by "Save Anyway" (Ctrl+S / save gate)
+    window.afmAllowPhpSaveWithErrorsOnce = function () {
+        forceSaveWithErrors = true;
+        setTimeout(function () {
+            forceSaveWithErrors = false;
+        }, 1500);
+    };
+
+    // CRITICAL: Check if we're on the new React UI and NOT on filemanager tab
+    // If we're on settings, logs, notifications, etc., DON'T initialize elFinder
+    // This prevents elFinder from overriding the hash on page reload
+    const currentHash = window.location.hash.replace(/^#/, '').replace(/^\//, '');
+    const validTabs = ['dashboard', 'filemanager', 'settings', 'logs', 'notifications', 'extension', 'docs', 'pro', 'planaccess'];
+    let currentTab = 'filemanager'; // Default
+
+    // Check hash for tab
+    if (currentHash) {
+        const hashParts = currentHash.split('/');
+        const mainTab = hashParts[0] ? hashParts[0].toLowerCase() : '';
+        if (validTabs.includes(mainTab)) {
+            currentTab = mainTab;
+        } else if (!currentHash.startsWith('elf_') && currentHash.length < 20) {
+            // Not an elFinder hash, might be a valid tab
+            if (validTabs.includes(currentHash.toLowerCase())) {
+                currentTab = currentHash.toLowerCase();
+            }
         }
     }
 
-    // When user clears search and presses Enter (or closes search), go back to folder they were in before search
-    if (elfinder_object && elfinder_object.length) {
-        var fm = elfinder_object.elfinder('instance');
-        if (fm) {
-            var cwdBeforeSearch = null;
-            fm.bind('searchstart', function() {
-                var cwd = fm.cwd();
-                if (cwd && cwd.hash) {
-                    cwdBeforeSearch = cwd.hash;
-                }
-            });
-            fm.bind('searchend', function() {
-                if (cwdBeforeSearch && fm.file(cwdBeforeSearch)) {
-                    fm.exec('open', cwdBeforeSearch);
-                }
-                cwdBeforeSearch = null;
-            });
-        }
+    // Also check sessionStorage for saved tab (in case hash was lost)
+    const savedTab = sessionStorage.getItem('afm-active-tab');
+    const shouldRestoreTab = sessionStorage.getItem('afm-should-restore-tab') === 'true';
+    if (shouldRestoreTab && savedTab && validTabs.includes(savedTab)) {
+        currentTab = savedTab;
     }
 
-    // Add Content search radio button after elFinder is initialized
-    if (elfinder_object && elfinder_object.length) {
-        var fm = elfinder_object.elfinder('instance');
-        if (fm) {
-            var addContentRadioButton = function() {
-                var searchMenu = jQuery('.elfinder-button-search-menu');
-                if (searchMenu.length) {
-                    var namespace = fm.namespace || 'elfinder-';
-                    var id = function(name) {
-                        return namespace + (fm.escape ? fm.escape(name) : name);
-                    };
-
-                    var searchTypeSet = searchMenu.find('.elfinder-search-type');
-                    if (searchTypeSet.length && !searchTypeSet.find('#' + id('SearchTag')).length) {
-                        var tagRadio = jQuery('<input id="' + id('SearchTag') + '" name="serchcol" type="radio" value="SearchTag"/>');
-                        var tagLabel = jQuery('<label for="' + id('SearchTag') + '">Content</label>');
-
-                        searchTypeSet.append(tagRadio).append(tagLabel);
-                        searchTypeSet.buttonset('refresh');
-
-                        // Remember search type when target is "Here", so we can restore only when user had chosen Content then switched to "All"
-                        var lastSearchTypeWhenHere = null;
-
-                        var updateContentState = function() {
-                            var isHere = jQuery('#' + id('SearchFromCwd')).prop('checked');
-                            var tagRadio = jQuery('#' + id('SearchTag'));
-                            var tagLabel = tagRadio.next('label');
-
-                            if (tagRadio.length) {
-                                if (isHere) {
-                                    tagRadio.prop('disabled', false);
-                                    tagLabel.css({'opacity': '1', 'cursor': 'pointer'});
-                                    // Restore Content when switching back to "Here" if it was selected before
-                                    if (lastSearchTypeWhenHere === 'SearchTag') {
-                                        tagRadio.prop('checked', true);
-                                        searchTypeSet.buttonset('refresh');
-                                    }
-                                } else {
-                                    tagRadio.prop('disabled', true);
-                                    tagLabel.css({'opacity': '0.5', 'cursor': 'not-allowed'});
-                                    if (tagRadio.prop('checked')) {
-                                        lastSearchTypeWhenHere = 'SearchTag'; // was Content before switching to All
-                                        jQuery('#' + id('SearchName')).prop('checked', true).trigger('change');
-                                        searchTypeSet.buttonset('refresh');
-                                    }
-                                }
-                            }
-                        };
-
-                        // When user changes search type while target is "Here", remember it
-                        searchMenu.off('change.contentsearch', 'input[name="serchcol"]').on('change.contentsearch', 'input[name="serchcol"]', function() {
-                            if (jQuery('#' + id('SearchFromCwd')).prop('checked')) {
-                                var val = jQuery(this).val();
-                                if (val) lastSearchTypeWhenHere = val;
-                            }
-                        });
-
-                        searchMenu.off('change.contentsearch', 'input[name="serchfrom"]').on('change.contentsearch', 'input[name="serchfrom"]', updateContentState);
-                        updateContentState();
-                    }
-                }
-            };
-
-            jQuery(document).on('click focus', '.elfinder-button-search input[type="text"]', function() {
-                setTimeout(addContentRadioButton, 200);
-            });
-
-            fm.bind('open', function() {
-                setTimeout(addContentRadioButton, 500);
-            });
-
-            setTimeout(addContentRadioButton, 1000);
-        }
+    // React admin mounts FileManagerPanel — it pulls latest settings via REST and inits/refreshes elFinder.
+    // If we init here, CodeMirror theme + ui: are frozen from page-load PHP; tab-switch "reload" never applies new settings.
+    if (typeof afm_object !== 'undefined' && afm_object.react_shell) {
+        return;
     }
+
+    // Only initialize elFinder if we're on filemanager tab
+    // This prevents elFinder from overriding hash when on other tabs
+    if (currentTab !== 'filemanager') {
+        return; // Don't initialize elFinder
+    }
+
+    if (typeof window.afmMountElfinder === 'function') {
+        window.afmMountElfinder(jQuery('#file_manager_advanced'), {
+            nonce: fmakey,
+            ajaxUrl: afmAjaxUrl,
+            locale: fma_locale,
+            cmTheme: fma_cm_theme,
+            ui: afm_object.ui,
+            pluginUrl: afm_object.plugin_url,
+        });
+    }
+
 });
+
+
+

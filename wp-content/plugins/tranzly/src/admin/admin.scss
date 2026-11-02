@@ -1,0 +1,90 @@
+// Logical properties only (CLAUDE.md §2.7): the RTL build is generated from this file.
+.tranzly-admin {
+	// No width cap: the screen is always hosted by the admin kit's shell, which sets the width
+	// (owner review 2026-09-28, "a container that is too narrow"; the 48rem cap left half the
+	// window empty beside the cards).
+	margin-block-start: 1rem;
+
+	.components-notice {
+		margin-inline: 0;
+		margin-block-end: 1rem;
+	}
+}
+
+.tranzly-admin__credit {
+	font-weight: 600;
+}
+
+.tranzly-admin__links {
+	margin-inline-start: 0;
+	list-style: none;
+}
+
+// Engines and Translation jobs tabs (T2). Logical properties only (CLAUDE.md §2.7: RTL).
+.tranzly-admin__tabs .components-tab-panel__tab-content {
+	padding-block-start: 16px;
+}
+
+.tranzly-engines__key,
+.tranzly-engines__language,
+.tranzly-jobs__job {
+	margin-block-end: 24px;
+	padding-block-end: 16px;
+	border-block-end: 1px solid #dcdcde;
+}
+
+// ⛔ Greys are the kit's muted token, never a fixed #50575e: under the kit's dark scheme a fixed
+// grey is 1.9:1 on the dark surface (live axe, Settings → Languages, every one of our sites,
+// 2026-10-05). The fallback keeps the light value outside the shell.
+.tranzly-engines__pro {
+	color: var(--zak-muted, #50575e);
+	font-style: italic;
+}
+
+.tranzly-engines__fallback,
+.tranzly-jobs fieldset {
+	margin-block: 12px;
+}
+
+.tranzly-jobs__failures td,
+.tranzly-jobs__failures th {
+	text-align: start;
+	vertical-align: top;
+}
+
+// The AI agents (MCP) panel (wp/packages/zinn-mcp-kit): the client configuration block scrolls
+// rather than widening the screen. A translucent tint (as the kit's .zak-pre), never a fixed light
+// grey: under the kit's dark scheme a #f6f7f7 block kept the shell's light text (axe
+// color-contrast on the PBS Settings screen, admin-kit e2e 2026-10-05).
+.zd-mcp-panel__config {
+	overflow-x: auto;
+	max-inline-size: 100%;
+	padding: 12px;
+	background: rgba(0, 0, 0, 0.04);
+	color: inherit;
+	font-size: 12px;
+}
+
+.zd-mcp-panel__tools {
+	columns: 2 16em;
+}
+
+// Translation status: the chosen language reads as the current one
+// (bold, no underline), never as a pressed button.
+.tranzly-status__lang.is-current {
+	font-weight: 600;
+	text-decoration: none;
+}
+
+// Settings → Languages: WordPress's own words for each language.
+.tranzly-admin__pack {
+	display: block;
+	margin-block-start: 2px;
+	color: var(--zak-muted, #50575e);
+	font-size: 12px;
+}
+
+// Engines → Your keys: "Save key" and "Check my DeepL usage" side by side.
+.tranzly-engines__key .components-button + .components-button {
+	margin-inline-start: 12px;
+}

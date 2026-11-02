@@ -977,6 +977,11 @@ class AWS_Search {
 
                 $post_data = get_post( $post_id );
 
+                if ( $post_data instanceof WP_Post ) {
+                    $post_data = clone $post_data;
+                    unset( $post_data->post_password );
+                }
+
                 $title = isset( $post_data->post_title ) ? $post_data->post_title : '';
                 $title = apply_filters( 'the_title', $title, $post_id );
 
@@ -1358,7 +1363,7 @@ class AWS_Search {
 
             switch( $image_source ) {
 
-                case 'featured';
+                case 'featured':
 
                     $post_thumbnail_id = get_post_thumbnail_id( $post_id );
 
@@ -1373,7 +1378,7 @@ class AWS_Search {
 
                     break;
 
-                case 'gallery';
+                case 'gallery':
 
                     $gallery_images_array = method_exists( $product, 'get_gallery_image_ids' ) ? $product->get_gallery_image_ids() : ( method_exists( $product, 'get_gallery_attachment_ids' ) ? $product->get_gallery_attachment_ids() : array() );
 
@@ -1384,19 +1389,19 @@ class AWS_Search {
 
                     break;
 
-                case 'content';
+                case 'content':
 
                     $image_src = $this->scrap_img( $post_data->post_content );
 
                     break;
 
-                case 'description';
+                case 'description':
 
                     $image_src = $this->scrap_img( $post_data->post_excerpt );
 
                     break;
 
-                case 'default';
+                case 'default':
 
                     $image_src = $default_img;
 

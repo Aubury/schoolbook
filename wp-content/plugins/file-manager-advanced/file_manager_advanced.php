@@ -4,10 +4,14 @@
   Plugin URI: https://wordpress.org/plugins/file-manager-advanced
   Description: Cpanel for files management in wordpress
   Author: wpexpertsio
-  Version: 5.4.12
+  Version: 6.0.0
   Author URI: https://wpexperts.io
   License: GPLv2
 **/
+
+if ( ! defined( 'FMA_PLUGIN_FILE' ) ) {
+	define( 'FMA_PLUGIN_FILE', __FILE__ );
+}
 
 /**
  * Integrate Freemius SDK
@@ -31,7 +35,7 @@ if ( ! function_exists( 'fma_fs' ) ) {
                 'type'                => 'plugin',
                 'public_key'          => 'pk_0fd5cbcb84f5aa475cb00b852ceaf',
                 'is_premium'          => false,
-                'has_addons'          => true,
+                'has_addons'          => false,
                 'has_paid_plans'      => false,
                 'menu'                => array(
                     'slug'           => 'file_manager_advanced_ui',
@@ -60,7 +64,62 @@ if ( ! function_exists( 'fma_fs' ) ) {
  * Loading constants
  */
 require_once('constants.php');
+require_once FMAFILEPATH . 'application/fma-oauth-legacy-redirect.php';
 require_once FMAFILEPATH . 'application/fma-elfinder-helpers.php';
+require_once FMAFILEPATH . 'application/class_fma_permissions.php';
+
+function fma_get_installed_pro_version() {
+	$pro_main = function_exists( 'fma_get_pro_plugin_main_file' ) ? fma_get_pro_plugin_main_file() : '';
+	if ( $pro_main === '' || ! function_exists( 'get_file_data' ) ) {
+		return '';
+	}
+	$data = get_file_data( $pro_main, array( 'Version' => 'Version' ) );
+	return ! empty( $data['Version'] ) ? $data['Version'] : '';
+}
+
+if ( ! function_exists( 'fma_pro_version_notice' ) ) {
+	function fma_pro_version_notice() {
+		$dismissed_until = (int) get_user_meta( get_current_user_id(), 'fma_pro_version_notice_dismissed_until', true );
+		$pro_version     = fma_get_installed_pro_version();
+		if ( ! current_user_can( 'manage_options' ) || $pro_version === '' || version_compare( $pro_version, '4.0.0', '>=' ) || $dismissed_until > time() ) {
+			return;
+		}
+
+		printf(
+			'<div class="notice notice-error is-dismissible fma-pro-version-notice" data-nonce="%1$s"><div class="fma-pro-version-notice__content"><div class="fma-pro-version-notice__message"><p><strong>%2$s</strong> %3$s <strong>%4$s</strong>.</p><span>%5$s</span></div><a class="button button-primary fma-pro-version-notice__action" href="%6$s" target="_blank" rel="noopener noreferrer">%7$s</a></div><style>.fma-pro-version-notice{border-left-width:4px;margin:20px 0;padding:0}.fma-pro-version-notice__content{align-items:center;display:flex;gap:16px;min-height:54px;padding:12px 42px 12px 16px}.fma-pro-version-notice__message{flex:1;min-width:220px}.fma-pro-version-notice__message p{font-size:15px;line-height:1.4;margin:0 0 2px}.fma-pro-version-notice__message span{color:#50575e;font-size:13px;line-height:1.4}.fma-pro-version-notice__action{flex:0 0 auto;margin:0;white-space:nowrap}@media screen and (max-width:600px){.fma-pro-version-notice__content{align-items:flex-start;flex-direction:column;gap:10px;padding-right:42px}.fma-pro-version-notice__action{width:100%%}}</style></div>',
+			esc_attr( wp_create_nonce( 'fma_dismiss_pro_version_notice' ) ),
+			esc_html__( 'File Manager Advanced 6.0.0', 'file-manager-advanced' ),
+			esc_html__( 'requires', 'file-manager-advanced' ),
+			esc_html__( 'File Manager Advanced Pro 4.0.0', 'file-manager-advanced' ),
+			esc_html__( 'Update the Pro plugin to use the new File Manager experience.', 'file-manager-advanced' ),
+			esc_url( 'https://objectsws.atlassian.net/servicedesk/customer/portal/37' ),
+			esc_html__( 'Get Pro Plugin', 'file-manager-advanced' )
+		);
+	}
+
+	function fma_dismiss_pro_version_notice() {
+		check_ajax_referer( 'fma_dismiss_pro_version_notice', 'nonce' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( null, 403 );
+		}
+		update_user_meta( get_current_user_id(), 'fma_pro_version_notice_dismissed_until', time() + ( 15 * MINUTE_IN_SECONDS ) );
+		wp_send_json_success();
+	}
+
+	function fma_pro_version_notice_dismiss_script() {
+		?>
+		<script>
+		jQuery(document).on('click', '.fma-pro-version-notice .notice-dismiss', function () {
+			jQuery.post(ajaxurl, {action: 'fma_dismiss_pro_version_notice', nonce: jQuery(this).closest('.fma-pro-version-notice').data('nonce')});
+		});
+		</script>
+		<?php
+	}
+
+	add_action( 'admin_notices', 'fma_pro_version_notice' );
+	add_action( 'wp_ajax_fma_dismiss_pro_version_notice', 'fma_dismiss_pro_version_notice' );
+	add_action( 'admin_footer', 'fma_pro_version_notice_dismiss_script' );
+}
 
 /**
  * Cleanup function - Shared by both uninstall and deactivation hooks
@@ -156,6 +215,7 @@ if(is_admin()) {
  * Shortcode class
  */
 include('application/class_fma_shortcode.php');
+require_once 'application/class_fma_notification_message.php';
 include 'application/rest-api/class-fma-controller.php';
 /**
  * Blocks class (for free version)

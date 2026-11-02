@@ -411,174 +411,7 @@ if (!class_exists(__NAMESPACE__ . '\\Recommend_Post_SMTP_Base')):
                     text-align: center;
                     margin-top: 60px;
                 }
-
-                /* Consent Modal */
-                .fma-consent-overlay {
-                    display: none;
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.55);
-                    z-index: 999999;
-                    align-items: center;
-                    justify-content: center;
-                }
-                .fma-consent-overlay.fma-consent-visible {
-                    display: flex;
-                }
-                .fma-consent-modal {
-                    background: #fff;
-                    border-radius: 12px;
-                    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-                    max-width: 480px;
-                    width: 90%;
-                    overflow: hidden;
-                    animation: fmaConsentSlideIn 0.25s ease-out;
-                }
-                @keyframes fmaConsentSlideIn {
-                    from { opacity: 0; transform: translateY(-20px) scale(0.97); }
-                    to   { opacity: 1; transform: translateY(0) scale(1); }
-                }
-                .fma-consent-header {
-                    background: linear-gradient(135deg, #046BD2, #0356a8);
-                    padding: 20px 24px;
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                }
-                .fma-consent-header .dashicons {
-                    color: #fff;
-                    font-size: 24px;
-                    width: 24px;
-                    height: 24px;
-                }
-                .fma-consent-header h3 {
-                    color: #fff;
-                    margin: 0;
-                    font-size: 16px;
-                    font-weight: 600;
-                    flex: 1;
-                }
-                .fma-consent-close {
-                    background: none;
-                    border: none;
-                    color: rgba(255,255,255,0.8);
-                    font-size: 20px;
-                    cursor: pointer;
-                    padding: 0;
-                    line-height: 1;
-                    width: 28px;
-                    height: 28px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border-radius: 50%;
-                    transition: all 0.15s ease;
-                }
-                .fma-consent-close:hover {
-                    background: rgba(255,255,255,0.15);
-                    color: #fff;
-                }
-                .fma-consent-body {
-                    padding: 24px;
-                }
-                .fma-consent-body p {
-                    color: #3c434a;
-                    font-size: 13.5px;
-                    line-height: 1.6;
-                    margin: 0 0 16px;
-                }
-                .fma-consent-body ul {
-                    margin: 0 0 16px;
-                    padding: 0;
-                    list-style: none;
-                }
-                .fma-consent-body ul li {
-                    position: relative;
-                    padding-left: 24px;
-                    margin-bottom: 8px;
-                    color: #50575e;
-                    font-size: 13px;
-                    line-height: 1.5;
-                }
-                .fma-consent-body ul li::before {
-                    content: "\f339";
-                    font-family: dashicons;
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    color: #046BD2;
-                    font-size: 16px;
-                }
-                .fma-consent-note {
-                    background: #f0f6fc;
-                    border-left: 3px solid #046BD2;
-                    padding: 10px 14px;
-                    border-radius: 0 6px 6px 0;
-                    margin-bottom: 0;
-                    font-size: 12.5px !important;
-                    color: #50575e !important;
-                }
-                .fma-consent-footer {
-                    display: flex;
-                    justify-content: flex-end;
-                    gap: 10px;
-                    padding: 16px 24px;
-                    border-top: 1px solid #e2e4e7;
-                    background: #f9f9f9;
-                }
-                .fma-consent-btn {
-                    padding: 8px 20px;
-                    border-radius: 6px;
-                    font-size: 13px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    border: none;
-                    transition: all 0.15s ease;
-                }
-                .fma-consent-btn-cancel {
-                    background: #fff;
-                    color: #50575e;
-                    border: 1px solid #c3c4c7;
-                }
-                .fma-consent-btn-cancel:hover {
-                    background: #f0f0f1;
-                    border-color: #999;
-                }
-                .fma-consent-btn-agree {
-                    background: #046BD2;
-                    color: #fff;
-                }
-                .fma-consent-btn-agree:hover {
-                    background: #0356a8;
-                }
             </style>
-
-            <!-- FMA Data Consent Modal -->
-            <div id="fma-consent-overlay" class="fma-consent-overlay">
-                <div class="fma-consent-modal">
-                    <div class="fma-consent-header">
-                        <span class="dashicons dashicons-shield"></span>
-                        <h3><?php esc_html_e( 'Data Sharing Consent', 'file-manager-advanced' ); ?></h3>
-                        <button type="button" id="fma-consent-close" class="fma-consent-close" title="<?php esc_attr_e( 'Close', 'file-manager-advanced' ); ?>">&times;</button>
-                    </div>
-                    <div class="fma-consent-body">
-                        <p><?php esc_html_e( 'To proceed, this plugin will share some basic information with an external server (connect.postmansmtp.com):', 'file-manager-advanced' ); ?></p>
-                        <ul>
-                            <li><?php esc_html_e( 'Your site URL', 'file-manager-advanced' ); ?></li>
-                            <li><?php esc_html_e( 'Plugin installation/activation status', 'file-manager-advanced' ); ?></li>
-                            <li><?php esc_html_e( 'Plugin slug identifier', 'file-manager-advanced' ); ?></li>
-                        </ul>
-                        <p class="fma-consent-note"><?php esc_html_e( 'This helps improve compatibility and support. No personal data or file contents are shared. You can proceed without sharing by clicking "Skip".', 'file-manager-advanced' ); ?></p>
-                    </div>
-                    <div class="fma-consent-footer">
-                        <button type="button" id="fma-consent-skip" class="fma-consent-btn fma-consent-btn-cancel"><?php esc_html_e( 'Skip', 'file-manager-advanced' ); ?></button>
-                        <button type="button" id="fma-consent-agree" class="fma-consent-btn fma-consent-btn-agree"><?php esc_html_e( 'I Agree & Continue', 'file-manager-advanced' ); ?></button>
-                    </div>
-                </div>
-            </div>
             <?php
         }
 
@@ -599,41 +432,40 @@ if (!class_exists(__NAMESPACE__ . '\\Recommend_Post_SMTP_Base')):
          */
         public function request_post_smtp_ajax()
         {
+            // Debug: Log the request
+            error_log('Post SMTP AJAX request received');
+            error_log('POST data: ' . print_r($_POST, true));
+
+            // Check if nonce exists
             if (!isset($_POST['nonce'])) {
+                error_log('No nonce provided');
                 wp_send_json_error(array('message' => 'No nonce provided'));
             }
 
+            // Check nonce for security
             if (!wp_verify_nonce($_POST['nonce'], 'post_smtp_request_nonce')) {
+                error_log('Nonce verification failed');
                 wp_send_json_error(array('message' => 'Security check failed'));
             }
 
+            // Check user permissions
             if (!current_user_can('manage_options')) {
+                error_log('User does not have manage_options capability');
                 wp_send_json_error(array('message' => 'Insufficient permissions'));
             }
 
             // Check if status is provided
             if (!isset($_POST['status'])) {
+                error_log('No status provided');
                 wp_send_json_error(array('message' => 'No status provided'));
-            }
-
-            // Handle consent grant request
-            if (isset($_POST['grant_consent']) && $_POST['grant_consent'] === '1') {
-                self::grant_data_consent();
-            }
-
-            // Only send data to external server if admin has given consent
-            if (!self::has_data_consent()) {
-                wp_send_json_success(array(
-                    'message' => __('Action completed (data sharing skipped — no consent)', 'file-manager-advanced'),
-                    'consent' => false
-                ));
-                return;
             }
 
             $site_url = get_bloginfo('url');
             $status = sanitize_text_field($_POST['status']);
             $plugin_slug = $this->slug;
             $secret_key = self::get_site_secret_key();
+
+            error_log('Sending request to SMTP server with status: ' . $status);
 
             $response = wp_remote_post("https://connect.postmansmtp.com/wp-json/update/v1/update?site_url={$site_url}&status={$status}&plugin_slug={$plugin_slug}", array(
                 'method' => 'POST',
@@ -644,10 +476,12 @@ if (!class_exists(__NAMESPACE__ . '\\Recommend_Post_SMTP_Base')):
             ));
 
             if (is_wp_error($response)) {
+                error_log('SMTP server request failed: ' . $response->get_error_message());
                 wp_send_json_error(array(
                     'message' => 'Failed to send request: ' . $response->get_error_message()
                 ));
             } else {
+                error_log('SMTP server request successful');
                 wp_send_json_success(array(
                     'message' => __('Request sent successfully', 'file-manager-advanced')
                 ));
@@ -665,8 +499,7 @@ if (!class_exists(__NAMESPACE__ . '\\Recommend_Post_SMTP_Base')):
                 'redirectURL' => admin_url("admin-post.php?action=hide-post-smtp-recommendation-notice&nonce=" . wp_create_nonce('hide-post-smtp-recommendation-notice')),
                 'postSMTPURL' => admin_url("admin.php?page=postman"),
                 'ajaxURL' => admin_url('admin-ajax.php'),
-                'ajaxNonce' => wp_create_nonce('post_smtp_request_nonce'),
-                'hasConsent' => self::has_data_consent(),
+                'ajaxNonce' => wp_create_nonce('post_smtp_request_nonce')
             ));
         }
     }

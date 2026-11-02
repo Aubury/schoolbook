@@ -217,7 +217,7 @@ if ( ! class_exists( 'AWS_Admin_Filters' ) ) :
 
             switch( $this->rule['type'] ) {
 
-                case 'callback';
+                case 'callback':
 
                     $callback_function = $this->rule['choices']['callback'];
                     $callback_params = $sub_val ? array( $sub_val ) : $this->rule['choices']['params'];
@@ -274,7 +274,7 @@ if ( ! class_exists( 'AWS_Admin_Filters' ) ) :
 
                     break;
 
-                case 'bool';
+                case 'bool':
 
                     $values .= '<select name="' . esc_attr( $this->field_name ) . '" class="value-val">';
                     $values .= '<option ' . selected( $val, 'true', false ) . ' value="true">' . __( "Yes", "advanced-woo-search" ) . '</option>';
@@ -283,14 +283,14 @@ if ( ! class_exists( 'AWS_Admin_Filters' ) ) :
 
                     break;
 
-                case 'number';
+                case 'number':
 
                     $step = isset( $this->rule['step'] ) ? 'step="' . esc_attr( $this->rule['step'] ) . '"' : '';
                     $values .= '<input type="number" name="' . esc_attr( $this->field_name ) . '" value="' . esc_attr( $val ) . '" class="value-val" min="0" '.$step.'>';
 
                     break;
 
-                case 'text';
+                case 'text':
 
                     $placeholder = $this->rule['placeholder'] ? $this->rule['placeholder'] : '';
                     $val = 'aws_any' === $val ? '' : $val;

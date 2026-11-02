@@ -5,7 +5,15 @@ if (!defined('ABSPATH'))
 $settings = $this->get();
 $locales = $this->langs->locales();
 $path = str_replace('\\', '/', ABSPATH);
-$url = site_url();
+$public_root_path = trailingslashit($path);
+$configured_public_path = isset($settings['public_path']) ? wp_normalize_path($settings['public_path']) : $path;
+$public_path_suffix = 0 === strpos($configured_public_path, $public_root_path) ? ltrim(substr($configured_public_path, strlen($public_root_path)), '/') : '';
+$url = untrailingslashit(site_url());
+$configured_public_url = isset($settings['public_url']) && !empty($settings['public_url']) ? untrailingslashit($settings['public_url']) : $url;
+$is_local_site_url = empty($configured_public_url) || $configured_public_url === $url || 0 === strpos($configured_public_url, $url);
+$public_url = $is_local_site_url
+    ? ($public_path_suffix !== '' ? trailingslashit($url) . str_replace('\\', '/', $public_path_suffix) : $url)
+    : $configured_public_url;
 $type = (isset($_GET['status']) && !empty($_GET['status']) ? intval($_GET['status']) : '');
 $message = ($type == '2') ? 'Unable to save settings.' : 'Settings updated successfully.';
 $roles = $this->wpUserRoles();
@@ -221,20 +229,23 @@ $cm_themes = class_fma_main::cm_themes();
                             <tr>
                                 <th><?php _e('Public Root Path', 'file-manager-advanced') ?></th>
                                 <td>
+                                    <code><?php echo esc_html($public_root_path); ?></code>
                                     <input name="public_path" type="text" id="public_path"
-                                        value="<?php echo isset($settings['public_path']) && !empty($settings['public_path']) ? esc_attr($settings['public_path']) : esc_attr($path); ?>"
-                                        class="regular-text">
+                                        value="<?php echo esc_attr($public_path_suffix); ?>"
+                                        class="regular-text" placeholder="wp-content/uploads">
                                     <p class="description">
-                                        <?php _e('File Manager Advanced Root Path, you can change according to your choice.', 'file-manager-advanced'); ?>
+                                        <?php _e('The public root path above is fixed and cannot be changed. Enter only the folder path after it, do not enter the full server path.', 'file-manager-advanced'); ?>
                                     </p>
-                                    <p>Default: <code><?php echo esc_attr($path); ?></code></p>
+                                    <p class="description">
+                                        <?php _e('Examples: <code>wp-content/uploads</code> to use the uploads folder, <code>wp-content/uploads/documents</code> for a subfolder, or leave this field empty to use the default path.', 'file-manager-advanced'); ?>
+                                    </p>
                                 </td>
                             </tr>
                             <tr>
                                 <th><?php _e('Files URL', 'file-manager-advanced') ?></th>
                                 <td>
                                     <input name="public_url" type="text" id="public_url"
-                                        value="<?php echo isset($settings['public_url']) && !empty($settings['public_url']) ? esc_url($settings['public_url']) : esc_url($url); ?>"
+                                        value="<?php echo esc_url($public_url); ?>"
                                         class="regular-text">
                                     <p class="description">
                                         <?php _e('File Manager Advanced Files URL, you can change according to your choice.', 'file-manager-advanced'); ?>

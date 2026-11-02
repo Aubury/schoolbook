@@ -73,6 +73,36 @@ if (!class_exists('MRKV_UA_SHIPPING_OPTIONS'))
 			}
 	    }
 
+		/**
+		 * State of the Nova Poshta sender block: "empty" (only the API key), "complete" or "partial".
+		 * The sender type and counterparty are filled in automatically, so they alone do not start the block
+		 * @param array Sender as posted
+		 * 
+		 * @return string
+		 * */
+		public static function get_nova_poshta_sender_state( $sender )
+		{
+		    $city_ref  = isset( $sender['city']['ref'] ) ? $sender['city']['ref'] : '';
+		    $warehouse = isset( $sender['warehouse']['ref'] ) ? $sender['warehouse']['ref'] : '';
+		    $street    = isset( $sender['street']['ref'] ) ? $sender['street']['ref'] : '';
+		    $house     = isset( $sender['street']['house'] ) ? $sender['street']['house'] : '';
+		    $started   = $city_ref || $warehouse || $street || $house;
+
+		    if ( isset( $sender['address_type'] ) && $sender['address_type'] === 'D' ) {
+		        $placed = $city_ref && $street && $house;
+		    } else {
+		        $placed = $city_ref && $warehouse;
+		    }
+
+		    $contact = ! empty( $sender['ref'] );
+
+		    if ( ! $contact && ! $started ) {
+		        return 'empty';
+		    }
+
+		    return ( $contact && ! empty( $sender['counterparty_ref'] ) && $placed ) ? 'complete' : 'partial';
+		}
+
 	    public function sanitize_nova_poshta_settings( $input ) 
 		{
 		    if ( ! current_user_can( 'manage_options' ) ) {
@@ -86,6 +116,18 @@ if (!class_exists('MRKV_UA_SHIPPING_OPTIONS'))
 		    # --- API Key ---
 		    $output['api_key'] = isset( $input['api_key'] ) ? sanitize_text_field( $input['api_key'] ) : '';
 
+			if ( ! empty( $output['api_key'] ) && empty( $current['api_key'] ) ) {
+				$active_plugins = get_option( 'm_ua_active_plugins', [] );
+				if ( ! is_array( $active_plugins ) ) {
+					$active_plugins = [];
+				}
+
+				if ( empty( $active_plugins['nova-poshta']['enabled'] ) || $active_plugins['nova-poshta']['enabled'] !== 'on' ) {
+					$active_plugins['nova-poshta']['enabled'] = 'on';
+					update_option( 'm_ua_active_plugins', $active_plugins );
+				}
+			}
+
 		    # --- Sender ---
 		    if ( isset( $input['sender'] ) && is_array( $input['sender'] ) ) {
 		        $sender = $input['sender'];
@@ -98,6 +140,8 @@ if (!class_exists('MRKV_UA_SHIPPING_OPTIONS'))
 		            'lastname'       => isset( $sender['lastname'] ) ? sanitize_text_field( $sender['lastname'] ) : '',
 		            'middlename'     => isset( $sender['middlename'] ) ? sanitize_text_field( $sender['middlename'] ) : '',
 		            'counterparty_ref' => isset( $sender['counterparty_ref'] ) ? sanitize_text_field( $sender['counterparty_ref'] ) : '',
+		            'counterparty_type' => ( isset( $sender['counterparty_type'] ) && in_array( $sender['counterparty_type'], array( 'PrivatePerson', 'Organization' ), true ) ) ? $sender['counterparty_type'] : '',
+		            'counterparty_description' => isset( $sender['counterparty_description'] ) ? sanitize_text_field( $sender['counterparty_description'] ) : '',
 		            'list'           => isset( $sender['list'] ) ? wp_kses_post( $sender['list'] ) : '',
 		            'address_type'   => isset( $sender['address_type'] ) ? sanitize_text_field( $sender['address_type'] ) : 'W',
 		            'city'           => isset( $sender['city'] ) && is_array( $sender['city'] ) ? [
@@ -119,6 +163,23 @@ if (!class_exists('MRKV_UA_SHIPPING_OPTIONS'))
 		                'ref' => isset( $sender['address']['ref'] ) ? sanitize_text_field( $sender['address']['ref'] ) : '',
 		            ] : [],
 		        ];
+		    }
+
+		    # --- Sender: "only the API key" or "everything". A half-filled sender never replaces the saved one ---
+		    if ( isset( $output['sender'] ) && is_array( $output['sender'] ) && isset( $input['sender'] ) ) {
+		        $current_sender = ( isset( $current['sender'] ) && is_array( $current['sender'] ) ) ? $current['sender'] : [];
+		        # Raw input: sanitizing drops the addresses of a sender without a contact person
+		        $sender_state   = self::get_nova_poshta_sender_state( is_array( $input['sender'] ) ? $input['sender'] : [] );
+
+		        if ( $sender_state === 'partial' ) {
+		            $output['sender'] = $current_sender;
+		        } elseif ( $sender_state === 'complete' && ! empty( $current_sender['list'] ) && ! empty( $current_sender['ref'] ) && $current_sender['ref'] === $output['sender']['ref'] ) {
+		            # Nova Poshta did not answer while the page loaded: keep the saved contact list instead of an empty one
+		            $list = json_decode( base64_decode( $output['sender']['list'] ), true );
+		            if ( empty( $list ) ) {
+		                $output['sender']['list'] = $current_sender['list'];
+		            }
+		        }
 		    }
 
 		    # --- Payer (Default Settings) --- NEW SECTION
@@ -200,9 +261,31 @@ if (!class_exists('MRKV_UA_SHIPPING_OPTIONS'))
 		            'payment_control' => isset( $automation['payment_control'] ) ? sanitize_text_field( $automation['payment_control'] ) : 'off',
 		            'autocreate'      => [
 		                'enabled' => isset( $automation['autocreate']['enabled'] ) ? sanitize_text_field( $automation['autocreate']['enabled'] ) : 'off',
+		                'status'  => isset( $automation['autocreate']['status'] ) && is_array( $automation['autocreate']['status'] )
+		                    ? array_map( 'sanitize_text_field', $automation['autocreate']['status'] )
+		                    : [],
+		                'payment' => isset( $automation['autocreate']['payment'] ) && is_array( $automation['autocreate']['payment'] )
+		                    ? array_map( 'sanitize_text_field', $automation['autocreate']['payment'] )
+		                    : [],
 		            ],
 		            'status'          => [
-		                'enabled' => isset( $automation['status']['enabled'] ) ? sanitize_text_field( $automation['status']['enabled'] ) : 'off',
+		                'enabled'   => isset( $automation['status']['enabled'] ) ? sanitize_text_field( $automation['status']['enabled'] ) : 'off',
+		                'received'  => isset( $automation['status']['received'] ) ? sanitize_text_field( $automation['status']['received'] ) : '',
+		                'moneysms'  => isset( $automation['status']['moneysms'] ) ? sanitize_text_field( $automation['status']['moneysms'] ) : '',
+		                'money'     => isset( $automation['status']['money'] ) ? sanitize_text_field( $automation['status']['money'] ) : '',
+		                'refused'   => isset( $automation['status']['refused'] ) ? sanitize_text_field( $automation['status']['refused'] ) : '',
+		                'canceled'  => isset( $automation['status']['canceled'] ) ? sanitize_text_field( $automation['status']['canceled'] ) : '',
+		                'shipping'  => isset( $automation['status']['shipping'] ) ? sanitize_text_field( $automation['status']['shipping'] ) : '',
+						'124'  => isset( $automation['status']['124'] ) ? sanitize_text_field( $automation['status']['124'] ) : '',
+		            ],
+		            'cron'            => [
+		                'type'         => isset( $automation['cron']['type'] ) ? sanitize_text_field( $automation['cron']['type'] ) : 'wp_cron',
+		                'status'       => isset( $automation['cron']['status'] ) ? sanitize_text_field( $automation['cron']['status'] ) : '',
+		                'max_count'    => isset( $automation['cron']['max_count'] ) ? intval( $automation['cron']['max_count'] ) : 10000,
+		                'frequency'    => isset( $automation['cron']['frequency'] ) ? intval( $automation['cron']['frequency'] ) : 1440,
+		                'count_step'   => isset( $automation['cron']['count_step'] ) ? intval( $automation['cron']['count_step'] ) : 300,
+		                'days'         => isset( $automation['cron']['days'] ) ? intval( $automation['cron']['days'] ) : 30,
+		                'wp_frequency' => isset( $automation['cron']['wp_frequency'] ) ? sanitize_text_field( $automation['cron']['wp_frequency'] ) : 'hourly',
 		            ],
 		        ];
 		    } elseif ( ! isset( $output['automation'] ) ) {
@@ -230,13 +313,10 @@ if (!class_exists('MRKV_UA_SHIPPING_OPTIONS'))
 		    }
 
 		    # --- Debug ---
-		    if ( isset( $input['debug'] ) && is_array( $input['debug'] ) ) {
-		        $debug = $input['debug'];
-		        $output['debug'] = [
-		            'log'   => isset( $debug['log'] ) ? sanitize_text_field( $debug['log'] ) : 'off',
-		            'query' => isset( $debug['query'] ) ? sanitize_text_field( $debug['query'] ) : 'off',
-		        ];
-		    }
+		    $output['debug'] = [
+				'log'   => isset( $input['debug']['log'] ) ? sanitize_text_field( $input['debug']['log'] ) : 'off',
+				'query' => isset( $input['debug']['query'] ) ? sanitize_text_field( $input['debug']['query'] ) : 'off',
+			];
 
 		    # --- Internal (international API) ---
 		    $output['internal_api_server'] = isset( $input['internal_api_server'] ) ? sanitize_text_field( $input['internal_api_server'] ) : 'production';
@@ -397,13 +477,10 @@ if (!class_exists('MRKV_UA_SHIPPING_OPTIONS'))
 		    }
 
 		    # --- Debug ---
-		    if ( isset( $input['debug'] ) && is_array( $input['debug'] ) ) {
-		        $debug = $input['debug'];
-		        $output['debug'] = [
-		            'log'   => isset( $debug['log'] ) ? sanitize_text_field( $debug['log'] ) : 'off',
-		            'query' => isset( $debug['query'] ) ? sanitize_text_field( $debug['query'] ) : 'off',
-		        ];
-		    }
+		    $output['debug'] = [
+				'log'   => isset( $input['debug']['log'] ) ? sanitize_text_field( $input['debug']['log'] ) : 'off',
+				'query' => isset( $input['debug']['query'] ) ? sanitize_text_field( $input['debug']['query'] ) : 'off',
+			];
 
 		    $output = apply_filters('mrkv_ua_shipping_option_serialize', $output, 'ukr-poshta', $input );
 
@@ -430,13 +507,10 @@ if (!class_exists('MRKV_UA_SHIPPING_OPTIONS'))
 		    }
 
 		    # --- Debug settings ---
-		    if ( isset( $input['debug'] ) && is_array( $input['debug'] ) ) {
-		        $debug = $input['debug'];
-		        $output['debug'] = [
-		            'log'   => isset( $debug['log'] ) ? sanitize_text_field( $debug['log'] ) : 'off',
-		            'query' => isset( $debug['query'] ) ? sanitize_text_field( $debug['query'] ) : 'off',
-		        ];
-		    }
+		    $output['debug'] = [
+				'log'   => isset( $input['debug']['log'] ) ? sanitize_text_field( $input['debug']['log'] ) : 'off',
+				'query' => isset( $input['debug']['query'] ) ? sanitize_text_field( $input['debug']['query'] ) : 'off',
+			];
 
 		    $output = apply_filters('mrkv_ua_shipping_option_serialize', $output, 'rozetka-delivery', $input );
 
@@ -486,13 +560,10 @@ if (!class_exists('MRKV_UA_SHIPPING_OPTIONS'))
 	        }
 
 	        // --- Debug settings ---
-	        if ( isset( $input['debug'] ) && is_array( $input['debug'] ) ) {
-	            $debug = $input['debug'];
-	            $output['debug'] = [
-	                'log'   => isset( $debug['log'] ) ? sanitize_text_field( $debug['log'] ) : 'off',
-	                'query' => isset( $debug['query'] ) ? sanitize_text_field( $debug['query'] ) : 'off',
-	            ];
-	        }
+	        $output['debug'] = [
+				'log'   => isset( $input['debug']['log'] ) ? sanitize_text_field( $input['debug']['log'] ) : 'off',
+				'query' => isset( $input['debug']['query'] ) ? sanitize_text_field( $input['debug']['query'] ) : 'off',
+			];
 
 	        $output = apply_filters('mrkv_ua_shipping_option_serialize', $output, 'nova-global', $input );
 

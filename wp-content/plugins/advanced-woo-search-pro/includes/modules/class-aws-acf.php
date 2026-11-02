@@ -151,19 +151,19 @@ if ( ! class_exists( 'AWS_ACF' ) ) :
 
                         switch( $this->acf_fields_allowed[$custom_field_key] ) {
 
-                            case 'relationship';
+                            case 'relationship':
                                 $fiels_new_val .= $this->get_relationship_field( $field_vals );
                                 break;
 
-                            case 'taxonomy';
+                            case 'taxonomy':
                                 $fiels_new_val .= $this->get_taxonomy_field( $field_vals );
                                 break;
 
-                            case 'user';
+                            case 'user':
                                 $fiels_new_val .= $this->get_user_field( $field_vals );
                                 break;
 
-                            case 'post_object';
+                            case 'post_object':
                                 $fiels_new_val .= $this->get_post_object_field( $field_vals );
                                 break;
 
@@ -188,6 +188,17 @@ if ( ! class_exists( 'AWS_ACF' ) ) :
 
             $fiels_new_val = '';
 
+            /**
+             * Filter related posts data that must be indexed for ACF relationship field
+             * @since 3.73
+             * @param array $post_fields Related post WP_Post properties ( e.g. 'post_content', 'post_excerpt', 'post_name' ) or custom field keys ( e.g. '_sku' )
+             */
+            $post_fields = apply_filters( 'aws_acf_relationship_post_fields', array( 'ID', 'post_title' ) );
+
+            if ( ! is_array( $post_fields ) || empty( $post_fields ) ) {
+                return $fiels_new_val;
+            }
+
             $posts = get_posts( array(
                 'posts_per_page'      => -1,
                 'post_type'           => 'any',
@@ -201,7 +212,19 @@ if ( ! class_exists( 'AWS_ACF' ) ) :
 
             if ( $posts ) {
                 foreach( $posts as $post ) {
-                    $fiels_new_val .= $post->ID . ' ' . $post->post_title . ' ';
+                    foreach( $post_fields as $post_field ) {
+
+                        if ( ! $post_field || ! is_string( $post_field ) ) {
+                            continue;
+                        }
+
+                        $value = property_exists( $post, $post_field ) ? $post->$post_field : get_post_meta( $post->ID, $post_field, true );
+
+                        if ( is_scalar( $value ) && (string) $value !== '' ) {
+                            $fiels_new_val .= $value . ' ';
+                        }
+
+                    }
                 }
             }
 

@@ -26,7 +26,7 @@ class AWS_WP_CLI {
         WP_CLI::line( '' );
         WP_CLI::line( '- Plugin Version: ' . AWS_PRO_VERSION );
         WP_CLI::line( '- Plugin Directory: ' . AWS_PRO_DIR );
-        WP_CLI::line( '- Plugin Website: https://advanced-woo-search.com/' );
+        WP_CLI::line( '- Plugin Website: https://kramakit.com/plugins/advanced-woo-search/' );
         WP_CLI::line( '' );
     }
 

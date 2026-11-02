@@ -85,11 +85,14 @@ if ( ! class_exists( 'AWS_Updater' ) ) :
                 return $transient;
             }
 
+            // Version of the plugin files. Right after the plugin update WordPress checks updates while previous plugin code is still loaded
+            $current_version = isset( $transient->checked[ $this->plugin_slug ] ) ? $transient->checked[ $this->plugin_slug ] : $this->current_version;
+
             // Get the remote version
             $remote_version = $this->get_plugin_remote_version();
 
             // If a newer version is available, add the update
-            if ( $remote_version && version_compare( $this->current_version, $remote_version, '<' ) ) {
+            if ( $remote_version && version_compare( $current_version, $remote_version, '<' ) ) {
 
                 // Get the remote information
                 $information = $this->get_plugin_remote_info_option();

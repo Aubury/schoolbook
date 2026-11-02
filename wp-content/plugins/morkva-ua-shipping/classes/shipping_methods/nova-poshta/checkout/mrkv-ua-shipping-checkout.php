@@ -3,25 +3,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 $mrkv_ua_shipping_nova_poshtomat_exclude = '';
 $mrkv_ua_shipping_nova_poshtomat_middlename_exclude = 'no';
 $mrkv_ua_shipping_nova_poshtomat_middlename_required = 'no';
-$mrkv_ua_shipping_nova_poshta_search_by_number = 'no';
 $mrkv_ua_shipping_nova_warehouse_text = '';
 
-if(isset($this->active_shipping['nova-poshta']['methods']['mrkv_ua_shipping_nova-poshta']))
-{
-	$mrkv_ua_shipping_instance_id = $this->active_shipping['nova-poshta']['methods']['mrkv_ua_shipping_nova-poshta']['instance_id'];
-	$mrkv_ua_shipping_shipping_settings = get_option('woocommerce_mrkv_ua_shipping_nova-poshta_' . $mrkv_ua_shipping_instance_id . '_settings');
-
-	if(isset($mrkv_ua_shipping_shipping_settings['exclude_poshtomat']) && $mrkv_ua_shipping_shipping_settings['exclude_poshtomat'] == 'yes')
-    {
-        $mrkv_ua_shipping_nova_poshtomat_exclude = 'none';
-        $mrkv_ua_shipping_nova_warehouse_text = __('Warehouse', 'mrkv-ua-shipping');
-    }
-
-    if(isset($mrkv_ua_shipping_shipping_settings['search_by_number']) && $mrkv_ua_shipping_shipping_settings['search_by_number'] == 'yes')
-    {
-        $mrkv_ua_shipping_nova_poshta_search_by_number = 'yes';
-    }
-}
 if(isset($this->active_shipping['nova-poshta']['methods']['mrkv_ua_shipping_nova-poshta_address']))
 {
 	if(isset($this->active_shipping['nova-poshta']['settings']))
@@ -41,7 +24,6 @@ if(isset($this->active_shipping['nova-poshta']['methods']['mrkv_ua_shipping_nova
 
 $mrkv_ua_shipping_args['nova_middlename_exclude'] = $mrkv_ua_shipping_nova_poshtomat_middlename_exclude;
 $mrkv_ua_shipping_args['nova_middlename_required'] = $mrkv_ua_shipping_nova_poshtomat_middlename_required;
-$mrkv_ua_shipping_args['nova_search_by_number'] = $mrkv_ua_shipping_nova_poshta_search_by_number;
 $mrkv_ua_shipping_args['enter_search_text'] = __('Please enter warehouse number', 'mrkv-ua-shipping');
 $mrkv_ua_shipping_args['nova_warehouse_type'] = $mrkv_ua_shipping_nova_poshtomat_exclude;
 $mrkv_ua_shipping_args['nova_warehouse_text'] = $mrkv_ua_shipping_nova_warehouse_text;

@@ -1,0 +1,73 @@
+.tranzly-admin {
+  margin-block-start: 1rem;
+}
+.tranzly-admin .components-notice {
+  margin-inline: 0;
+  margin-block-end: 1rem;
+}
+
+.tranzly-admin__credit {
+  font-weight: 600;
+}
+
+.tranzly-admin__links {
+  margin-inline-start: 0;
+  list-style: none;
+}
+
+.tranzly-admin__tabs .components-tab-panel__tab-content {
+  padding-block-start: 16px;
+}
+
+.tranzly-engines__key,
+.tranzly-engines__language,
+.tranzly-jobs__job {
+  margin-block-end: 24px;
+  padding-block-end: 16px;
+  border-block-end: 1px solid #dcdcde;
+}
+
+.tranzly-engines__pro {
+  color: var(--zak-muted, #50575e);
+  font-style: italic;
+}
+
+.tranzly-engines__fallback,
+.tranzly-jobs fieldset {
+  margin-block: 12px;
+}
+
+.tranzly-jobs__failures td,
+.tranzly-jobs__failures th {
+  text-align: start;
+  vertical-align: top;
+}
+
+.zd-mcp-panel__config {
+  overflow-x: auto;
+  max-inline-size: 100%;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.04);
+  color: inherit;
+  font-size: 12px;
+}
+
+.zd-mcp-panel__tools {
+  columns: 2 16em;
+}
+
+.tranzly-status__lang.is-current {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.tranzly-admin__pack {
+  display: block;
+  margin-block-start: 2px;
+  color: var(--zak-muted, #50575e);
+  font-size: 12px;
+}
+
+.tranzly-engines__key .components-button + .components-button {
+  margin-inline-start: 12px;
+}

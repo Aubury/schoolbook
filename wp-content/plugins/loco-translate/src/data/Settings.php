@@ -12,7 +12,8 @@
  * @property array $jsx_alias Registered extensions for scanning JavaScript/JSX files (disabled by default)
  * @property bool $fs_persist Whether to remember file system credentials in session
  * @property int $fs_protect Prevent modification of files in system folders (0:off, 1:warn, 2:block)
- * @property string $fs_basedir Line break separated list of directory paths (relative to ABSPATH) where *writes* are permitted
+ * @property string $fs_basedir Line break separated list of directory paths (relative to ABSPATH) forming the absolute ceiling for reading AND writing. Empty resolves to "." (ABSPATH); widen to "/" for the whole server at your own risk.
+ * @property string $fs_writedir Line break separated list of directory paths (relative to ABSPATH) where files may be WRITTEN, within the fs_basedir ceiling. Empty means writes are limited only by fs_basedir.
  * @property int $pot_protect Prevent modification of POT files (0:off, 1:warn, 2:block)
  * @property int $pot_expected Whether to allow missing templates and sync to source (0:off, 1:warn, 2:block) 
  * @property string $max_php_size Skip PHP source files this size or larger
@@ -31,8 +32,6 @@
  * @property string $openai_api_key API key for OpenAI / ChatGPT translator
  * @property string $openai_api_model Model for OpenAI / ChatGPT translator
  * @property string $openai_api_prompt Custom prompt for OpenAI / ChatGPT translator
- * 
- * TODO @property bool $php_pretty Whether to pretty print .l10n.php files
  */
 class Loco_data_Settings extends Loco_data_Serializable {
 
@@ -56,7 +55,8 @@ class Loco_data_Settings extends Loco_data_Serializable {
         'jsx_alias' => [],
         'fs_persist' => false,
         'fs_protect' => 1,
-        'fs_basedir' => 'wp-content',
+        'fs_basedir' => '',
+        'fs_writedir' => 'wp-content',
         'pot_protect' => 1,
         'pot_expected' => 1,
         'max_php_size' => '100K',
@@ -79,9 +79,8 @@ class Loco_data_Settings extends Loco_data_Serializable {
 
     /**
      * Create default settings instance
-     * @return Loco_data_Settings
      */
-    public static function create(){
+    public static function create():self {
         $args = self::$defaults;
         $args['version'] = loco_plugin_version();
         return new Loco_data_Settings( $args );
@@ -90,9 +89,8 @@ class Loco_data_Settings extends Loco_data_Serializable {
 
     /**
      * Get currently configured global settings
-     * @return Loco_data_Settings
      */
-    public static function get(){
+    public static function get():self {
         $opts = self::$current;
         if( ! $opts ){
             $opts = self::create();
@@ -107,9 +105,8 @@ class Loco_data_Settings extends Loco_data_Serializable {
 
     /**
      * Destroy current settings
-     * @return void
      */
-    public static function clear(){
+    public static function clear():void {
         delete_option('loco_settings');
         self::$current = null;
     }
@@ -117,9 +114,8 @@ class Loco_data_Settings extends Loco_data_Serializable {
 
     /**
      * Destroy current settings and return a fresh one
-     * @return Loco_data_Settings
      */
-    public static function reset(){
+    public static function reset():self {
         self::clear();
         return self::$current = self::create();
     }
@@ -128,17 +124,16 @@ class Loco_data_Settings extends Loco_data_Serializable {
     /**
      * {@inheritdoc}
      */
-    public function offsetSet( $prop, $value ){
-        $value = parent::cast($prop,$value,self::$defaults);
-        parent::offsetSet( $prop, $value );
+    public function offsetSet( $key, $value ){
+        $value = parent::cast($key,$value,self::$defaults);
+        parent::offsetSet( $key, $value );
     }
 
 
     /**
      * Commit current settings to WordPress DB
-     * @return bool
      */
-    public function persist(){
+    public function persist():bool {
         $this->version = loco_plugin_version();
         $this->clean();
         return update_option('loco_settings', $this->getSerializable() );
@@ -149,7 +144,7 @@ class Loco_data_Settings extends Loco_data_Serializable {
      * Pull current settings from WordPress DB and merge into this object
      * @return bool whether settings where previously saved
      */
-    public function fetch(){
+    public function fetch():bool {
         $data = get_option('loco_settings');
         if( is_array($data) ){
             $copy = new Loco_data_Settings;
@@ -171,7 +166,7 @@ class Loco_data_Settings extends Loco_data_Serializable {
      * Run migration in case plugin has been upgraded since settings last saved
      * @return bool whether upgrade has occurred
      */
-    public function migrate(){
+    public function migrate():bool {
         $updated = false;
         // Always update version number in settings after an upgrade
         $old = $this->version;

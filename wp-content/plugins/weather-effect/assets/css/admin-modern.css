@@ -1,0 +1,1695 @@
+/**
+ * Weather Effect - Modern Admin Styles (Adapted for Free version)
+ * Clean, minimal, user-friendly design
+ */
+
+/* Hide snowfall effects on admin pages - preview should only show on frontend */
+.snowfall-flakes,
+.flake,
+img.snowfall-flakes {
+    display: none !important;
+}
+
+/* CSS Variables for easy theming */
+:root {
+    --wep-primary: #6366f1;
+    --wep-primary-hover: #4f46e5;
+    --wep-secondary: #8b5cf6;
+    --wep-success: #10b981;
+    --wep-warning: #f59e0b;
+    --wep-danger: #ef4444;
+    --wep-dark: #1e293b;
+    --wep-gray-900: #0f172a;
+    --wep-gray-800: #1e293b;
+    --wep-gray-700: #334155;
+    --wep-gray-600: #475569;
+    --wep-gray-500: #64748b;
+    --wep-gray-400: #94a3b8;
+    --wep-gray-300: #cbd5e1;
+    --wep-gray-200: #e2e8f0;
+    --wep-gray-100: #f1f5f9;
+    --wep-gray-50: #f8fafc;
+    --wep-white: #ffffff;
+    --wep-radius: 6px;
+    --wep-radius-sm: 4px;
+    --wep-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --wep-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --wep-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --wep-transition: all 0.2s ease;
+}
+
+/* Reset container styles */
+.wep-admin-wrap {
+    max-width: 900px;
+    margin: 10px auto;
+    padding: 0 15px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+/* Main container card */
+.snowfalls-page {
+    background: var(--wep-white);
+    border-radius: 6px;
+    box-shadow: var(--wep-shadow) !important;
+    padding: 12px !important;
+    margin: 0 !important;
+    border: 1px solid var(--wep-gray-200);
+}
+
+/* Page header */
+.snowfalls-page>h1 {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: var(--wep-gray-900) !important;
+    margin: 0 0 6px 0 !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.snowfalls-page>h1::before {
+    content: '❄️';
+    font-size: 24px;
+}
+
+.wep-version-badge {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    background-color: rgba(99, 102, 241, 0.1) !important;
+    color: var(--wep-primary) !important;
+    padding: 3px 8px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(99, 102, 241, 0.2) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-left: 4px !important;
+    line-height: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+/* Section titles */
+.bg-title {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: var(--wep-gray-800) !important;
+    margin: 8px 0 4px 0 !important;
+    padding: 4px 8px !important;
+    background: linear-gradient(135deg, var(--wep-gray-50) 0%, var(--wep-gray-100) 100%) !important;
+    border-radius: 4px !important;
+    border-left: 3px solid var(--wep-primary) !important;
+}
+
+/* Labels */
+.bg_label {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: var(--wep-gray-700) !important;
+    font-family: inherit !important;
+}
+
+.bg_lower_label {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: var(--wep-gray-600) !important;
+    font-family: inherit !important;
+    margin-bottom: 2px !important;
+    display: block;
+}
+
+.lower_label {
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: var(--wep-primary) !important;
+    font-family: inherit !important;
+    padding-left: 0 !important;
+    display: block !important;
+    margin-top: 8px !important;
+    margin-bottom: 6px !important;
+}
+
+/* Modern toggle switch for radio buttons */
+.switch-field {
+    display: flex !important;
+    gap: 0 !important;
+    margin: 4px 0 6px 0 !important;
+    padding: 0 !important;
+    background: var(--wep-gray-100);
+    border-radius: var(--wep-radius-sm);
+    overflow: hidden;
+    width: fit-content;
+}
+
+.switch-field input[type="radio"] {
+    position: absolute !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.switch-field label {
+    padding: 6px 14px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: var(--wep-gray-600) !important;
+    background: transparent !important;
+    cursor: pointer !important;
+    transition: var(--wep-transition) !important;
+    border: none !important;
+    margin: 0 !important;
+}
+
+.switch-field input[type="radio"]:checked+label {
+    background: var(--wep-primary) !important;
+    color: var(--wep-white) !important;
+}
+
+.switch-field label:hover {
+    background: var(--wep-gray-200) !important;
+}
+
+.switch-field input[type="radio"]:checked+label:hover {
+    background: var(--wep-primary-hover) !important;
+}
+
+/* Modern select dropdown - Fixed text visibility */
+.wep-admin-wrap .form-control,
+.wep-admin-wrap select.form-control,
+.wep-admin-wrap select,
+.snowfalls-page select,
+.snowfalls-page .form-control,
+#weather_occasion,
+select#weather_occasion {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-color: #ffffff !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 4px;
+    padding: 8px 35px 8px 12px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #0f172a !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    width: auto !important;
+    min-width: 180px !important;
+    margin-left: 0;
+    height: auto !important;
+    min-height: 36px !important;
+    line-height: 1.4 !important;
+    box-sizing: border-box !important;
+}
+
+/* Dropdown options styling - ensure visible */
+.wep-admin-wrap select option,
+.snowfalls-page select option,
+#weather_occasion option,
+select option {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+}
+
+/* Focus state */
+.wep-admin-wrap .form-control:focus,
+.wep-admin-wrap select:focus,
+.snowfalls-page select:focus,
+#weather_occasion:focus {
+    outline: none !important;
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Modern range slider */
+.range-slider {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 2px 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 8px !important;
+}
+
+.range-slider__range {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    flex: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 8px !important;
+    background: var(--wep-gray-200) !important;
+    border-radius: 4px !important;
+    outline: none !important;
+    cursor: pointer !important;
+}
+
+.range-slider__range::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 20px !important;
+    height: 20px !important;
+    background: var(--wep-primary) !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    box-shadow: var(--wep-shadow-md) !important;
+    transition: var(--wep-transition) !important;
+}
+
+.range-slider__range::-webkit-slider-thumb:hover {
+    transform: scale(1.1) !important;
+    background: var(--wep-primary-hover) !important;
+}
+
+.range-slider__range::-moz-range-thumb {
+    width: 20px !important;
+    height: 20px !important;
+    background: var(--wep-primary) !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    border: none !important;
+    box-shadow: var(--wep-shadow-md) !important;
+}
+
+.range-slider__value {
+    min-width: 35px !important;
+    padding: 4px 8px !important;
+    background: var(--wep-gray-100) !important;
+    border-radius: var(--wep-radius-sm) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: var(--wep-primary) !important;
+    text-align: center !important;
+}
+
+/* Modern checkboxes */
+.wep-admin-wrap .checkbox {
+    margin: 8px 0 !important;
+}
+
+.wep-admin-wrap .checkbox label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 16px !important;
+    background: var(--wep-gray-50) !important;
+    border: 2px solid var(--wep-gray-200) !important;
+    border-radius: var(--wep-radius-sm) !important;
+    cursor: pointer !important;
+    transition: var(--wep-transition) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: var(--wep-gray-700) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.wep-admin-wrap .checkbox label:hover {
+    border-color: var(--wep-primary) !important;
+    background: var(--wep-white) !important;
+}
+
+/* Hide default browser checkbox to let custom .cr represent the state */
+.wep-admin-wrap .checkbox input[type="checkbox"] {
+    display: none !important;
+}
+
+.wep-admin-wrap .checkbox input[type="checkbox"]:checked+.cr {
+    background: var(--wep-primary) !important;
+    border-color: var(--wep-primary) !important;
+}
+
+.wep-admin-wrap .checkbox .cr {
+    width: 22px !important;
+    height: 22px !important;
+    border: 2px solid var(--wep-gray-300) !important;
+    border-radius: 4px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: var(--wep-transition) !important;
+    flex-shrink: 0 !important;
+}
+
+.wep-admin-wrap .checkbox .cr-icon {
+    color: var(--wep-white) !important;
+    font-size: 12px !important;
+    opacity: 0;
+    transition: var(--wep-transition);
+}
+
+.wep-admin-wrap .checkbox input[type="checkbox"]:checked~.cr .cr-icon {
+    opacity: 1 !important;
+}
+
+/* Modern buttons */
+.button-hero {
+    padding: 14px 28px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    border-radius: var(--wep-radius-sm) !important;
+    transition: var(--wep-transition) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    border: none !important;
+    cursor: pointer !important;
+}
+
+.button-primary.button-hero {
+    background: linear-gradient(135deg, var(--wep-primary) 0%, var(--wep-secondary) 100%) !important;
+    color: var(--wep-white) !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35) !important;
+}
+
+.button-primary.button-hero:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45) !important;
+}
+
+.button-primary.button-hero:active {
+    transform: translateY(0) !important;
+}
+
+.button-hero .dashicons {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+}
+
+/* Tab content sections */
+.tab-content {
+    padding: 20px 0 !important;
+    border-bottom: 1px solid var(--wep-gray-200);
+    margin-bottom: 20px;
+}
+
+/* Section dividers */
+hr {
+    border: none !important;
+    border-top: 1px solid var(--wep-gray-200) !important;
+    margin: 32px 0 !important;
+}
+
+/* Note text */
+.snowfalls-page h3 {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    color: var(--wep-gray-500) !important;
+    margin: 6px 0 !important;
+}
+
+.snowfalls-page h3 em {
+    color: var(--wep-gray-400) !important;
+}
+
+/* Review section */
+.snowfalls-page>p {
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    color: var(--wep-gray-600) !important;
+    max-width: 600px;
+}
+
+/* Row spacing */
+.row {
+    margin-bottom: 2px !important;
+}
+
+/* Padding adjustments */
+.padding_settings {
+    padding-left: 0 !important;
+}
+
+/* Exclude lists proper spacing */
+.wep-post-list,
+.wep-page-list,
+.wep-other-page-list {
+    background: var(--wep-gray-50) !important;
+    border: 1px solid var(--wep-gray-200) !important;
+    border-radius: var(--wep-radius-sm) !important;
+    padding: 10px !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+}
+
+.wep-post-list p,
+.wep-page-list p,
+.wep-other-page-list p {
+    margin: 4px 0 !important;
+    padding: 8px 12px !important;
+    border-radius: 4px;
+    transition: var(--wep-transition) !important;
+}
+
+.wep-post-list p:hover,
+.wep-page-list p:hover,
+.wep-other-page-list p:hover {
+    background: var(--wep-white) !important;
+}
+
+/* Weather effect preview area styling - Initially hidden, shown by JS */
+#christmas_weather_effect,
+#winter_weather_effect,
+#autumn_weather_effect,
+#spring_weather_effect,
+#summer_weather_effect,
+#halloween_weather_effect,
+#rain_weather_effect,
+#thanksgiving_weather_effect,
+#valentine_weather_effect,
+#new_year_weather_effect {
+    display: none;
+    border-radius: var(--wep-radius-sm) !important;
+    padding: 20px !important;
+    background: var(--wep-gray-50) !important;
+    border: 1px solid var(--wep-gray-200) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 782px) {
+    .snowfalls-page {
+        padding: 20px !important;
+    }
+
+    .switch-field {
+        flex-wrap: wrap !important;
+    }
+
+    .switch-field label {
+        padding: 8px 14px !important;
+        font-size: 13px !important;
+    }
+
+    .button-hero {
+        padding: 12px 20px !important;
+        font-size: 14px !important;
+    }
+
+    .range-slider__range {
+        width: 150px !important;
+    }
+}
+
+/* ========== COMPACT LAYOUT ========== */
+
+.snowfalls-page {
+    padding: 12px !important;
+}
+
+.snowfalls-page>h1 {
+    font-size: 20px !important;
+    margin-bottom: 8px !important;
+}
+
+.snowfalls-page>h1::before {
+    font-size: 24px;
+}
+
+.bg-title {
+    font-size: 13px !important;
+    margin: 6px 0 4px 0 !important;
+    padding: 5px 10px !important;
+}
+
+.bg_label {
+    font-size: 13px !important;
+    margin-bottom: 4px !important;
+}
+
+.bg_lower_label {
+    font-size: 13px !important;
+    margin-bottom: 4px !important;
+}
+
+.row {
+    margin-bottom: 4px !important;
+}
+
+.padding_settings {
+    padding-left: 20px !important;
+}
+
+.wep-admin-wrap .col-md-6,
+.wep-admin-wrap .col-md-12,
+.wep-admin-wrap .col-lg-12,
+.snowfalls-page .col-md-6,
+.snowfalls-page .col-md-12,
+.snowfalls-page .col-lg-12 {
+    padding-left: 10px !important;
+}
+
+.snowfalls-page .bg_lower_label,
+.snowfalls-page label,
+.snowfalls-page h3,
+.snowfalls-page p,
+.snowfalls-page .range-slider,
+.snowfalls-page .button-hero,
+.snowfalls-page hr {
+    margin-left: 10px;
+}
+
+.snowfalls-page #we-save_setting,
+.snowfalls-page #we-preview {
+    margin-left: 10px;
+}
+
+.snowfalls-page .row {
+    padding-left: 5px;
+}
+
+.switch-field {
+    margin: 4px 0 8px 0 !important;
+}
+
+.switch-field label {
+    padding: 6px 14px !important;
+    font-size: 13px !important;
+}
+
+.wep-admin-wrap select,
+.snowfalls-page select {
+    padding: 8px 35px 8px 12px !important;
+    min-height: 36px !important;
+    font-size: 13px !important;
+}
+
+.range-slider {
+    padding: 4px 0 !important;
+    gap: 12px !important;
+}
+
+.range-slider__range {
+    flex: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 6px !important;
+}
+
+.range-slider__range::-webkit-slider-thumb {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.range-slider__value {
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    min-width: 32px !important;
+}
+
+.wep-admin-wrap .checkbox {
+    margin: 4px 0 !important;
+}
+
+.wep-admin-wrap .checkbox label {
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    gap: 8px !important;
+}
+
+.button-hero {
+    padding: 10px 20px !important;
+    font-size: 13px !important;
+}
+
+.button-hero .dashicons {
+    font-size: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+
+hr {
+    margin: 16px 0 !important;
+}
+
+.snowfalls-page h3 {
+    font-size: 12px !important;
+    margin: 8px 0 !important;
+}
+
+.snowfalls-page>p {
+    font-size: 12px !important;
+    margin: 8px 0 !important;
+}
+
+#christmas_weather_effect,
+#winter_weather_effect,
+#autumn_weather_effect,
+#spring_weather_effect,
+#summer_weather_effect,
+#halloween_weather_effect,
+#rain_weather_effect,
+#thanksgiving_weather_effect,
+#valentine_weather_effect,
+#new_year_weather_effect {
+    padding: 12px !important;
+}
+
+.tab-content {
+    padding: 12px 0 !important;
+    margin-bottom: 12px !important;
+}
+
+
+.wep-post-list p,
+.wep-page-list p,
+.wep-other-page-list p {
+    margin: 2px 0 !important;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+}
+
+.padding_settings {
+    padding-left: 0 !important;
+}
+
+/* ========== AGGRESSIVE WHITESPACE REMOVAL ========== */
+
+.snowfalls-page br {
+    display: none !important;
+}
+
+.snowfalls-page hr {
+    margin: 8px 0 !important;
+    border: none !important;
+    border-top: 1px solid var(--wep-gray-200) !important;
+}
+
+.snowfalls-page .row {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 2px 0;
+}
+
+.snowfalls-page>div {
+    margin-bottom: 0 !important;
+}
+
+#christmas_weather_effect,
+#winter_weather_effect,
+#autumn_weather_effect,
+#spring_weather_effect,
+#summer_weather_effect,
+#halloween_weather_effect,
+#rain_weather_effect,
+#thanksgiving_weather_effect,
+#valentine_weather_effect,
+#new_year_weather_effect,
+#custom_image_section,
+#exclude_pages_section,
+#timeout_section {
+    padding: 8px !important;
+    margin: 0 !important;
+}
+
+.tab-content {
+    padding: 5px 0 !important;
+    margin: 0 !important;
+}
+
+/* Remove empty element spacing */
+.snowfalls-page .col-md-12:empty,
+.snowfalls-page .col-lg-12:empty,
+.snowfalls-page .row:empty {
+    display: none !important;
+}
+
+.snowfalls-page label {
+    margin: 0 0 2px 0 !important;
+    display: inline-block !important;
+}
+
+.range-slider.padding_settings {
+    padding: 0 !important;
+    margin: 2px 0 6px 0 !important;
+}
+
+.snowfalls-page .form-group {
+    margin-bottom: 4px !important;
+}
+
+.bg-title {
+    margin: 16px 0 10px 0 !important;
+}
+
+.snowfalls-page #we-save_setting,
+.snowfalls-page #we-preview {
+    margin-top: 8px !important;
+}
+
+.snowfalls-page h3 {
+    margin: 4px 0 !important;
+}
+
+.snowfalls-page .col-md-6,
+.snowfalls-page .col-md-12,
+.snowfalls-page .col-lg-12 {
+    padding: 0 5px !important;
+}
+
+.snowfalls-page [style*="padding"] {
+    padding: 2px !important;
+}
+
+.snowfalls-page div[style*="padding-left: 20px"] {
+    padding-left: 5px !important;
+}
+
+/* 3. LIVE PREVIEW PANEL - Sticky Top Right */
+.wep-preview-panel {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    width: 378px;
+    z-index: 999;
+    background: var(--wep-gray-900);
+    border-radius: var(--wep-radius);
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.wep-preview-panel.wep-minimized .wep-preview-canvas-wrap {
+    display: none;
+}
+
+.wep-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, var(--wep-primary) 0%, var(--wep-secondary) 100%);
+    cursor: move;
+}
+
+.wep-preview-title {
+    color: var(--wep-white);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.wep-preview-controls {
+    display: flex;
+    gap: 6px;
+}
+
+.wep-preview-controls button {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: var(--wep-white);
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: var(--wep-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wep-preview-controls button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.wep-preview-color-picker {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    width: 24px !important;
+    height: 24px !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 4px !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    background: transparent !important;
+    outline: none !important;
+    overflow: hidden !important;
+    display: inline-block !important;
+}
+
+.wep-preview-color-picker::-webkit-color-swatch-wrapper {
+    padding: 0 !important;
+}
+
+.wep-preview-color-picker::-webkit-color-swatch {
+    border: none !important;
+    border-radius: 3px !important;
+}
+
+.wep-preview-color-picker::-moz-color-swatch {
+    border: none !important;
+    border-radius: 3px !important;
+}
+
+.wep-preview-canvas-wrap {
+    position: relative;
+    height: 212px;
+    background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+}
+
+#wep-admin-preview-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.wep-preview-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--wep-gray-400);
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Responsive - adjust on smaller screens */
+@media (max-width: 1024px) {
+    .wep-preview-panel {
+        right: 10px;
+        width: 250px;
+    }
+}
+
+@media (max-width: 782px) {
+    .wep-preview-panel {
+        position: relative;
+        right: 0;
+        top: 0;
+        width: 100%;
+        margin: 16px 0;
+    }
+}
+
+/* ==========================================
+   MODERN COMPACT BUTTONS
+   ========================================== */
+
+.wep-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    line-height: 1.4;
+    text-decoration: none !important;
+}
+
+.wep-btn:hover,
+.wep-btn:focus,
+.wep-btn:active {
+    text-decoration: none !important;
+}
+
+.wep-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+}
+
+/* Primary Button (Save) */
+.wep-btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.wep-btn-primary:hover,
+.wep-btn-primary:focus,
+.wep-btn-primary:active {
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.wep-btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Secondary Button (Preview) */
+.wep-btn-secondary {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.wep-btn-secondary:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+    border-color: #cbd5e1;
+}
+
+/* Loading Spinner Keyframes & Class */
+@keyframes wep-spin {
+    to { transform: rotate(360deg); }
+}
+
+.wep-spin {
+    animation: wep-spin 1s linear infinite !important;
+    display: inline-block !important;
+}
+
+/* Action buttons container */
+.wep-action-buttons {
+    margin-left: 10px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--wep-gray-200);
+}
+
+/* Floating action buttons - ALWAYS visible and fixed */
+.wep-action-buttons {
+    position: fixed !important;
+    bottom: 24px !important;
+    right: 24px !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    gap: 12px !important;
+    padding: 16px 20px !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 6px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(230, 230, 230, 0.8) !important;
+    margin: 0 !important;
+}
+
+/* Larger button styles inside floating bar */
+.wep-action-buttons .wep-btn {
+    padding: 14px 28px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    border-radius: 4px;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    border: none !important;
+}
+
+.wep-action-buttons .wep-btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4) !important;
+}
+
+.wep-action-buttons .wep-btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
+}
+
+.wep-action-buttons .wep-btn-secondary {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 4px 14px rgba(14, 165, 233, 0.4) !important;
+}
+
+.wep-action-buttons .wep-btn-secondary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5) !important;
+}
+
+.wep-action-buttons .wep-btn .dashicons {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+.snowfalls-page>form>hr {
+    margin: 28px 0 20px 0 !important;
+}
+
+.padding_settings {
+    padding: 4px 0 !important;
+}
+
+.snowfalls-page>div {
+    margin-bottom: 0 !important;
+}
+
+/* ========== COMPACT LAYOUT IMPROVEMENTS ========== */
+
+.snowfalls-page .row {
+    margin-bottom: 2px !important;
+}
+
+.bg-title {
+    margin: 6px 0 3px 0 !important;
+    padding: 3px 8px !important;
+}
+
+.bg_lower_label {
+    margin-bottom: 2px !important;
+}
+
+.switch-field {
+    margin: 2px 0 !important;
+}
+
+.range-slider {
+    margin-bottom: 4px !important;
+    gap: 8px !important;
+}
+
+.range-slider__range {
+    flex: 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 4px !important;
+}
+
+.range-slider__range::-webkit-slider-thumb {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+.range-slider__value {
+    min-width: 28px !important;
+    padding: 2px 5px !important;
+    font-size: 11px !important;
+}
+
+.wep-admin-wrap .checkbox {
+    margin: 2px 0 !important;
+}
+
+.wep-admin-wrap .checkbox label {
+    padding: 6px 10px !important;
+    font-size: 12px !important;
+}
+
+.tab-content {
+    padding: 6px 0 !important;
+    margin-bottom: 4px !important;
+}
+
+/* Section headings - prominent with gradient */
+.wep-section-heading {
+    display: block !important;
+    width: 100% !important;
+    margin: 20px 0 16px 0 !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #fff !important;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+    border-radius: 4px;
+    border: none !important;
+    box-shadow: 0 3px 10px rgba(99, 102, 241, 0.25) !important;
+    letter-spacing: 0.3px;
+}
+
+.tab-content:first-of-type .wep-section-heading,
+.snowfalls-page>form>.row:first-child .wep-section-heading {
+    margin-top: 8px !important;
+}
+
+/* ==========================================
+   DASHBOARD SPACING & PADDING FIXES
+   ========================================== */
+
+.snowfalls-page {
+    padding: 20px 24px !important;
+}
+
+.snowfalls-page>h1 {
+    margin-bottom: 16px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 1px solid var(--wep-gray-200) !important;
+}
+
+.tab-content {
+    padding: 16px 0 24px 0 !important;
+    margin-bottom: 0 !important;
+    border-bottom: none !important;
+}
+
+.tab-content:last-of-type {
+    border-bottom: none !important;
+    padding-bottom: 16px !important;
+}
+
+.wep-control-group {
+    margin-bottom: 8px;
+}
+
+/* Occasion config containers - Clean Gray box style from 1.html */
+#christmas_weather_effect,
+#winter_weather_effect,
+#autumn_weather_effect,
+#spring_weather_effect,
+#summer_weather_effect,
+#rain_weather_effect,
+#halloween_weather_effect,
+#thanksgiving_weather_effect,
+#valentine_weather_effect,
+#new_year_weather_effect {
+    background: var(--wep-gray-50) !important;
+    border: 1px solid var(--wep-gray-200) !important;
+    border-radius: var(--wep-radius-sm) !important;
+    padding: 12px !important;
+}
+
+.tab-content {
+    padding: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+/* Breathing room between checkbox groups and slider/toggle rows inside occasion panels */
+.snowfalls-page .tab-content > div > .row {
+    margin-top: 32px;
+}
+
+.wep-control-group {
+    margin-bottom: 12px;
+}
+
+.bg_lower_label {
+    margin-top: 12px !important;
+    margin-bottom: 6px !important;
+}
+
+.switch-field {
+    margin: 6px 0 12px 0 !important;
+}
+
+.range-slider {
+    margin: 4px 0 12px 0 !important;
+}
+
+.snowfalls-page .row {
+    margin-bottom: 8px !important;
+    padding: 0 !important;
+}
+
+.snowfalls-page .col-md-6,
+.snowfalls-page .col-md-12,
+.snowfalls-page .col-lg-12 {
+    padding: 0 8px !important;
+}
+
+.snowfalls-page select,
+.wep-admin-wrap select {
+    margin-top: 8px !important;
+    margin-bottom: 16px !important;
+}
+
+.snowfalls-page hr {
+    margin: 24px 0 !important;
+}
+
+/* Loading Overlay - inline CSS for immediate loading */
+.wep-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.wep-loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: wep-spin 0.8s linear infinite;
+}
+
+.wep-loading-text {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.wep-loading-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+@keyframes wep-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Hide main content until loaded */
+.wep-admin-wrap {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.wep-admin-wrap.wep-loaded {
+    opacity: 1;
+}
+
+.wep-admin-wrap .container {
+    max-width: 100%;
+    padding: 0;
+}
+
+/* ==========================================
+   RESPONSIVE FIXES FOR TABLET & MOBILE
+   ========================================== */
+
+#exclude-pages,
+#common-limit-setting,
+#exclude-pages.tab-content,
+#common-limit-setting.tab-content {
+    visibility: visible !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    max-height: none !important;
+    clip: auto !important;
+    position: relative !important;
+}
+
+.snowfalls-page,
+.snowfalls-page>form,
+.snowfalls-page>form>div,
+.wep-admin-wrap {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+}
+
+/* Tablet devices (768px - 1024px) */
+@media (max-width: 1024px) {
+    .wep-action-buttons {
+        position: fixed !important;
+        bottom: 16px !important;
+        right: 16px !important;
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        left: auto;
+        width: auto;
+        max-width: calc(100% - 32px);
+        padding: 12px 16px;
+        z-index: 9999;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 6px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+        visibility: visible;
+        opacity: 1;
+        transform: none;
+    }
+
+    .wep-action-buttons .wep-btn {
+        padding: 12px 20px !important;
+        font-size: 14px !important;
+        display: inline-flex !important;
+        visibility: visible !important;
+    }
+
+    #exclude-pages,
+    #common-limit-setting,
+    .tab-content {
+        visibility: visible !important;
+        overflow: visible !important;
+        opacity: 1 !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+
+    .wep-admin-wrap {
+        max-width: 100% !important;
+        padding: 0 12px !important;
+        overflow: visible !important;
+    }
+
+    .snowfalls-page {
+        padding: 16px !important;
+        padding-bottom: 100px !important;
+        overflow: visible !important;
+    }
+
+    .snowfalls-page>form {
+        overflow: visible !important;
+    }
+}
+
+/* Mobile devices (max-width: 782px) */
+@media (max-width: 782px) {
+    .wep-action-buttons {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 12px 16px !important;
+        z-index: 9999 !important;
+        display: flex !important;
+        justify-content: center !important;
+        gap: 12px !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        border-radius: 0 !important;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+        border-top: 1px solid rgba(230, 230, 230, 0.9) !important;
+        backdrop-filter: blur(10px) !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .wep-action-buttons .wep-btn {
+        flex: 1 !important;
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+        justify-content: center !important;
+        max-width: 180px !important;
+        display: inline-flex !important;
+        visibility: visible !important;
+    }
+
+    .wep-action-buttons .wep-btn .dashicons {
+        font-size: 18px !important;
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    .snowfalls-page {
+        padding-bottom: 90px !important;
+        overflow: visible !important;
+    }
+
+    #exclude-pages,
+    #common-limit-setting,
+    .tab-content {
+        visibility: visible !important;
+        overflow: visible !important;
+        opacity: 1 !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+
+    .wep-section-heading {
+        font-size: 13px !important;
+        padding: 10px 14px !important;
+        margin: 16px 0 12px 0 !important;
+    }
+
+    .tab-content {
+        padding: 12px 0 !important;
+        overflow: visible !important;
+    }
+
+    .range-slider__range {
+        flex: 1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .switch-field {
+        flex-wrap: wrap !important;
+    }
+
+    .switch-field label {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+    }
+
+    .col-md-6 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+}
+
+/* Small mobile devices (max-width: 480px) */
+@media (max-width: 480px) {
+    .wep-action-buttons {
+        flex-direction: column !important;
+        gap: 8px !important;
+        padding: 12px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    .wep-action-buttons .wep-btn {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 12px !important;
+        visibility: visible !important;
+    }
+
+    .snowfalls-page {
+        padding-bottom: 130px !important;
+    }
+
+    .wep-admin-wrap {
+        padding: 0 8px !important;
+        overflow: visible !important;
+    }
+
+    .snowfalls-page {
+        padding: 12px !important;
+        padding-bottom: 130px !important;
+        overflow: visible !important;
+    }
+
+    .snowfalls-page>h1 {
+        font-size: 18px !important;
+    }
+
+    .wep-section-heading {
+        font-size: 12px !important;
+        padding: 8px 12px !important;
+    }
+
+    .range-slider {
+        flex-wrap: wrap !important;
+    }
+
+    .range-slider__range {
+        flex: 1 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* ==========================================
+   UPGRADE BANNER & GRID LAYOUT
+   ========================================== */
+
+.wep-top-controls {
+    display: flex !important;
+    gap: 40px !important;
+    flex-wrap: wrap !important;
+    margin-bottom: 10px !important;
+}
+
+.wep-occasion-row {
+    margin-bottom: 20px !important;
+}
+
+.wep-occasion-select-wrap {
+    margin-top: 12px !important;
+}
+
+.wep-preview-note {
+    font-size: 11px !important;
+    color: #64748b !important;
+    margin: 0 0 16px 0 !important;
+}
+
+.wep-review-btn {
+    text-decoration: none !important;
+}
+
+.wep-review-icon {
+    vertical-align: middle !important;
+}
+
+.wep-upgrade-section {
+    background: var(--wep-gray-50) !important;
+    border: 2px solid var(--wep-gray-200) !important;
+    border-radius: var(--wep-radius) !important;
+    padding: 24px !important;
+    margin: 24px 0 !important;
+}
+
+.wep-upgrade-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+    border-bottom: 1px solid var(--wep-gray-200) !important;
+    padding-bottom: 16px !important;
+}
+
+.wep-upgrade-header h2 {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: var(--wep-gray-900) !important;
+    margin: 0 !important;
+}
+
+.wep-upgrade-pricing {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.wep-strike-price {
+    font-size: 16px !important;
+    text-decoration: line-through !important;
+    color: var(--wep-gray-400) !important;
+}
+
+.wep-sale-price {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: var(--wep-success) !important;
+    background: rgba(16, 185, 129, 0.1) !important;
+    padding: 4px 12px !important;
+    border-radius: var(--wep-radius-sm) !important;
+}
+
+.wep-pro-features-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 20px !important;
+    margin-bottom: 24px !important;
+}
+
+.wep-feature-item {
+    display: flex !important;
+    gap: 12px !important;
+    align-items: flex-start !important;
+}
+
+.wep-feature-icon {
+    font-size: 20px !important;
+    background: var(--wep-white) !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: var(--wep-shadow) !important;
+    flex-shrink: 0 !important;
+}
+
+.wep-feature-icon .dashicons {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    color: #6366f1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.wep-feature-content strong {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--wep-gray-900) !important;
+    display: block !important;
+    margin-bottom: 4px !important;
+}
+
+.wep-feature-content p {
+    font-size: 12px !important;
+    color: var(--wep-gray-600) !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+}
+
+.wep-upgrade-actions {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+    border-top: 1px solid var(--wep-gray-200) !important;
+    padding-top: 20px !important;
+}
+
+.awp_bale_offer {
+    background: var(--wep-white) !important;
+    border: 2px solid var(--wep-gray-200) !important;
+    border-radius: var(--wep-radius) !important;
+    padding: 24px !important;
+    margin: 20px 0 !important;
+    text-align: center !important;
+    box-shadow: var(--wep-shadow) !important;
+}
+
+.awp_bale_offer h1 {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: var(--wep-gray-900) !important;
+    margin: 0 0 10px 0 !important;
+}
+
+.awp_bale_offer h3 {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: var(--wep-gray-600) !important;
+    margin: 6px 0 !important;
+}
+
+.awp_bale_offer h3 strike {
+    color: var(--wep-danger) !important;
+}
+
+.awp_bale_btn_wrap {
+    margin-top: 16px !important;
+}
+
+.wep-btn-bale {
+    font-size: 14px !important;
+    padding: 10px 24px !important;
+    background: linear-gradient(135deg, var(--wep-primary) 0%, var(--wep-secondary) 100%) !important;
+    color: var(--wep-white) !important;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3) !important;
+}
+
+.wep-btn-bale:hover,
+.wep-btn-bale:focus,
+.wep-btn-bale:active {
+    color: var(--wep-white) !important;
+}
+
+@media (max-width: 782px) {
+    .wep-upgrade-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+    }
+}
+
+/* Align select dropdowns and form controls with the indented settings items */
+.snowfalls-page select,
+.snowfalls-page .form-control {
+    margin-left: 0;
+}

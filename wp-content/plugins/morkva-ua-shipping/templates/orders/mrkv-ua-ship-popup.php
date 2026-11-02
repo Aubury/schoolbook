@@ -13,8 +13,7 @@
         </h2>
         <p><?php echo esc_html__('Check the necessary fields that will be used to create the invoice', 'mrkv-ua-shipping'); ?></p>
         <hr class="mrkv-ua-ship__hr">
-        <?php 
-            require_once MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/settings/global/mrkv-ua-shipping-option-fields.php';
+        <?php
             global $mrkv_global_option_generator;
             $mrkv_global_option_generator = new MRKV_UA_SHIPPING_OPTION_FIELDS();
         ?>
@@ -24,13 +23,15 @@
 
                 foreach(MRKV_UA_SHIPPING_LIST as $mrkv_ua_shipping_slug => $mrkv_ua_shipping_shipping)
                 {
-                    if($mrkv_ua_shipping_active_plugins && isset($mrkv_ua_shipping_active_plugins[$mrkv_ua_shipping_slug]['enabled']) && $mrkv_ua_shipping_active_plugins[$mrkv_ua_shipping_slug]['enabled'] == 'on')
+                    $mrkv_ua_shipping_popup_file = MRKV_UA_SHIPPING_PLUGIN_PATH_TEMP . '/orders/mrkv-ua-ship-popup-' . $mrkv_ua_shipping_slug . '.php';
+
+                    if($mrkv_ua_shipping_active_plugins && isset($mrkv_ua_shipping_active_plugins[$mrkv_ua_shipping_slug]['enabled']) && $mrkv_ua_shipping_active_plugins[$mrkv_ua_shipping_slug]['enabled'] == 'on' && file_exists($mrkv_ua_shipping_popup_file))
                     {
                         ?>
                             <div data-ship="<?php echo esc_attr($mrkv_ua_shipping_slug); ?>" class="mrkv_ua_ship_create_invoice__changed">
                                 <?php
                                     # Include template
-                                    include MRKV_UA_SHIPPING_PLUGIN_PATH_TEMP . '/orders/mrkv-ua-ship-popup-'  . $mrkv_ua_shipping_slug . '.php';
+                                    include $mrkv_ua_shipping_popup_file;
                                 ?>
                             </div>
                         <?php
@@ -42,7 +43,9 @@
             <?php 
                 foreach(MRKV_UA_SHIPPING_LIST as $mrkv_ua_shipping_slug => $mrkv_ua_shipping_shipping)
                 {
-                    if($mrkv_ua_shipping_active_plugins && isset($mrkv_ua_shipping_active_plugins[$mrkv_ua_shipping_slug]['enabled']) && $mrkv_ua_shipping_active_plugins[$mrkv_ua_shipping_slug]['enabled'] == 'on')
+                    $mrkv_ua_shipping_popup_file = MRKV_UA_SHIPPING_PLUGIN_PATH_TEMP . '/orders/mrkv-ua-ship-popup-' . $mrkv_ua_shipping_slug . '.php';
+
+                    if($mrkv_ua_shipping_active_plugins && isset($mrkv_ua_shipping_active_plugins[$mrkv_ua_shipping_slug]['enabled']) && $mrkv_ua_shipping_active_plugins[$mrkv_ua_shipping_slug]['enabled'] == 'on' && file_exists($mrkv_ua_shipping_popup_file))
                     {
                         ?>
                             <div data-ship="<?php echo esc_attr($mrkv_ua_shipping_slug); ?>" class="mrkv_ua_ship_create_invoice__action mrkv_ua_ship_create_invoice__changed"><?php echo esc_html__('Create', 'mrkv-ua-shipping'); ?></div>
@@ -101,8 +104,8 @@
         </div>
         <div class="mrkv_ua_ship_create_invoice__footer">
             <a class="close-error-mrkv-ua-ship"><?php echo esc_html__('Turn back', 'mrkv-ua-shipping'); ?></a>
-            <a style="display:none;" target="blanc" class="print-ttn-mrkv-ua-ship" data-ship="" data-invoice="" data-form=""><?php echo esc_html__('Print invoice', 'mrkv-ua-shipping'); ?></a>
-            <a style="display: none;" href="" class="print-sticker-mrkv-ua-ship" target="blanc"><?php echo esc_html__('Print sticker', 'mrkv-ua-shipping'); ?></a>
+            <a style="display:none;" target="_blank" class="print-ttn-mrkv-ua-ship" data-ship="" data-invoice="" data-form=""><?php echo esc_html__('Print invoice', 'mrkv-ua-shipping'); ?></a>
+            <a style="display: none;" href="" class="print-sticker-mrkv-ua-ship" target="_blank"><?php echo esc_html__('Print sticker', 'mrkv-ua-shipping'); ?></a>
         </div>
     </div>
 </div>

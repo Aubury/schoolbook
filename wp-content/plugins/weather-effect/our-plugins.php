@@ -11,9 +11,14 @@ if ( ! function_exists( 'plugins_api' ) ) {
 $author_slug = 'awordpresslife';
 $transient_key = 'ig_our_plugins_data';
 
-// Force refresh the data to apply new categorization rules
-if ( isset($_GET['refresh_plugins']) ) {
-    delete_transient( $transient_key );
+// Force refresh the data to apply new categorization rules with security nonce check
+if ( isset( $_GET['refresh_plugins'] ) ) {
+    $we_refresh_nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+    if ( wp_verify_nonce( $we_refresh_nonce, 'refresh_plugins_nonce' ) ) {
+        delete_transient( $transient_key );
+        echo '<script>window.location.href = "' . esc_url_raw( remove_query_arg( array( 'refresh_plugins', '_wpnonce' ) ) ) . '";</script>';
+        exit;
+    }
 }
 
 $plugins = get_transient( $transient_key );
@@ -211,7 +216,7 @@ usort( $filtered_plugins, function ( $a, $b ) {
         <button class="ig-filter-btn" data-filter="social"><?php esc_html_e( 'Social Media', 'weather-effect' ); ?></button>
         <button class="ig-filter-btn" data-filter="technical"><?php esc_html_e( 'Technical Tools', 'weather-effect' ); ?></button>
         
-        <a href="<?php echo esc_url( add_query_arg( 'refresh_plugins', '1' ) ); ?>" class="ig-refresh-link" title="<?php esc_attr_e( 'Sync with WordPress.org', 'weather-effect' ); ?>">
+        <a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'refresh_plugins', '1' ), 'refresh_plugins_nonce' ) ); ?>" class="ig-refresh-link" title="<?php esc_attr_e( 'Sync with WordPress.org', 'weather-effect' ); ?>">
             <span class="dashicons dashicons-update"></span>
         </a>
     </nav>
@@ -221,7 +226,7 @@ usort( $filtered_plugins, function ( $a, $b ) {
             <span class="dashicons dashicons-warning"></span>
             <h2><?php esc_html_e( 'Unable to fetch our plugins', 'weather-effect' ); ?></h2>
             <p><?php esc_html_e( 'We encountered an error connecting to WordPress.org. Please try again later.', 'weather-effect' ); ?></p>
-            <a href="<?php echo esc_url( 'https://profiles.wordpress.org/awordpresslife/#content-plugins' ); ?>" target="_blank" class="ig-btn ig-btn-primary" style="margin-top: 20px;">
+            <a href="<?php echo esc_url( 'https://profiles.wordpress.org/awordpresslife/#content-plugins' ); ?>" target="_blank" class="ig-btn ig-btn-primary">
 				<?php esc_html_e( 'Visit Our WordPress Profile', 'weather-effect' ); ?>
             </a>
         </div>

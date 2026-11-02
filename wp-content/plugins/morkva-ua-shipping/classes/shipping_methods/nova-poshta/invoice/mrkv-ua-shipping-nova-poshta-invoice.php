@@ -31,6 +31,11 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 		private $settings_shipping;
 
 		/**
+		 * @param array|null Parcel size of the order items (cached)
+		 * */
+		private $stack_dimensions = null;
+
+		/**
 		 * Constructor for plugin shipping methods invoice create
 		 * */
 		function __construct($order, $post_fields, $shipping_api, $settings_shipping)
@@ -125,7 +130,6 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 			}
 
 			$recipient_phone = $this->get_recipient_phone();
-			require_once MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-recipient-nova-poshta.php';
 			$mrkv_recipient_object = new MRKV_UA_SHIPPING_RECIPIENT_NOVA_POSHTA($this->shipping_api);
 			$recipient = $mrkv_recipient_object->get_recipient_ref($recipient_first_name, $recipient_middle_name, $recipient_last_name, $recipient_phone);
 			$recipient_contact_ref = $mrkv_recipient_object->contact_recipient_ref;
@@ -560,7 +564,7 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 				$weight = $weight_coef * $weight;
 				$weight = number_format($weight, 2);
 
-				return max($default_weight, $weight);
+				return ($weight && $weight > 0) ? $weight : $default_weight;
 			}
 		}
 
@@ -648,6 +652,62 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 			return $weight;
 		}
 
+		/**
+		 * Size of the whole order as one parcel (stack model).
+		 * Every product is turned so its longest side is the length, then
+		 * length = largest length, width = largest width, height = sum of heights * quantity.
+		 * Default size from the settings is used only for an axis no product has a size for.
+		 * */
+		private function get_stack_dimensions($dimension_unit)
+		{
+			if(null !== $this->stack_dimensions)
+			{
+				return $this->stack_dimensions;
+			}
+
+			$length = 0;
+			$width = 0;
+			$height = 0;
+
+			foreach ( $this->order->get_items() as $item_id => $product_item ) 
+			{
+				$product_id = $product_item->get_variation_id() ? $product_item->get_variation_id() : $product_item->get_product_id();
+
+				$product = wc_get_product($product_id);
+
+				if ( ! $product ) continue;
+
+				$sides = array();
+
+				foreach ( array( $product->get_length(), $product->get_width(), $product->get_height() ) as $side )
+				{
+					$sides[] = ( null !== $side && $side ) ? floatval( wc_get_dimension( $side, 'cm', $dimension_unit ) ) : 0.00;
+				}
+
+				rsort( $sides );
+
+				$quantity = max( 1, intval( $product_item->get_quantity() ) );
+
+				$length = max( $length, $sides[0] );
+				$width = max( $width, $sides[1] );
+				$height += $sides[2] * $quantity;
+			}
+
+			$sizes = array( 'length' => $length, 'width' => $width, 'height' => $height );
+
+			foreach ( $sizes as $axis => $size )
+			{
+				if( ! $size )
+				{
+					$sizes[$axis] = ( isset($this->settings_shipping['shipment'][$axis]) && $this->settings_shipping['shipment'][$axis] ) ? $this->settings_shipping['shipment'][$axis] : 10;
+				}
+			}
+
+			$this->stack_dimensions = $sizes;
+
+			return $sizes;
+		}
+
 		private function get_cargo_length($dimension_unit)
 		{
 			if(isset($this->post_fields['mrkv_ua_ship_invoice_shipment_length']) && $this->post_fields['mrkv_ua_ship_invoice_shipment_length'])
@@ -656,27 +716,7 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 			}
 			else
 			{
-				$length = 10;
-
-				if(isset($this->settings_shipping['shipment']['length']) && $this->settings_shipping['shipment']['length'])
-				{
-					$length = $this->settings_shipping['shipment']['length'];
-				}
-
-				foreach ( $this->order->get_items() as $item_id => $product_item ) 
-	            {
-	            	$product_id = $product_item->get_variation_id() ? $product_item->get_variation_id() : $product_item->get_product_id();
-	            	
-	            	$product = wc_get_product($product_id);
-
-					if ( ! $product ) continue;
-
-					$item_length = ( null !== $product->get_length() && $product->get_length()) ? wc_get_dimension( $product->get_length(), 'cm', $dimension_unit ) : 0.00;
-
-	            	$length = ($item_length > $length) ? $item_length : $length;
-				}
-
-				return $length;
+				return $this->get_stack_dimensions($dimension_unit)['length'];
 			}
 		}
 
@@ -688,27 +728,7 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 			}
 			else
 			{
-				$width = 10;
-
-				if(isset($this->settings_shipping['shipment']['width']) && $this->settings_shipping['shipment']['width'])
-				{
-					$width = $this->settings_shipping['shipment']['width'];
-				}
-
-				foreach ( $this->order->get_items() as $item_id => $product_item ) 
-	            {
-	            	$product_id = $product_item->get_variation_id() ? $product_item->get_variation_id() : $product_item->get_product_id();
-	            	
-	            	$product = wc_get_product($product_id);
-
-					if ( ! $product ) continue;
-
-					$item_width = ( null !== $product->get_width() && $product->get_width()) ? wc_get_dimension( $product->get_width(), 'cm', $dimension_unit ) : 0.00;
-
-	            	$width = ($item_width > $width) ? $item_width : $width;
-				}
-
-				return $width;
+				return $this->get_stack_dimensions($dimension_unit)['width'];
 			}
 		}
 
@@ -720,27 +740,7 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 			}
 			else
 			{
-				$height = 10;
-
-				if(isset($this->settings_shipping['shipment']['height']) && $this->settings_shipping['shipment']['height'])
-				{
-					$height = $this->settings_shipping['shipment']['height'];
-				}
-
-				foreach ( $this->order->get_items() as $item_id => $product_item ) 
-	            {
-	            	$product_id = $product_item->get_variation_id() ? $product_item->get_variation_id() : $product_item->get_product_id();
-	            	
-	            	$product = wc_get_product($product_id);
-
-					if ( ! $product ) continue;
-
-					$item_height = ( null !== $product->get_height() && $product->get_height()) ? wc_get_dimension( $product->get_height(), 'cm', $dimension_unit ) : 0.00;
-
-	            	$height = ($item_height > $height) ? $item_height : $height;
-				}
-
-				return $height;
+				return $this->get_stack_dimensions($dimension_unit)['height'];
 			}
 		}
 
@@ -788,10 +788,24 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 			}
 
 			$description = $this->convert_description($description);
-			$description = str_replace('#', '', $description);
+			$description = wp_strip_all_tags($description);
+			$description = html_entity_decode($description, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+			$search  = ['’', 'ʼ', '`', '«', '»', '“', '”', '#'];
+			$replace = ["'", "'", "'", '"', '"', '"', '"', ''];
+			$description = str_replace($search, $replace, $description);
+			$description = preg_replace('/[^\p{L}\p{N}\p{P}\s]/u', '', $description);
+			$description = preg_replace('/\s+/u', ' ', trim($description));
+			$maxLength = 100;
 
+			if (mb_strlen($description, 'UTF-8') > $maxLength) {
+				$description = mb_substr($description, 0, $maxLength, 'UTF-8');
+				$lastSpace = mb_strrpos($description, ' ', 0, 'UTF-8');
+				if ($lastSpace !== false && $lastSpace > 50) {
+					$description = mb_substr($description, 0, $lastSpace, 'UTF-8');
+				}
+			}
 
-			return substr($description, 0, 100);
+			return trim($description);
 		}
 
 		public function convert_description($description) 
@@ -887,7 +901,6 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 
 		private function get_sender_address_ref_inline()
 		{
-			require_once MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/api/mrkv-ua-shipping-sender-nova-poshta.php';
 			$mrkv_sender_object_nova_poshta = new MRKV_UA_SHIPPING_SENDER_NOVA_POSHTA($this->shipping_api);
 
 			$sender_street_ref = (isset($this->settings_shipping['sender']['street']['ref']) && $this->settings_shipping['sender']['street']['ref']) 
@@ -898,7 +911,7 @@ if (!class_exists('MRKV_UA_SHIPPING_NOVA_POSHTA_INVOICE'))
 						? $this->settings_shipping['sender']['street']['flat'] : '';
 
 	        # Send request
-	        $ref = $mrkv_sender_object_nova_poshta->get_sender_address_ref($sender_street_ref, $sender_building_number, $sender_flat);
+	        $ref = $mrkv_sender_object_nova_poshta->get_sender_address_ref($sender_street_ref, $sender_building_number, $sender_flat, $this->get_sender_counterparty_ref());
 	        $ref = str_replace('"', "", $ref);
 
 	        if($ref)

@@ -38,6 +38,9 @@ if ( ! class_exists( 'Woosw_Statistics' ) ) {
             $enable_statistics = Woosw_Helper::get_setting( 'enable_statistics', 'yes' );
 
             if ( $enable_statistics === 'yes' ) {
+                add_action( 'woosw_add', [ $this, 'track_add' ], 10, 2 );
+                add_action( 'woosw_remove', [ $this, 'track_remove' ], 10, 2 );
+                add_action( 'woosw_empty', [ $this, 'track_empty' ] );
                 add_action( 'wp_ajax_woosw_get_stats', [ $this, 'ajax_get_stats' ] );
             }
         }
@@ -56,6 +59,60 @@ if ( ! class_exists( 'Woosw_Statistics' ) ) {
                     'added_text'   => esc_html__( 'Added', 'woo-smart-wishlist' ),
                     'removed_text' => esc_html__( 'Removed', 'woo-smart-wishlist' ),
             ] );
+        }
+
+        public function track_add( $product_id, $key ) {
+            global $wpdb;
+
+            if ( ! empty( $product_id ) ) {
+                $wpdb->insert(
+                        $wpdb->prefix . 'wpc_wishlist_stats',
+                        [
+                                'product_id' => $product_id,
+                                'user_id'    => get_current_user_id(),
+                                'action'     => 'add',
+                                'created_at' => current_time( 'mysql' ),
+                        ],
+                        [ '%d', '%d', '%s', '%s' ]
+                );
+            }
+        }
+
+        public function track_remove( $product_id, $key ) {
+            global $wpdb;
+
+            if ( ! empty( $product_id ) ) {
+                $wpdb->insert(
+                        $wpdb->prefix . 'wpc_wishlist_stats',
+                        [
+                                'product_id' => $product_id,
+                                'user_id'    => get_current_user_id(),
+                                'action'     => 'remove',
+                                'created_at' => current_time( 'mysql' ),
+                        ],
+                        [ '%d', '%d', '%s', '%s' ]
+                );
+            }
+        }
+
+        public function track_empty( $key ) {
+            global $wpdb;
+            $products = Woosw_Helper::get_ids( $key );
+
+            if ( ! empty( $products ) ) {
+                foreach ( array_keys( $products ) as $product_id ) {
+                    $wpdb->insert(
+                            $wpdb->prefix . 'wpc_wishlist_stats',
+                            [
+                                    'product_id' => $product_id,
+                                    'user_id'    => get_current_user_id(),
+                                    'action'     => 'remove',
+                                    'created_at' => current_time( 'mysql' ),
+                            ],
+                            [ '%d', '%d', '%s', '%s' ]
+                    );
+                }
+            }
         }
 
         public function ajax_get_stats() {
@@ -185,7 +242,7 @@ if ( ! class_exists( 'Woosw_Statistics' ) ) {
 
             if ( $enable_statistics !== 'yes' ) {
                 ?>
-                <div class="wpclever_settings_page_content_text woosw-statistics-disabled">
+                <div class="woosw-card woosw-statistics-disabled">
                     <div class="woosw-notice-info">
                         <p><?php
                                 // translators: %s is a link to the Settings page.
@@ -207,7 +264,7 @@ if ( ! class_exists( 'Woosw_Statistics' ) ) {
                             <option value="30days"><?php esc_html_e( 'Last 30 days', 'woo-smart-wishlist' ); ?></option>
                             <option value="custom"><?php esc_html_e( 'Custom range', 'woo-smart-wishlist' ); ?></option>
                         </select>
-                        <div id="woosw-stats-custom-range" style="display: none;">
+                        <div id="woosw-stats-custom-range">
                             <input type="date" id="woosw-stats-from">
                             <input type="date" id="woosw-stats-to">
                             <button type="button" class="button"

@@ -124,7 +124,7 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
                 $html .= '<div class="aws-license-notice">';
                     $html .= '<div class="aws-license-notice--content">';
                         $html .= '<h2>' . __( 'License key inactive', 'advanced-woo-search' ) . '</h2>';
-                        $html .= '<p>' . sprintf( __( "Activate your license key below to enable updates and access all Pro features. If you don't know your license key - please %s.", 'advanced-woo-search' ), '<a target="_blank" href="https://advanced-woo-search.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license">' . __( 'contact support', 'advanced-woo-search' ) . '</a>' ) . '</p>';
+                        $html .= '<p>' . sprintf( __( "Activate your license key below to enable updates and access all Pro features. If you don't know your license key - please %s.", 'advanced-woo-search' ), '<a target="_blank" href="https://kramakit.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license">' . __( 'contact support', 'advanced-woo-search' ) . '</a>' ) . '</p>';
                     $html .= '</div>';
                 $html .= '</div>';
             }
@@ -137,7 +137,7 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
                         $html .= '<h2>' . __( 'License key expired', 'advanced-woo-search' ) . '</h2>';
                         $html .= '<p>' . __( "Looks like your license is expired. You still can use this plugin but the new plugin updates are not available for you. Please renew your license to continue receiving the latest updates.", 'advanced-woo-search' ) . '</p>';
                         $html .= '<a href="' . $renew_link . '" target="_blank" class="button button-primary">' . __( 'Renew License', 'advanced-woo-search' ) . '</a>';
-                        $html .= '&nbsp;&nbsp;<a href="https://advanced-woo-search.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license" target="_blank" class="button button-primary">' . __( 'Contact Support', 'advanced-woo-search' ) . '</a>';
+                        $html .= '&nbsp;&nbsp;<a href="https://kramakit.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license" target="_blank" class="button button-primary">' . __( 'Contact Support', 'advanced-woo-search' ) . '</a>';
                     $html .= '</div>';
                 $html .= '</div>';
             }
@@ -368,13 +368,13 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
                                 'advanced-woo-search'
                             ),
                             '<strong>' . $plugin_info->updates_missed . '</strong>',
-                            '<a target="_blank" href="https://advanced-woo-search.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license">' . __( 'contact support', 'advanced-woo-search' ) . '</a>'
+                            '<a target="_blank" href="https://kramakit.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license">' . __( 'contact support', 'advanced-woo-search' ) . '</a>'
                         ),
                         'type' => 'error',
                         'buttons' => array(
                             array(
                                 'text' => __( 'Purchase License', 'advanced-woo-search' ) ,
-                                'link' => 'https://advanced-woo-search.com/pricing/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license',
+                                'link' => 'https://kramakit.com/plugins/advanced-woo-search/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license',
                                 'target' => '_blank'
                             ),
                         ),
@@ -391,7 +391,7 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
                     $notices[] = array(
                         'id' => 'lic_inactive',
                         'title' => __( 'License key inactive', 'advanced-woo-search' ),
-                        'message' => sprintf( __( "Activate your license key to enable updates and access all Pro features. If you don't know your license key - please %s.", 'advanced-woo-search' ), '<a target="_blank" href="https://advanced-woo-search.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license">' . __( 'contact support', 'advanced-woo-search' ) . '</a>' ),
+                        'message' => sprintf( __( "Activate your license key to enable updates and access all Pro features. If you don't know your license key - please %s.", 'advanced-woo-search' ), '<a target="_blank" href="https://kramakit.com/contact/?utm_source=wp-plugin&utm_medium=updater&utm_campaign=license">' . __( 'contact support', 'advanced-woo-search' ) . '</a>' ),
                         'type' => 'error',
                         'buttons' => array(
                             array(

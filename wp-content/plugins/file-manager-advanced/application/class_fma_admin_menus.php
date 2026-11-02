@@ -10,6 +10,11 @@ class class_fma_admin_menus
 {
     var $langs;
     /**
+     * @var bool
+     */
+    private static $hooks_registered = false;
+
+    /**
      * AFM - Languages
      */
     public function __construct()
@@ -17,58 +22,15 @@ class class_fma_admin_menus
         include('class_fma_lang.php');
         $this->langs = new class_fma_adv_lang();
 
-        add_action('fma__settings_tab_notifications_content', array($this, 'notification_callback'));
-        // Free: Show AI Integration (Code Pilot) tab content as a PRO teaser
-        add_action('fma__settings_tab_ai_content', array($this, 'ai_integration_callback'));
-
-        // Hide Freemius Add-Ons menu using Freemius filter hook
-        add_filter('fs_is_submenu_visible_file-manager-advanced', array($this, 'hide_freemius_addons_menu'), 10, 2);
-
-        // Fallback: Remove Freemius Add-Ons menu if it still exists
-        add_action('admin_menu', array($this, 'remove_freemius_addons_menu'), 999);
-    }
-
-    /**
-     * Hide Freemius Add-Ons menu using Freemius filter hook
-     * This is the proper way to hide menu items in Freemius
-     */
-    public function hide_freemius_addons_menu($is_visible, $menu_id)
-    {
-        // Hide Add-Ons menu
-        if ($menu_id === 'addons') {
-            return false;
-        }
-
-        return $is_visible;
-    }
-
-    /**
-     * Remove Freemius Add-Ons menu (fallback method)
-     */
-    public function remove_freemius_addons_menu()
-    {
-        global $fma_fs, $submenu;
-
-        // Remove Add-Ons submenu if it exists (check various possible slugs)
-        $parent_slug = 'file_manager_advanced_ui';
-        $possible_slugs = array(
-            'file-manager-advanced-addons',
-            'file-manager-advanced-addons-network',
-            'file_manager_advanced-addons',
-            'file_manager_advanced-addons-network',
-        );
-
-        foreach ($possible_slugs as $slug) {
-            remove_submenu_page($parent_slug, $slug);
-        }
-
-        // Also remove by menu title if slug-based removal didn't work
-        if (isset($submenu[$parent_slug])) {
-            foreach ($submenu[$parent_slug] as $key => $item) {
-                if (isset($item[0]) && (stripos($item[0], 'Add-On') !== false || stripos($item[0], 'Addon') !== false)) {
-                    unset($submenu[$parent_slug][$key]);
-                }
-            }
+        if (!self::$hooks_registered) {
+            add_action('fma__settings_tab_notifications_content', array($this, 'notification_callback'));
+            // Free: Show AI Integration (Code Pilot) tab content as a PRO teaser
+            add_action('fma__settings_tab_ai_content', array($this, 'ai_integration_callback'));
+            add_action('admin_init', array($this, 'restrict_fm_only_admin_access'));
+            add_action('admin_menu', array($this, 'trim_fm_submenus_for_restricted_users'), 99999);
+            add_action('admin_menu', array($this, 'hide_menus_moved_to_react_ui'), 99999);
+            add_filter('submenu_file', array($this, 'hide_pro_module_menus'), 999, 2);
+            self::$hooks_registered = true;
         }
     }
 
@@ -78,9 +40,13 @@ class class_fma_admin_menus
      */
     public function notification_callback()
     {
+        $email_heading = esc_html__('Email notification Settings', 'file-manager-advanced');
+        $slack_heading = esc_html__('Slack Notification', 'file-manager-advanced');
+        $pro_badge = esc_html__('PRO', 'file-manager-advanced');
+
         if (!class_exists('AFMP\\Modules\\EmailNotification\\EmailNotification')) {
             echo '<div afmp-href="https://advancedfilemanager.com/pricing/?utm_source=plugin&utm_medium=email_notification&utm_campaign=plugin" class="fma__wrap">';
-            echo '<h2 class="fma__heading"><strong>Email Notification Settings</strong> <span class="fma__heading-pro-tag">PRO</span></h2>';
+            echo '<h2 class="fma__heading">' . $email_heading . ' <span class="fma__heading-pro-tag">' . $pro_badge . '</span></h2>';
 
             echo '<table class="form-table" role="presentation"><tbody><tr><th scope="row"><label for="enable">Enable</label></th><td>            <input type="checkbox" id="enable" name="afmp__email_notification_settings[enable]" value="yes">
             <label for="enable">Enable email notification</label>
@@ -88,7 +54,7 @@ class class_fma_admin_menus
             <p class="description">Email address to send notification.</p>
             </td></tr><tr><th scope="row"><label for="events">Events</label></th><td>                <label>
                     <input type="checkbox" name="afmp__email_notification_settings[events][]" value="rm">
-                    Delete File & Folder                </label><br>
+                    Delete File/Folder                </label><br>
                                 <label>
                     <input type="checkbox" name="afmp__email_notification_settings[events][]" value="mkfile">
                     Create File                </label><br>
@@ -106,9 +72,9 @@ Thank you for using Advanced File Manager.</textarea>
 
         if (!class_exists('AFMP\\Modules\\SlackNotification\\SlackNotification')) {
             echo '<div afmp-href="https://advancedfilemanager.com/pricing/?utm_source=plugin&utm_medium=slack_notification&utm_campaign=plugin" class="fma__wrap">';
-            echo '<h2 class="fma__heading"><strong>Slack Notification Settings</strong> <span class="fma__heading-pro-tag">PRO</span></h2>';
+            echo '<h2 class="fma__heading">' . $slack_heading . ' <span class="fma__heading-pro-tag">' . $pro_badge . '</span></h2>';
 
-            echo '<table class="form-table" role="presentation"><tbody><tr><th scope="row"><label for="afmp_slack_enable">Enable Slack Notification</label></th><td><input type="checkbox" id="afmp_slack_enable" name="afmp__slack_notification_settings[enable]" value="yes"><label for="afmp_slack_enable">Enable Slack Notification</label></td></tr><tr><th scope="row"><label for="afmp_slack_webhook_url">Slack Webhook URL</label></th><td><input type="text" id="afmp_slack_webhook_url" name="afmp__slack_notification_settings[webhook_url]" class="large-text"><p class="description">Enter your Slack Webhook URL to receive notifications.</p><a href="#">Click here to get your webhook URL</a></td></tr><tr><th scope="row"><label for="afmp_slack_event_notification">Event Notification</label></th><td><label><input type="checkbox" name="afmp__slack_notification_settings[events][]" value="rm">Delete File & Folder</label><br><label><input type="checkbox" name="afmp__slack_notification_settings[events][]" value="mkfile">Create File</label><br><label><input type="checkbox" name="afmp__slack_notification_settings[events][]" value="mkdir">Create Folder</label><br></td></tr><tr><th scope="row"><label for="slack_notification_message">Slack Notification Message</label></th><td><textarea id="slack_notification_message" name="afmp__slack_notification_settings[message]" rows="5" class="large-text">A quick update from the Advance File Manager plugin on your site {site_name}.
+            echo '<table class="form-table" role="presentation"><tbody><tr><th scope="row"><label for="afmp_slack_enable">Enable Slack Notification</label></th><td><input type="checkbox" id="afmp_slack_enable" name="afmp__slack_notification_settings[enable]" value="yes"><label for="afmp_slack_enable">Enable Slack Notification</label></td></tr><tr><th scope="row"><label for="afmp_slack_webhook_url">Slack Webhook URL</label></th><td><input type="text" id="afmp_slack_webhook_url" name="afmp__slack_notification_settings[webhook_url]" class="large-text"><p class="description">Enter your Slack Webhook URL to receive notifications.</p><a href="#">Click here to get your webhook URL</a></td></tr><tr><th scope="row"><label for="afmp_slack_event_notification">Event Notification</label></th><td><label><input type="checkbox" name="afmp__slack_notification_settings[events][]" value="rm">Delete File/Folder</label><br><label><input type="checkbox" name="afmp__slack_notification_settings[events][]" value="mkfile">Create File</label><br><label><input type="checkbox" name="afmp__slack_notification_settings[events][]" value="mkdir">Create Folder</label><br></td></tr><tr><th scope="row"><label for="slack_notification_message">Slack Notification Message</label></th><td><textarea id="slack_notification_message" name="afmp__slack_notification_settings[message]" rows="5" class="large-text">A quick update from the Advanced File Manager plugin on your site {site_name}.
 A file was {event} by {username} on {date_time}. The file name is {file_name} with the extension {ext}, and the action was performed from the following IP Address: {ip_address}.</textarea><p class="description">Customize the message to be sent to Slack. You can use placeholders like {file_name}, {action}, etc.</p><p class="description">Available placeholders:</p><ul class="afmp-slack-placeholders"><li><code>{username}</code> - This will fetch the user’s name who did the action</li><li><code>{ip_address}</code> - This will fetch the user’s IP Address</li><li><code>{event}</code> - This will fetch which file the user has created or deleted</li><li><code>{file_name}</code> - This will fetch the file name on which that action was done</li><li><code>{ext}</code> - This will fetch the file extension on which that action was done</li><li><code>{date_time}</code> - This will fetch the date the user acted on the file</li><li><code>{site_name}</code> - This will fetch the site name on which the action was performed</li></ul></td></tr></tbody></table>';
             echo '</div>';
         }
@@ -177,8 +143,7 @@ A file was {event} by {username} on {date_time}. The file name is {file_name} wi
                                 <td>
                                     <input type="checkbox" name="afmp_ai_enabled" id="afmp_ai_enabled" value="1" <?php checked($enabled, '1'); ?> />
                                     <p class="description">
-                                        <?php esc_html_e('Enable Code Pilot AI assistant in the code editor.', 'file-manager-advanced'); ?>
-                                    </p>
+                                        <?php esc_html_e('Enable Code Pilot AI assistant in the code editor.', 'file-manager-advanced'); ?></p>
                                 </td>
                             </tr>
                             <tr>
@@ -261,37 +226,25 @@ A file was {event} by {username} on {date_time}. The file name is {file_name} wi
             $fmaPer,
             'file_manager_advanced_ui',
             array($this, 'file_manager_advanced_ui'),
-            plugins_url('assets/icon/fma-new.png', __FILE__),
+            plugins_url('assets/icon/fma-new.svg', __FILE__),
             4
         );
+        /*
+         * WordPress uses the first submenu slug for the parent menu href. Without this duplicate,
+         * the top-level File Manager click can open another submenu (e.g. DB Access) instead of the React UI.
+         */
         add_submenu_page(
             'file_manager_advanced_ui',
-            __('Settings', 'file-manager-advanced'),
-            __('Settings', 'file-manager-advanced'),
-            $subPer,
-            'file_manager_advanced_controls',
-            array(&$this, 'file_manager_advanced_controls')
+            __('Advanced File Manager', 'file-manager-advanced'),
+            __('File Manager', 'file-manager-advanced'),
+            $fmaPer,
+            'file_manager_advanced_ui',
+            array($this, 'file_manager_advanced_ui')
         );
-
-        if (!class_exists('AFMP\Modules\Integrations')) {
-            add_submenu_page('file_manager_advanced_ui', __('Integrations', 'file-manager-advanced'), __('Integrations', 'file-manager-advanced'), 'manage_options', 'afm-integrations-pro', array($this, 'integrations_pro_menu'), 2);
-        }
-
-        if (!class_exists('AFMP\Modules\AFMP_AI_Integration')) {
-            add_submenu_page(
-                '',
-                __('AI - Code Pilot', 'file-manager-advanced'),
-                sprintf(
-                    '%1$s <span class="update-plugins count-1" style="background: #d63638; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">%2$s</span>',
-                    __('AI - Code Pilot', 'file-manager-advanced'),
-                    __('NEW', 'file-manager-advanced')
-                ),
-                'manage_options',
-                'ai-code-pilot',
-                array($this, 'ai_code_pilot_callback'),
-                2
-            );
-        }
+        // Settings, File Logs, and Integration submenus removed - now handled in new React UI
+        // Settings: Now in Settings tab
+        // File Logs: Now in Logs tab
+        // Integrations: Now in Integrations tab
 
         // Blocks submenu is now handled by class_fma_blocks
         // Old submenu removed - blocks post type is used instead
@@ -300,194 +253,87 @@ A file was {event} by {username} on {date_time}. The file name is {file_name} wi
         // }
 
         if (!class_exists('AFMP\\Modules\\Adminer')) {
-            add_submenu_page('file_manager_advanced_ui', __('DB Access', 'file-manager-advanced'), __('DB Access', 'file-manager-advanced'), 'manage_options', 'afmp-adminer', array($this, 'adminer_menu'));
-        }
-
-        if (!class_exists('AFMP\\Modules\\Dropbox')) {
-            add_submenu_page('', __('Dropbox Settings', 'file-manager-advanced'), __('Dropbox', 'file-manager-advanced'), 'manage_options', 'afmp-dropbox', array($this, 'dropbox_menu'));
-        }
-
-        if (!class_exists('AFMP\\Modules\\FileLogs')) {
-            add_submenu_page('file_manager_advanced_ui', __('File Logs', 'file-manager-advanced'), __('File Logs', 'file-manager-advanced'), 'manage_options', 'afmp-file-logs', array($this, 'afmp__file_logs'), 3);
-        }
-
-        if (!class_exists('AFMP\\Modules\\GoogleDrive')) {
-            add_submenu_page('', __('Google Drive Settings', 'file-manager-advanced'), __('Google Drive', 'file-manager-advanced'), 'manage_options', 'afmp-googledrive', array($this, 'googledrive_menu'));
-        }
-
-        if (!class_exists('AFMP\Modules\Onedrive')) {
-            add_submenu_page('', __('OneDrive Settings', 'file-manager-advanced'), __('OneDrive', 'file-manager-advanced'), 'manage_options', 'afmp-onedrive', array($this, 'onedrive_menu'));
-        }
-
-        if (!class_exists('AFMP\\Modules\\AmazonS3')) {
-            add_submenu_page('', __('Amazon S3 (AWS) Settings', 'file-manager-advanced'), __('Amazon S3 (AWS)', 'file-manager-advanced'), 'manage_options', 'afmp-aws', array($this, 'aws_menu'));
-        }
-
-        if (!class_exists('AFMP\\Modules\\GitHub')) {
-            add_submenu_page('', __('GitHub Settings', 'file-manager-advanced'), __('GitHub', 'file-manager-advanced'), 'manage_options', 'afmp-github', array($this, 'github_menu'));
-        }
-
-        if (!class_exists('AFMP\\Modules\\GoogleCloud')) {
-            add_submenu_page('', __('Google Cloud Settings', 'file-manager-advanced'), __('Google Cloud', 'file-manager-advanced'), 'manage_options', 'afmp-googlecloud', array($this, 'googlecloud_menu'));
-        }
-
-        // Add GET PRO menu item at the bottom (only if pro plugin is not active)
-        if (!class_exists('file_manager_advanced_shortcode')) {
             add_submenu_page(
                 'file_manager_advanced_ui',
-                __('GET PRO', 'file-manager-advanced'),
-                __('GET PRO', 'file-manager-advanced'),
+                __('DB Access', 'file-manager-advanced'),
+                __('DB Access', 'file-manager-advanced'),
                 'manage_options',
-                'fma-get-pro',
-                '__return_null'
+                'afmp-adminer',
+                array($this, 'adminer_menu')
             );
+        }
+    }
 
-            if (isset($_GET['page']) && 'fma-get-pro' === sanitize_text_field(wp_unslash($_GET['page']))) {
-                wp_redirect(
-                    add_query_arg(
-                        array(
-                            'utm_source' => 'wordpress_admin_menu',
-                            'utm_medium' => 'website',
-                            'utm_campaign' => 'free_plugin',
-                        ),
-                        'https://advancedfilemanager.com/pricing/'
-                    )
-                );
-                exit;
-            }
+    /**
+     * Remove legacy File Manager submenu items replaced by React UI tabs.
+     * Runs after Pro (released) registers Integrations / File Logs on partial Free upgrades.
+     */
+    public function hide_menus_moved_to_react_ui()
+    {
+        if (!function_exists('fma_has_react_admin_navigation') || !fma_has_react_admin_navigation()) {
+            return;
         }
 
-        // Add CSS styling for GET PRO menu
-        add_action('admin_head', array($this, 'get_pro_menu_styles'));
+        global $submenu;
+        if (!isset($submenu['file_manager_advanced_ui']) || !is_array($submenu['file_manager_advanced_ui'])) {
+            return;
+        }
 
-        // Add JavaScript to redirect GET PRO menu directly
-        // add_action('admin_footer', array($this, 'get_pro_menu_redirect_script'));
+        $react_tab_slugs = array(
+            'file_manager_advanced_controls', // Settings tab
+            'afmp-integrations',            // Integrations tab (Pro)
+            'afm-integrations-pro',         // Integrations fallback (Free legacy)
+            'afmp-file-logs',               // Logs tab
+        );
+
+        $pro_module_slugs = array(
+            'afmp-dropbox',
+            'afmp-googledrive',
+            'afmp-onedrive',
+            'afmp-aws',
+            'afmp-amazons3',
+            'afmp-github',
+            'afmp-googlecloud',
+            'afmp-pcloud',
+            'afmp-cloudflarer2',
+            'afmp-wasabi',
+        );
+
+        if (defined('AFMP_IS_APPSUMO') && AFMP_IS_APPSUMO) {
+            $pro_module_slugs[] = 'afmp-plan-features';
+        }
+
+        $hidden_slugs = array_merge($react_tab_slugs, $pro_module_slugs);
+        $smtp_slug = (defined('FMA_PLUGIN_SLUG') ? FMA_PLUGIN_SLUG : 'file-manager-advanced') . '-recommend-post-smtp';
+        $hidden_slugs[] = $smtp_slug;
+
+        foreach ($submenu['file_manager_advanced_ui'] as $key => $menu_item) {
+            if (!isset($menu_item[2])) {
+                continue;
+            }
+            $slug = $menu_item[2];
+            if (in_array($slug, $hidden_slugs, true) || false !== strpos($slug, 'recommend-post-smtp')) {
+                unset($submenu['file_manager_advanced_ui'][$key]);
+            }
+        }
     }
 
-    /**
-     * GET PRO menu styles
-     */
-    public function get_pro_menu_styles()
-    {
-        ?>
-        <style type="text/css">
-            /* Style GET PRO menu item with gradient - Multiple selectors for better compatibility */
-            #toplevel_page_file_manager_advanced_ui .wp-submenu a[href*="fma-get-pro"],
-            #toplevel_page_file_manager_advanced_ui .wp-submenu li a[href*="fma-get-pro"],
-            #adminmenu #toplevel_page_file_manager_advanced_ui .wp-submenu a[href*="fma-get-pro"],
-            #adminmenu #toplevel_page_file_manager_advanced_ui .wp-submenu a.fma-get-pro-highlight {
-                background: linear-gradient(270deg, #011D33 0%, #3F6972 100%) !important;
-                background-color: #011D33 !important;
-                color: #fff !important;
-                font-weight: 600 !important;
-                border-left: 4px solid #011D33 !important;
-            }
-
-            #toplevel_page_file_manager_advanced_ui .wp-submenu a[href*="fma-get-pro"]:hover,
-            #toplevel_page_file_manager_advanced_ui .wp-submenu li a[href*="fma-get-pro"]:hover,
-            #toplevel_page_file_manager_advanced_ui .wp-submenu a.fma-get-pro-highlight:hover,
-            #adminmenu #toplevel_page_file_manager_advanced_ui .wp-submenu a[href*="fma-get-pro"]:hover,
-            #adminmenu #toplevel_page_file_manager_advanced_ui .wp-submenu a.fma-get-pro-highlight:hover {
-                background: linear-gradient(270deg, #001020 0%, #2d4f57 100%) !important;
-                background-color: #001020 !important;
-                color: #fff !important;
-                border-left-color: #001020 !important;
-            }
-
-            /* Ensure the list item also has the gradient background */
-            #toplevel_page_file_manager_advanced_ui .wp-submenu li:has(a[href*="fma-get-pro"]),
-            #adminmenu #toplevel_page_file_manager_advanced_ui .wp-submenu li:has(a[href*="fma-get-pro"]) {
-                background: linear-gradient(270deg, #011D33 0%, #3F6972 100%) !important;
-                background-color: #011D33 !important;
-            }
-
-            #toplevel_page_file_manager_advanced_ui .wp-submenu li:has(a[href*="fma-get-pro"]):hover,
-            #adminmenu #toplevel_page_file_manager_advanced_ui .wp-submenu li:has(a[href*="fma-get-pro"]):hover {
-                background: linear-gradient(270deg, #001020 0%, #2d4f57 100%) !important;
-                background-color: #001020 !important;
-            }
-
-            /* Fallback for browsers that don't support :has() */
-            #toplevel_page_file_manager_advanced_ui .wp-submenu li a[href*="fma-get-pro"],
-            #toplevel_page_file_manager_advanced_ui .wp-submenu li a.fma-get-pro-highlight {
-                background: linear-gradient(270deg, #011D33 0%, #3F6972 100%) !important;
-            }
-
-            /* Add crown icon */
-            #toplevel_page_file_manager_advanced_ui .wp-submenu a[href*="fma-get-pro"]::before,
-            #toplevel_page_file_manager_advanced_ui .wp-submenu a.fma-get-pro-highlight::before {
-                content: "";
-                display: inline-block;
-                width: 15px;
-                height: 15px;
-                margin-right: 8px;
-                vertical-align: middle;
-                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M5 16L3 5L8.5 10L12 4L15.5 10L21 5L19 16H5M19 19C19 19.6 18.6 20 18 20H6C5.4 20 5 19.6 5 19V18H19V19Z' /%3E%3C/svg%3E");
-                background-repeat: no-repeat;
-                background-size: contain;
-            }
-        </style>
-        <script type="text/javascript">
-            (function ($) {
-                // Apply styles via JavaScript to ensure they persist after reload
-                function applyGetProStyles() {
-                    var $getProLink = $('#toplevel_page_file_manager_advanced_ui .wp-submenu a[href*="fma-get-pro"], #toplevel_page_file_manager_advanced_ui .wp-submenu a.fma-get-pro-highlight');
-                    if ($getProLink.length) {
-                        // Add highlight class for persistent styling
-                        $getProLink.addClass('fma-get-pro-highlight');
-
-                        $getProLink.css({
-                            'background': 'linear-gradient(270deg, #011D33 0%, #3F6972 100%)',
-                            'background-color': '#011D33',
-                            'color': '#fff',
-                            'font-weight': '600',
-                            'border-left': '4px solid #011D33'
-                        });
-
-                        // Set target to _blank and update href for direct redirection in new tab
-                        $getProLink.attr('target', '_blank');
-                        var pricingUrl = 'https://advancedfilemanager.com/pricing/?utm_source=wordpress_admin_menu&utm_medium=website&utm_campaign=free_plugin';
-                        if ($getProLink.attr('href') !== pricingUrl) {
-                            $getProLink.attr('href', pricingUrl);
-                        }
-
-                        $getProLink.on('mouseenter', function () {
-                            $(this).css({
-                                'background': 'linear-gradient(270deg, #001020 0%, #2d4f57 100%)',
-                                'background-color': '#001020',
-                                'border-left-color': '#001020'
-                            });
-                        }).on('mouseleave', function () {
-                            $(this).css({
-                                'background': 'linear-gradient(270deg, #011D33 0%, #3F6972 100%)',
-                                'background-color': '#011D33',
-                                'border-left-color': '#011D33'
-                            });
-                        });
-                    }
-                }
-
-                $(document).ready(function () {
-                    applyGetProStyles();
-                });
-
-                // Reapply styles after menu toggle (WordPress admin menu collapse/expand)
-                $(document).on('wp-menu-state-change', function () {
-                    setTimeout(applyGetProStyles, 100);
-                });
-            })(jQuery);
-        </script>
-        <?php
-    }
+    // Settings, File Logs, and Integration submenu hide functions removed - menus are no longer registered
 
     /**
-     * GET PRO callback - redirect to pricing page (fallback if JS doesn't work)
+     * Hide Pro module menus from admin menu display (fallback for late submenu mutations).
      */
-    public function get_pro_callback()
+    public function hide_pro_module_menus($submenu_file, $parent_file)
     {
-        $pricing_url = 'https://advancedfilemanager.com/pricing/?utm_source=plugin&utm_medium=file_manager_get_pro_menu&utm_campaign=plugin';
-        wp_redirect($pricing_url);
-        exit;
+        if ('file_manager_advanced_ui' !== $parent_file) {
+            return $submenu_file;
+        }
+
+        if (function_exists('fma_has_react_admin_navigation') && fma_has_react_admin_navigation()) {
+            $this->hide_menus_moved_to_react_ui();
+        }
+
+        return $submenu_file;
     }
 
     /**
@@ -500,8 +346,7 @@ A file was {event} by {username} on {date_time}. The file name is {file_name} wi
         <script>
             window.location.href = '<?php echo $target_url; ?>';
         </script>
-        <p><?php echo esc_html__('Redirecting to AI Integration Settings...', 'file-manager-advanced'); ?> <a
-                href="<?php echo esc_url($target_url); ?>"><?php echo esc_html__('Click here', 'file-manager-advanced'); ?></a></p>
+        <p><?php echo esc_html__('Redirecting to AI Integration Settings...', 'file-manager-advanced'); ?> <a href="<?php echo esc_url($target_url); ?>"><?php echo esc_html__('Click here', 'file-manager-advanced'); ?></a></p>
         <?php
         exit;
     }
@@ -1364,6 +1209,99 @@ HTML;
         }
         return $fmaPer;
     }
+
+    /**
+     * True when the user may open File Manager but must not see settings/admin tabs (non-administrator in fma_user_roles).
+     *
+     * @return bool
+     */
+    public static function is_file_manager_only_user()
+    {
+        if (!is_user_logged_in() || current_user_can('manage_options')) {
+            return false;
+        }
+
+        $settings = get_option('fmaoptions');
+        if (!is_array($settings)) {
+            return false;
+        }
+
+        $user = wp_get_current_user();
+        $allowed_fma_user_roles = isset($settings['fma_user_roles']) && is_array($settings['fma_user_roles'])
+            ? $settings['fma_user_roles']
+            : array('administrator');
+
+        if (!in_array('administrator', $allowed_fma_user_roles, true)) {
+            $fma_user_roles = array_merge(array('administrator'), $allowed_fma_user_roles);
+        } else {
+            $fma_user_roles = $allowed_fma_user_roles;
+        }
+
+        $check_user_role_existance = array_intersect($fma_user_roles, $user->roles);
+        if (count($check_user_role_existance) === 0) {
+            return false;
+        }
+
+        return !in_array('administrator', $check_user_role_existance, true);
+    }
+
+    /**
+     * Redirect FM-only users away from other AFM admin pages (DB Access, legacy settings URLs, etc.).
+     */
+    public function restrict_fm_only_admin_access()
+    {
+        if (!self::is_file_manager_only_user()) {
+            return;
+        }
+
+        if (!is_admin() || wp_doing_ajax()) {
+            return;
+        }
+
+        $page = isset($_GET['page']) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+        if ($page === '' || $page === 'file_manager_advanced_ui') {
+            return;
+        }
+
+        $blocked_prefixes = array(
+            'file_manager_advanced',
+            'afmp-',
+            'fma_',
+        );
+
+        foreach ($blocked_prefixes as $prefix) {
+            if (strpos($page, $prefix) === 0) {
+                wp_safe_redirect(admin_url('admin.php?page=file_manager_advanced_ui#/filemanager'));
+                exit;
+            }
+        }
+    }
+
+    /**
+     * Hide all File Manager submenus except the main UI entry for FM-only roles.
+     */
+    public function trim_fm_submenus_for_restricted_users()
+    {
+        if (!self::is_file_manager_only_user()) {
+            return;
+        }
+
+        global $submenu;
+        if (!isset($submenu['file_manager_advanced_ui']) || !is_array($submenu['file_manager_advanced_ui'])) {
+            return;
+        }
+
+        $trimmed = array();
+        foreach ($submenu['file_manager_advanced_ui'] as $item) {
+            if (isset($item[2]) && $item[2] === 'file_manager_advanced_ui') {
+                $trimmed[] = $item;
+                break;
+            }
+        }
+
+        $submenu['file_manager_advanced_ui'] = $trimmed;
+    }
+
     /**
      * Fma - Network Permissions
      */
@@ -1422,6 +1360,7 @@ HTML;
     public function save()
     {
         if (isset($_POST['submit']) && wp_verify_nonce($_POST['_fmaform'], 'fmaform')) {
+            _e('Saving options, Please wait...', 'file-manager-advanced');
             $save = array();
             $defaultRole = array('administrator');
             if (is_multisite()) {
@@ -1443,9 +1382,12 @@ HTML;
             $save['fma_upload_allow'] = isset($_POST['fma_upload_allow']) ? sanitize_text_field($_POST['fma_upload_allow']) : 'all';
             $save['fma_cm_theme'] = isset($_POST['fma_cm_theme']) ? sanitize_text_field($_POST['fma_cm_theme']) : 'default';
             $save['fma_debug_enabled'] = isset($_POST['fma_debug_enabled']) ? sanitize_text_field($_POST['fma_debug_enabled']) : 0;
-            $save['fma_delete_data_on_uninstall'] = isset($_POST['fma_delete_data_on_uninstall']) ? sanitize_text_field($_POST['fma_delete_data_on_uninstall']) : 0;
-            update_option('fmaoptions', $save);
-            $this->f('?page=file_manager_advanced_controls&status=1');
+            $u = update_option('fmaoptions', $save);
+            if ($u) {
+                $this->f('?page=file_manager_advanced_controls&status=1');
+            } else {
+                $this->f('?page=file_manager_advanced_controls&status=2');
+            }
         }
     }
     /**
@@ -1514,246 +1456,6 @@ HTML;
         global $wp_roles;
         return $wp_roles->roles;
     }
-
-    /**
-     * Integrations Pro Menu
-     */
-    public function integrations_pro_menu()
-    {
-        wp_enqueue_script('fma-admin-scripts');
-        $pro_images_url = plugins_url('assets/images/', __FILE__);
-        ?>
-        <style>
-            /* ... (keeping existing styles) ... */
-            .afm-integrations-pro-wrap {
-                margin-top: 20px;
-                position: relative;
-            }
-
-            .afm-integrations-pro-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 20px;
-                margin-top: 30px;
-                opacity: 0.7;
-                position: relative;
-                pointer-events: none;
-                user-select: none;
-            }
-
-            .afm-integration-pro-card {
-                background: #fff;
-                border: 1px solid #e0e0e0;
-                border-radius: 4px;
-                padding: 24px;
-                display: flex;
-                flex-direction: column;
-                min-height: 160px;
-            }
-
-            .afm-integration-pro-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 15px;
-            }
-
-            .afm-integration-pro-icon {
-                width: 48px;
-                height: 48px;
-                background: #f8f9fa;
-                border-radius: 6px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .afm-integration-pro-icon img {
-                width: 24px;
-                height: 24px;
-            }
-
-            .afm-integration-pro-title {
-                margin: 0 0 5px 0;
-                font-size: 16px;
-                font-weight: 600;
-                color: #1d2327;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            
-            .afm-coming-soon-badge {
-                display: inline-block;
-                background: #f0b90b;
-                color: #fff;
-                font-size: 10px;
-                font-weight: 600;
-                text-transform: uppercase;
-                padding: 3px 8px;
-                border-radius: 3px;
-                letter-spacing: 0.5px;
-            }
-
-            .afm-integration-pro-desc {
-                margin: 0;
-                font-size: 13px;
-                color: #646970;
-                line-height: 1.5;
-            }
-
-            .fma__blocks__heading-pro-tag {
-                display: inline-block;
-                padding: 2px 8px;
-                background: linear-gradient(270deg, #011D33 0%, #3F6972 100%);
-                border-radius: 4px;
-                color: #fff;
-                font-size: 12px;
-                margin-left: 15px;
-                vertical-align: middle;
-                margin-bottom: 2px;
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-            }
-
-            /* Dummy Switch styling */
-            .afm-dummy-switch {
-                position: relative;
-                display: inline-block;
-                width: 44px;
-                height: 22px;
-            }
-
-            .afm-dummy-slider {
-                position: absolute;
-                cursor: pointer;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: #e0e0e0;
-                transition: .4s;
-                border-radius: 22px;
-            }
-
-            .afm-dummy-slider:before {
-                position: absolute;
-                content: "";
-                height: 16px;
-                width: 16px;
-                left: 3px;
-                bottom: 3px;
-                background-color: white;
-                transition: .4s;
-                border-radius: 50%;
-            }
-
-            .afm-pro-overlay {
-                position: absolute;
-                top: 60px;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                z-index: 100;
-                cursor: pointer;
-            }
-
-            .afm-pro-overlay::before {
-                content: "";
-                display: block;
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                top: 0;
-                left: 0;
-                background: transparent;
-            }
-        </style>
-        <div class="wrap afm-integrations-pro-wrap">
-            <h1 class="wp-heading-inline"><?php _e('Integrations', 'file-manager-advanced'); ?> <span
-                    class="fma__blocks__heading-pro-tag">PRO</span></h1>
-            <p class="description">
-                <?php _e('Connect your Advanced File Manager with popular cloud storage services.', 'file-manager-advanced'); ?>
-            </p>
-
-            <div class="afm-pro-overlay fma__blocks__wrap"
-                afmp-href="https://advancedfilemanager.com/pricing/?utm_source=plugin&utm_medium=integrations_banner&utm_campaign=plugin">
-            </div>
-
-            <div class="afm-integrations-pro-grid">
-                <?php
-                $integrations = array(
-                    'onedrive' => array(
-                        'name' => 'OneDrive',
-                        'desc' => 'Connect and manage your Microsoft OneDrive files directly from the Advanced File Manager.',
-                        'icon' => 'onedrive.svg'
-                    ),
-                    'googledrive' => array(
-                        'name' => 'Google Drive',
-                        'desc' => 'Sync and manage your Google Drive files and folders seamlessly with your WordPress setup.',
-                        'icon' => 'googledrive.svg'
-                    ),
-                    'amazons3' => array(
-                        'name' => 'Amazon S3',
-                        'desc' => 'Securely connect and manage your AWS S3 buckets for flexible and scalable cloud storage.',
-                        'icon' => 'amazons3.svg'
-                    ),
-                    'googlecloud' => array(
-                        'name' => 'Google Cloud Storage',
-                        'desc' => 'Access and organize your Google Cloud Storage buckets right from your WordPress dashboard.',
-                        'icon' => 'googlecloud.svg'
-                    ),
-                    'github' => array(
-                        'name' => 'GitHub',
-                        'desc' => 'Connect your GitHub repositories to browse and manage your project files directly.',
-                        'icon' => 'github.svg'
-                    ),
-                    'dropbox' => array(
-                        'name' => 'Dropbox',
-                        'desc' => 'Easily integrate and manage your Dropbox cloud storage files within the file manager.',
-                        'icon' => 'dropbox.svg'
-                    ),
-                    'pcloud' => array(
-                        'name' => 'pCloud',
-                        'desc' => 'Connect and manage your pCloud files directly from the Advanced File Manager.',
-                        'icon' => 'pcloud.svg'
-                    ),
-                    'cloudflarer2' => array(
-                        'name' => 'Cloudflare R2',
-                        'desc' => 'Connect and manage your Cloudflare R2 buckets/files directly from the Advanced File Manager.',
-                        'icon' => 'cloudflarer2.svg'
-                    ),
-                    'digitalocean' => array(
-                        'name' => 'DigitalOcean Spaces',
-                        'desc' => 'Connect and manage your DigitalOcean Spaces buckets/files directly from the Advanced File Manager.',
-                        'icon' => 'digitalocean.svg',
-                        'coming_soon' => true
-                    )
-                );
-
-                foreach ($integrations as $item):
-                    ?>
-                    <div class="afm-integration-pro-card">
-                        <div class="afm-integration-pro-header">
-                            <div class="afm-integration-pro-icon">
-                                <img src="<?php echo $pro_images_url . $item['icon']; ?>" alt="<?php echo $item['name']; ?>">
-                            </div>
-                            <div class="afm-dummy-switch">
-                                <span class="afm-dummy-slider"></span>
-                            </div>
-                        </div>
-                        <div class="afm-integration-pro-body">
-                            <h3 class="afm-integration-pro-title">
-                                <?php echo $item['name']; ?>
-                                <?php if (isset($item['coming_soon']) && $item['coming_soon']): ?>
-                                    <span class="afm-coming-soon-badge">Coming Soon</span>
-                                <?php endif; ?>
-                            </h3>
-                            <p class="afm-integration-pro-desc"><?php echo $item['desc']; ?></p>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <?php
-    }
 }
+
+

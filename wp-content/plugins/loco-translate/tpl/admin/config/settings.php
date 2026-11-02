@@ -214,9 +214,18 @@ $help_url = esc_html( apply_filters('loco_external','https://localise.biz/wordpr
                             </p>
                             <p>
                                 <label for="loco--fs-basedir" style="vertical-align: top">
-                                    <?php esc_html_e('Restricted writeable directories','loco-translate');?>:
+                                    <?php esc_html_e('Restricted base directories','loco-translate');?>:<br />
                                 </label>
                                 <textarea name="opts[fs_basedir]" id="loco--fs-basedir" rows="2" class="regular-text"><?php echo esc_html($opts->fs_basedir)?></textarea>
+                            </p>
+                            <p>
+                                <label for="loco--fs-writedir" style="vertical-align: top">
+                                    <?php esc_html_e('Restricted writeable directories','loco-translate');?>:
+                                </label>
+                                <textarea name="opts[fs_writedir]" id="loco--fs-writedir" rows="2" class="regular-text"><?php echo esc_html($opts->fs_writedir)?></textarea>
+                            </p>
+                            <p class="description">
+                                <?php esc_html_e('Directory restrictions are relative to the WordPress root (ABSPATH).','loco-translate');?> 
                             </p>
                         </fieldset>
                     </td>
@@ -235,12 +244,23 @@ $help_url = esc_html( apply_filters('loco_external','https://localise.biz/wordpr
                             foreach( $caps as $cap ):?> 
                             <p>
                                 <label>
-                                    <input type="checkbox" name="<?php $cap->e('name')?>" value="<?php $cap->e('label')?>" <?php echo $cap->attrs?> />
-                                    <?php $cap->e('label')?> 
-                                </label>
+                                    <input type="checkbox" name="<?php $cap->e('name')?>" value="<?php $cap->e('value')?>" <?php echo $cap->attrs?> />
+                                    <?php $cap->e('label')?>
+                                </label><?php
+                                if( $cap->lowpriv ):?> <span class="loco-dagger">&dagger;</span><?php endif?> 
                             </p><?php
                             endforeach;?> 
                         </fieldset>
+                        <div class="panel">
+                            <p>
+                                <strong class="has-icon"><?php esc_html_e('Important','loco-translate')?>:</strong>
+                                <span><?php esc_html_e('All users with the selected roles will be able to create and update translation files in any writeable location.','loco-translate')?></span>
+                            </p>
+                            <p>
+                                <strong class="has-icon"> </strong>
+                                <span><?php esc_html_e('Roles marked † have low privileges, and may be assigned to untrusted site users.','loco-translate')?></span>
+                            </p>
+                        </div>
                     </td>
                 </tr>
             </tbody>

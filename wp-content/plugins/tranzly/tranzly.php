@@ -1,88 +1,90 @@
 <?php
 
 /**
- * Plugin Name:       Tranzly - AI DeepL Translation Plugin
- * Plugin URI:        https://tranzly.io
- * Description:       Translate your complete WordPress Website content automatically including WooCommerce and Yoast using Tranzly, A revolutionary AI DeepL WordPress translator Plugin. All the correct Meta Tags are added for your website to ensure the translated pages are correctly tagged for best SEO practices. Including adding the Hreflang Tags.
- * Version:           2.0.0
- * Author:            tranzly
- * Author URI:        https://tranzly.io
- * WordPress 6.1.1 tested
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Plugin Name:       Tranzly™ – AI Translation & Multilingual
+ * Plugin URI:        https://zinndigital.com/wordpress-plugins/tranzly
+ * Description:       Multilingual WordPress, one post per language: linked translations of posts, pages, categories, media text, widgets and the site title, with your old Tranzly translations imported.
+ * Version:           3.27.30
+ * Requires at least: 6.8
+ * Requires PHP:      8.2
+ * Author:            Neil Lock — CEO, Zinn Digital® Ltd
+ * Author URI:        https://zinndigital.com
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       tranzly
  * Domain Path:       /languages
+ *
+ * @package ZinnDigital\Tranzly
+ *
+ * ⛔⛔ THIS FILE IS NAMED `tranzly.php` ON PURPOSE AND MUST NEVER BE RENAMED. Every site running
+ * the legacy plugin has `tranzly/tranzly.php` recorded as the active basename; WordPress
+ * deactivates a plugin whose basename disappears during an update (plugins.json
+ * `legacy_main_file`, CONTRACT §1 / G10).
+ *
+ * ⛔⛔ AND IT IS WRITTEN IN THE LICENSING SERVICE'S OWN PRINT, NOT IN WPCS STYLE. Freemius
+ * re-prints the file that calls fs_dynamic_init() (four-space indent, no blank lines between
+ * statements, `!$x`); every other file reaches its free package byte-for-byte. Writing this file
+ * in that canonical form is what makes the house free zip and the Freemius free zip identical
+ * (docs/adr/0031, docs/adr/0032). Keep it to headers, the SDK init and one require; everything
+ * else lives in includes/ and follows WPCS.
+ *
+ * ⛔ No `Update URI` header and no secret key in this SOURCE, ever. Freemius adds the header to the premium download only (measured, docs/adr/0031). The SDK needs only the PUBLIC key below.
  */
-// If this file is called directly, abort.
-if ( !defined( 'ABSPATH' ) ) {
-    die;
+defined( 'ABSPATH' ) || exit;
+if ( function_exists( 'tranzly_fs' ) ) {
+    tranzly_fs()->set_basename( false, __FILE__ );
+    return;
 }
-/**
- * Currently plugin version.
- */
-define( 'TRANZLY_VERSION', '2.0.0' );
-
-
-
-
-if ( ! function_exists( 'tranzly_fs' ) ) {
-    // Create a helper function for easy SDK access.
+define( 'TRANZLY_VERSION', '3.27.30' );
+define( 'TRANZLY_FILE', __FILE__ );
+define( 'TRANZLY_DIR', plugin_dir_path( __FILE__ ) );
+define( 'TRANZLY_URL', plugin_dir_url( __FILE__ ) );
+if ( !function_exists( 'tranzly_fs' ) ) {
+    /**
+     * The licensing SDK instance for this plugin. The name is the legacy plugin's; the SDK keys a site's connection on plugin 6843 and its slug.
+     *
+     * @return Freemius
+     */
     function tranzly_fs() {
         global $tranzly_fs;
-
-        if ( ! isset( $tranzly_fs ) ) {
-            // Include Freemius SDK.
-            require_once dirname(__FILE__) . '/freemius/start.php';
-
+        if ( !isset( $tranzly_fs ) ) {
+            require_once __DIR__ . '/vendor/freemius/start.php';
             $tranzly_fs = fs_dynamic_init( array(
-                'id'                  => '6843',
-                'slug'                => 'tranzly',
-                'type'                => 'plugin',
-                'public_key'          => 'pk_41c863827b360a912566ffb91d7fd',
-                'is_premium'          => true,
-                'premium_suffix'      => 'Pro',
-                // If your plugin is a serviceware, set this option to false.
-                'has_premium_version' => true,
-                'has_addons'          => false,
-                'has_paid_plans'      => true,
-                'has_affiliation'     => 'all',
-                'menu'                => array(
-                    'slug'           => 'tranzly',
-                    'first-path'     => 'admin.php?page=tranzly',
-                    'support'        => false,
+                'id'                             => '6843',
+                'slug'                           => 'tranzly',
+                'premium_slug'                   => 'tranzly-premium',
+                'type'                           => 'plugin',
+                'public_key'                     => 'pk_41c863827b360a912566ffb91d7fd',
+                'bundle_id'                      => '40216',
+                'bundle_public_key'              => 'pk_1bcbfe8657c755d37d4b8a4c29f46',
+                'bundle_license_auto_activation' => true,
+                'is_premium'                     => false,
+                'premium_suffix'                 => 'Pro',
+                'has_addons'                     => false,
+                'has_paid_plans'                 => true,
+                'trial'                          => array(
+                    'days'               => 14,
+                    'is_require_payment' => false,
                 ),
-
+                'is_org_compliant'               => true,
+                'menu'                           => array(
+                    'slug'       => 'tranzly',
+                    'first-path' => 'admin.php?page=tranzly',
+                    'contact'    => false,
+                    'support'    => false,
+                ),
+                'is_live'                        => true,
             ) );
         }
-
         return $tranzly_fs;
     }
 
-    // Init Freemius.
     tranzly_fs();
-    // Signal that SDK was initiated.
+    tranzly_fs()->add_action( 'after_uninstall', 'tranzly_uninstall' );
+    // The SDK's screens show THIS icon (the WordPress.org one, wp/dotorg-assets/tranzly). Without a
+    // local icon the SDK downloads one from the licensing service on a local install, before any
+    // consent (wp/tests/e2e/tranzly/no-http-before-consent.sh).
+    tranzly_fs()->add_filter( 'plugin_icon', static fn() => __DIR__ . '/assets/images/sdk-icon.png' );
     do_action( 'tranzly_fs_loaded' );
 }
-
-
-
-
-
-
-
-
-
-/**
- * The core plugin class
- */
-require plugin_dir_path( __FILE__ ) . 'includes/class-tranzly.php';
-/**
- * @since    1.0.0
- */
-function tranzly_run()
-{
-    $plugin = new Tranzly();
-    $plugin->run();
-}
-
-tranzly_run();
+require_once __DIR__ . '/includes/bootstrap.php';

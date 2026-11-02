@@ -3,11 +3,11 @@
  * Plugin Name: morkva UA Shipping
  * Plugin URI: https://morkva.co.ua/product-category/plugins/
  * Description: 2-in-1: Nova Poshta and Ukrposhta delivery services. Create shipping methods and shipments easily
- * Version: 1.10.5
+ * Version: 1.15.1
  * Author: morkva
  * Text Domain: mrkv-ua-shipping
  * Domain Path: /i18n/
- * Tested up to: 7.0
+ * Tested up to: 7.1
  * Requires at least: 5.0
  * WC requires at least: 3.8
  * WC tested up to: 10.0
@@ -31,6 +31,57 @@ define('MRKV_UA_SHIPPING_PLUGIN_FILE', __FILE__);
 # Include CONSTANTS
 require_once 'constants-mrkv-ua-shipping.php';
 
+# Register Autoloader BEFORE initialization
+spl_autoload_register( function( $class_name ) {
+    if ( 0 !== strpos( $class_name, 'MRKV_UA_SHIPPING_' ) ) {
+        return;
+    }
+
+    $class_file = str_replace( '_', '-', strtolower( $class_name ) );
+
+    $possible_paths = array(
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/blocks/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/settings/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/settings/admin/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/settings/global/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/settings/log/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-global/ajax/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-global/api/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-global/invoice/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-global/settings/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-global/woocommerce/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-global/cron/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/ajax/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/api/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/invoice/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/settings/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/woocommerce/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/nova-poshta/cron/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/rozetka-delivery/ajax/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/rozetka-delivery/api/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/rozetka-delivery/invoice/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/rozetka-delivery/settings/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/rozetka-delivery/woocommerce/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/rozetka-delivery/cron/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/ukr-poshta/ajax/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/ukr-poshta/api/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/ukr-poshta/invoice/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/ukr-poshta/settings/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/ukr-poshta/woocommerce/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/shipping_methods/ukr-poshta/cron/' . $class_file . '.php',
+        MRKV_UA_SHIPPING_PLUGIN_PATH . 'classes/woocommerce/' . $class_file . '.php',
+    );
+
+    foreach ( $possible_paths as $path ) {
+        if ( file_exists( $path ) ) {
+            require_once $path;
+            return;
+        }
+    }
+} );
+
 /**
  * Initialize the plugin after all plugins are loaded.
  */
@@ -40,72 +91,6 @@ function mrkv_ua_shipping_init() {
         return;
     }
 
-    // Load translations first
-    mrkv_ua_shipping_load_textdomain();
-
-    // Include and initialize the main plugin class
-    require_once 'classes/mrkv-ua-shipping-run.php';
-    new MRKV_UA_SHIPPING_RUN();
-}
-
-add_action( 'init', 'mrkv_ua_shipping_init' );
-
-# Include new shipping methods
-add_action( 'woocommerce_shipping_init', 'mrkv_ua_shipping_include_shipping_method' );
-
-/**
- * Include shipping files
- */
-function mrkv_ua_shipping_include_shipping_method()
-{
-    $m_ua_active_plugins = get_option('m_ua_active_plugins');
-
-    // Include plugin constants
-    require_once 'constants-mrkv-ua-shipping-methods.php';
-
-    foreach(MRKV_UA_SHIPPING_LIST as $slug => $shipping)
-    {
-        if(isset($m_ua_active_plugins[$slug]['enabled']) && $m_ua_active_plugins[$slug]['enabled'] == 'on')
-        {
-            foreach($shipping['method'] as $method)
-            {
-                # Include Shipping method
-                require_once MRKV_UA_SHIPPING_PLUGIN_PATH_SHIP . '/' . $slug . '/woocommerce/' . $method['filename'] . '.php';
-            }
-        }
-    }
-}
-
-# Setup new shipping methods
-add_filter( 'woocommerce_shipping_methods', 'mrkv_ua_shipping_add_shipping_method_woo' );
-/**
- * Add new shipping methods class in the shipping list
- * @param array All shipping methods
- * 
- * @return array All shipping methods
- * */
-function mrkv_ua_shipping_add_shipping_method_woo($methods)
-{
-    $m_ua_active_plugins = get_option('m_ua_active_plugins');
-
-    foreach(MRKV_UA_SHIPPING_LIST as $slug => $shipping)
-    {
-        if(isset($m_ua_active_plugins[$slug]['enabled']) && $m_ua_active_plugins[$slug]['enabled'] == 'on')
-        {
-            foreach($shipping['method'] as $method)
-            {
-                # Add new shipping method
-                $methods[$method['slug']] = $method['class'];
-            }
-        }
-    }
-
-    # Return all methods
-    return $methods;
-}
-
-function mrkv_ua_shipping_load_textdomain()
-{
     $site_locale = get_locale(); 
     $user_locale = get_user_locale();
 
@@ -118,4 +103,10 @@ function mrkv_ua_shipping_load_textdomain()
 
     // Include plugin constants
     require_once 'constants-mrkv-ua-shipping-methods.php';
-}    
+
+    new MRKV_UA_SHIPPING_RUN();
+}
+
+add_action( 'init', 'mrkv_ua_shipping_init' );
+
+new MRKV_UA_SHIPPING_CONNECTER();

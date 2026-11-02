@@ -4,7 +4,7 @@
 ?>
 <section id="basic_settings" class="mrkv_up_ship_shipping_tab_block active">
 	<h2><img src="<?php echo esc_url(MRKV_UA_SHIPPING_ASSETS_URL . '/images/global/settings-icon.svg'); ?>" alt="Basic settings" title="Basic settings"><?php echo esc_html__('Basic settings', 'mrkv-ua-shipping'); ?></h2>
-	<p><?php echo esc_html__('For the shipping method to work, you need to get API keys from Ukrposhta (conclude an agreement at the branch). Details:', 'mrkv-ua-shipping'); ?> <a target="blanc" href="https://ukrposhta.ua/ukrposhta-dlya-biznesu.html">ukrposhta.ua</a></p>
+	<p><?php echo esc_html__('For the shipping method to work, you need to get API keys from Ukrposhta (conclude an agreement at the branch). Details:', 'mrkv-ua-shipping'); ?> <a target="_blank" href="https://ukrposhta.ua/ukrposhta-dlya-biznesu.html">ukrposhta.ua</a></p>
 	<hr class="mrkv-ua-ship__hr">
 	<?php do_action('mrkv_ua_shipping_settings_page_row', 'ukr-poshta', 'basic_first'); ?>
 	<div class="admin_ua_ship_morkva_settings_row">
@@ -603,7 +603,7 @@
 				?>
 			</div>
 		</div>
-		<p class="mrkv-ua-ship-description"><?php echo esc_html__('Options affect the shipping cost. Delivery is calculated in the currency specified ', 'mrkv-ua-shipping'); ?><a href="admin.php?page=wc-settings&tab=general" target="blanc"><?php echo esc_html__('in the Woocommerce settings', 'mrkv-ua-shipping'); ?></a></p>
+		<p class="mrkv-ua-ship-description"><?php echo esc_html__('Options affect the shipping cost. Delivery is calculated in the currency specified ', 'mrkv-ua-shipping'); ?><a href="admin.php?page=wc-settings&tab=general" target="_blank"><?php echo esc_html__('in the Woocommerce settings', 'mrkv-ua-shipping'); ?></a></p>
 	</div>
 	<?php do_action('mrkv_ua_shipping_settings_page_row', 'ukr-poshta', 'sender_middle_12'); ?>
 	<div class="admin_ua_ship_morkva_settings_line mrkv-field-disabled">
@@ -721,8 +721,19 @@
 
 					$mrkv_ua_shipping_description = __('Select the position of the delivery method fields on the checkout page', 'mrkv-ua-shipping');
 
-					echo wp_kses( $mrkv_global_option_generator->get_select_simple(__('Position of plugin fields in Checkout', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][position]', $mrkv_ua_shipping_senders_type_list, $mrkv_ua_shipping_data, MRKV_OPTION_OBJECT_NAME . '_checkout_position' , __('Choose a position', 'mrkv-ua-shipping'), $mrkv_ua_shipping_description), MRKV_UA_SHIPPING_ALLOW_TAGS);
+					echo wp_kses( $mrkv_global_option_generator->get_select_simple(__('Position of plugin fields in Checkout', 'mrkv-ua-shipping') . ' ' . __('(Classic)', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][position]', $mrkv_ua_shipping_senders_type_list, $mrkv_ua_shipping_data, MRKV_OPTION_OBJECT_NAME . '_checkout_position' , __('Choose a position', 'mrkv-ua-shipping'), $mrkv_ua_shipping_description), MRKV_UA_SHIPPING_ALLOW_TAGS);
 				?>
+			</div>
+		</div>
+		<div class="col-mrkv-5">
+			<div class="admin_ua_ship_morkva_settings_line">
+				<?php
+					$mrkv_ua_shipping_data = isset(MRKV_SHIPPING_SETTINGS['checkout']['hide_saving_data']) ? MRKV_SHIPPING_SETTINGS['checkout']['hide_saving_data'] : '';
+					echo wp_kses($mrkv_global_option_generator->get_input_checkbox(__('Save customer selected fields', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][hide_saving_data]', $mrkv_ua_shipping_data, MRKV_OPTION_OBJECT_NAME . '_checkout_hide_saving_data', ), MRKV_UA_SHIPPING_ALLOW_TAGS);
+				?>
+				<p class="mrkv-ua-ship-description">
+					<?php echo esc_html__('Enable to store selected delivery city and warehouse/postamat in session cookies (may not work if privacy settings enabled in user’s browser)', 'mrkv-ua-shipping'); ?>
+				</p>
 			</div>
 		</div>
 	</div>
@@ -732,27 +743,13 @@
 			<div class="admin_ua_ship_morkva_settings_line">
 				<?php
 					$mrkv_ua_shipping_data = isset(MRKV_SHIPPING_SETTINGS['checkout']['middlename']['enabled']) ? MRKV_SHIPPING_SETTINGS['checkout']['middlename']['enabled'] : '';
-					echo wp_kses( $mrkv_global_option_generator->get_input_checkbox(__('Enable patronymic (Warehouse)', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][middlename][enabled]', $mrkv_ua_shipping_data, MRKV_OPTION_OBJECT_NAME . '_checkout_middlename_enabled', ), MRKV_UA_SHIPPING_ALLOW_TAGS);
+					echo wp_kses( $mrkv_global_option_generator->get_input_checkbox(__('The middle name field is always required', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][middlename][enabled]', $mrkv_ua_shipping_data, MRKV_OPTION_OBJECT_NAME . '_checkout_middlename_enabled', ), MRKV_UA_SHIPPING_ALLOW_TAGS);
 				?>
 				<p class="mrkv-ua-ship-description">
-					<?php echo esc_html__('If the buyer has chosen cash on delivery, the "middle name" field will be displayed automatically, regardless of this setting (requirement of Ukrposhta API).', 'mrkv-ua-shipping'); ?>
+					<?php echo esc_html__('If enabled, the middle name field will always be displayed for Ukrposhta shipping methods. If disabled, it will only be displayed according to the following rule: if the sender is an individual and the payment method is “cash on delivery.” Otherwise, the field will not be displayed.', 'mrkv-ua-shipping'); ?>
 				</p>
 			</div>
 		</div>
-		<div class="col-mrkv-5">
-			<div class="admin_ua_ship_morkva_settings_line">
-				<?php
-					$mrkv_ua_shipping_data = isset(MRKV_SHIPPING_SETTINGS['checkout']['middlename']['required']) ? MRKV_SHIPPING_SETTINGS['checkout']['middlename']['required'] : '';
-					echo wp_kses( $mrkv_global_option_generator->get_input_checkbox(__('Patronymic is required (Warehouse)', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][middlename][required]', $mrkv_ua_shipping_data, MRKV_OPTION_OBJECT_NAME . '_checkout_middlename_required', ), MRKV_UA_SHIPPING_ALLOW_TAGS);
-				?>
-				<p class="mrkv-ua-ship-description">
-					<?php echo esc_html__('The patronymic is required if the sender is an individual. For sole proprietors and LLCs, this field is not required when creating a waybill.', 'mrkv-ua-shipping'); ?>
-				</p>
-			</div>
-		</div>
-	</div>
-	<?php do_action('mrkv_ua_shipping_settings_page_row', 'ukr-poshta', 'checkout_middle_2'); ?>
-	<div class="admin_ua_ship_morkva_settings_row">
 		<div class="col-mrkv-5">
 			<div class="admin_ua_ship_morkva_settings_line">
 				<?php 
@@ -767,17 +764,6 @@
 
 					echo wp_kses( $mrkv_global_option_generator->get_select_simple(__('Position of middlename in Checkout', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][middlename][position]', $mrkv_ua_shipping_middlename_position, $mrkv_ua_shipping_data, MRKV_OPTION_OBJECT_NAME . '_checkout_middlename_position' , __('Choose a position', 'mrkv-ua-shipping'), $mrkv_ua_shipping_description), MRKV_UA_SHIPPING_ALLOW_TAGS);
 				?>
-			</div>
-		</div>
-		<div class="col-mrkv-5">
-			<div class="admin_ua_ship_morkva_settings_line">
-				<?php
-					$mrkv_ua_shipping_data = isset(MRKV_SHIPPING_SETTINGS['checkout']['hide_saving_data']) ? MRKV_SHIPPING_SETTINGS['checkout']['hide_saving_data'] : '';
-					echo wp_kses( $mrkv_global_option_generator->get_input_checkbox(__('Save customer selected fields', 'mrkv-ua-shipping'), MRKV_OPTION_OBJECT_NAME . '[checkout][hide_saving_data]', $mrkv_ua_shipping_data, MRKV_OPTION_OBJECT_NAME . '_checkout_hide_saving_data', ), MRKV_UA_SHIPPING_ALLOW_TAGS);
-				?>
-				<p class="mrkv-ua-ship-description">
-					<?php echo esc_html__('Enable to store selected delivery city and warehouse/postamat in session cookies (may not work if privacy settings enabled in user’s browser)', 'mrkv-ua-shipping'); ?>
-				</p>
 			</div>
 		</div>
 	</div>
