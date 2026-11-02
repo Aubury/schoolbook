@@ -91,6 +91,7 @@ define('WOOCOMMERCE_LOGIN', 'scbook');
 define('WOOCOMMERCE_PASS', 'obUy#HiVJ7ATsIB(Z6M2T89w');
 
 
+define( 'DUPLICATOR_AUTH_KEY', '^UFA1YEIj{TfoI~hkx,m-zXe3w7A=,&w1*&Sin[mMQB+RGU<Ps8K[-+f_&[Jsgg(' );
 /* That's all, stop editing! Happy publishing. */
 
 /** Absolute path to the WordPress directory. */
