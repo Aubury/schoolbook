@@ -9,10 +9,16 @@
 
 ?>
 
+<?php
+$is_order_page = function_exists( 'is_cart' )
+    && function_exists( 'is_checkout' )
+    && ( is_cart() || is_checkout() );
+
+$is_order_page ? $class = 'is_checkout' : $class = '';
+$page_title = get_the_title();
+?>
+
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-	<header class="entry-header">
-		<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
-	</header><!-- .entry-header -->
 
 	<?php anyweb_post_thumbnail(); ?>
 

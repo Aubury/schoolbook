@@ -93,28 +93,39 @@ if ( $total > 1 ) : ?>
 
             <!-- номера страниц -->
             <?php
-            $page_links = paginate_links(
-                array(
-                    'base'      => $base,
-                    'format'    => $format,
-                    'current'   => max( 1, $current ),
-                    'total'     => $total,
-                    'prev_next' => false,
-                    'end_size'  => 1,
-                    'mid_size'  => 1,
-                    'type'      => 'array',
-                )
+            $pagination_args = array(
+                'base'      => $base,
+                'format'    => $format,
+                'current'   => max( 1, $current ),
+                'total'     => $total,
+                'prev_next' => false,
+                'end_size'  => 1,
+                'type'      => 'array',
             );
 
-            if ( $page_links ) : ?>
-                <ul class="page-numbers-container">
-                    <?php
-                    foreach ( $page_links as $page_link ) :
-                        ?>
+            $pagination_variants = array(
+                'pagination-desktop' => 1,
+                'pagination-mobile'  => 0,
+            );
+
+            foreach ( $pagination_variants as $class => $mid_size ) :
+                $page_links = paginate_links(
+                    array_merge(
+                        $pagination_args,
+                        array( 'mid_size' => $mid_size )
+                    )
+                );
+
+                if ( ! $page_links ) {
+                    continue;
+                }
+                ?>
+                <ul class="page-numbers-container <?php echo esc_attr( $class ); ?>">
+                    <?php foreach ( $page_links as $page_link ) : ?>
                         <li><?php echo wp_kses_post( $page_link ); ?></li>
                     <?php endforeach; ?>
                 </ul>
-            <?php endif; ?>
+            <?php endforeach; ?>
 
             <!-- следующая стрелка -->
             <?php if ( $current < $total ) : ?>

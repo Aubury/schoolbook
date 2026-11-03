@@ -132,13 +132,27 @@ function custom_register_fields() {
  ************************************/
 
 add_filter( 'auto_update_plugin', '__return_false' );
-add_filter( 'pre_site_transient_update_core', '__return_null' );
-add_filter('site_transient_update_plugins', 'disable_plugin_updates');
+//add_filter( 'pre_site_transient_update_core', '__return_null' );
+//add_filter('site_transient_update_plugins', 'disable_plugin_updates');
 function disable_plugin_updates($value) {
     if(isset($value) && is_object($value)) {
         unset($value->response);
     }
     return $value;
+}
+
+add_filter( 'site_transient_update_plugins', 'filter_plugin_updates_wc' );
+
+function filter_plugin_updates_wc( $value ) {
+
+
+
+    unset( $value->response['mrkv-liqpay-extended/mrkv-liqpay-extended.php'] );
+
+
+
+    return $value;
+
 }
 
 /******************************************
@@ -335,7 +349,7 @@ class Kama_Breadcrumbs {
                                     <a href="%s" itemprop="item">
                                     <span itemprop="name">%s</span>
                                     </a>
-                                    <span>
+                                    <span class="breadcrumb-arrow">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="8" height="11" viewBox="0 0 8 11" fill="none">
                                       <path d="M1 10L6 5.5L1 1" stroke="#989898" stroke-width="2" stroke-linecap="round"/>
                                     </svg>

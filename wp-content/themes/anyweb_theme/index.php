@@ -13,8 +13,14 @@
  */
 
 get_header();
+$is_order_page = function_exists( 'is_cart' )
+    && function_exists( 'is_checkout' )
+    && ( is_cart() || is_checkout() );
+
+$is_order_page ? $class = 'is_checkout' : $class = '';
 ?>
-<main id="primary" class="site-main">
+
+<main id="primary" class="site-main <?php echo esc_attr( $class ); ?>">
 
 	<div class="container bx-content-seection">
 

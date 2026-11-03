@@ -28,6 +28,14 @@ $inst_link = carbon_get_theme_option( 'inst' );
 	<?php wp_head(); ?>
 </head>
 
+<?php
+$is_order_page = function_exists( 'is_cart' )
+    && function_exists( 'is_checkout' )
+    && ( is_cart() || is_checkout() );
+
+$is_order_page ? $bottom_line = '<div class="header-bottom-line"></div>' : $bottom_line = '';
+?>
+
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <div id="page" class="site">
@@ -249,11 +257,23 @@ $inst_link = carbon_get_theme_option( 'inst' );
                                 <br>
                                 <span class="basket-sum"><strong><?php echo WC()->cart->get_cart_total(); ?></strong></span>
                             </div>
-                            <a href="/cart" class="header-basket-block">
+                            <a  href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="header-basket-block">
                                 <span class="basket-icon"></span>
                                 <span class="bubble"><?php echo WC()->cart->cart_contents_count?></span>
                             </a>
 
+                            <div class="header-cart__dropdown" tabindex="-1">
+                                <div class="header-cart__content">
+                                    <?php woocommerce_mini_cart(); ?>
+                                </div>
+                            </div>
+
+                            <div id="cart-added-notice"
+                                 class="cart-added-notice"
+                                 role="status"
+                                 aria-live="polite"
+                                 hidden
+                            ></div>
                         </div>
                      </div><!-- end .header-left-section -->
 
@@ -261,19 +281,20 @@ $inst_link = carbon_get_theme_option( 'inst' );
             </div> <!-- end .container -->
        </div> <!-- end .header-top-section -->
 
-        <div class="header-bottom-section">
-            <span class="ladybug"></span>
-            <div class="top-cell"></div>
+        <?php if ( ! $is_order_page ) : ?>
+            <div class="header-bottom-section">
+                <span class="ladybug"></span>
+                <div class="top-cell"></div>
 
-            <div class="container">
-                <div class="header-main-menu-section">
-                    <div class="catalog-menu-section">
-                        <div class="catalog-menu-button">
-                            <h3>Каталог книг</h3>
-                            <span></span>
-                        </div>
-                        <div class="catalog-menu_advanced">
-                            <?php
+                <div class="container">
+                    <div class="header-main-menu-section">
+                        <div class="catalog-menu-section">
+                            <div class="catalog-menu-button">
+                                <h3>Каталог книг</h3>
+                                <span></span>
+                            </div>
+                            <div class="catalog-menu_advanced">
+                                <?php
                                 $bx_hma_one_lvl = wp_nav_menu(
                                     array(
                                         'theme_location' => 'category',
@@ -285,21 +306,21 @@ $inst_link = carbon_get_theme_option( 'inst' );
                                     )
                                 );
 
-                            ?>
+                                ?>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="header-search">
-                        <?php aws_get_search_form( true, array( 'id' => 1 ) ); ?>
-                        <span class="header-search-button">
+                        <div class="header-search">
+                            <?php aws_get_search_form( true, array( 'id' => 1 ) ); ?>
+                            <span class="header-search-button">
                             <button class="search-icon" type="submit" name="s"></button>
                         </span>
-                    </div><!-- end .header-search -->
+                        </div><!-- end .header-search -->
 
-                    <?php
+                        <?php
 
-                    if ( ! empty( $video_link ) ):
-                        echo '<a href="'. $video_link . '" class="header-video-button" target="_blank">
+                        if ( ! empty( $video_link ) ):
+                            echo '<a href="'. $video_link . '" class="header-video-button" target="_blank">
                                     Відео-новини
                                     <span>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="26" height="27" viewBox="0 0 26 27" fill="none">
@@ -307,12 +328,14 @@ $inst_link = carbon_get_theme_option( 'inst' );
                                         </svg>
                                     </span>
                                </a>';
-                    endif;
+                        endif;
 
-                    ?>
+                        ?>
 
-                </div> <!-- end .flex-between -->
-            </div> <!-- end .container -->
+                    </div> <!-- end .flex-between -->
+                </div> <!-- end .container -->
 
-        </div> <!-- end .header-bottom-section -->
+            </div> <!-- end .header-bottom-section -->
+        <?php endif; ?>
+        <?php echo $bottom_line; ?>
 	</header>

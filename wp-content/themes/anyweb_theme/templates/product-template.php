@@ -220,6 +220,7 @@ get_header();
 
                                 </div> <!-- end of .product-description-section -->
 
+
                                 <?php
                                 $custom_preorder = get_post_meta($productID, '_custom_preorder', true);
                                 $custom_preorder_countdown = get_post_meta($productID, '_custom_preorder_countdown', true);
@@ -240,58 +241,6 @@ get_header();
                                 }
 
                                 add_action('wp_footer', 'display_countdown_timer');
-
-                                if ($custom_preorder_countdown > $current_date ) {
-
-                                    echo '<div class="column-auto">
-                                            <div class="preorder-red-stroke">
-                                                <div class="animation-stroke">
-                                                    <div class="preorder-text">
-                                                        <span class="color-orange">Унікальна</span>
-                                                         <span class="color-blue">можливість</span>
-                                                         <span class="color-orange">придбати книгу</span>
-                                                          до офіційного  початку розпродажу 
-                                                    </div>
-                                                </div>
-                                            </div>
-                                               
-                                          
-                                           <h3>
-                                                <span class="color-blue">Акція <span class="text-normal">діє до:</span> </span>'
-                                        . date("d.m.Y", strtotime($custom_preorder_countdown)) .
-                                        '</h3>
-                                                
-                                           <div class="preparing-timer">
-                                                До початку офіційного продажу:
-                                                <span id="countdown" class="color-white"></span>
-                                           </div></div>
-                                           
-                                        <script type="text/javascript">
-                                        document.addEventListener("DOMContentLoaded", function() {
-                                            // Обновляем таймер каждую секунду
-                                            var x = setInterval(function() {
-                                                var now = new Date().getTime();
-                                                var distance = endDate - now;
-        
-                                                // Расчет дней, часов, минут и секунд
-                                                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                                                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                                                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                                                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        
-                                                // Отображение результата
-                                                document.getElementById("countdown").innerHTML = days + " дн. " + hours + " год. "
-                                                    + minutes + " хв. " + seconds + " сек.";
-        
-                                                // Если обратный отсчет закончился
-                                                if (distance < 0) {
-                                                    clearInterval(x);
-                                                    document.getElementById("countdown").innerHTML = "Акцію завершено!";
-                                                }
-                                            }, 1000);
-                                        });
-                                        </script>';
-                                }
 
                                 ?>
 
@@ -371,6 +320,60 @@ get_header();
 
                                     </div> <!-- end .product-item-detail-info-container  -->
                                 </div>
+
+                                <?php
+                                if ($custom_preorder_countdown > $current_date ) {
+
+                                    echo '<div class="column-auto">
+                                            <div class="preorder-red-stroke">
+                                                <div class="animation-stroke">
+                                                    <div class="preorder-text">
+                                                        <span class="color-orange">Унікальна</span>
+                                                         <span class="color-blue">можливість</span>
+                                                         <span class="color-orange">придбати книгу</span>
+                                                          до офіційного  початку розпродажу 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                               
+                                          
+                                           <h3>
+                                                <span class="color-blue">Акція <span class="text-normal">діє до:</span> </span>'
+                                        . date("d.m.Y", strtotime($custom_preorder_countdown)) .
+                                        '</h3>
+                                                
+                                           <div class="preparing-timer">
+                                                До початку офіційного продажу:
+                                                <span id="countdown" class="color-white"></span>
+                                           </div></div>
+                                           
+                                        <script type="text/javascript">
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            // Обновляем таймер каждую секунду
+                                            var x = setInterval(function() {
+                                                var now = new Date().getTime();
+                                                var distance = endDate - now;
+        
+                                                // Расчет дней, часов, минут и секунд
+                                                var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+                                                // Отображение результата
+                                                document.getElementById("countdown").innerHTML = days + " дн. " + hours + " год. "
+                                                    + minutes + " хв. " + seconds + " сек.";
+        
+                                                // Если обратный отсчет закончился
+                                                if (distance < 0) {
+                                                    clearInterval(x);
+                                                    document.getElementById("countdown").innerHTML = "Акцію завершено!";
+                                                }
+                                            }, 1000);
+                                        });
+                                        </script>';
+                                }
+                                ?>
 
                             </div> <!-- end of .product-description-price-section -->
 

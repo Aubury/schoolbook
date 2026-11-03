@@ -26,6 +26,7 @@ $bp-xsl: 394px;
   --color-white: #fff;
   --color-gray: #525252;
   --color-disable: #CDCDCD;
+  --color-error: #FF4D4D;
 
   --brand-green-prymary:  #00B0A8;
   --brand-green-dark:     #009E97;
@@ -38,5 +39,11 @@ $bp-xsl: 394px;
   --color-link-active:    #EA5100;
   --gray-light:           #989898;
   --gray-dark: var(--color-base);
+  --gray-text: var(--color-gray);
+
+  --border-color-error: #FF6C6C;
+
+  --bg-input-error: #FFF9F9;
+  --bg-info-message: #E3F7F1;
 }
 

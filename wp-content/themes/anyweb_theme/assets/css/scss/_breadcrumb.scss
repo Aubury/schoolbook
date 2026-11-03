@@ -3,7 +3,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 16px;
-  margin: 30px 0;
+  margin: 28px 0 29px;
   max-width: 100%;
   overflow: hidden;
 
@@ -12,14 +12,44 @@
   }
 }
 
+.breadcrumb-back {
+  display: flex;
+  align-items: center;
+  margin: 0 0 16px;
+
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    min-width: 0;
+
+    span {
+      color: var(--gray-dark);
+      font-family: var(--fm-base);
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 120%; /* 19.2px */
+
+      &::first-letter {
+        text-transform: uppercase;
+      }
+    }
+  }
+}
+
 .bx-breadcrumb-item {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   gap: 16px;
   flex: 0 0 auto;
   min-width: 0;
+  max-width: 100%;
 
   span {
+    display: block;
     color: var(--gray-dark);
     font-family: var(--fm-base);
     font-size: 16px;
@@ -27,9 +57,20 @@
     font-weight: 400;
     line-height: 120%; /* 19.2px */
 
+    @include down(#{$bp-xs}) {
+      height: calc(16px * 1.2);
+    }
+
     &::first-letter {
       text-transform: uppercase;
     }
+
+    &.breadcrumb-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
   }
 
   a {
@@ -37,27 +78,44 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
 
-  &::last-of-type {
-    flex: 1 1 0;
-
-    a {
-      display: block;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
+    @include down(#{$bp-xs}) {
+      span {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        flex: 1 1 0;
+      }
     }
+  }
+}
+
+.breadcrumb-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 8px;
+    height: 11px;
   }
 }
 
 .kb_title {
   color: var(--gray-light);
+  font-family: var(--fm-base);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%; /* 19.2px */
+  max-width: 100%;
   min-width: 0;
   display: block;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
 
   @include down(#{$bp-xs}) {
     display: -webkit-box;

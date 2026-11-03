@@ -911,6 +911,14 @@
   }
 }
 
+.is_checkout {
+  h2 {
+    &::after {
+      content: unset;
+    }
+  }
+}
+
 .recommendations,
 .preparing-slider {
   h2 {
@@ -1363,7 +1371,18 @@
       @include down(#{$bp-sm}) {
         width: 82px;
         height: 82px;
-        aspect-ratio: 1/1;
+        flex: 0 0 auto;
+        margin: 0 4px 0 0;
+        padding: 5px;
+        box-sizing: border-box;
+        border: 1px solid transparent;
+        aspect-ratio: auto;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
       }
 
       &.active {
@@ -1373,6 +1392,11 @@
           max-width: 100%;
           width: auto;
         }
+      }
+
+      &.slick-current {
+        border-radius: 6px;
+        border: 1px solid var(--brand-green-prymary) !important;
       }
     }
 
@@ -1395,8 +1419,14 @@
 
   @include down(#{$bp-sm}) {
     position: relative;
+    display: flex;
     flex-direction: row;
-    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100% !important;
+    min-width: 0;
+    height: 82px;
     box-sizing: border-box;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -1407,8 +1437,16 @@
     -ms-touch-action: pan-y;
     touch-action: pan-y;
     -webkit-tap-highlight-color: transparent;
-    width: 100% !important;
-    height: 82px;
+
+    > .slick-arrow {
+      position: relative;
+      flex: 0 0 20px;
+      margin: 0;
+      top: auto;
+      left: auto;
+      right: auto;
+      transform: rotate(-90deg);
+    }
 
     .slick-track {
       display: flex;
@@ -1417,16 +1455,40 @@
     }
 
     .slick-slide {
-      height: auto;
+      .product-item-detail-slider-controls-image {
+        flex: 0 0 82px;
+        width: 82px !important;
+        min-width: 82px;
+        max-width: 82px;
+        height: 82px;
+
+        margin: 0 4px 0 0;
+        padding: 5px;
+        box-sizing: border-box;
+        border: 1px solid transparent;
+
+        &.slick-current {
+          border-color: var(--brand-green-prymary);
+        }
+
+        img {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
     }
 
     .slick-list {
-      width: calc((82px * 3) + (4px * 2));
-      position: relative;
-      display: block;
-      overflow: hidden;
+      flex: 0 0 auto;
+      width: 258px;
+      max-width: calc(100% - 56px);
+      min-width: 0;
+      height: 82px;
       margin: 0;
-      padding: 0;
+      padding: 0 !important;
+      overflow: hidden;
     }
   }
 
@@ -1437,7 +1499,8 @@
 
 ////////////////////////////////
 .viewed-catalog-section,
-.recommendations-product-page {
+.recommendations-product-page,
+.recommendations-anyweb-cart {
   position: relative;
   padding-bottom: 86px;
   width: 100%;
@@ -1721,6 +1784,135 @@
 
     @include down(#{$bp-xxs}) {
       padding-bottom: 5px;
+    }
+  }
+}
+
+.recommendations-anyweb-cart {
+  position: relative;
+
+  h2 {
+    font-size: 60px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 50px; /* 83.333% */
+
+    @include down(#{$bp-xs}) {
+      font-size: 42px;
+      line-height: 32px;
+      horiz-align: center;
+    }
+  }
+
+  &.has-slider-arrows {
+
+    .slider-line-top-left {
+      content: '';
+      position: absolute;
+      left: 25px;
+      top: 10px;
+      width: 104px;
+      height: 234px;
+      background: url('../image/left-dot-line.svg') no-repeat left top;
+      background-size: auto 100%;
+      overflow: hidden;
+      z-index: -1;
+
+
+      @include down(#{$bp-xxl}) {
+        width: 50px;
+      }
+
+      @include down(#{$bp-xlg}) {
+        display: none;
+        content: unset;
+      }
+    }
+
+    .slider-line-top-right {
+      content: '';
+      position: absolute;
+      right: 25px;
+      top: 25px;
+      width: 107px;
+      height: 234px;
+      aspect-ratio: 107/234;
+      background: url('../image/right-dot-line.svg') no-repeat right top;
+      background-size: auto 100%;
+      overflow: hidden;
+      z-index: -1;
+
+      @include down(#{$bp-xxl}) {
+        width: 50px;
+      }
+
+      @include down(#{$bp-xlg}) {
+        display: none;
+        content: unset;
+      }
+    }
+
+    &::before {
+      content: unset;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 25px;
+      right: 25px;
+      bottom: 0;
+      height: 50%;
+      background: url('../image/line-bottom-slider-small.svg') no-repeat center bottom;
+      background-size: 100%;
+      z-index: -1;
+
+      @include down(#{$bp-xlg}) {
+        content: unset;
+      }
+    }
+
+
+  }
+
+  &.has-no-slider-arrows {
+    position: relative;
+    background-image: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .slider {
+      width: calc(100% - 150px);
+      max-width: calc(100% - 150px);
+
+      @include down(#{$bp-md}) {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  }
+
+  .slick-arrow {
+    @include down(#{$bp-xlg}) {
+       &.slick-next,
+       &.slick-prev {
+         top: -50px;
+       }
+    }
+
+    @include down(#{$bp-xs}) {
+      &.slick-next,
+      &.slick-prev {
+        top: -50px;
+      }
+    }
+
+    @include down(#{$bp-xxs}) {
+      &.slick-next,
+      &.slick-prev {
+        top: -60px;
+      }
     }
   }
 }

@@ -399,8 +399,10 @@ function updateFilterResultBlock() {
 
     if ( selectedFilters.length === 0 ) {
         countElementBlock.classList.add('hidden');
+        $('.filter-holder').css('padding-bottom', '32px');
     } else {
         countElementBlock.classList.remove('hidden');
+        $('.filter-holder').css('padding-bottom', '140px');
     }
 }
 
@@ -966,6 +968,10 @@ function restoreSortingSelect() {
 }
 
 $(restoreSortingSelect);
+
+/////////////////////////////////////////////////////
+
+
 
 
 

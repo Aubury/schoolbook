@@ -620,6 +620,19 @@
     overflow: hidden;
   }
 
+  @include down(#{$bp-xs}) {
+    background: url('../image/bg-catalog-menu-mobile.png') no-repeat;
+    background-size: 100% 100%;
+    width: 331px;
+    min-width: 331px;
+    height: calc(90vh - 180px);
+    max-width: 100%;
+    padding: 50px 0 20px;
+    top: 90%;
+    left: 0;
+    overflow: hidden;
+  }
+
   #menu {
     position: relative;
     @include flex-column;

@@ -1069,6 +1069,7 @@
       font-weight: 400;
       line-height: 120%; /* 19.2px */
       padding: 4px 12px;
+      width: 50%;
 
       @include down(#{$bp-xs}) {
         padding: 4px 8px;

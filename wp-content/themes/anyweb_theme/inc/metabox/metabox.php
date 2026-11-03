@@ -9,6 +9,8 @@ use Carbon_Fields\Field;
 
 Container::make( 'theme_options', __( 'SchoolBook settings' ) )
     ->add_fields( array(
+        Field::make( 'text', 'min_price_delivery', __( ' Минимальная сумма для бесплатной доставки' ) )->set_width(100 ),
+
         Field::make( 'text', 'video_link', __( ' Відео-новини' ) )->set_width(50 ),
 
         Field::make( 'text', 'price_link', __( ' Ссылка на прайс' ) )->set_width(50 ),

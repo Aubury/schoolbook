@@ -514,12 +514,12 @@ function default_shipping_country_force() {
     }
 }
 
-add_action( 'wp_footer', 'force_shipping_selection_script' );
+//add_action( 'wp_footer', 'force_shipping_selection_script' );
 function force_shipping_selection_script() {
     // Работает только на страницах корзины и оформления
     if ( is_cart() || is_checkout() ) {
         ?>
-        <script type="text/javascript">
+        <script type="text/javascript" xmlns="http://www.w3.org/1999/html">
             jQuery(function($){
                 // Функция проверки выбора
                 function checkShippingSelection() {
@@ -558,8 +558,8 @@ function force_shipping_selection_script() {
     }
 }
 
-add_action( 'woocommerce_check_cart_items', 'prevent_checkout_without_shipping' );
-add_action( 'woocommerce_checkout_process', 'prevent_checkout_without_shipping' );
+//add_action( 'woocommerce_check_cart_items', 'prevent_checkout_without_shipping' );
+//add_action( 'woocommerce_checkout_process', 'prevent_checkout_without_shipping' );
 function prevent_checkout_without_shipping() {
     $chosen_methods = WC()->session->get( 'chosen_shipping_methods' );
 
@@ -574,3 +574,303 @@ function prevent_checkout_without_shipping() {
 /****************************************************
 /* END - ФУНКЦИОНАЛА ДЛЯ ВЫБОРА МЕТОДА ДОСТАВКИ *
  *****************************************************/
+
+/****************************************************
+/* Корзина — скрываем доставку.
+ * Оформление заказа — разрешаем её расчёт и вывод. *
+ *****************************************************/
+add_filter(
+    'woocommerce_cart_ready_to_calc_shipping',
+    function ( $ready ) {
+        if ( is_cart() ) {
+            return false;
+        }
+
+        if ( is_checkout() ) {
+            return true;
+        }
+
+        return $ready;
+    }
+);
+
+/****************************************************
+ *         END
+/* Корзина — скрываем доставку.
+ * Оформление заказа — разрешаем её расчёт и вывод. *
+ *****************************************************/
+
+/**
+ * Сообщение о доступной бесплатной доставке.
+ */
+function anyweb_free_shipping_notice() {
+    if ( ! WC()->cart || ! WC()->cart->needs_shipping() ) {
+        return;
+    }
+
+    foreach ( WC()->shipping()->get_packages() as $package ) {
+        foreach ( $package['rates'] ?? [] as $rate ) {
+            if ( 'free_shipping' === $rate->get_method_id() ) {
+                echo '<div class="free-shipping-notice">';
+                echo esc_html__( 'Для вашого замовлення доступна безкоштовна доставка!', 'any-web-theme' );
+                echo '</div>';
+
+                return;
+            }
+        }
+    }
+}
+
+
+// Оформление заказа — перед выбором оплаты.
+add_action(
+    'woocommerce_review_order_before_payment',
+    'anyweb_free_shipping_notice'
+);
+
+
+
+function anyweb_free_shipping_progress() {
+    if ( ! WC()->cart || WC()->cart->is_empty() ) {
+        return;
+    }
+
+    // Временно заданный порог.
+    // Далее заменим на значение из настроек Morkva.
+    $min_price_delivery = carbon_get_theme_option( 'min_price_delivery' );
+
+    if ( $min_price_delivery <= 0 ) {
+        return;
+    }
+
+    // Стоимость товаров после скидок, включая налог.
+    // Доставка и дополнительные сборы не учитываются.
+
+    $products_total = (float) WC()->cart->get_cart_contents_total()
+        + (float) WC()->cart->get_cart_contents_tax();
+
+
+
+    $remaining = max( 0, $min_price_delivery - $products_total );
+
+    echo '<div class="form-information-block free-shipping-progress">';
+
+    if ( $remaining > 0 ) {
+        echo 'Додайте ще на '
+            . wp_kses_post( wc_price( $remaining ) )
+            . ' для БЕЗКОШТОВНОЇ доставки';
+    } else {
+        echo 'Вам доступна БЕЗКОШТОВНА доставка!';
+    }
+
+    echo '</div>';
+}
+
+add_action(
+    'wc_ajax_anyweb_free_shipping_progress',
+    'anyweb_ajax_free_shipping_progress'
+);
+
+function anyweb_ajax_free_shipping_progress() {
+    if ( ! WC()->cart ) {
+        wp_send_json_error();
+    }
+
+    WC()->cart->calculate_totals();
+
+    ob_start();
+    anyweb_free_shipping_progress();
+    $html = ob_get_clean();
+
+    wp_send_json_success( [ 'html' => $html ] );
+}
+
+add_action( 'woocommerce_before_quantity_input_field', function () {
+    if ( is_cart() ) {
+        echo '<button type="button" class="cart-qty-minus" aria-label="Зменшити кількість">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 10H16" stroke-width="2" stroke="#C2C2C2"/>
+                </svg>
+               </button>';
+    }
+} );
+
+add_action( 'woocommerce_after_quantity_input_field', function () {
+    if ( is_cart() ) {
+        echo '<button type="button" class="cart-qty-plus" aria-label="Збільшити кількість">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 10H10M10 10H16M10 10V4M10 10V16" stroke-width="2" stroke="#525252"/>
+                </svg>
+                </button>';
+    }
+} );
+
+// Заголовок мини-корзины.
+add_action( 'woocommerce_before_mini_cart', function () {
+    if ( ! WC()->cart ) {
+        return;
+    }
+
+    printf(
+        '<div class="mini-cart-heading">Кошик (%s)</div>',
+        esc_html( WC()->cart->get_cart_contents_count() )
+    );
+} );
+
+// Заменяем стандартный промежуточный итог своими итогами.
+remove_action(
+    'woocommerce_widget_shopping_cart_total',
+    'woocommerce_widget_shopping_cart_subtotal',
+    10
+);
+
+add_action(
+    'woocommerce_widget_shopping_cart_total',
+    'anyweb_mini_cart_totals',
+    10
+);
+
+function anyweb_mini_cart_totals() {
+    if ( ! WC()->cart ) {
+        return;
+    }
+
+    $cart = WC()->cart;
+
+    $minimum = function_exists( 'carbon_get_theme_option' )
+        ? (float) carbon_get_theme_option( 'min_price_delivery' )
+        : 0;
+
+    // Сумма товаров после скидок и купонов, включая налог.
+    $products_total = (float) $cart->get_cart_contents_total()
+        + (float) $cart->get_cart_contents_tax();
+
+    $remaining = max( 0, $minimum - $products_total );
+
+    if ( $minimum > 0 && $cart->needs_shipping() ) {
+        if ( $remaining > 0 ) {
+            echo '<span class="mini-cart-free-shipping">';
+
+            printf(
+                'Додайте ще на %s для БЕЗКОШТОВНОЇ доставки',
+                wp_kses_post( wc_price( $remaining ) )
+            );
+
+            echo '</span>';
+        }
+
+        echo '<span class="mini-cart-summary-row">';
+        echo '<span>Доставка:</span>';
+
+        if ( $remaining <= 0 ) {
+            echo '<strong class="mini-cart-shipping-free">';
+            echo 'БЕЗКОШТОВНА';
+            echo '</strong>';
+        } else {
+            echo '<span>';
+
+            printf(
+                'від %s — БЕЗКОШТОВНА',
+                wp_kses_post( wc_price( $minimum ) )
+            );
+
+            echo '</span>';
+        }
+
+        echo '</span>';
+    }
+
+    echo '<span class="mini-cart-summary-row mini-cart-grand-total">';
+    echo '<strong>Загальна сума:</strong>';
+    echo '<strong>' . wp_kses_post( $cart->get_total() ) . '</strong>';
+    echo '</span>';
+}
+
+add_action( 'wp_loaded', function () {
+    remove_action(
+        'woocommerce_widget_shopping_cart_buttons',
+        'woocommerce_widget_shopping_cart_button_view_cart',
+        10
+    );
+
+    remove_action(
+        'woocommerce_widget_shopping_cart_buttons',
+        'woocommerce_widget_shopping_cart_proceed_to_checkout',
+        20
+    );
+
+    add_action(
+        'woocommerce_widget_shopping_cart_buttons',
+        'anyweb_mini_cart_buttons',
+        10
+    );
+} );
+
+function anyweb_mini_cart_buttons() {
+    ?>
+    <a href="<?php echo esc_url( wc_get_cart_url() ); ?>"
+       class="button wc-forward">
+        <span type="button">Перейти в кошик</span>
+        <span class="button__bottom_line">
+            <svg xmlns="http://www.w3.org/2000/svg" width="153" height="4" viewBox="0 0 153 4" fill="none">
+                <path d="M31.1106 0.853003C32.0208 0.853003 32.8072 1.19794 32.7198 2.04051C32.6543 2.67386 32.2247 2.97923 31.0742 3.04144C26.9674 3.09233 23.0427 3.14886 18.9359 3.12624C18.215 3.12624 17.5087 2.82654 17.4723 2.11403C17.4286 1.20925 18.2878 1.03393 19.1543 1C21.0839 0.920833 23.0135 0.926515 24.9431 0.886931C25.0961 0.886931 29.0645 0.836033 31.1179 0.847343L31.1106 0.853003Z" fill="#009E97"/>
+                <path d="M6.59017 1.2258C9.11686 1.19188 9.97607 1.04484 11.6654 1.04484C12.6193 1.04484 13.6023 1.47463 13.5659 2.3681C13.5295 3.15413 12.663 3.41989 11.7382 3.40858C8.3523 3.37465 5.21396 3.34638 1.83534 3.27287C0.910584 3.25025 -0.137955 2.90529 0.014957 2.06271C0.12418 1.44068 0.997967 1.01092 1.88631 1.04484C3.3499 1.10139 5.17027 1.27104 6.59017 1.22014V1.2258Z" fill="#009E97"/>
+                <path d="M125.338 3.39153C123.096 3.30105 121.53 3.2445 119.965 3.17664C119.076 3.13706 118.181 2.97871 118.166 2.14179C118.159 1.35576 118.996 0.948614 119.863 0.942959C124.435 0.90903 129.008 0.926004 133.588 0.988207C134.331 0.999517 134.914 1.47452 134.819 2.15311C134.702 2.99569 133.872 3.14837 132.984 3.17664C130.217 3.26146 127.443 3.33498 125.338 3.39719V3.39153Z" fill="#009E97"/>
+                <path d="M82.4576 2.3413C81.3799 2.3922 79.4576 2.48268 77.528 2.55619C76.6324 2.59012 75.744 2.47137 75.5911 1.64576C75.4382 0.808842 76.2392 0.503489 77.1421 0.418666C81.227 0.0510995 85.3265 -0.0676501 89.4333 0.0680668C90.4163 0.101996 91.494 0.294248 91.5377 1.25558C91.5813 2.31869 90.4308 2.31871 89.4697 2.33002C87.4163 2.35263 85.3629 2.33568 82.4576 2.33568V2.3413Z" fill="#009E97"/>
+                <path d="M144.113 3.0816C143.101 3.0816 139.431 3.16076 139.424 1.79228C139.417 0.423799 142.169 0.746117 143.654 0.757426C145.926 0.774391 148.045 0.768735 150.39 0.225867C151.475 -0.0286022 152.531 -0.271735 152.924 0.712212C153.295 1.63396 152.232 1.86014 151.358 2.18813C149.363 2.72534 146.858 3.03637 144.12 3.0816H144.113Z" fill="#009E97"/>
+                <path d="M48.3513 0.350479C49.4435 0.31655 50.7323 0.26564 50.7542 1.46447C50.776 2.41449 49.691 2.63506 48.6862 2.65768C45.3148 2.73684 41.9362 2.78207 38.5649 2.82166C37.7858 2.83296 37.0722 2.64636 37.0066 1.94516C36.9338 1.1252 37.7202 0.751985 38.594 0.678471C40.3853 0.52579 46.9022 0.395723 48.3513 0.356139V0.350479Z" fill="#009E97"/>
+                <path d="M61.6732 2.74215C60.1077 2.74215 58.5421 2.76476 56.9766 2.73083C55.9353 2.70821 54.9669 2.43679 55.0324 1.46981C55.0834 0.672471 55.9645 0.434986 56.8601 0.429331C60.2315 0.412367 63.6101 0.401057 66.9814 0.429331C67.8697 0.440641 68.6926 0.762969 68.7217 1.56031C68.7581 2.58384 67.7678 2.73084 66.7339 2.73649C65.0445 2.7478 63.3625 2.73649 61.6732 2.73649V2.74215Z" fill="#009E97"/>
+                <path d="M104.054 2.4419C102.364 2.40231 100.668 2.38532 98.9785 2.31181C98.3669 2.28354 97.7771 2.06302 97.6606 1.52015C97.5149 0.841566 98.0538 0.406133 98.811 0.31C102.415 -0.159355 106.027 0.106415 109.624 0.406123C110.403 0.468326 110.869 0.999886 110.738 1.64454C110.6 2.32313 109.872 2.5267 109.122 2.5267C107.432 2.5267 105.736 2.45884 104.046 2.41926C104.046 2.42491 104.046 2.43059 104.046 2.4419H104.054Z" fill="#009E97"/>
+            </svg>
+        </span>
+    </a>
+
+    <a href="<?php echo esc_url( wc_get_checkout_url() ); ?>"
+       class="button checkout wc-forward">
+        Оформити замовлення
+    </a>
+    <?php
+}
+
+add_filter(
+    'woocommerce_add_to_cart_fragments',
+    'anyweb_header_cart_fragments'
+);
+
+function anyweb_header_cart_fragments( $fragments ) {
+    if ( ! WC()->cart ) {
+        return $fragments;
+    }
+
+    // Полное содержимое выпадающей мини-корзины.
+    ob_start();
+    ?>
+    <div class="header-cart__content">
+        <?php woocommerce_mini_cart(); ?>
+    </div>
+    <?php
+    $fragments['div.header-cart__content'] = ob_get_clean();
+
+    // Количество товаров в шапке.
+    $fragments['.header-basket-block .bubble'] =
+        '<span class="bubble">'
+        . esc_html( WC()->cart->get_cart_contents_count() )
+        . '</span>';
+
+    // Сумма в шапке.
+    ob_start();
+    ?>
+    <div class="basket-link-wrap">
+        <span class="cart-title">товарів на суму</span>
+        <br>
+        <span class="basket-sum">
+            <strong>
+                <?php echo wp_kses_post( WC()->cart->get_cart_total() ); ?>
+            </strong>
+        </span>
+    </div>
+    <?php
+    $fragments['div.basket-link-wrap'] = ob_get_clean();
+
+    return $fragments;
+}

@@ -180,6 +180,40 @@ $(function() {
 })
 
 $(function() {
+
+    $('.recommendations-anyweb-cart .slider').not('.slick-initialized').slick({
+        slidesToShow: 2,
+        arrows: true,
+        infinite: false,
+        rows: 0,
+        responsive: [
+            {
+                breakpoint: 1400,
+                settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                }
+            },
+            {
+                breakpoint: 1030,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                }
+            },
+            {
+                breakpoint: 993,
+                settings: {
+                    arrows: true,
+                    slidesToShow: 2,
+                    slidesToScroll: 1,
+                    autoplay: false,
+                }
+            }]
+    });
+})
+
+$(function() {
     $('.series .slider').not('.slick-initialized').slick({
         slidesToShow: 4,
         arrows: true,
@@ -312,24 +346,31 @@ $(function() {
     });
 })
 
-$(function() {
-    $('.product-item-detail-slider-controls-block').not('.slick-initialized').slick({
-        slidesToShow: 3,
-        vertical: true,
-        verticalSwiping: true,
-        asNavFor: '.product-item-detail-slider-images-container',
-        focusOnSelect: true,
-        rows: 0,
-        responsive: [
-            {
+$(function () {
+    $('.product-item-detail-slider-controls-block')
+        .not('.slick-initialized')
+        .slick({
+            slidesToShow: 3,
+            slidesToScroll: 1,
+            vertical: true,
+            verticalSwiping: true,
+            asNavFor: '.product-item-detail-slider-images-container',
+            focusOnSelect: true,
+            rows: 0,
+
+            responsive: [{
                 breakpoint: 770,
                 settings: {
                     vertical: false,
                     verticalSwiping: false,
+                    variableWidth: true,
+                    centerMode: false,
+                    slidesToShow: 3,
+                    slidesToScroll: 1
                 }
             }]
-    });
-})
+        });
+});
 
 const lightbox = new PhotoSwipeLightbox({
     gallery: '#products-gallery', // одна или несколько картинок
