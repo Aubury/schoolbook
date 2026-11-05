@@ -2321,6 +2321,9 @@ main > .section {
   pointer-events: auto;
   transform: translateY(0);
 }
+.header-basket-section:not(:has(.woocommerce-mini-cart-item)) .header-cart__dropdown {
+  display: none !important;
+}
 .header-basket-section:focus-within .header-cart__dropdown, .header-basket-section.is-open .header-cart__dropdown {
   opacity: 1;
   visibility: visible;
@@ -9208,6 +9211,7 @@ input[type=checkbox]:checked + span:before {
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
+  z-index: 105;
 }
 .woocommerce-mini-cart__total__wrap .mini-cart-free-shipping {
   position: absolute;

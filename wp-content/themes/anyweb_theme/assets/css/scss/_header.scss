@@ -269,6 +269,12 @@
     }
   }
 
+  &:not(:has(.woocommerce-mini-cart-item)) {
+    .header-cart__dropdown {
+      display: none !important;
+    }
+  }
+
   &:focus-within,
   &.is-open {
     .header-cart__dropdown {

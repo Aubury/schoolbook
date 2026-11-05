@@ -292,6 +292,53 @@ window.addEventListener('resize', changePlaceholder);
 
 ///////////////////////// BASKET ///////////////////////////////////////////
 
+jQuery(function ($) {
+	let refreshTimer;
+
+	$(document.body).on(
+		'updated_wc_div.anywebHeaderCart ' +
+		'updated_cart_totals.anywebHeaderCart',
+		function () {
+			clearTimeout(refreshTimer);
+
+			refreshTimer = setTimeout(function () {
+				$(document.body).trigger('wc_fragment_refresh');
+			}, 100);
+		}
+	);
+});
+
+jQuery(function ($) {
+	$(document.body)
+		.off('removed_from_cart.anywebCartSync')
+		.on('removed_from_cart.anywebCartSync', function () {
+			if (!$('body').hasClass('woocommerce-cart')) {
+				return;
+			}
+
+			$(document.body).trigger('wc_update_cart');
+		});
+});
+
+jQuery(function ($) {
+	let reloading = false;
+
+	$(document.body).on(
+		'wc_cart_emptied.anywebEmptyCart',
+		function () {
+			if (
+				!$('body').hasClass('woocommerce-cart') ||
+				reloading
+			) {
+				return;
+			}
+
+			reloading = true;
+			window.location.reload();
+		}
+	);
+});
+
 
 jQuery(function ($) {
 	let noticeTimer;
@@ -308,7 +355,7 @@ jQuery(function ($) {
 			.html(html)
 			.prop('hidden', false);
 
-		// noticeTimer = setTimeout(hideCartNotice, 5000);
+		noticeTimer = setTimeout(hideCartNotice, 5000);
 	}
 
 	$(document).on('click.cartAdd', '.add_to_cart_ajx', function (e) {
