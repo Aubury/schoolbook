@@ -1,0 +1,362 @@
+<?php
+/**
+ * Front-end assets served from a neutral path.
+ *
+ * @package ZinnDigital\Tranzly
+ */
+
+declare( strict_types = 1 );
+
+namespace ZinnDigital\Tranzly;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Publishes front-end CSS/JS out of the plugin directory into `uploads/<prefix>-assets/`.
+ *
+ * ⭐ WHY A COPY (docs/adr/0033).
+ * A stylesheet enqueued from the plugin directory prints `/wp-content/plugins/tranzly/`
+ * into every page, which is the single loudest footprint a plugin leaves (CONTRACT §7). The
+ * alternatives were a rewrite rule (needs a flush, breaks on nginx without extra config, and
+ * serves every asset through PHP) and a REST/query endpoint (PHP on every asset request, no
+ * static caching). A content-hashed static copy is served by the web server directly, is
+ * cacheable for ever because its name changes when its content does, and needs no server
+ * configuration.
+ *
+ * The copy is written on activation, on a prefix change and on the first request after a version
+ * change. ⛔ s1014 L71, 2026-10-18: the version-change copy used to wait for `admin_init`, but an
+ * update made by WP-CLI, by WordPress's background auto-update or by our fleet updater never opens
+ * wp-admin, so from the update until somebody did, every page loaded its scripts from
+ * /wp-content/plugins/tranzly/ (V1 staff canary 244453 rolled tranzly-premium 3.27.17 back for
+ * exactly that: uploads/zd-assets/<hash>.js "gone"). The check now runs on `init`: one autoloaded
+ * option compared per request, and at most one write per version. When a copy is missing or
+ * the filesystem is not directly writable, a stylesheet is printed inline (through inline_css(),
+ * escaped at the call) so the page is never unstyled, and a script is loaded from the plugin
+ * folder by its URL (plugin_url()). Plugin code is never printed into the page as an inline
+ * script (WordPress.org review); the plugin path appears only when uploads cannot be written.
+ */
+final class Assets {
+
+	/** Option holding what was published, for which version and prefix. */
+	public const MANIFEST_OPTION = 'tranzly_published_assets';
+
+	/** Front-end sources, keyed by the name callers use. */
+	private const SOURCES = array(
+		'front.css'    => 'assets/front.css',
+		'switcher.css' => 'assets/switcher.css',
+		'switcher.js'  => 'assets/switcher.js',
+		'suggest.js'   => 'assets/suggest.js',
+	);
+
+	/** The token a source uses where the class prefix belongs. */
+	private const PREFIX_TOKEN = '__PREFIX__';
+
+	/**
+	 * Hook the republish checks.
+	 *
+	 * @return void
+	 */
+	public static function register(): void {
+		// `init`, not `admin_init`: it fires on every kind of request (a page view, REST, cron,
+		// WP-CLI) before `wp_enqueue_scripts`, so the first page after an update already gets the
+		// neutral copies (tranzly_assets_after_update.sh).
+		add_action( 'init', array( self::class, 'maybe_publish' ), 1 );
+	}
+
+	/**
+	 * Republish when the manifest was written for another version or prefix.
+	 *
+	 * @return void
+	 */
+	public static function maybe_publish(): void {
+		if ( ! self::is_current( self::manifest() ) ) {
+			self::publish();
+		}
+	}
+
+	/**
+	 * Copy every source into the neutral folder and record what was written.
+	 *
+	 * @return array<string, mixed> The new manifest.
+	 */
+	public static function publish(): array {
+		$prefix   = Settings::prefix();
+		$manifest = array(
+			'version' => TRANZLY_VERSION,
+			'prefix'  => $prefix,
+			'files'   => array(),
+		);
+
+		$filesystem = self::filesystem();
+		$uploads    = wp_upload_dir( null, false );
+
+		if ( null !== $filesystem && empty( $uploads['error'] ) ) {
+			$folder = $prefix . '-assets';
+			$dir    = trailingslashit( (string) $uploads['basedir'] ) . $folder;
+			$url    = trailingslashit( (string) $uploads['baseurl'] ) . $folder;
+
+			if ( wp_mkdir_p( $dir ) ) {
+				foreach ( array_keys( self::SOURCES ) as $key ) {
+					$body = self::source( $key, $prefix );
+					if ( null === $body ) {
+						continue;
+					}
+					$name = substr( sha1( $body ), 0, 12 ) . '.' . pathinfo( $key, PATHINFO_EXTENSION );
+					$path = $dir . '/' . $name;
+					if ( $filesystem->exists( $path ) || self::write_whole( $filesystem, $path, $body ) ) {
+						$manifest['files'][ $key ] = array(
+							'url'  => $url . '/' . $name,
+							'path' => $path,
+						);
+					}
+				}
+			}
+		}
+
+		self::remove_stale( self::manifest(), $manifest );
+		update_option( self::MANIFEST_OPTION, $manifest, true );
+
+		return $manifest;
+	}
+
+	/**
+	 * Enqueue a front-end stylesheet under a neutral handle, from the published copy or inline.
+	 *
+	 * @param string $key A key of self::SOURCES.
+	 * @return void
+	 */
+	public static function enqueue_style( string $key ): void {
+		$prefix = Settings::prefix();
+		$body   = self::source( $key, $prefix );
+		if ( null === $body ) {
+			return;
+		}
+
+		// The handle becomes the element id WordPress prints (`<handle>-css`), so it carries the
+		// neutral prefix and a content hash, never the plugin's name.
+		$hash   = substr( sha1( $body ), 0, 8 );
+		$handle = $prefix . '-' . $hash;
+		if ( wp_style_is( $handle, 'enqueued' ) ) {
+			return;
+		}
+
+		$url = self::published_url( $key );
+		if ( null !== $url ) {
+			wp_enqueue_style( $handle, $url, array(), $hash );
+			return;
+		}
+
+		wp_register_style( $handle, false, array(), $hash );
+		wp_enqueue_style( $handle );
+		wp_add_inline_style( $handle, self::inline_css( $body ) );
+	}
+
+	/**
+	 * CSS made safe to print inside a `<style>` element: comments removed, then every tag
+	 * stripped, so nothing in it (a stored value, a filter's output) can close the element and
+	 * start markup. Every inline stylesheet the plugin prints goes through this, at the point it
+	 * is printed (escaping late). Comments go first so an unclosed `<` in one cannot swallow the
+	 * rules after it.
+	 *
+	 * @param string $css CSS.
+	 * @return string
+	 */
+	public static function inline_css( string $css ): string {
+		return wp_strip_all_tags( (string) preg_replace( '#/\*.*?\*/#s', '', $css ) );
+	}
+
+	/**
+	 * A source's URL in the plugin folder, with the class prefix as the `pfx` query argument: the
+	 * fallback when no published copy exists. The scripts read their prefix from their own URL when
+	 * the token in them was not replaced (`PFX` at the top of each script).
+	 *
+	 * @param string $key A key of self::SOURCES.
+	 * @return string|null Null when the key is unknown.
+	 */
+	public static function plugin_url( string $key ): ?string {
+		if ( ! isset( self::SOURCES[ $key ] ) ) {
+			return null;
+		}
+
+		return add_query_arg( array( 'pfx' => Settings::prefix() ), TRANZLY_URL . self::SOURCES[ $key ] );
+	}
+
+	/**
+	 * Enqueue a front-end script under a neutral handle, from the published copy or (when uploads
+	 * cannot be written) the plugin folder, in the footer and deferred. Scripts carry no plugin
+	 * name for the same reason styles do (ADR 0033).
+	 *
+	 * @param string $key A key of self::SOURCES.
+	 * @return string|null The handle, or null when the source is unknown.
+	 */
+	public static function enqueue_script( string $key ): ?string {
+		$prefix = Settings::prefix();
+		$body   = self::source( $key, $prefix );
+		if ( null === $body ) {
+			return null;
+		}
+		$hash   = substr( sha1( $body ), 0, 8 );
+		$handle = $prefix . '-' . $hash;
+		if ( wp_script_is( $handle, 'enqueued' ) ) {
+			return $handle;
+		}
+		$args = array(
+			'in_footer' => true,
+			'strategy'  => 'defer',
+		);
+		// No published copy: the file in the plugin folder, never the body printed inline.
+		$url = self::published_url( $key ) ?? self::plugin_url( $key );
+		if ( null === $url ) {
+			return null;
+		}
+		wp_enqueue_script( $handle, $url, array(), $hash, $args );
+
+		return $handle;
+	}
+
+	/**
+	 * The published URL for a source, if a current copy exists.
+	 *
+	 * @param string $key A key of self::SOURCES.
+	 * @return string|null
+	 */
+	public static function published_url( string $key ): ?string {
+		$manifest = self::manifest();
+		if ( ! self::is_current( $manifest ) ) {
+			return null;
+		}
+		$file = $manifest['files'][ $key ] ?? null;
+
+		return is_array( $file ) && is_string( $file['url'] ?? null ) ? $file['url'] : null;
+	}
+
+	/**
+	 * Delete every file this plugin published. Used on uninstall.
+	 *
+	 * @return void
+	 */
+	public static function remove_all(): void {
+		self::remove_stale( self::manifest(), array( 'files' => array() ) );
+		delete_option( self::MANIFEST_OPTION );
+	}
+
+	/**
+	 * A source's contents with the prefix token replaced.
+	 *
+	 * @param string $key    A key of self::SOURCES.
+	 * @param string $prefix The class prefix.
+	 * @return string|null Null when the key or file is unknown.
+	 */
+	public static function source( string $key, string $prefix ): ?string {
+		if ( ! isset( self::SOURCES[ $key ] ) ) {
+			return null;
+		}
+		$path = TRANZLY_DIR . self::SOURCES[ $key ];
+		if ( ! is_readable( $path ) ) {
+			return null;
+		}
+		$body = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- a file inside this plugin, never a URL.
+
+		return false === $body ? null : str_replace( self::PREFIX_TOKEN, $prefix, $body );
+	}
+
+	/**
+	 * The stored manifest.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private static function manifest(): array {
+		$manifest = get_option( self::MANIFEST_OPTION, array() );
+
+		return is_array( $manifest ) ? $manifest : array();
+	}
+
+	/**
+	 * Was this manifest written for the running version and prefix?
+	 *
+	 * @param array<string, mixed> $manifest A manifest.
+	 * @return bool
+	 */
+	private static function is_current( array $manifest ): bool {
+		return TRANZLY_VERSION === ( $manifest['version'] ?? null )
+			&& Settings::prefix() === ( $manifest['prefix'] ?? null );
+	}
+
+	/**
+	 * Delete files the old manifest names and the new one does not.
+	 *
+	 * @param array<string, mixed> $old The previous manifest.
+	 * @param array<string, mixed> $next The new manifest.
+	 * @return void
+	 */
+	private static function remove_stale( array $old, array $next ): void {
+		$keep = array();
+		foreach ( (array) ( $next['files'] ?? array() ) as $file ) {
+			$keep[] = (string) ( $file['path'] ?? '' );
+		}
+		foreach ( (array) ( $old['files'] ?? array() ) as $file ) {
+			$path = (string) ( $file['path'] ?? '' );
+			if ( '' !== $path && ! in_array( $path, $keep, true ) && self::is_ours( $path ) ) {
+				wp_delete_file( $path );
+			}
+		}
+	}
+
+	/**
+	 * Is this a file this class could have written? A path read back from an option is data, so
+	 * nothing is deleted unless it is a hashed asset inside an `-assets` folder under uploads.
+	 *
+	 * @param string $path A path from a manifest.
+	 * @return bool
+	 */
+	private static function is_ours( string $path ): bool {
+		$uploads = wp_upload_dir( null, false );
+		$base    = realpath( (string) ( $uploads['basedir'] ?? '' ) );
+		$real    = realpath( $path );
+		if ( false === $base || false === $real || ! is_file( $real ) ) {
+			return false;
+		}
+
+		return str_starts_with( $real, trailingslashit( $base ) )
+			&& 1 === preg_match( '#/[a-z][a-z0-9]{0,7}-assets/[0-9a-f]{12}\.(?:css|js)$#', $real );
+	}
+
+	/**
+	 * Write a file under a temporary name and rename it into place, so a visitor whose request
+	 * arrives while another request is publishing never fetches half a script (the publish can now
+	 * happen during a page view).
+	 *
+	 * @param \WP_Filesystem_Base $filesystem The filesystem.
+	 * @param string              $path       Final path.
+	 * @param string              $body       Contents.
+	 * @return bool
+	 */
+	private static function write_whole( \WP_Filesystem_Base $filesystem, string $path, string $body ): bool {
+		$tmp = $path . '.' . wp_generate_password( 6, false ) . '.tmp';
+		if ( $filesystem->put_contents( $tmp, $body, FS_CHMOD_FILE ) && $filesystem->move( $tmp, $path, true ) ) {
+			return true;
+		}
+		$filesystem->delete( $tmp );
+
+		return false;
+	}
+
+	/**
+	 * A direct-access filesystem, or null when writing would need credentials.
+	 *
+	 * @return \WP_Filesystem_Base|null
+	 */
+	private static function filesystem(): ?\WP_Filesystem_Base {
+		if ( ! function_exists( 'WP_Filesystem' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+		if ( 'direct' !== get_filesystem_method() || ! WP_Filesystem() ) {
+			return null;
+		}
+		global $wp_filesystem;
+
+		return $wp_filesystem instanceof \WP_Filesystem_Base ? $wp_filesystem : null;
+	}
+}

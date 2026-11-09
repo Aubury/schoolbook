@@ -1,8 +1,5 @@
 *.log
-*.log
-*.log
 /wp-content/uploads/wc-logs
-/.idea
 .idea/php.xml
 .idea/public.iml
 /wp-content/uploads/wc-logs
@@ -14,13 +11,11 @@
 public_html/cron-log.txt
 public_html/directory_state.json
 TEMP/01bd141e-a61a-47b8-9010-3437b6b65132.jpeg
-/wp-content/wp-content/plugins/google-listings-and-ads
 /wp-content/backups-dup-lite
 /wp-content/plugins/duplicator
 /FTP_EXCHANGE
 /wp-content/themes/anyweb_theme/.idea
 /wp-content/themes/anyweb_theme/node_modules
-*.php
 /wp-content/duplicator-backups
 /wp-content/backups-dup-lite
 
