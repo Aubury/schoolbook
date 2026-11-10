@@ -1872,7 +1872,60 @@
       }
     }
 
+    .slick-arrow {
+      width: 50px;
+      height: 50px;
+      background-size: 21px 15px;
 
+      @include down(#{$bp-md}) {
+        width: 40px;
+        height: 40px;
+      }
+
+      &.slick-next {
+        right: -70px;
+
+        @include down(#{$bp-md}) {
+          top: -60px;
+          right: 0;
+          background-size: contain;
+        }
+
+        @include down(#{$bp-xs}) {
+          top: -50px;
+        }
+
+        @include down(#{$bp-xxs}) {
+           top: -80px;
+        }
+      }
+
+      &.slick-prev {
+        left: -70px;
+
+        @include down(#{$bp-md}) {
+          top: -60px;
+          left: 0;
+          background-size: contain;
+        }
+
+        @include down(#{$bp-xs}) {
+          top: -50px;
+        }
+
+        @include down(#{$bp-xxs}) {
+          top: -80px;
+        }
+      }
+
+      &:after,
+      &:before {
+        width: 50px;
+        height: 50px;
+        background: url("../image/arrow-slider-stroke-catd.svg") no-repeat;
+      }
+
+    }
   }
 
   &.has-no-slider-arrows {

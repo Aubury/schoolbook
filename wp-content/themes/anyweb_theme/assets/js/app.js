@@ -15,6 +15,66 @@ btn.on('click', function(e) {
 
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+	const headerTop = document.querySelector('.header-top-section');
+
+	if (!headerTop) return;
+
+	const placeholder = document.createElement('div');
+	placeholder.className = 'header-top-placeholder';
+	headerTop.before(placeholder);
+
+	let startPosition = 0;
+	let ticking = false;
+
+	function updateHeader() {
+		const adminBar = document.getElementById('wpadminbar');
+
+		// Учитываем видимую часть панели WordPress.
+		const adminOffset = adminBar
+			? Math.max(0, adminBar.getBoundingClientRect().bottom)
+			: 0;
+
+		headerTop.style.setProperty(
+			'--header-admin-offset',
+			adminOffset + 'px'
+		);
+
+		const fixed = window.scrollY + adminOffset > startPosition;
+
+		// Сначала резервируем место, затем фиксируем шапку.
+		placeholder.style.display = fixed ? 'block' : 'none';
+		headerTop.classList.toggle('is-fixed', fixed);
+
+		ticking = false;
+	}
+
+	function measureHeader() {
+		const anchor = headerTop.classList.contains('is-fixed')
+			? placeholder
+			: headerTop;
+
+		startPosition = anchor.getBoundingClientRect().top + window.scrollY;
+		placeholder.style.height = headerTop.offsetHeight + 'px';
+
+		updateHeader();
+	}
+
+	window.addEventListener('scroll', function () {
+		if (ticking) return;
+
+		ticking = true;
+		requestAnimationFrame(updateHeader);
+	}, { passive: true });
+
+	window.addEventListener('resize', measureHeader);
+	window.addEventListener('load', measureHeader);
+
+	new ResizeObserver(measureHeader).observe(headerTop);
+
+	measureHeader();
+});
+
 ////////////////////////////////////////////////////////////////////////
 
 function initMobileDescription() {
@@ -416,6 +476,11 @@ jQuery(function ($) {
 					.attr('href', cartUrl || '/cart/');
 
 				showCartNotice(response[3]);
+
+				// Обновляем товары и итоги на странице корзины.
+				if (jQuery('body').hasClass('woocommerce-cart')) {
+					jQuery(document.body).trigger('wc_update_cart');
+				}
 			})
 			.fail(function (xhr) {
 				console.error(
@@ -468,6 +533,107 @@ jQuery(function ($) {
 	mobileMedia.addEventListener('change', moveCartAddedNotice);
 	moveCartAddedNotice();
 });
+
+jQuery(function ($) {
+	function updateMinusButtons() {
+		$('.woocommerce-cart-form .quantity').each(function () {
+			const $quantity = $(this);
+			const value = Number($quantity.find('input.qty').val()) || 0;
+			const disabled = value < 2;
+
+			$quantity.find('.cart-qty-minus')
+				.prop('disabled', disabled)
+				.attr('aria-disabled', String(disabled))
+				.toggleClass('is-disabled', disabled);
+		});
+	}
+
+	// Блокируем действие также для минуса, сделанного ссылкой.
+	document.addEventListener('click', function (event) {
+		const minus = event.target.closest(
+			'.woocommerce-cart-form .quantity .cart-qty-minus'
+		);
+
+		if (!minus) return;
+
+		const input = minus.closest('.quantity').querySelector('input.qty');
+
+		if (input && Number(input.value) < 2) {
+			event.preventDefault();
+			event.stopImmediatePropagation();
+		}
+	}, true);
+
+	$(document).on(
+		'input.anywebMinus change.anywebMinus',
+		'.woocommerce-cart-form input.qty',
+		updateMinusButtons
+	);
+
+	$(document.body).on(
+		'updated_wc_div.anywebMinus updated_cart_totals.anywebMinus',
+		updateMinusButtons
+	);
+
+	updateMinusButtons();
+});
+
+/////////////////////  CHECHOUT  ////////////////////////////////
+jQuery(function ($) {
+	function movePaymentMethods() {
+		const $target = $('#anyweb-checkout-payment-methods');
+		const $methods = $('#payment > ul.wc_payment_methods');
+
+		if (!$target.length || !$methods.length) {
+			return;
+		}
+
+		$target.empty().append($methods);
+
+		$('#anyweb-checkout-payment').prop(
+			'hidden',
+			!$target.find('.wc_payment_method').length
+		);
+	}
+
+	$(document.body)
+		.off('updated_checkout.anywebPayment')
+		.on(
+			'updated_checkout.anywebPayment',
+			movePaymentMethods
+		);
+
+	movePaymentMethods();
+});
+
+jQuery(function ($) {
+	$('#createaccount')
+		.closest('label')
+		.find('span')
+		.text('Зареєструвати новий особистий кабінет за цими даними');
+
+	$(document).on(
+		'click.anywebCheckoutLogin',
+		'.anyweb-checkout-tabs__login',
+		function () {
+			const $login = $('form.woocommerce-form-login').first();
+
+			if (!$login.length) return;
+
+			$login.stop(true, true).slideToggle(200, function () {
+				if ($login.is(':visible')) {
+					$login[0].scrollIntoView({
+						behavior: 'smooth',
+						block: 'center'
+					});
+
+					$login.find('#username').trigger('focus');
+				}
+			});
+		}
+	);
+});
+
 // *************************************************************
 
 

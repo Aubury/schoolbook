@@ -689,7 +689,7 @@ add_action( 'woocommerce_before_quantity_input_field', function () {
     if ( is_cart() ) {
         echo '<button type="button" class="cart-qty-minus" aria-label="Зменшити кількість">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M4 10H16" stroke-width="2" stroke="#C2C2C2"/>
+                  <path d="M4 10H16" stroke-width="2" stroke="currentColor"/>
                 </svg>
                </button>';
     }
@@ -699,7 +699,7 @@ add_action( 'woocommerce_after_quantity_input_field', function () {
     if ( is_cart() ) {
         echo '<button type="button" class="cart-qty-plus" aria-label="Збільшити кількість">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M4 10H10M10 10H16M10 10V4M10 10V16" stroke-width="2" stroke="#525252"/>
+                  <path d="M4 10H10M10 10H16M10 10V4M10 10V16" stroke-width="2" stroke="currentColor"/>
                 </svg>
                 </button>';
     }
@@ -874,3 +874,139 @@ function anyweb_header_cart_fragments( $fragments ) {
 
     return $fragments;
 }
+
+add_filter( 'woocommerce_checkout_fields', function ( $fields ) {
+    $settings = array(
+        'billing_last_name' => array(
+            'label'        => 'Прізвище',
+            'placeholder'  => 'Введіть дані',
+            'priority'     => 10,
+            'autocomplete' => 'family-name',
+        ),
+        'billing_first_name' => array(
+            'label'        => 'Ім’я',
+            'placeholder'  => 'Введіть дані',
+            'priority'     => 20,
+            'autocomplete' => 'given-name',
+        ),
+        'billing_phone' => array(
+            'label'        => 'Номер телефона',
+            'placeholder'  => '+380 XX XXX XX XX',
+            'priority'     => 30,
+            'autocomplete' => 'tel',
+        ),
+        'billing_email' => array(
+            'label'        => 'E-mail',
+            'placeholder'  => 'Введіть ваш e-mail',
+            'priority'     => 40,
+            'autocomplete' => 'email',
+        ),
+    );
+
+    foreach ( $settings as $key => $options ) {
+        if ( isset( $fields['billing'][ $key ] ) ) {
+            $fields['billing'][ $key ] = array_merge(
+                $fields['billing'][ $key ],
+                $options
+            );
+
+            $fields['billing'][ $key ]['class'] = array(
+                'form-row-wide',
+                'anyweb-contact-field',
+            );
+        }
+    }
+
+    return $fields;
+}, 100 );
+
+add_action(
+    'woocommerce_before_checkout_billing_form',
+    'anyweb_checkout_customer_tabs'
+);
+
+function anyweb_checkout_customer_tabs() {
+    $logged_in = is_user_logged_in();
+    ?>
+    <div class="anyweb-checkout-tabs">
+        <?php if ( $logged_in ) : ?>
+
+            <span class="anyweb-checkout-tabs__active">
+                Особистий кабінет
+            </span>
+
+        <?php else : ?>
+
+            <span class="anyweb-checkout-tabs__active">
+                Я новий клієнт
+            </span>
+
+            <button type="button"
+                    class="anyweb-checkout-tabs__login">
+                Увійти в особистий кабінет
+            </button>
+
+        <?php endif; ?>
+    </div>
+    <?php echo anyweb_checkout_loyalty_notice(); ?>
+    <?php
+}
+
+function anyweb_checkout_loyalty_notice() {
+    $discounts = array();
+
+    if (
+        is_user_logged_in()
+        && function_exists('WC')
+        && WC()->session
+    ) {
+        $stored = WC()->session->get('discount_saphali_shop', array());
+
+        foreach ((array) $stored as $value) {
+            if (!is_scalar($value)) {
+                continue;
+            }
+
+            $value = trim((string) $value);
+
+            if ($value === '') {
+                continue;
+            }
+
+            if (strpos($value, '%') !== false) {
+                $discounts[] = esc_html($value);
+            } elseif (is_numeric($value) && (float) $value > 0) {
+                $discounts[] = wc_price((float) $value);
+            }
+        }
+
+        $discounts = array_unique($stored);
+    }
+
+    ob_start();
+
+    echo var_dump($discounts);
+    ?>
+    <div class="anyweb-loyalty-notice"
+         <?php if (empty($discounts)) : ?>hidden<?php endif; ?>>
+
+        <?php if (!empty($discounts)) : ?>
+            Ваша накопичувальна знижка за системою лояльності:
+            <?php echo wp_kses_post(implode(', ', $discounts)); ?>
+        <?php endif; ?>
+
+    </div>
+    <?php
+
+    return ob_get_clean();
+}
+
+add_filter(
+    'woocommerce_update_order_review_fragments',
+    function ( $fragments ) {
+        $fragments['.anyweb-loyalty-notice'] =
+            anyweb_checkout_loyalty_notice();
+
+        return $fragments;
+    }
+);
