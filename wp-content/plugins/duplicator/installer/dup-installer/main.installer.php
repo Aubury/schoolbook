@@ -21,19 +21,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+// Run only inside an extracted package
+if (!glob(__DIR__ . '/dup_descriptors_*', GLOB_ONLYDIR)) {
+    exit;
+}
+
 if (!defined('DUPXABSPATH')) {
     define('DUPXABSPATH', __DIR__);
 }
 
-define('DUPX_VERSION', '5.0.6');
+define('DUPX_VERSION', '5.2.0');
 define('DUPX_INIT', str_replace('\\', '/', __DIR__));
 define('DUPX_ROOT', preg_match('/^[\\\\\/]?$/', dirname(DUPX_INIT)) ? '/' : dirname(DUPX_INIT));
 
+use Duplicator\Installer\Cli\CliEnvironment;
+use Duplicator\Installer\Cli\CliInstaller;
 use Duplicator\Installer\Utils\Log\Log;
 use Duplicator\Libs\Snap\SnapUtil;
 
 require_once(DUPX_INIT . '/src/Utils/Autoloader.php');
 Duplicator\Installer\Utils\Autoloader::register();
+
+// Included by installer.php from the command line: the installer installs the site in one run
+if (PHP_SAPI === 'cli' && CliEnvironment::getInstallation() !== null) {
+    exit(CliInstaller::run());
+}
 
 try {
     /**

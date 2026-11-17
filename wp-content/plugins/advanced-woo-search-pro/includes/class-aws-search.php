@@ -689,7 +689,7 @@ class AWS_Search {
         $exclude_products_filter = apply_filters( 'aws_exclude_products', array(), $this->form_id, $this->filter_id );
 
         if ( $exclude_products_filter && is_array( $exclude_products_filter ) && ! empty( $exclude_products_filter ) ) {
-            $query['exclude_products'] = sprintf( ' AND ( id NOT IN ( %s ) )', implode( ',', $exclude_products_filter ) );
+            $query['exclude_products'] = sprintf( ' AND ( id NOT IN ( %s ) )', implode( ',', array_map( 'intval', $exclude_products_filter ) ) );
         }
 
         // Language option

@@ -3,6 +3,7 @@
 namespace Duplicator\Installer\Core\Params\Items;
 
 use Duplicator\Installer\Utils\Log\Log;
+use Duplicator\Libs\Snap\SnapUtil;
 
 /**
  * this class describes the value of a parameter.
@@ -116,6 +117,29 @@ class ParamItem
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * What the parameter sets
+     *
+     * @return string Empty when the parameter has no description
+     */
+    public function getDescription(): string
+    {
+        return (string) $this->attr['description'];
+    }
+
+    /**
+     * Whether installer.php --info shows the parameter among the ones the command line can set
+     *
+     * @return bool
+     */
+    public function isCliParam(): bool
+    {
+        if (is_callable($this->attr['cliParam'])) {
+            return (bool) call_user_func($this->attr['cliParam'], $this);
+        }
+        return (bool) $this->attr['cliParam'];
     }
 
     /**
@@ -575,22 +599,17 @@ class ParamItem
         $reflect = new \ReflectionObject($copy);
 
         $nameProp = $reflect->getProperty('name');
-        if (PHP_VERSION_ID < 80100) {
-            $nameProp->setAccessible(true);
-        }
+        SnapUtil::setAccessible($nameProp);
         $nameProp->setValue($copy, $newName);
 
         $attrProp = $reflect->getProperty('attr');
-        if (PHP_VERSION_ID < 80100) {
-            $attrProp->setAccessible(true);
-        }
-        $newAttr = array_merge($attrProp->getValue($copy), $attr);
+        SnapUtil::setAccessible($attrProp);
+        // The copy is another parameter: installer.php --info shows it only when its own attributes say so
+        $newAttr = array_merge($attrProp->getValue($copy), ['cliParam' => false], $attr);
         $attrProp->setValue($copy, $newAttr);
 
         $valueProp = $reflect->getProperty('value');
-        if (PHP_VERSION_ID < 80100) {
-            $valueProp->setAccessible(true);
-        }
+        SnapUtil::setAccessible($valueProp);
         $valueProp->setValue($copy, $newAttr['default']);
 
         return $copy;
@@ -616,6 +635,8 @@ class ParamItem
             'validateCallback' => null, // function (ParamItem $obj, $validateValue, $originalValue)
             'persistence'      => true, // if false don't store value in persistence file
             'invalidMessage'   => '',//this message is added at next step validation error message if not empty
+            'description'      => '', // what the parameter sets, for the people and the tools that set it
+            'cliParam'         => false, // if true | callback installer.php --info shows it among the parameters the command line can set
         ];
 
         switch ($type) {

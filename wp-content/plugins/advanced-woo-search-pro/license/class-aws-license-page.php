@@ -117,7 +117,7 @@ if ( ! class_exists( 'AWS_License_Page' ) ) :
 
                     echo '<p>';
                         echo __( 'To unlock updates, please enter your license key below. You can find it inside an email that you receive after the purchase.', 'advanced-woo-search' ) . '<br>';
-                        echo sprintf( esc_html__( 'Also, to manage your account information and license activations please visit %s. If you don\'t have a licence key, please visit %s.', 'advanced-woo-search' ), '<a target="_blank" href="https://portal.advanced-woo-search.com/">' . esc_html__( 'user portal', 'advanced-woo-search' ) . '</a>', '<a target="_blank" href="https://advanced-woo-search.com/pricing/">' . esc_html__( 'plugin page', 'advanced-woo-search' ) . '</a>' );
+                        echo sprintf( esc_html__( 'Also, to manage your account information and license activations please visit %s. If you don\'t have a licence key, please visit %s.', 'advanced-woo-search' ), '<a target="_blank" href="https://portal.kramakit.com/">' . esc_html__( 'user portal', 'advanced-woo-search' ) . '</a>', '<a target="_blank" href="https://advanced-woo-search.com/pricing/">' . esc_html__( 'plugin page', 'advanced-woo-search' ) . '</a>' );
                         echo '<br>';
                     echo '</p>';
 

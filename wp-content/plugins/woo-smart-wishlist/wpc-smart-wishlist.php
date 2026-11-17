@@ -8,15 +8,15 @@ Author URI: https://wpclever.net
 Text Domain: woo-smart-wishlist
 Domain Path: /languages/
 Requires Plugins: woocommerce
-Version: 6.2.0
+Version: 6.2.1
 Requires at least: 5.9
 WC requires at least: 3.0
-WC tested up to: 11.1
+WC tested up to: 11.2
 */
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WOOSW_VERSION' ) && define( 'WOOSW_VERSION', '6.2.0' );
+! defined( 'WOOSW_VERSION' ) && define( 'WOOSW_VERSION', '6.2.1' );
 ! defined( 'WOOSW_FILE' ) && define( 'WOOSW_FILE', __FILE__ );
 ! defined( 'WOOSW_URI' ) && define( 'WOOSW_URI', plugin_dir_url( __FILE__ ) );
 ! defined( 'WOOSW_DIR' ) && define( 'WOOSW_DIR', plugin_dir_path( __FILE__ ) );
@@ -2479,6 +2479,10 @@ if ( ! function_exists( 'woosw_init' ) ) {
                             'woosw_vars',
                             [
                                     'wc_ajax_url'                   => WC_AJAX::get_endpoint( '%%endpoint%%' ),
+                                    'cookie_secure'                 => Woosw_Helper::get_cookie_config()['secure'] ? 'yes' : 'no',
+                                    'cookie_samesite'               => Woosw_Helper::get_cookie_config()['samesite'],
+                                    'cookie_path'                   => Woosw_Helper::get_cookie_config()['path'],
+                                    'cookie_domain'                 => Woosw_Helper::get_cookie_config()['domain'],
                                     'nonce'                         => wp_create_nonce( 'woosw-security' ),
                                     'added_to_cart'                 => apply_filters( 'woosw_added_to_cart', $added_to_cart ),
                                     'auto_remove'                   => Woosw_Helper::get_setting( 'auto_remove', 'no' ),
@@ -3401,26 +3405,20 @@ if ( ! function_exists( 'woosw_init' ) ) {
                             ] );
                         }
 
-                        $secure   = apply_filters( 'woosw_cookie_secure', wc_site_is_https() && is_ssl() );
-                        $httponly = apply_filters( 'woosw_cookie_httponly', false );
-
                         if ( ! empty( $_COOKIE['woosw_key'] ) ) {
-                            wc_setcookie( 'woosw_key_ori', sanitize_text_field( wp_unslash( $_COOKIE['woosw_key'] ) ), time() + 604800, $secure, $httponly );
+                            Woosw_Helper::set_cookie( 'woosw_key_ori', sanitize_text_field( wp_unslash( $_COOKIE['woosw_key'] ) ), null, true );
                         }
 
-                        wc_setcookie( 'woosw_key', $key, time() + 604800, $secure, $httponly );
+                        Woosw_Helper::set_cookie( 'woosw_key', $key );
                     }
                 }
 
                 function wp_logout( $user_id ) {
-                    $secure   = apply_filters( 'woosw_cookie_secure', wc_site_is_https() && is_ssl() );
-                    $httponly = apply_filters( 'woosw_cookie_httponly', false );
-
                     if ( ! empty( $_COOKIE['woosw_key_ori'] ) ) {
-                        wc_setcookie( 'woosw_key', sanitize_text_field( wp_unslash( $_COOKIE['woosw_key_ori'] ) ), time() + 604800, $secure, $httponly );
+                        Woosw_Helper::set_cookie( 'woosw_key', sanitize_text_field( wp_unslash( $_COOKIE['woosw_key_ori'] ) ) );
                     } else {
-                        wc_setcookie( 'woosw_key_ori', '', time() + 604800, $secure, $httponly );
-                        wc_setcookie( 'woosw_key', '', time() + 604800, $secure, $httponly );
+                        Woosw_Helper::delete_cookie( 'woosw_key_ori', true );
+                        Woosw_Helper::delete_cookie( 'woosw_key' );
                         unset( $_COOKIE['woosw_key_ori'] );
                         unset( $_COOKIE['woosw_key'] );
                     }

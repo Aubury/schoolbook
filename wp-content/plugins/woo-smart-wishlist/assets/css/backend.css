@@ -186,6 +186,10 @@
     border-radius: 3px 3px 0 0;
 }
 
+.woosw-nav-item.wpc-premium::after {
+    background: #c9356e;
+}
+
 .woosw-nav-item:hover {
     color: var(--wpc-primary) !important;
 }

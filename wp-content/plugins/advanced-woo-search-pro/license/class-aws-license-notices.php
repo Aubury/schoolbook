@@ -131,7 +131,7 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
 
             // show when license key expired ( license inactive )
             if ( $license_key && $plugin_info && $plugin_info->license_status && $plugin_info->license_status === 'expired' ) {
-                $renew_link = property_exists( $plugin_info, 'renewal_link' ) && $plugin_info->renewal_link ? $plugin_info->renewal_link : 'https://portal.advanced-woo-search.com/';
+                $renew_link = property_exists( $plugin_info, 'renewal_link' ) && $plugin_info->renewal_link ? $plugin_info->renewal_link : 'https://portal.kramakit.com/';
                 $html .= '<div class="aws-license-notice">';
                     $html .= '<div class="aws-license-notice--content">';
                         $html .= '<h2>' . __( 'License key expired', 'advanced-woo-search' ) . '</h2>';
@@ -164,7 +164,7 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
                             $html .= __( "Your license was not activated for this domain. Most likely the problem occurs after your database migration to a new domain.", 'advanced-woo-search' ) . '<br>' .
                                 __( "Please deactivate your license on the current domain and activate it again via the box below.", 'advanced-woo-search' )  . '<br>' .
                                 sprintf(__( "Also, if the domain %s is not a staging site and you’re no longer using it, please consider deactivating the license for it as well.", 'advanced-woo-search' ), esc_url( $license_domain ) )  . '<br>' .
-                                sprintf( __( "You can also manage all activations in the %s.", 'advanced-woo-search' ), '<a target="_blank" href="https://portal.advanced-woo-search.com/">' . __( 'customers portal', 'advanced-woo-search' ) . '</a>' );
+                                sprintf( __( "You can also manage all activations in the %s.", 'advanced-woo-search' ), '<a target="_blank" href="https://portal.kramakit.com/">' . __( 'customers portal', 'advanced-woo-search' ) . '</a>' );
                         $html .= '</p>';
                     $html .= '</div>';
                 $html .= '</div>';
@@ -236,7 +236,7 @@ if ( ! class_exists( 'AWS_License_Notices' ) ) :
             $notices = array();
 
             $is_license_expired = $license_key && $plugin_info && $plugin_info->license_status && $plugin_info->license_status === 'expired';
-            $renew_link = $license_key && $plugin_info && property_exists( $plugin_info, 'renewal_link' ) && $plugin_info->renewal_link ? $plugin_info->renewal_link : 'https://portal.advanced-woo-search.com/';
+            $renew_link = $license_key && $plugin_info && property_exists( $plugin_info, 'renewal_link' ) && $plugin_info->renewal_link ? $plugin_info->renewal_link : 'https://portal.kramakit.com/';
 
             // show when license key expired ( license inactive )
             if ( $is_license_expired ) {

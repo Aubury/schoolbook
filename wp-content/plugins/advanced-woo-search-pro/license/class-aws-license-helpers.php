@@ -67,7 +67,7 @@ class AWS_License_Helpers {
                         $html .= $buttons_html;
                         $html .= '<div style="margin-bottom:15px;"></div>';
                         if ( ! isset( $notice['hide_dismiss'] ) ) {
-                            $html .= '<a href="' . $dismiss_link . $id . '" title="' . __( 'Dismiss', 'advanced-woo-search'  ) . '" style="color:#787c82;text-decoration:none;font-size:16px;position:absolute;top:0;right:1px;border:none;margin:0;padding:9px;background:0 0;cursor:pointer;"><span style="font-size:16px;" class="dashicons dashicons-dismiss"></span></a>';
+                            $html .= '<a href="' . esc_url( $dismiss_link . $id ) . '" title="' . __( 'Dismiss', 'advanced-woo-search'  ) . '" style="color:#787c82;text-decoration:none;font-size:16px;position:absolute;top:0;right:1px;border:none;margin:0;padding:9px;background:0 0;cursor:pointer;"><span style="font-size:16px;" class="dashicons dashicons-dismiss"></span></a>';
                         }
                     $html .= '</div>';
                 $html .= '</div>';

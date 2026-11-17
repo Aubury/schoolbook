@@ -49,6 +49,86 @@ if ( ! class_exists( 'Woosw_Helper' ) ) {
 			return esc_html( apply_filters( 'woosw_localization_' . $key, $str ) );
 		}
 
+		/**
+		 * Cookie attributes shared by every code path that writes the woosw_key cookie
+		 * (PHP login/logout/default handlers and the frontend JavaScript).
+		 *
+		 * @return array
+		 */
+		public static function get_cookie_config() {
+			$secure   = (bool) apply_filters( 'woosw_cookie_secure', wc_site_is_https() && is_ssl() );
+			$httponly = (bool) apply_filters( 'woosw_cookie_httponly', false );
+			$samesite = ucfirst( strtolower( (string) apply_filters( 'woosw_cookie_samesite', 'Lax' ) ) );
+
+			if ( ! in_array( $samesite, [ 'Lax', 'Strict', 'None' ], true ) ) {
+				$samesite = 'Lax';
+			}
+
+			// SameSite=None is only accepted by browsers together with Secure
+			if ( $samesite === 'None' && ! $secure ) {
+				$samesite = 'Lax';
+			}
+
+			return [
+				'days'     => 7,
+				'path'     => (string) apply_filters( 'woosw_cookie_path', COOKIEPATH ? COOKIEPATH : '/' ),
+				'domain'   => (string) apply_filters( 'woosw_cookie_domain', COOKIE_DOMAIN ? COOKIE_DOMAIN : '' ),
+				'secure'   => $secure,
+				'httponly' => $httponly,
+				'samesite' => $samesite,
+			];
+		}
+
+		/**
+		 * Write a cookie with the shared Secure/SameSite/HttpOnly attributes.
+		 *
+		 * @param string   $name   Cookie name.
+		 * @param string   $value  Cookie value.
+		 * @param int|null $expire Expiry timestamp, null for the default lifetime.
+		 * @param bool|null $httponly Force HttpOnly (e.g. for cookies only read by PHP), null to use the shared setting.
+		 *
+		 * @return bool
+		 */
+		public static function set_cookie( $name, $value, $expire = null, $httponly = null ) {
+			if ( headers_sent() ) {
+				return false;
+			}
+
+			$config = self::get_cookie_config();
+
+			if ( ! is_null( $httponly ) ) {
+				$config['httponly'] = (bool) $httponly;
+			}
+
+			$expire = is_null( $expire ) ? time() + ( $config['days'] * DAY_IN_SECONDS ) : (int) $expire;
+
+			if ( PHP_VERSION_ID >= 70300 ) {
+				return setcookie( $name, $value, [
+					'expires'  => $expire,
+					'path'     => $config['path'],
+					'domain'   => $config['domain'],
+					'secure'   => $config['secure'],
+					'httponly' => $config['httponly'],
+					'samesite' => $config['samesite'],
+				] );
+			}
+
+			// PHP < 7.3 has no options array, append SameSite to the path instead
+			return setcookie( $name, $value, $expire, $config['path'] . '; SameSite=' . $config['samesite'], $config['domain'], $config['secure'], $config['httponly'] );
+		}
+
+		/**
+		 * Expire a cookie using the same attributes it was written with.
+		 *
+		 * @param string    $name     Cookie name.
+		 * @param bool|null $httponly Same override that was used when writing.
+		 *
+		 * @return bool
+		 */
+		public static function delete_cookie( $name, $httponly = null ) {
+			return self::set_cookie( $name, '', time() - HOUR_IN_SECONDS, $httponly );
+		}
+
 		public static function generate_key() {
 			$key         = '';
 			$key_str     = apply_filters( 'woosw_key_characters', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' );
@@ -179,9 +259,7 @@ if ( ! class_exists( 'Woosw_Helper' ) ) {
 						update_user_meta( $user_id, 'woosw_key', $new_key );
 
 						// Update cookie
-						$secure   = apply_filters( 'woosw_cookie_secure', wc_site_is_https() && is_ssl() );
-						$httponly = apply_filters( 'woosw_cookie_httponly', false );
-						wc_setcookie( 'woosw_key', $new_key, time() + 604800, $secure, $httponly );
+						self::set_cookie( 'woosw_key', $new_key );
 					}
 				}
 			}

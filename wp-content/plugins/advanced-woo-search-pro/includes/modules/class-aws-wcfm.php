@@ -57,6 +57,7 @@ if ( ! class_exists( 'AWS_WCFM' ) ) :
             add_filter( 'aws_users_search_query', array( $this, 'wcfm_users_search_query' ), 1, 3 );
             add_filter( 'aws_indexed_content', array( $this, 'aws_indexed_content' ), 1, 3 );
             add_action( 'wp_head', array( $this, 'wp_head' ), 1 );
+            add_filter( 'aws_cache_name', array( $this, 'cache_name' ), 1 );
 
             // Stores list
             add_filter( 'aws_searchbox_markup', array( $this, 'aws_searchbox_markup' ), 1 );
@@ -586,6 +587,24 @@ if ( ! class_exists( 'AWS_WCFM' ) ) :
             }
 
             return $query;
+
+        }
+
+        /*
+         * Separate cache for searches limited to vendor shop
+         */
+        public function cache_name( $cache_option_name ) {
+
+            if ( isset( $_REQUEST['aws_tax'] ) && $_REQUEST['aws_tax'] && strpos( $_REQUEST['aws_tax'], 'store:' ) !== false ) {
+                $cache_option_name .= '_store' . intval( str_replace( 'store:', '', $_REQUEST['aws_tax'] ) );
+            } else {
+                $store = $this->get_current_store();
+                if ( $store ) {
+                    $cache_option_name .= '_store' . $store->get_id();
+                }
+            }
+
+            return $cache_option_name;
 
         }
 

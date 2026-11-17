@@ -16,7 +16,7 @@
     $(function () {
         if (key === null || key === undefined || key === '') {
             key = woosw_get_key();
-            Cookies.set('woosw_key', key, {expires: 7});
+            woosw_set_key(key);
         }
 
         // Load data for the first time
@@ -271,7 +271,7 @@
         $.post(woosw_vars.wc_ajax_url.toString().replace('%%endpoint%%', 'woosw_set_default'), set_data, function (response) {
             // update cookie key
             key = selected_key;
-            Cookies.set('woosw_key', selected_key, {expires: 7});
+            woosw_set_key(selected_key);
 
             if (response.count != null) {
                 woosw_change_count(response.count);
@@ -1287,6 +1287,25 @@
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    function woosw_set_key(value) {
+        // keep the attributes identical to the PHP cookie writer (Woosw_Helper::set_cookie)
+        var attributes = {
+            expires: 7,
+            path: woosw_vars.cookie_path || '/',
+            sameSite: woosw_vars.cookie_samesite || 'Lax',
+        };
+
+        if (woosw_vars.cookie_secure === 'yes') {
+            attributes.secure = true;
+        }
+
+        if (woosw_vars.cookie_domain) {
+            attributes.domain = woosw_vars.cookie_domain;
+        }
+
+        Cookies.set('woosw_key', value, attributes);
+    }
+
     function woosw_get_key() {
         var result = [];
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -1330,7 +1349,7 @@
                 }
 
                 if (response.key && (key === null || key === undefined || key === '' || key !== response.key)) {
-                    Cookies.set('woosw_key', response.key, {expires: 7});
+                    woosw_set_key(response.key);
                 }
 
                 $(document.body).trigger('woosw_data_refreshed', [response]);

@@ -3,7 +3,7 @@ Contributors: wpclever
 Donate link: https://wpclever.net
 Tags: woocommerce, wpc, wishlist, wait-list
 Tested up to: 7.1
-Stable tag: 6.2.0
+Stable tag: 6.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -96,6 +96,10 @@ Example:
 `echo do_shortcode('[woosw id="99"]');`
 
 == Changelog ==
+
+= 6.2.1 =
+* Fixed: Added Secure and SameSite attributes consistently to the wishlist cookie across all PHP and JavaScript code paths
+* Updated: The cookie is now properly expired on logout
 
 = 6.2.0 =
 * Added: Feature allowing wishlist renaming

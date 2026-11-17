@@ -3,7 +3,7 @@
 /*
 Plugin Name: Advanced Woo Search PRO
 Description: Advance ajax WooCommerce product search.
-Version: 3.73
+Version: 3.74
 Author: ILLID
 Plugin URI: https://kramakit.com/
 Author URI: https://kramakit.com/
@@ -108,12 +108,12 @@ final class AWS_PRO_Main {
      */
     private function define_constants() {
 
-        $this->define( 'AWS_PRO_VERSION', '3.73' );
+        $this->define( 'AWS_PRO_VERSION', '3.74' );
         $this->define( 'AWS_PRO_DIR', plugin_dir_path( AWS_PRO_FILE ) );
         $this->define( 'AWS_PRO_URL', plugin_dir_url( AWS_PRO_FILE ) );
         $this->define( 'AWS_PRO_BASENAME', plugin_basename( AWS_PRO_FILE ) );
 
-        $this->define( 'AWS_PRO_UPDATE_URL', 'https://portal.advanced-woo-search.com/wp-json/up/v1/updater' );
+        $this->define( 'AWS_PRO_UPDATE_URL', 'https://portal.kramakit.com/wp-json/up/v1/updater' );
 
         $this->define( 'AWS_INDEX_TABLE_NAME', 'aws_index' );
         $this->define( 'AWS_CACHE_TABLE_NAME', 'aws_cache' );

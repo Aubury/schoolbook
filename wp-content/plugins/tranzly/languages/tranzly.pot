@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tranzly™ 3.27.30\n"
+"Project-Id-Version: Tranzly™ 3.27.50\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tranzly\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-20T14:29:13+00:00\n"
+"POT-Creation-Date: 2026-11-11T11:06:06+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: tranzly\n"
@@ -87,447 +87,451 @@ msgstr ""
 msgid "The trial could not be started here. Continue on the trial page instead."
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:282
+#: includes/admin-kit/class-matrix.php:284
 msgid "One post per language, linked together"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:283
+#: includes/admin-kit/class-matrix.php:285
 msgid "Keeps your old Tranzly translations"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:284
+#: includes/admin-kit/class-matrix.php:286
 #: src/admin/Jobs.js:211
 msgid "Translate in the background"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:285
+#: includes/admin-kit/class-matrix.php:287
 msgid "Latest WordPress and PHP, tested every release"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:286
+#: includes/admin-kit/class-matrix.php:288
 msgid "Security by design"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:287
+#: includes/admin-kit/class-matrix.php:289
 msgid "Interface in 58 languages, right-to-left ready"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:288
+#: includes/admin-kit/class-matrix.php:290
 msgid "Unlimited languages"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:289
+#: includes/admin-kit/class-matrix.php:291
 msgid "DeepL (the current integration, kept)"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:290
+#: includes/admin-kit/class-matrix.php:292
 msgid "AI models with your own key"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:291
+#: includes/admin-kit/class-matrix.php:293
 msgid "Google Cloud Translation and Microsoft Translator"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:292
+#: includes/admin-kit/class-matrix.php:294
 msgid "Different engine per language"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:293
+#: includes/admin-kit/class-matrix.php:295
 msgid "Automatic fallback"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:294
+#: includes/admin-kit/class-matrix.php:296
 msgid "Cost estimate before you start"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:295
+#: includes/admin-kit/class-matrix.php:297
 msgid "Translation memory"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:296
+#: includes/admin-kit/class-matrix.php:298
 msgid "Glossary and do-not-translate list for every engine"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:297
+#: includes/admin-kit/class-matrix.php:299
 msgid "Tone and style instructions"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:298
+#: includes/admin-kit/class-matrix.php:300
 msgid "DeepL's billed characters after each translation"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:299
-msgid "Posts, pages and custom post types"
-msgstr ""
-
-#: includes/admin-kit/class-matrix.php:300
-msgid "Blocks translated safely"
-msgstr ""
-
 #: includes/admin-kit/class-matrix.php:301
-msgid "Categories, tags and custom taxonomies"
+msgid "Expert request timeout for translation engines"
 msgstr ""
 
 #: includes/admin-kit/class-matrix.php:302
-msgid "Menus"
+msgid "Posts, pages and custom post types"
 msgstr ""
 
 #: includes/admin-kit/class-matrix.php:303
-msgid "Page Builder Sandwich pages"
+msgid "Blocks translated safely"
 msgstr ""
 
 #: includes/admin-kit/class-matrix.php:304
-msgid "Elementor, Bricks, Divi, Beaver Builder, Oxygen and WPBakery"
+msgid "Categories, tags and custom taxonomies"
 msgstr ""
 
 #: includes/admin-kit/class-matrix.php:305
-msgid "WooCommerce: everything"
+msgid "Menus"
 msgstr ""
 
 #: includes/admin-kit/class-matrix.php:306
-msgid "SEO fields for all four big SEO plugins"
+msgid "Page Builder Sandwich pages"
 msgstr ""
 
 #: includes/admin-kit/class-matrix.php:307
+msgid "Elementor, Bricks, Divi, Beaver Builder, Oxygen and WPBakery"
+msgstr ""
+
+#: includes/admin-kit/class-matrix.php:308
+msgid "WooCommerce: everything"
+msgstr ""
+
+#: includes/admin-kit/class-matrix.php:309
+msgid "SEO fields for all four big SEO plugins"
+msgstr ""
+
+#: includes/admin-kit/class-matrix.php:310
 #: src/admin/IntegrationsTab.js:179
 msgid "Custom fields"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:308
+#: includes/admin-kit/class-matrix.php:311
 msgid "Theme and plugin text (strings)"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:309
+#: includes/admin-kit/class-matrix.php:312
 msgid "Media"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:310
+#: includes/admin-kit/class-matrix.php:313
 msgid "Block themes: templates and patterns"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:311
+#: includes/admin-kit/class-matrix.php:314
 msgid "Widgets and site title/tagline"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:312
+#: includes/admin-kit/class-matrix.php:315
 msgid "Translate one post in one click"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:313
+#: includes/admin-kit/class-matrix.php:316
 #: src/admin/StatusTab.js:547
 msgid "Bulk translate the whole site"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:314
+#: includes/admin-kit/class-matrix.php:317
 msgid "Auto-translate new and updated content"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:315
+#: includes/admin-kit/class-matrix.php:318
 msgid "Side-by-side translation editor"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:316
+#: includes/admin-kit/class-matrix.php:319
 msgid "Visual front-end editor"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:317
+#: includes/admin-kit/class-matrix.php:320
 #: src/admin/WorkflowTab.js:278
 msgid "Review and approval"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:318
+#: includes/admin-kit/class-matrix.php:321
 msgid "Export and import for human translators"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:319
+#: includes/admin-kit/class-matrix.php:322
 #: src/admin/WorkflowTab.js:602
 msgid "Switch from WPML, Polylang or TranslatePress"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:320
+#: includes/admin-kit/class-matrix.php:323
 msgid "Translation status dashboard"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:321
+#: includes/admin-kit/class-matrix.php:324
 msgid "Language views in the posts list"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:322
+#: includes/admin-kit/class-matrix.php:325
 msgid "Filter posts not yet translated"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:323
+#: includes/admin-kit/class-matrix.php:326
 msgid "Language in the URL: /de/, /fr/"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:324
+#: includes/admin-kit/class-matrix.php:327
 msgid "Subdomains or separate domains per language"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:325
+#: includes/admin-kit/class-matrix.php:328
 msgid "Translated slugs"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:326
+#: includes/admin-kit/class-matrix.php:329
 msgid "hreflang tags, done right"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:327
+#: includes/admin-kit/class-matrix.php:330
 msgid "Translated sitemaps"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:328
+#: includes/admin-kit/class-matrix.php:331
 msgid "Correct language and canonical tags"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:329
+#: includes/admin-kit/class-matrix.php:332
 msgid "Hide untranslated pages from search engines"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:330
+#: includes/admin-kit/class-matrix.php:333
 msgid "Suggest the visitor's language"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:331
+#: includes/admin-kit/class-matrix.php:334
 msgid "Switcher block for the block editor"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:332
+#: includes/admin-kit/class-matrix.php:335
 msgid "Switcher element for Page Builder Sandwich"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:333
+#: includes/admin-kit/class-matrix.php:336
 msgid "Switcher for Elementor, Bricks and other builders"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:334
+#: includes/admin-kit/class-matrix.php:337
 msgid "Menu item, widget and shortcode"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:335
+#: includes/admin-kit/class-matrix.php:338
 #: src/admin/Switchers.js:90
 msgid "Floating switcher"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:336
+#: includes/admin-kit/class-matrix.php:339
 msgid "Accessible switcher"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:337
+#: includes/admin-kit/class-matrix.php:340
 msgid "Flag shape and size in every switcher"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:338
+#: includes/admin-kit/class-matrix.php:341
 msgid "PHP API and template functions"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:339
+#: includes/admin-kit/class-matrix.php:342
 msgid "Add your own translation engine"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:340
+#: includes/admin-kit/class-matrix.php:343
 msgid "Hooks, REST API and WP-CLI"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:341
+#: includes/admin-kit/class-matrix.php:344
 msgid "Compatibility layer for Polylang/WPML functions"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:342
+#: includes/admin-kit/class-matrix.php:345
 msgid "Bring your own key for all main AI providers"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:343
+#: includes/admin-kit/class-matrix.php:346
 msgid "Model list updates itself"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:344
+#: includes/admin-kit/class-matrix.php:347
 msgid "We push recommended models in updates"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:345
+#: includes/admin-kit/class-matrix.php:348
 msgid "Add a model yourself in one step"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:346
+#: includes/admin-kit/class-matrix.php:349
 msgid "Simple setup for non-technical users"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:347
+#: includes/admin-kit/class-matrix.php:350
 msgid "Keys stored encrypted, never sent to us"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:348
+#: includes/admin-kit/class-matrix.php:351
 msgid "Clear error messages"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:349
+#: includes/admin-kit/class-matrix.php:352
 msgid "Usage and cost log"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:350
+#: includes/admin-kit/class-matrix.php:353
 msgid "Per-role AI permissions"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:351
+#: includes/admin-kit/class-matrix.php:354
 msgid "One key, both plugins"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:352
+#: includes/admin-kit/class-matrix.php:355
 msgid "Modern admin screens"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:353
+#: includes/admin-kit/class-matrix.php:356
 msgid "Setup wizard"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:354
+#: includes/admin-kit/class-matrix.php:357
 msgid "Built-in help"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:355
+#: includes/admin-kit/class-matrix.php:358
 msgid "Cross-promotion between the two plugins"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:356
+#: includes/admin-kit/class-matrix.php:359
 msgid "Zinn Digital® hosting promotion"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:357
+#: includes/admin-kit/class-matrix.php:360
 msgid "Pro licensing through Freemius (latest SDK)"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:358
+#: includes/admin-kit/class-matrix.php:361
 msgid "Free trial of Pro"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:359
+#: includes/admin-kit/class-matrix.php:362
 msgid "Bundle: Page Builder Sandwich Pro + Tranzly Pro"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:360
+#: includes/admin-kit/class-matrix.php:363
 msgid "Credited to Zinn Digital® Ltd"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:361
+#: includes/admin-kit/class-matrix.php:364
 msgid "Synced to GitHub like our other plugins"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:362
+#: includes/admin-kit/class-matrix.php:365
 msgid "Manual edits are protected"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:363
+#: includes/admin-kit/class-matrix.php:366
 msgid "Failed translation report"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:364
+#: includes/admin-kit/class-matrix.php:367
 msgid "Edit any translation easily"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:365
+#: includes/admin-kit/class-matrix.php:368
 msgid "Do-not-translate list in the free version"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:366
+#: includes/admin-kit/class-matrix.php:369
 msgid "WooCommerce multi-currency"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:367
+#: includes/admin-kit/class-matrix.php:370
 #: src/admin/WorkflowTab.js:167
 msgid "AI quality check"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:368
+#: includes/admin-kit/class-matrix.php:371
 msgid "Show content only in some languages"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:369
+#: includes/admin-kit/class-matrix.php:372
 msgid "Multilingual SEO audit"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:370
+#: includes/admin-kit/class-matrix.php:373
 msgid "Translate forms"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:371
+#: includes/admin-kit/class-matrix.php:374
 msgid "Translate comments and reviews"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:372
+#: includes/admin-kit/class-matrix.php:375
 msgid "Different images per language"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:373
+#: includes/admin-kit/class-matrix.php:376
 msgid "Monthly spend cap per engine"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:374
+#: includes/admin-kit/class-matrix.php:377
 msgid "Multilingual site search"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:375
+#: includes/admin-kit/class-matrix.php:378
 msgid "Speed promise, tested"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:376
+#: includes/admin-kit/class-matrix.php:379
 msgid "Multisite support"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:377
+#: includes/admin-kit/class-matrix.php:380
 msgid "Staging and local sites don't use up a licence"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:378
+#: includes/admin-kit/class-matrix.php:381
 msgid "Docs site and short video guides"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:379
+#: includes/admin-kit/class-matrix.php:382
 msgid "Feedback and feature-request button"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:380
+#: includes/admin-kit/class-matrix.php:383
 msgid "Beta updates channel"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:381
-msgid "Priority support"
+#: includes/admin-kit/class-matrix.php:384
+msgid "Full enterprise-level 24/7 support, included"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:382
+#: includes/admin-kit/class-matrix.php:385
 msgid "Bug reporter and support tickets"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:383
+#: includes/admin-kit/class-matrix.php:386
 msgid "Use Freemius fully"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:384
+#: includes/admin-kit/class-matrix.php:387
 msgid "Footprint-free front end, on by default"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:395
+#: includes/admin-kit/class-matrix.php:398
 msgid "Foundation"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:396
+#: includes/admin-kit/class-matrix.php:399
 msgid "Translation engines"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:397
+#: includes/admin-kit/class-matrix.php:400
 msgid "What gets translated"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:398
+#: includes/admin-kit/class-matrix.php:401
 #: src/admin/Root.js:49
 msgid "Workflow"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:399
+#: includes/admin-kit/class-matrix.php:402
 msgid "SEO and URLs"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:400
+#: includes/admin-kit/class-matrix.php:403
 #: includes/switcher/class-places.php:262
 #: includes/switcher/class-widget.php:27
 #: includes/switcher/pro__premium_only/class-bricks-element.php:51
@@ -535,157 +539,171 @@ msgstr ""
 msgid "Language switcher"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:401
+#: includes/admin-kit/class-matrix.php:404
 msgid "Developers"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:402
+#: includes/admin-kit/class-matrix.php:405
 msgid "AI keys and models"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:403
+#: includes/admin-kit/class-matrix.php:406
 msgid "Admin and licensing"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:404
+#: includes/admin-kit/class-matrix.php:407
 msgid "More features"
 msgstr ""
 
-#: includes/admin-kit/class-matrix.php:405
+#: includes/admin-kit/class-matrix.php:408
 msgid "Licensing and support"
 msgstr ""
 
 #. translators: %s: a plugin's name.
-#: includes/admin-kit/class-promotions.php:154
+#: includes/admin-kit/class-promotions.php:164
 #, php-format
 msgid "See %s"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:198
+#: includes/admin-kit/class-promotions.php:224
 msgid "Hosting built for fast, multilingual WordPress"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:199
+#: includes/admin-kit/class-promotions.php:225
 msgid "Managed WordPress hosting from the team that makes this plugin, tuned for speed and for sites in many languages."
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:200
+#: includes/admin-kit/class-promotions.php:226
 msgid "See Zinn Digital® hosting"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:207
+#: includes/admin-kit/class-promotions.php:233
 msgid "Hire a WordPress expert on ZinnHub"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:208
+#: includes/admin-kit/class-promotions.php:234
 msgid "A freelance marketplace for WordPress design, development, translation and SEO work."
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:209
+#: includes/admin-kit/class-promotions.php:235
 msgid "Visit ZinnHub"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:216
+#: includes/admin-kit/class-promotions.php:242
 msgid "Bulk site and PBN hosting"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:217
+#: includes/admin-kit/class-promotions.php:243
 msgid "PBN.ltd is our platform for hosting and managing many sites at once."
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:218
+#: includes/admin-kit/class-promotions.php:244
 msgid "Visit PBN.ltd"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:225
+#: includes/admin-kit/class-promotions.php:251
 msgid "Google Ads management that asks before it spends"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:226
+#: includes/admin-kit/class-promotions.php:252
 msgid "Zinn® Ads audits your Google Ads account every day and fixes wasted spend, every change approved by you first. Its click-fraud shield is free with Zinn® hosting."
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:227
+#: includes/admin-kit/class-promotions.php:253
 msgid "See Zinn® Ads"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:235
+#: includes/admin-kit/class-promotions.php:261
 msgid "Get Page Builder Sandwich Pro and Tranzly Pro together"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:237
+#: includes/admin-kit/class-promotions.php:263
 msgid "The bundle costs less than buying both plugins separately, on the same plans and site limits."
 msgstr ""
 
 #. translators: %d: the largest saving, in whole percent.
-#: includes/admin-kit/class-promotions.php:239
+#: includes/admin-kit/class-promotions.php:265
 #, php-format
 msgid "Both Pro plugins on the same plan and site limit, for up to %d%% less than buying them separately."
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:240
+#: includes/admin-kit/class-promotions.php:266
 #: src/admin-kit/PlansScreen.js:245
 msgid "See the bundle"
 msgstr ""
 
+#: includes/admin-kit/class-promotions.php:274
+msgid "Every Zinn® Pro plugin, one licence"
+msgstr ""
+
+#. translators: %s: the lowest yearly price with its currency sign, e.g. "$149".
+#: includes/admin-kit/class-promotions.php:277
+#, php-format
+msgid "The Zinn® Pro Membership gives you the Pro versions of Page Builder Sandwich, Tranzly, Zinn® SEO, Zinn® Cache and Zinn® Backups, and every Pro plugin we release next, from %s a year. A second membership adds Zinn® Chat Pro."
+msgstr ""
+
+#: includes/admin-kit/class-promotions.php:280
+msgid "See the Pro Membership"
+msgstr ""
+
 #. translators: %s: a plugin's name.
-#: includes/admin-kit/class-promotions.php:250
+#: includes/admin-kit/class-promotions.php:290
 #, php-format
 msgid "Get %s"
 msgstr ""
 
 #. translators: 1: this plugin's name, 2: the other plugin's name.
-#: includes/admin-kit/class-promotions.php:252
+#: includes/admin-kit/class-promotions.php:292
 #, php-format
 msgid "Integration active: %1$s and %2$s work together"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:269
+#: includes/admin-kit/class-promotions.php:309
 msgid "Translate this site with Tranzly"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:272
+#: includes/admin-kit/class-promotions.php:312
 msgid "Build pages visually with Page Builder Sandwich"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:275
+#: includes/admin-kit/class-promotions.php:315
 msgid "Get this site professionally optimised for search with Zinn® SEO"
 msgstr ""
 
 #. translators: %s: a plugin's name.
-#: includes/admin-kit/class-promotions.php:279
+#: includes/admin-kit/class-promotions.php:319
 #, php-format
 msgid "%s, from Zinn Digital®"
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:291
+#: includes/admin-kit/class-promotions.php:331
 msgid "Publish every page in many languages, with translated addresses, SEO data and a language switcher. Works with the pages you build here."
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:294
+#: includes/admin-kit/class-promotions.php:334
 msgid "Design pages right in the editor with fast, footprint-free blocks. Everything you build translates with Tranzly."
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:297
+#: includes/admin-kit/class-promotions.php:337
 msgid "Titles, sitemaps, rich results, redirects and AI visibility from one guided setup, with nothing added to the pages your visitors load, so the site stays fast. Moving from Yoast or Rank Math takes a few clicks."
 msgstr ""
 
 #. translators: %s: a plugin's name.
-#: includes/admin-kit/class-promotions.php:301
+#: includes/admin-kit/class-promotions.php:341
 #, php-format
 msgid "%s is made by the same team and works alongside this plugin."
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:315
+#: includes/admin-kit/class-promotions.php:355
 msgid "Zinn® SEO is active on this site: search titles, descriptions and social text are translated with each page, and every language gets its own sitemap and llms.txt."
 msgstr ""
 
-#: includes/admin-kit/class-promotions.php:318
+#: includes/admin-kit/class-promotions.php:358
 msgid "Zinn® SEO is active on this site: its SEO blocks are in the block inserter, and the structured data of the pages you build joins one search graph."
 msgstr ""
 
 #. translators: %s: the other plugin's name.
-#: includes/admin-kit/class-promotions.php:323
+#: includes/admin-kit/class-promotions.php:363
 #, php-format
 msgid "%s is active on this site, so both plugins share one set of AI provider keys and one settings screen for them."
 msgstr ""
@@ -1328,57 +1346,9 @@ msgstr ""
 msgid "This site is connected to its Zinn® account for viewing only, so it cannot spend credit. The account's owner can allow it."
 msgstr ""
 
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:125
-msgid "Your user role is not allowed to use AI on this site. Ask an administrator."
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:132
-msgid "This site has reached its monthly AI spending limit. An administrator can raise it in the AI settings."
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:135
-msgid "This site has reached its monthly limit of AI requests. An administrator can raise it in the AI settings."
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:243
-msgid "Usage and cost"
-msgstr ""
-
-#. translators: %s: list of plugin names.
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:253
-#, php-format
-msgid "The log, limits and role permissions apply to AI used through: %s."
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:256
-msgid "Costs are approximate, worked out from published prices; a model with no known price counts as zero."
-msgstr ""
-
-#. translators: 1: number of requests, 2: approximate cost in US dollars.
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:260
-#, php-format
-msgid "This month: %1$s requests, about %2$s."
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:269
-msgid "When"
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:269
-msgid "Who"
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:269
-msgid "Used for"
-msgstr ""
-
 #: includes/ai-core/pro__premium_only/class-pro-policy.php:269
 #: src/admin/WorkflowTab.js:202
 msgid "Model"
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:269
-msgid "Tokens in / out"
 msgstr ""
 
 #: includes/ai-core/pro__premium_only/class-pro-policy.php:269
@@ -1392,52 +1362,12 @@ msgstr ""
 msgid "Result"
 msgstr ""
 
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:274
-msgid "No AI requests have been made yet."
-msgstr ""
-
 #: includes/ai-core/pro__premium_only/class-pro-policy.php:285
 #: includes/freemius-strings.php:908
 #: includes/freemius-strings.php:3771
 #: src/admin-kit/Tour.js:128
 #: src/admin-kit/Wizard.js:76
 msgid "Done"
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:289
-msgid "Limits and permissions"
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:293
-msgid "Monthly spending limit (US dollars)"
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:293
-msgid "Leave empty for no limit. AI stops for the rest of the month once the approximate cost reaches it."
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:294
-msgid "Monthly request limit"
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:294
-msgid "Leave empty for no limit."
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:295
-msgid "Who may use AI"
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:299
-msgid "Tick none to let everyone who can use the plugin's features use AI. Administrators can always use it."
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:301
-msgid "Save limits and permissions"
-msgstr ""
-
-#: includes/ai-core/pro__premium_only/class-pro-policy.php:350
-msgid "Limits and permissions saved."
 msgstr ""
 
 #: includes/api/class-rest-content.php:400
@@ -1479,8 +1409,8 @@ msgid "This screen needs JavaScript."
 msgstr ""
 
 #: includes/class-fixture.php:60
-#: includes/switcher/class-switcher.php:166
-#: includes/switcher/class-switcher.php:243
+#: includes/switcher/class-switcher.php:167
+#: includes/switcher/class-switcher.php:244
 #: includes/switcher/pro__premium_only/class-bricks-element.php:124
 #: includes/switcher/pro__premium_only/class-elementor-widget.php:129
 msgid "Choose a language"
@@ -1533,8 +1463,9 @@ msgstr ""
 #: includes/content/class-content-module.php:78
 #: includes/content/class-post-admin.php:63
 #: includes/content/class-term-admin.php:71
-#: src/editor/translations-panel.js:57
-#: src/editor/translations-panel.js:112
+#: src/editor/translations-panel.js:68
+#: src/editor/translations-panel.js:124
+#: src/editor/translations-panel.js:157
 msgid "Translations"
 msgstr ""
 
@@ -1585,12 +1516,12 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: includes/content/class-menus.php:86
+#: includes/content/class-menus.php:119
 msgid "Choose one of your menus for each language."
 msgstr ""
 
 #: includes/content/class-post-admin.php:83
-#: src/editor/translations-panel.js:60
+#: src/editor/translations-panel.js:71
 msgid "Save this post first, then translate it here."
 msgstr ""
 
@@ -1602,13 +1533,14 @@ msgstr ""
 #: includes/content/class-post-admin.php:103
 #: src/admin/SeoAudit.js:163
 #: src/admin/StatusTab.js:418
-#: src/editor/translations-panel.js:154
+#: src/editor/translations-panel.js:143
+#: src/editor/translations-panel.js:199
 msgid "Edit"
 msgstr ""
 
 #: includes/content/class-post-admin.php:104
 #: src/admin/StatusTab.js:430
-#: src/editor/translations-panel.js:159
+#: src/editor/translations-panel.js:204
 msgid "Side by side"
 msgstr ""
 
@@ -1646,7 +1578,7 @@ msgstr ""
 #. translators: %s: a language's name, e.g. Deutsch.
 #: includes/content/class-post-admin.php:162
 #: includes/content/class-term-admin.php:142
-#: src/editor/translations-panel.js:228
+#: src/editor/translations-panel.js:273
 #, php-format,js-format
 msgid "%s: translated."
 msgstr ""
@@ -1655,7 +1587,11 @@ msgstr ""
 msgid "This is not a translation, so there is nothing to protect."
 msgstr ""
 
-#: includes/content/class-rest-editor.php:65
+#: includes/content/class-rest-editor.php:95
+msgid "This template could not be found."
+msgstr ""
+
+#: includes/content/class-rest-editor.php:229
 msgid "This kind of content is not translated."
 msgstr ""
 
@@ -1670,7 +1606,7 @@ msgstr ""
 #: includes/workflow/class-status.php:250
 #: includes/workflow/class-status.php:311
 #: includes/workflow/pro__premium_only/class-bulk.php:134
-#: includes/workflow/pro__premium_only/class-exchange.php:122
+#: includes/workflow/pro__premium_only/class-exchange.php:128
 #: includes/workflow/pro__premium_only/class-quality.php:127
 msgid "Choose one of your other languages."
 msgstr ""
@@ -1702,21 +1638,23 @@ msgstr ""
 msgid "Piece %s is not part of this translation any more. Reload the page and try again."
 msgstr ""
 
-#: includes/content/pro__premium_only/class-visual-editor.php:55
-msgid "Translate on this page"
-msgstr ""
-
 #: includes/core/class-content.php:150
 #: includes/core/class-content.php:290
 msgid "This item already has a version in that language."
 msgstr ""
 
-#: includes/core/class-engine-settings.php:90
+#: includes/core/class-engine-settings.php:122
 #: includes/core/class-translator.php:446
 msgid "That translation engine is not available on this site."
 msgstr ""
 
-#: includes/core/class-engine-settings.php:117
+#. translators: 1: the lowest timeout in seconds, 2: the highest timeout in seconds.
+#: includes/core/class-engine-settings.php:134
+#, php-format
+msgid "The request timeout must be between %1$d and %2$d seconds, or 0 for the default."
+msgstr ""
+
+#: includes/core/class-engine-settings.php:165
 msgid "Different engines and AI models per language, automatic fallback and spending caps are Tranzly Pro features."
 msgstr ""
 
@@ -1852,36 +1790,6 @@ msgid "%1$s billed %2$s character."
 msgid_plural "%1$s billed %2$s characters."
 msgstr[0] ""
 msgstr[1] ""
-
-#: includes/core/pro__premium_only/class-engine-routing.php:103
-msgid "Each language must be one of the site's languages, with an available engine."
-msgstr ""
-
-#: includes/core/pro__premium_only/class-engine-routing.php:117
-msgid "Each language's AI model must name one of the site's languages (or all other languages), an AI provider and one of its models."
-msgstr ""
-
-#. translators: 1: an AI model id, 2: an AI provider id.
-#: includes/core/pro__premium_only/class-engine-routing.php:123
-#, php-format
-msgid "%1$s is not one of the models of %2$s. Pick one from the list, or add it in the AI settings first."
-msgstr ""
-
-#: includes/core/pro__premium_only/class-engine-routing.php:137
-msgid "The fallback list may only name available engines."
-msgstr ""
-
-#: includes/core/pro__premium_only/class-engine-routing.php:148
-msgid "A monthly cap is an amount in US dollars, zero or more, for an available engine."
-msgstr ""
-
-#: includes/core/pro__premium_only/class-glossary-pro.php:51
-msgid "Glossary entries must be grouped by one of the site's languages."
-msgstr ""
-
-#: includes/core/pro__premium_only/class-glossary-pro.php:68
-msgid "Tone is set per site language: formality default, more or less, plus optional instructions."
-msgstr ""
 
 #: includes/engines/class-ai.php:113
 msgid "AI model"
@@ -6014,88 +5922,14 @@ msgstr ""
 msgid "Comments and reviews"
 msgstr ""
 
-#. translators: %s: the language a comment was written in.
-#: includes/integrations/pro__premium_only/class-comments.php:292
-#, php-format
-msgid "Translated automatically from %s."
-msgstr ""
-
-#: includes/integrations/pro__premium_only/class-currencies.php:72
-msgid "WooCommerce currencies"
-msgstr ""
-
 #: includes/integrations/pro__premium_only/class-currencies.php:335
 #: src/admin/IntegrationsTab.js:378
 msgid "Currency"
 msgstr ""
 
-#. translators: %s: a currency code.
-#: includes/integrations/pro__premium_only/class-currencies.php:372
-#, php-format
-msgid "The rate source does not quote %s, the shop's currency."
-msgstr ""
-
-#. translators: %s: what was entered.
-#: includes/integrations/pro__premium_only/class-currencies.php:448
-#, php-format
-msgid "\"%s\" is not a currency WooCommerce knows, or it is the shop's own currency."
-msgstr ""
-
-#. translators: %s: a currency code.
-#: includes/integrations/pro__premium_only/class-currencies.php:453
-#, php-format
-msgid "Enter a rate above zero for %s, like 0.92."
-msgstr ""
-
-#: includes/integrations/pro__premium_only/class-currencies.php:458
-msgid "Rounding steps and price endings are amounts, like 0.05 or 0.99."
-msgstr ""
-
-#: includes/integrations/pro__premium_only/class-custom-fields.php:64
-msgid "Custom fields (ACF, Meta Box, Pods)"
-msgstr ""
-
-#: includes/integrations/pro__premium_only/class-custom-fields.php:384
-msgid "Choose translate, copy or leave empty for each field."
-msgstr ""
-
-#: includes/integrations/pro__premium_only/class-forms.php:58
-msgid "Forms (Contact Form 7, WPForms, Gravity Forms, Fluent Forms)"
-msgstr ""
-
-#: includes/integrations/pro__premium_only/class-rates.php:43
-msgid "I enter the rates myself"
-msgstr ""
-
-#: includes/integrations/pro__premium_only/class-rates.php:44
-msgid "European Central Bank, updated daily (free, no account needed)"
-msgstr ""
-
-#. translators: %d: an HTTP status code.
-#: includes/integrations/pro__premium_only/class-rates.php:63
-#, php-format
-msgid "The European Central Bank answered %d. The last rates are kept."
-msgstr ""
-
-#: includes/integrations/pro__premium_only/class-rates.php:66
-msgid "The European Central Bank's feed held no rates. The last rates are kept."
-msgstr ""
-
-#: includes/integrations/pro__premium_only/class-rates.php:79
-msgid "That exchange-rate source is not available."
-msgstr ""
-
-#: includes/integrations/pro__premium_only/class-seo-fields.php:106
-msgid "SEO plugins (Yoast SEO, Rank Math, SEOPress, All in One SEO)"
-msgstr ""
-
 #: includes/integrations/pro__premium_only/class-theme-strings.php:59
 #: src/admin/IntegrationsTab.js:619
 msgid "Theme and plugin text"
-msgstr ""
-
-#: includes/integrations/pro__premium_only/class-theme-strings.php:315
-msgid "That theme or plugin is not active on this site."
 msgstr ""
 
 #: includes/mcp-kit/class-ability.php:94
@@ -6201,7 +6035,7 @@ msgstr ""
 
 #: includes/mcp-kit/class-server.php:343
 #: src/mcp-kit/McpPanel.js:160
-msgid "Add the connection address as a custom connector in Claude, or as an app in ChatGPT developer mode. They open this site so you can approve them; no password to copy."
+msgid "Add the connection address as a custom connector in Claude, or as a custom MCP server in ChatGPT. They open this site so you can approve them; no password to copy."
 msgstr ""
 
 #: includes/mcp-kit/class-server.php:345
@@ -6399,7 +6233,7 @@ msgid "Change the engine settings"
 msgstr ""
 
 #: includes/mcp/class-rest-map.php:131
-msgid "Sets the default engine, a fallback engine, per-language engines and per-language AI models (default, fallback, per_lang, models, caps). Everything but the default engine is Pro."
+msgid "Sets the default engine, a fallback engine, per-language engines and per-language AI models (default, fallback, per_lang, models, caps) and the request timeout (timeout). Everything but the default engine and the timeout is Pro."
 msgstr ""
 
 #: includes/mcp/class-rest-map.php:137
@@ -6422,576 +6256,524 @@ msgstr ""
 msgid "Pro: language code => {provider, model} used when the AI engine translates that language; the key * sets the model for every other language. Empty model: the provider's recommended one."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:162
+#: includes/mcp/class-rest-map.php:158
+msgid "Seconds to wait for a DeepL, Google or Microsoft request, 5 to 60; 0 restores the default of 60."
+msgstr ""
+
+#: includes/mcp/class-rest-map.php:166
 msgid "Save an engine key"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:163
+#: includes/mcp/class-rest-map.php:167
 msgid "Saves the API key (and region for Microsoft) of DeepL, Google or Microsoft; empty removes it. Keys are stored encrypted and never returned."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:171
+#: includes/mcp/class-rest-map.php:175
 msgid "Estimate a translation"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:172
+#: includes/mcp/class-rest-map.php:176
 msgid "Estimates characters and cost to translate posts (posts or post_type) into languages (langs) with an engine, before spending anything."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:190
+#: includes/mcp/class-rest-map.php:194
 msgid "Import a translated file (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:191
+#: includes/mcp/class-rest-map.php:195
 msgid "Uploads a Tranzly XLIFF or CSV file (content, filename) translated elsewhere; answers a token that identifies the upload for the import."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:198
+#: includes/mcp/class-rest-map.php:202
 msgid "The XLIFF or CSV file's text."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:203
+#: includes/mcp/class-rest-map.php:207
 msgid "The file name, e.g. site-de.xlf."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:211
+#: includes/mcp/class-rest-map.php:215
 msgid "List plugins to migrate from (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:212
+#: includes/mcp/class-rest-map.php:216
 msgid "Lists WPML, Polylang and TranslatePress data found on this site that can be imported."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:220
+#: includes/mcp/class-rest-map.php:224
 msgid "Migrate from WPML, Polylang or TranslatePress (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:221
+#: includes/mcp/class-rest-map.php:225
 msgid "Imports the next page of translations from another multilingual plugin (mode: dry-run or run; cursor)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:229
+#: includes/mcp/class-rest-map.php:233
 msgid "Write an imported file (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:230
+#: includes/mcp/class-rest-map.php:234
 msgid "Writes the next page of posts from an uploaded translation file (repeat with after until done)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:238
+#: includes/mcp/class-rest-map.php:242
 msgid "Read the integrations"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:239
+#: includes/mcp/class-rest-map.php:243
 msgid "Lists the SEO, WooCommerce, page-builder and form plugins Tranzly supports and which are active here."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:247
+#: includes/mcp/class-rest-map.php:251
 msgid "List translation jobs"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:248
+#: includes/mcp/class-rest-map.php:252
 msgid "Lists background translation jobs, newest first, with progress."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:256
+#: includes/mcp/class-rest-map.php:260
 msgid "Start a translation job"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:257
+#: includes/mcp/class-rest-map.php:261
 msgid "Starts a background job translating listed posts (posts) or a whole post type into languages (langs)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:265
+#: includes/mcp/class-rest-map.php:269
 msgid "Retry or hand off a failed item"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:266
+#: includes/mcp/class-rest-map.php:270
 msgid "Retries a failed item (action: retry, optionally with another engine) or marks it for translating by hand (action: by-hand)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:274
+#: includes/mcp/class-rest-map.php:278
 msgid "Read a job's progress"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:275
+#: includes/mcp/class-rest-map.php:279
 msgid "Returns one job's progress and counts."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:283
+#: includes/mcp/class-rest-map.php:287
 msgid "Cancel a job"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:284
+#: includes/mcp/class-rest-map.php:288
 msgid "Stops a job; translations already made are kept."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:292
+#: includes/mcp/class-rest-map.php:296
 msgid "Read a job's failures"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:293
+#: includes/mcp/class-rest-map.php:297
 msgid "Lists a job's failed items with the reason for each."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:301
+#: includes/mcp/class-rest-map.php:305
 msgid "Read the licence"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:302
+#: includes/mcp/class-rest-map.php:306
 msgid "Returns this site's Tranzly plan, licence state, renewal date and what the plan includes."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:320
+#: includes/mcp/class-rest-map.php:324
 msgid "Disconnect from support"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:321
+#: includes/mcp/class-rest-map.php:325
 msgid "Disconnects this site from support."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:329
+#: includes/mcp/class-rest-map.php:333
 msgid "Read the support connection"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:330
+#: includes/mcp/class-rest-map.php:334
 msgid "Says whether this site is connected to Zinn Digital® support, and as whom."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:338
+#: includes/mcp/class-rest-map.php:342
 msgid "Connect to support"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:339
+#: includes/mcp/class-rest-map.php:343
 msgid "Connects this site to Zinn Digital® support (name, email, consent)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:347
+#: includes/mcp/class-rest-map.php:351
 msgid "Consent to support diagnostics"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:348
+#: includes/mcp/class-rest-map.php:352
 msgid "Records the administrator's consent to send diagnostics with support tickets."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:355
+#: includes/mcp/class-rest-map.php:359
 msgid "True records the administrator's consent to send diagnostics with support tickets."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:363
+#: includes/mcp/class-rest-map.php:367
 msgid "Read the site diagnostics"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:364
+#: includes/mcp/class-rest-map.php:368
 msgid "Returns the diagnostics a support ticket would carry: versions, active plugins, limits and recent errors."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:372
+#: includes/mcp/class-rest-map.php:376
 msgid "Open a support ticket"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:373
+#: includes/mcp/class-rest-map.php:377
 msgid "Files a support ticket (subject, message, kind, email), with this site's diagnostics when the administrator agreed. It never creates a login or sends one."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:380
+#: includes/mcp/class-rest-map.php:384
 msgid "The ticket subject (up to 200 characters)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:385
+#: includes/mcp/class-rest-map.php:389
 msgid "What happened, or the question."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:390
+#: includes/mcp/class-rest-map.php:394
 msgid "The kind of request; help when omitted."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:394
+#: includes/mcp/class-rest-map.php:398
 msgid "Reply address; the connected support email when omitted."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:398
+#: includes/mcp/class-rest-map.php:402
 msgid "Name to reply to."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:402
+#: includes/mcp/class-rest-map.php:406
 msgid "True attaches this site's diagnostics (needs the administrator's consent)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:410
+#: includes/mcp/class-rest-map.php:414
 msgid "Start the free Pro trial"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:411
+#: includes/mcp/class-rest-map.php:415
 msgid "Starts the 14-day Tranzly Pro trial for this site (no payment needed)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:429
+#: includes/mcp/class-rest-map.php:433
 msgid "Read the Tranzly 2.x import"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:430
+#: includes/mcp/class-rest-map.php:434
 msgid "Returns the state and report of importing translations from Tranzly 2.x."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:438
+#: includes/mcp/class-rest-map.php:442
 msgid "Import Tranzly 2.x translations"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:439
+#: includes/mcp/class-rest-map.php:443
 msgid "Runs the 2.x import: dry-run (report only), run, or undo."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:447
+#: includes/mcp/class-rest-map.php:451
 msgid "Translate an image's text"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:448
+#: includes/mcp/class-rest-map.php:452
 msgid "Saves an image's alt text, title or caption (field) in a language (lang)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:456
+#: includes/mcp/class-rest-map.php:460
 msgid "Read the menus per language"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:457
+#: includes/mcp/class-rest-map.php:461
 msgid "Returns which menu each language shows in each menu location."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:465
+#: includes/mcp/class-rest-map.php:469
 msgid "Set the menus per language"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:466
+#: includes/mcp/class-rest-map.php:470
 msgid "Assigns a menu per language per location (map)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:479
+#: includes/mcp/class-rest-map.php:483
 msgid "Protect or unlock a translation"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:480
+#: includes/mcp/class-rest-map.php:484
 msgid "Protects a translation from being overwritten by the engine (protected: true), or unlocks it."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:488
+#: includes/mcp/class-rest-map.php:492
 msgid "Read a quality report (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:489
+#: includes/mcp/class-rest-map.php:493
 msgid "Returns a translation's AI quality report: score and the segments it flagged."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:497
+#: includes/mcp/class-rest-map.php:501
 msgid "Approve or reject a translation (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:498
+#: includes/mcp/class-rest-map.php:502
 msgid "Approves a translation (and publishes it when the original is published) or sends it back (decision, note)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:506
+#: includes/mcp/class-rest-map.php:510
 msgid "Read a translation side by side"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:507
+#: includes/mcp/class-rest-map.php:511
 msgid "Returns a translation's segments beside the original's, for review and correction."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:515
+#: includes/mcp/class-rest-map.php:519
 msgid "Correct a translation"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:516
+#: includes/mcp/class-rest-map.php:520
 msgid "Saves corrected segments of a translation (segments: key to text); corrected text is protected from re-translation."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:529
+#: includes/mcp/class-rest-map.php:533
 msgid "Unlink a post from its translations"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:530
+#: includes/mcp/class-rest-map.php:534
 msgid "Takes a post out of its translation group; it keeps its language."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:538
+#: includes/mcp/class-rest-map.php:542
 msgid "Read a post's translations"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:539
+#: includes/mcp/class-rest-map.php:543
 msgid "Lists a post's translation group: every language's member with its title, status and edit link."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:547
+#: includes/mcp/class-rest-map.php:551
 msgid "Create an empty translation"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:548
+#: includes/mcp/class-rest-map.php:552
 msgid "Creates a draft translation of a post in a language (lang) to write by hand, without an engine."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:556
+#: includes/mcp/class-rest-map.php:560
 msgid "Link an existing post as a translation"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:557
+#: includes/mcp/class-rest-map.php:561
 msgid "Makes an existing post (target) the translation of this post in a language."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:565
+#: includes/mcp/class-rest-map.php:569
 msgid "Check translations with AI (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:566
+#: includes/mcp/class-rest-map.php:570
 msgid "Schedules the AI quality check of the next page of a language's translations (or the given posts)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:574
+#: includes/mcp/class-rest-map.php:578
 msgid "Multilingual SEO audit (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:575
+#: includes/mcp/class-rest-map.php:579
 msgid "Checks translations for missing SEO titles, descriptions, slugs and hreflang in a language, page by page."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:588
+#: includes/mcp/class-rest-map.php:592
 msgid "Change languages and settings"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:589
+#: includes/mcp/class-rest-map.php:593
 msgid "Sets the site's languages (languages: list of code and name; the first is the original language), the front-end class prefix, and whether AI agents (MCP) are allowed."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:597
+#: includes/mcp/class-rest-map.php:601
 msgid "Read theme and plugin texts"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:598
+#: includes/mcp/class-rest-map.php:602
 msgid "Returns the theme and plugin texts (scope) in a language with their translations."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:606
+#: includes/mcp/class-rest-map.php:610
 msgid "Translate missing theme and plugin texts"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:607
+#: includes/mcp/class-rest-map.php:611
 msgid "Translates the next page of untranslated theme and plugin texts in a language with the default engine (repeat with after until done)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:615
+#: includes/mcp/class-rest-map.php:619
 msgid "Correct theme and plugin texts"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:616
+#: includes/mcp/class-rest-map.php:620
 msgid "Saves corrected translations of theme and plugin texts (strings); they become protected."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:629
+#: includes/mcp/class-rest-map.php:633
 msgid "Translate what is missing"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:630
+#: includes/mcp/class-rest-map.php:634
 msgid "Queues translation of every missing (or out-of-date) item in a language and post type."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:638
+#: includes/mcp/class-rest-map.php:642
 msgid "List what is missing or out of date"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:639
+#: includes/mcp/class-rest-map.php:643
 msgid "Lists originals with their translation state in a language (state: missing, stale, current), page by page."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:647
+#: includes/mcp/class-rest-map.php:651
 msgid "Read the site's texts in a language"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:648
+#: includes/mcp/class-rest-map.php:652
 msgid "Returns the site title, tagline and widget texts in a language."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:656
+#: includes/mcp/class-rest-map.php:660
 msgid "Translate a site text"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:657
+#: includes/mcp/class-rest-map.php:661
 msgid "Saves one site text (key) in a language, e.g. the site title or tagline."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:665
+#: includes/mcp/class-rest-map.php:669
 msgid "Translate a category or tag"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:666
+#: includes/mcp/class-rest-map.php:670
 msgid "Translates one term (category, tag or product attribute) into a language (lang) with an engine, creating or updating its translation."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:674
+#: includes/mcp/class-rest-map.php:678
 msgid "Unlink a term from its translations"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:675
+#: includes/mcp/class-rest-map.php:679
 msgid "Takes a term out of its translation group."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:683
+#: includes/mcp/class-rest-map.php:687
 msgid "Read a term's translations"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:684
+#: includes/mcp/class-rest-map.php:688
 msgid "Lists a category's or tag's translation group."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:692
+#: includes/mcp/class-rest-map.php:696
 msgid "Create a term translation by hand"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:693
+#: includes/mcp/class-rest-map.php:697
 msgid "Creates a term's translation in a language with a name, slug and description you give."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:701
+#: includes/mcp/class-rest-map.php:705
 msgid "Link an existing term as a translation"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:702
+#: includes/mcp/class-rest-map.php:706
 msgid "Makes an existing term (target) the translation of this term in a language."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:710
+#: includes/mcp/class-rest-map.php:714
 msgid "List theme and plugin text sources (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:711
+#: includes/mcp/class-rest-map.php:715
 msgid "Lists the themes and plugins whose texts can be scanned for translation, and how many strings each has."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:719
+#: includes/mcp/class-rest-map.php:723
 msgid "Scan a theme or plugin for texts (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:720
+#: includes/mcp/class-rest-map.php:724
 msgid "Scans the next page of a component's PHP files for translatable texts (repeat with after until done)."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:733
+#: includes/mcp/class-rest-map.php:737
 msgid "Read the address settings"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:734
+#: includes/mcp/class-rest-map.php:738
 msgid "Returns how languages appear in addresses (folder, subdomain or domain), translated slugs and bases, and noindex for untranslated pages."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:742
+#: includes/mcp/class-rest-map.php:746
 msgid "Change the address settings"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:743
+#: includes/mcp/class-rest-map.php:747
 msgid "Sets the address mode (mode), per-language domains, translated bases and segments, noindex_untranslated and slug suggestions."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:756
+#: includes/mcp/class-rest-map.php:760
 msgid "Estimate translating the site (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:757
+#: includes/mcp/class-rest-map.php:761
 msgid "Estimates a whole-site translation in a language (post_types, scope, engine) before starting it."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:765
+#: includes/mcp/class-rest-map.php:769
 msgid "Read the workflow settings (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:766
+#: includes/mcp/class-rest-map.php:770
 msgid "Returns auto-translation on publish and on update, review before publish, and the AI quality check's threshold, provider and model."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:774
+#: includes/mcp/class-rest-map.php:778
 msgid "Change the workflow settings (Pro)"
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:775
+#: includes/mcp/class-rest-map.php:779
 msgid "Sets on_update (off, stale, translate), on_publish, review, quality_threshold, quality_provider and quality_model."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:782
+#: includes/mcp/class-rest-map.php:786
 msgid "When an original changes: nothing, mark its translations out of date, or translate them again."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:786
+#: includes/mcp/class-rest-map.php:790
 msgid "Translate a post into every language when it is published."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:790
+#: includes/mcp/class-rest-map.php:794
 msgid "New translations wait for review instead of being published."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:796
+#: includes/mcp/class-rest-map.php:800
 msgid "Quality score below which a translation is flagged."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:800
+#: includes/mcp/class-rest-map.php:804
 msgid "AI provider of the quality check."
 msgstr ""
 
-#: includes/mcp/class-rest-map.php:804
+#: includes/mcp/class-rest-map.php:808
 msgid "AI model of the quality check."
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:43
-msgid "Translate the whole site"
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:44
-msgid "Starts background translation jobs for every original of the given content types (all translated types when none are given): the missing translations, the out-of-date ones, or all of them. Returns the jobs started, one per language."
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:84
-msgid "Check a translation with AI"
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:85
-msgid "Has AI compare one translation with its original and score it, and stores the report on the translation. Uses the quality-check AI model set in Tranzly's workflow settings."
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:93
-msgid "The translation's post ID."
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:111
-msgid "Export a file for human translators"
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:112
-msgid "Returns an XLIFF or CSV file (as text) with the originals and their translations in one language, for a translator or a translation agency: the given posts, or a page of up to 100 originals of a content type in a state (missing, stale, translated or all; repeat with after). The same file can be imported back once translated."
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:158
-msgid "Words never translated (brand and product names)."
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:162
-msgid "Per language code: source term => the translation always used."
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:166
-msgid "Per language code: formality (default, more, less) and style instructions."
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:177
-msgid "Read the glossary"
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:178
-msgid "Returns the words never translated, the fixed term translations and the tone per language."
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:200
-msgid "Update the glossary"
-msgstr ""
-
-#: includes/mcp/pro__premium_only/class-pro-abilities.php:201
-msgid "Replaces the parts of the glossary you send (words never translated, term translations, tone); parts you leave out are kept. Used by every engine from the next translation on."
 msgstr ""
 
 #: includes/seo/class-suggest.php:116
@@ -7085,50 +6867,50 @@ msgstr ""
 msgid "On your site, this item shows the site's languages, each linking to the current page in that language."
 msgstr ""
 
-#: includes/switcher/class-switcher.php:95
-#: includes/switcher/class-switcher.php:110
+#: includes/switcher/class-switcher.php:96
+#: includes/switcher/class-switcher.php:111
 #: src/editor/switcher-model.js:46
 #: src/editor/switcher-model.js:64
 msgid "Site setting"
 msgstr ""
 
-#: includes/switcher/class-switcher.php:96
+#: includes/switcher/class-switcher.php:97
 #: src/editor/switcher-model.js:48
 msgid "Rectangle"
 msgstr ""
 
-#: includes/switcher/class-switcher.php:97
+#: includes/switcher/class-switcher.php:98
 #: src/editor/switcher-model.js:49
 msgid "Rounded rectangle"
 msgstr ""
 
-#: includes/switcher/class-switcher.php:98
+#: includes/switcher/class-switcher.php:99
 #: src/editor/switcher-model.js:50
 msgid "Square"
 msgstr ""
 
-#: includes/switcher/class-switcher.php:99
+#: includes/switcher/class-switcher.php:100
 #: src/editor/switcher-model.js:51
 msgid "Circle"
 msgstr ""
 
-#: includes/switcher/class-switcher.php:111
+#: includes/switcher/class-switcher.php:112
 #: src/editor/switcher-model.js:66
 msgid "Small"
 msgstr ""
 
-#: includes/switcher/class-switcher.php:112
+#: includes/switcher/class-switcher.php:113
 #: src/editor/switcher-model.js:67
 msgid "Medium"
 msgstr ""
 
-#: includes/switcher/class-switcher.php:113
+#: includes/switcher/class-switcher.php:114
 #: src/editor/switcher-model.js:68
 msgid "Large"
 msgstr ""
 
 #. translators: 1: a switcher's accessible name, 2: its number on the page (2, 3, …).
-#: includes/switcher/class-switcher.php:197
+#: includes/switcher/class-switcher.php:198
 #, php-format
 msgid "%1$s (%2$d)"
 msgstr ""
@@ -7280,26 +7062,6 @@ msgstr ""
 msgid "Current language background"
 msgstr ""
 
-#: includes/switcher/pro__premium_only/class-bricks-element.php:132
-#: includes/switcher/pro__premium_only/class-elementor-widget.php:147
-msgid "Border"
-msgstr ""
-
-#: includes/switcher/pro__premium_only/class-bricks-element.php:147
-#: includes/switcher/pro__premium_only/class-elementor-widget.php:159
-msgid "Corner radius"
-msgstr ""
-
-#: includes/switcher/pro__premium_only/class-bricks-element.php:148
-#: includes/switcher/pro__premium_only/class-elementor-widget.php:160
-msgid "Space between languages"
-msgstr ""
-
-#: includes/switcher/pro__premium_only/class-bricks-element.php:149
-#: includes/switcher/pro__premium_only/class-elementor-widget.php:161
-msgid "Text size"
-msgstr ""
-
 #: includes/switcher/pro__premium_only/class-elementor-widget.php:74
 #: includes/switcher/pro__premium_only/class-elementor-widget.php:137
 #: src/editor/index.js:32
@@ -7321,112 +7083,6 @@ msgstr ""
 
 #: includes/workflow/class-status.php:398
 msgid "That content type is not translated on this site."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-bulk.php:107
-msgid "There is nothing to translate in that selection."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-bulk.php:139
-msgid "Choose at least one language to translate into."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-exchange.php:112
-msgid "You are not allowed to export translations."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-exchange.php:285
-msgid "Choose an XLIFF or CSV file to import."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-exchange.php:289
-msgid "That is not a Tranzly XLIFF or CSV file. Export one first, translate it, and import it here."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-exchange.php:294
-msgid "The file could not be stored for importing. Check that the uploads folder is writable."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-exchange.php:316
-msgid "That import is not there any more. Upload the file again."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-exchange.php:359
-msgid "That page is not on this site any more."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-exchange.php:362
-msgid "The file is for a language this site does not have."
-msgstr ""
-
-#. translators: 1: object type (post or term), 2: its ID, 3: why it was not linked.
-#: includes/workflow/pro__premium_only/class-import-source.php:214
-#, php-format
-msgid "Could not link %1$s %2$d: %3$s"
-msgstr ""
-
-#. translators: 1: post ID, 2: why it failed.
-#: includes/workflow/pro__premium_only/class-import-translatepress.php:150
-#, php-format
-msgid "Post #%1$d: %2$s"
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-importers.php:134
-msgid "No data from that plugin was found on this site."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-quality.php:199
-msgid "This is not a translation of anything on this site."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-quality.php:203
-msgid "There is no text to check."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-quality.php:208
-msgid "The AI settings are not part of this build."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-quality.php:234
-msgid "The AI provider did not answer."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-quality.php:247
-msgid "The AI model did not score every part of this page. Try again, or choose another model."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-review-roles.php:56
-msgid "Translator"
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-review-roles.php:57
-msgid "Translation reviewer"
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-review.php:155
-msgid "A reviewer asked for changes to this translation."
-msgstr ""
-
-#. translators: %s: the reviewer's note.
-#: includes/workflow/pro__premium_only/class-review.php:155
-#, php-format
-msgid "A reviewer asked for changes to this translation: %s"
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-review.php:158
-msgid "This translation is waiting for a reviewer. Publishing it (as a reviewer) approves it."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-review.php:225
-msgid "Only a translation can be reviewed."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-settings.php:33
-msgid "Choose what happens when an original changes: nothing, mark its translations out of date, or translate them again."
-msgstr ""
-
-#: includes/workflow/pro__premium_only/class-settings.php:45
-msgid "The quality threshold is a score from 0 to 100."
 msgstr ""
 
 #: src/admin-kit/Addons.js:35
@@ -7593,7 +7249,7 @@ msgstr ""
 
 #: src/admin-kit/PlansScreen.js:164
 #: src/admin-kit/Support.js:410
-msgid "Your plan includes priority support."
+msgid "Your licence includes full enterprise-level 24/7 support in 50+ languages."
 msgstr ""
 
 #: src/admin-kit/PlansScreen.js:176
@@ -7765,7 +7421,7 @@ msgid "the subject and message you write;"
 msgstr ""
 
 #: src/admin-kit/Support.js:115
-msgid "your licence ID, so paying customers get priority;"
+msgid "your licence ID, so we can confirm the support your licence includes;"
 msgstr ""
 
 #: src/admin-kit/Support.js:121
@@ -8157,97 +7813,109 @@ msgstr ""
 msgid "Save settings"
 msgstr ""
 
-#: src/admin/Engines.js:99
+#: src/admin/Engines.js:101
 msgid "First engine that is set up"
 msgstr ""
 
-#: src/admin/Engines.js:122
+#: src/admin/Engines.js:124
 msgid "Key saved. It is stored encrypted and never shown again."
 msgstr ""
 
-#: src/admin/Engines.js:132
+#: src/admin/Engines.js:134
 msgid "Engine settings saved."
 msgstr ""
 
-#: src/admin/Engines.js:154
+#: src/admin/Engines.js:156
 msgid "Glossary saved."
 msgstr ""
 
-#: src/admin/Engines.js:175
+#: src/admin/Engines.js:177
 msgid "Your keys"
 msgstr ""
 
-#: src/admin/Engines.js:177
+#: src/admin/Engines.js:179
 msgid "Tranzly calls the translation services with your own account. Keys are stored encrypted in your database and are only ever sent to the service they belong to. AI model keys are set in the AI settings."
 msgstr ""
 
 #. translators: %s: a translation service's name.
-#: src/admin/Engines.js:195
+#: src/admin/Engines.js:197
 #, js-format
 msgid "%s API key"
 msgstr ""
 
 #. translators: %s: the last characters of a saved key, masked.
-#: src/admin/Engines.js:202
+#: src/admin/Engines.js:204
 #, js-format
 msgid "Saved: %s. Enter a new key to replace it, or save an empty field to remove it."
 msgstr ""
 
-#: src/admin/Engines.js:208
+#: src/admin/Engines.js:210
 msgid "No key saved."
 msgstr ""
 
-#: src/admin/Engines.js:221
+#: src/admin/Engines.js:223
 msgid "Azure region (leave empty for a global resource)"
 msgstr ""
 
-#: src/admin/Engines.js:235
+#: src/admin/Engines.js:237
 msgid "Save key"
 msgstr ""
 
-#: src/admin/Engines.js:243
+#: src/admin/Engines.js:245
 msgid "Check my DeepL usage"
 msgstr ""
 
 #. translators: 1: characters used, 2: the account's limit.
-#: src/admin/Engines.js:253
+#: src/admin/Engines.js:255
 #, js-format
 msgid "%1$s of %2$s characters used this billing period."
 msgstr ""
 
-#: src/admin/Engines.js:267
+#: src/admin/Engines.js:269
 msgid "Which engine translates"
 msgstr ""
 
-#: src/admin/Engines.js:272
+#: src/admin/Engines.js:274
 msgid "No engine is set up yet. Save a key above (or set up an AI model) to start translating."
 msgstr ""
 
-#: src/admin/Engines.js:280
+#: src/admin/Engines.js:282
 msgid "Default engine"
 msgstr ""
 
-#: src/admin/Engines.js:289
+#: src/admin/Engines.js:291
 msgid "A different engine or AI model per language, automatic fallback and monthly spending caps are Tranzly Pro features."
 msgstr ""
 
-#: src/admin/Engines.js:320
+#: src/admin/Engines.js:321
+msgid "Advanced"
+msgstr ""
+
+#: src/admin/Engines.js:330
+msgid "Request timeout (seconds)"
+msgstr ""
+
+#: src/admin/Engines.js:331
+msgid "How long Tranzly waits for DeepL, Google or Microsoft before it gives up on one request: 5 to 60 seconds, or 0 for the default (60). A lower value makes a slow engine fail sooner, so your fallback engine or the next retry takes over."
+msgstr ""
+
+#: src/admin/Engines.js:358
 msgid "Glossary and words never translated"
 msgstr ""
 
-#: src/admin/Engines.js:328
+#: src/admin/Engines.js:366
 msgid "Never translate these words (one per line)"
 msgstr ""
 
-#: src/admin/Engines.js:332
+#: src/admin/Engines.js:370
 msgid "Brand and product names stay exactly as they are, with every engine."
 msgstr ""
 
-#: src/admin/Engines.js:343
+#: src/admin/Engines.js:381
 msgid "Preferred translations and tone per language are Tranzly Pro features."
 msgstr ""
 
-#: src/admin/Engines.js:361
+#: src/admin/Engines.js:399
 msgid "Save glossary"
 msgstr ""
 
@@ -8564,7 +8232,7 @@ msgid "Content"
 msgstr ""
 
 #: src/admin/Jobs.js:418
-#: src/admin/MenusTab.js:236
+#: src/admin/MenusTab.js:252
 #: src/admin/StatusTab.js:214
 #: src/admin/StatusTab.js:292
 #: src/admin/StringsEditor.js:146
@@ -8608,65 +8276,65 @@ msgstr ""
 msgid "Translated by WordPress (language pack), at no cost. Type your own wording to use it instead."
 msgstr ""
 
-#: src/admin/MenusTab.js:113
+#: src/admin/MenusTab.js:129
 msgid "Menus saved."
 msgstr ""
 
 #. translators: %d: how many texts were translated.
-#: src/admin/MenusTab.js:138
+#: src/admin/MenusTab.js:154
 #: src/admin/StringsEditor.js:92
 #, js-format
 msgid "%d texts translated."
 msgstr ""
 
-#: src/admin/MenusTab.js:159
+#: src/admin/MenusTab.js:175
 #: src/admin/StringsEditor.js:113
 msgid "Saved. Your corrections are protected from machine translation."
 msgstr ""
 
-#: src/admin/MenusTab.js:171
+#: src/admin/MenusTab.js:187
 msgid "The same menu, translated"
 msgstr ""
 
-#: src/admin/MenusTab.js:191
+#: src/admin/MenusTab.js:207
 msgid "A separate menu per language"
 msgstr ""
 
-#: src/admin/MenusTab.js:197
+#: src/admin/MenusTab.js:213
 msgid "By default each menu is translated: its links lead to the translated pages, with their titles. Choose a menu of its own for a language here instead."
 msgstr ""
 
-#: src/admin/MenusTab.js:232
+#: src/admin/MenusTab.js:248
 msgid "Shared text"
 msgstr ""
 
-#: src/admin/MenusTab.js:247
+#: src/admin/MenusTab.js:263
 msgid "Which text"
 msgstr ""
 
-#: src/admin/MenusTab.js:252
+#: src/admin/MenusTab.js:268
 msgid "Menu labels"
 msgstr ""
 
-#: src/admin/MenusTab.js:256
+#: src/admin/MenusTab.js:272
 msgid "Site title, tagline and widgets"
 msgstr ""
 
-#: src/admin/MenusTab.js:267
+#: src/admin/MenusTab.js:283
 msgid "Templates, headers, footers and patterns"
 msgstr ""
 
-#: src/admin/MenusTab.js:284
+#: src/admin/MenusTab.js:300
 #: src/admin/StringsEditor.js:161
 msgid "Translate the missing text"
 msgstr ""
 
-#: src/admin/MenusTab.js:290
+#: src/admin/MenusTab.js:306
 #: src/admin/StringsEditor.js:167
 msgid "There is no text to translate here."
 msgstr ""
 
-#: src/admin/MenusTab.js:321
+#: src/admin/MenusTab.js:337
 #: src/admin/StringsEditor.js:213
 msgid "Save corrections"
 msgstr ""
@@ -9398,6 +9066,7 @@ msgid "Not translated"
 msgstr ""
 
 #: src/editor/translations-model.js:29
+#: src/editor/translations-model.js:81
 msgid "Original"
 msgstr ""
 
@@ -9421,24 +9090,30 @@ msgstr ""
 msgid "Not translated yet (a copy)"
 msgstr ""
 
-#: src/editor/translations-panel.js:164
+#. translators: 1: texts translated, 2: texts in the template.
+#: src/editor/translations-model.js:85
+#, js-format
+msgid "%1$d of %2$d texts translated"
+msgstr ""
+
+#: src/editor/translations-panel.js:209
 msgid "View"
 msgstr ""
 
-#: src/editor/translations-panel.js:174
+#: src/editor/translations-panel.js:219
 msgid "Unlock so it can be translated again"
 msgstr ""
 
-#: src/editor/translations-panel.js:189
+#: src/editor/translations-panel.js:234
 msgid "Protect"
 msgstr ""
 
-#: src/editor/translations-panel.js:197
+#: src/editor/translations-panel.js:242
 msgid "Publish the translations"
 msgstr ""
 
 #. translators: %d: how many languages are ticked.
-#: src/editor/translations-panel.js:209
+#: src/editor/translations-panel.js:254
 #, js-format
 msgid "Translate into %d language"
 msgid_plural "Translate into %d languages"
@@ -9467,147 +9142,6 @@ msgstr ""
 
 #: src/mcp-kit/McpPanel.js:82
 msgid "AI agents are turned off. Their connection address no longer answers."
-msgstr ""
-
-#: src/pro__premium_only/editor/index.js:48
-msgid "Image per language"
-msgstr ""
-
-#: src/pro__premium_only/editor/index.js:52
-msgid "Show another image to readers of a language, for example a banner with words on it."
-msgstr ""
-
-#. translators: %s: a language's name.
-#: src/pro__premium_only/editor/index.js:88
-#, js-format
-msgid "Replace the %s image"
-msgstr ""
-
-#. translators: %s: a language's name.
-#: src/pro__premium_only/editor/index.js:96
-#, js-format
-msgid "Choose a %s image"
-msgstr ""
-
-#: src/pro__premium_only/editor/index.js:120
-msgid "Use the original image"
-msgstr ""
-
-#. translators: 1: an AI provider's name, 2: one of its models.
-#: src/pro__premium_only/settings/index.js:38
-#, js-format
-msgid "%1$s: %2$s"
-msgstr ""
-
-#. translators: 1: an AI provider, 2: a model name.
-#: src/pro__premium_only/settings/index.js:128
-#, js-format
-msgid "The AI settings' choice (%1$s %2$s)"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:132
-msgid "The AI settings' choice"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:138
-msgid "Choose the AI model that translates each language, for example one model for Japanese and another for German. Languages without a choice of their own use the model for all other languages."
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:145
-msgid "AI model for all other languages"
-msgstr ""
-
-#. translators: %s: a language name.
-#: src/pro__premium_only/settings/index.js:165
-#, js-format
-msgid "Engine for %s"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:172
-msgid "The default engine"
-msgstr ""
-
-#. translators: %s: a language name.
-#: src/pro__premium_only/settings/index.js:194
-#, js-format
-msgid "AI model for %s"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:197
-msgid "The model for all other languages"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:211
-msgid "If an engine fails or reaches a limit, try these next, in this order"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:260
-msgid "Monthly spending caps"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:264
-msgid "When an engine reaches its cap, nothing more is sent to it until next month and the failed-translation report says why. Leave empty for no cap."
-msgstr ""
-
-#. translators: 1: an engine's name, 2: dollars spent this month.
-#: src/pro__premium_only/settings/index.js:278
-#, js-format
-msgid "%1$s (spent this month: $%2$s)"
-msgstr ""
-
-#. translators: 1: an AI provider's name, 2: dollars spent this month.
-#: src/pro__premium_only/settings/index.js:308
-#, js-format
-msgid "AI provider %1$s, every language it translates (spent this month: $%2$s)"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:336
-msgid "Save spending caps"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:362
-msgid "Preferred translations (one per line: term = translation)"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:379
-msgid "Formality"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:387
-msgid "Default"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:391
-msgid "Formal"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:395
-msgid "Informal"
-msgstr ""
-
-#: src/pro__premium_only/settings/index.js:414
-msgid "Style instructions (audience, brand voice)"
-msgstr ""
-
-#: src/pro__premium_only/visual/index.js:19
-#: src/pro__premium_only/visual/index.js:22
-msgid "Correct this translation"
-msgstr ""
-
-#: src/pro__premium_only/visual/index.js:48
-msgid "Saving…"
-msgstr ""
-
-#: src/pro__premium_only/visual/index.js:76
-msgid "Translated text. Press Enter to correct it."
-msgstr ""
-
-#: src/pro__premium_only/visual/index.js:105
-msgid "Click any outlined text to correct its translation."
-msgstr ""
-
-#: src/pro__premium_only/visual/index.js:109
-msgid "No translated text was found on this page to edit here. Use the side-by-side editor instead."
 msgstr ""
 
 #: blocks/fixture-switcher/block.json
