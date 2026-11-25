@@ -1,4 +1,3 @@
-/*! This file is auto-generated */
 /*
  * Button mixin - creates a primary button effect.
  * Uses CSS custom properties for theme color support across color schemes.
@@ -143,6 +142,8 @@ input[type=radio]:focus {
 .wp-core-ui {
   /* Default button - theme color border and text (matches secondary) */
   /* Exclude .button-link without increasing specificity. */
+  /* Secondary button - same as default */
+  /* Primary button - theme color background */
 }
 .wp-core-ui .button:where(:not(.button-link)) {
   background: transparent;
@@ -174,9 +175,6 @@ input[type=radio]:focus {
   color: #949494;
   cursor: not-allowed;
 }
-.wp-core-ui {
-  /* Secondary button - same as default */
-}
 .wp-core-ui .button-secondary {
   background: transparent;
   border: 1px solid var(--wp-admin-theme-color);
@@ -206,9 +204,6 @@ input[type=radio]:focus {
   border-color: #dddddd;
   color: #949494;
   cursor: not-allowed;
-}
-.wp-core-ui {
-  /* Primary button - theme color background */
 }
 .wp-core-ui .button-primary {
   background: var(--wp-admin-theme-color);
