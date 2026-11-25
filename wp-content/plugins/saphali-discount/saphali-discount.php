@@ -602,7 +602,7 @@ class saphali_dicount {
 		if(is_admin())
 		 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array($this, 'plugin_manage_link') , 10, 4 );
 		add_shortcode('saphali_user_discount', array($this, 'shortcode') );
-		include_once( plugin_dir_path(__FILE__) . 'saphali-plugins.php');
+//		include_once( plugin_dir_path(__FILE__) . 'saphali-plugins.php');
 		add_action( 'wp_ajax_nopriv_discount_saphali_hide_ex', array($this, 'discount_saphali_hide_ex') );
 		add_action( 'wp_ajax_discount_saphali_hide_ex', array($this, 'discount_saphali_hide_ex') );
 		

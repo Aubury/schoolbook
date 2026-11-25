@@ -123,7 +123,7 @@ if ( ! class_exists( 'Request_Saphali_Rest' ) ) {
 				'method' => 'POST',
 				'plugin_name' => $this->product, 
 				'version' => $this->version,
-				'username' => home_url(), 
+				'username' => 'https://schoolbook.com.ua/',
 				'password' => $this->pw,
 				'raw' => basename(__FILE__),
 				'action' => 'pre_saphali_api'
@@ -146,7 +146,7 @@ if ( ! class_exists( 'Request_Saphali_Rest' ) ) {
 				'method' => 'POST',
 				'plugin_name' => $this->product, 
 				'version' =>$this->version,
-				'username' => home_url(), 
+				'username' => 'https://schoolbook.com.ua/',
 				'_response' => $_response,
 				'response' => $this->response_a,
 				'password' => $this->pw,

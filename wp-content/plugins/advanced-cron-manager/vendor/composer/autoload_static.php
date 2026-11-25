@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit7dbce783dc983385ac7421112661002f
+class ComposerStaticInitef050b508f4a122abb0ca988fbe30097
 {
     public static $prefixLengthsPsr4 = array (
         'u' =>
@@ -41,6 +41,7 @@ class ComposerStaticInit7dbce783dc983385ac7421112661002f
         'underDEV\\AdvancedCronManager\\Misc' => __DIR__ . '/../..' . '/inc/Misc.php',
         'underDEV\\AdvancedCronManager\\Server\\Processor' => __DIR__ . '/../..' . '/inc/Server/Processor.php',
         'underDEV\\AdvancedCronManager\\Server\\Settings' => __DIR__ . '/../..' . '/inc/Server/Settings.php',
+        'underDEV\\AdvancedCronManager\\Settings' => __DIR__ . '/../..' . '/inc/Settings.php',
         'underDEV\\Utils\\Ajax' => __DIR__ . '/..' . '/underdev/utils/src/Ajax.php',
         'underDEV\\Utils\\Cache\\Cache' => __DIR__ . '/..' . '/underdev/utils/src/Cache/Cache.php',
         'underDEV\\Utils\\Cache\\ObjectCache' => __DIR__ . '/..' . '/underdev/utils/src/Cache/ObjectCache.php',
@@ -57,9 +58,9 @@ class ComposerStaticInit7dbce783dc983385ac7421112661002f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit7dbce783dc983385ac7421112661002f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit7dbce783dc983385ac7421112661002f::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit7dbce783dc983385ac7421112661002f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitef050b508f4a122abb0ca988fbe30097::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitef050b508f4a122abb0ca988fbe30097::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitef050b508f4a122abb0ca988fbe30097::$classMap;
 
         }, null, ClassLoader::class);
     }

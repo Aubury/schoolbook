@@ -21,6 +21,7 @@ return array(
     'underDEV\\AdvancedCronManager\\Misc' => $baseDir . '/inc/Misc.php',
     'underDEV\\AdvancedCronManager\\Server\\Processor' => $baseDir . '/inc/Server/Processor.php',
     'underDEV\\AdvancedCronManager\\Server\\Settings' => $baseDir . '/inc/Server/Settings.php',
+    'underDEV\\AdvancedCronManager\\Settings' => $baseDir . '/inc/Settings.php',
     'underDEV\\Utils\\Ajax' => $vendorDir . '/underdev/utils/src/Ajax.php',
     'underDEV\\Utils\\Cache\\Cache' => $vendorDir . '/underdev/utils/src/Cache/Cache.php',
     'underDEV\\Utils\\Cache\\ObjectCache' => $vendorDir . '/underdev/utils/src/Cache/ObjectCache.php',
