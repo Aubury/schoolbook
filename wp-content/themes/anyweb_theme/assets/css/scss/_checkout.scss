@@ -6,7 +6,7 @@ form {
       align-items: start;
       gap: 24px;
 
-      @include down(#{$bp-xs}) {
+      @include down(#{$bp-lg}) {
         grid-template-columns: minmax(0, 1fr);
       }
     }
@@ -19,6 +19,15 @@ form {
       clear: none;
     }
 
+  }
+
+  &.checkout :is(
+    #billing_last_name_field,
+    #billing_first_name_field,
+    #billing_phone_field,
+    #billing_email_field
+).woocommerce-invalid-required-field .checkout-inline-error-message {
+    display: none;
   }
 }
 
@@ -44,6 +53,204 @@ form {
     border-width: 1.34px 3.31px 1.1px 3.33px;
     border-radius: 8px 26px 31px 11px / 7px 29px 30px 12px;
     background-color: #ffffff;
+
+    @include down(#{$bp-xs}) {
+      padding: 24px 12px;
+    }
+
+  h4 {
+    color: var(--brand-primary);
+    font-family: var(--fm-base);
+    text-align: left;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%; /* 21.6px */
+    margin-bottom: 24px;
+
+    @include down(#{$bp-xs}) {
+      font-size: 16px;
+    }
+  }
+}
+
+#anyweb-checkout-payment {
+  &.has-payment-error {
+    border-color: #FF4D4D;
+  }
+}
+
+.anyweb-checkout__shipping {
+  padding: 0;
+
+  h4 {
+    color: var(--brand-primary);
+    font-family: var(--fm-base);
+    text-align: center;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%; /* 21.6px */
+    margin-bottom: 24px;
+
+    @include down(#{$bp-xs}) {
+      font-size: 16px;
+    }
+  }
+
+  .woocommerce_checkout_shipping__wrap{
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    @include down(#{$bp-xs}) {
+      padding: 24px 12px;
+    }
+  }
+
+  .woocommerce-shipping-fields {
+    display: none;
+  }
+
+  .anyweb-shipping-price {
+    color: var(--gray-light);
+    text-align: right;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%; /* 19.2px */
+    white-space: nowrap;
+
+    @include down(#{$bp-xs}) {
+      font-size: 14px;
+    }
+  }
+}
+
+@include up(#{$bp-xs}) {
+  :is(
+        #mrkv_ua_shipping_nova-poshta_address-shipping-info,
+        #mrkv_ua_shipping_ukr-poshta_address-shipping-info
+    ) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+
+  :is(
+        #mrkv_ua_shipping_nova-poshta_address-shipping-info,
+        #mrkv_ua_shipping_ukr-poshta_address-shipping-info
+    ) > .form-row {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+  }
+
+  :is(
+        #mrkv_ua_shipping_nova-poshta_address-shipping-info,
+        #mrkv_ua_shipping_ukr-poshta_address-shipping-info
+    ) > .form-row:is([id$="_house_field"], [id$="_flat_field"]) {
+    grid-column: auto;
+  }
+
+  :is(
+        #mrkv_ua_shipping_nova-poshta_address-shipping-info,
+        #mrkv_ua_shipping_ukr-poshta_address-shipping-info
+    ) > .form-row:has(> .woocommerce-input-wrapper > input[type="hidden"]) {
+    display: none;
+  }
+}
+
+form.checkout .anyweb-checkout__shipping
+.woocommerce-additional-fields:not(#shipping_method li *)
+> .mrkv_ua_shipping_checkout_fields {
+  visibility: hidden;
+  position: absolute;
+  pointer-events: none;
+}
+
+.woocommerce-shipping-methods {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+
+  .woocommerce-additional-fields {
+    display: block;
+    width: 100% !important;
+    margin-top: 24px;
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      align-self: stretch;
+      width: 100% !important;
+
+      input.input-text {
+        &::placeholder {
+          @include down(#{$bp-xs}) {
+            font-size: 14px !important;
+          }
+        }
+      }
+    }
+
+    .selection {
+      display: block;
+      width: 100% !important;
+    }
+  }
+}
+
+.woocommerce-additional-fields {
+  display: block;
+  width: 100% !important;
+}
+
+.ui-autocomplete-loading {
+  background-color: transparent !important;
+}
+
+.mrkv-ua-shipping-loading + .select2 .select2-selection {
+  background-position: 87% center !important;
+}
+
+.mrkv_ua_shipping_checkout_fields {
+  width: 100%;
+
+  > div[id$="-shipping-info"] {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    align-self: stretch;
+    width: 100% !important;
+
+    > p.form-row {
+      margin-block: 0;
+      width: 100% !important;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      align-self: stretch;
+
+      @include down(#{$bp-xs}) {
+        gap: 4px;
+      }
+    }
+
+    // Убираем из раскладки только строки со скрытыми служебными полями.
+    > p.form-row:has(input[type="hidden"]):not(
+      :has(label, select, textarea, input:not([type="hidden"]))
+    ) {
+      display: none;
+    }
+  }
 }
 
 .anyweb-checkout__sidebar {
@@ -52,18 +259,48 @@ form {
 
   @include down(#{$bp-xs}) {
     position: static;
+    padding: 24px 12px;
   }
 }
 
 #anyweb-checkout-payment-methods {
-  .wc_payment_methods {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+
+    @include down(#{$bp-xlg}) {
+       flex-direction: column;
+        position: relative;
+    }
+
+    label {
+      width: fit-content;
+
+      @include down(#{$bp-xlg}) {
+        position: static;
+      }
+
+      @include down(#{$bp-xs}) {
+        padding-left: 30px;
+        font-size: 14px;
+      }
+
+      &::before {
+        @include down(#{$bp-xlg}) {
+          transform: translateY(-10%);
+        }
+      }
+    }
   }
 
-  .wc_payment_method {
-    margin-bottom: 16px;
+  .wc_payment_methods {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    list-style: none;
+    margin: 0 0 16px 0;
+    padding: 0;
 
     &:last-child {
       margin-bottom: 0;
@@ -71,17 +308,53 @@ form {
   }
 
   .payment_box {
-    margin-top: 12px;
-    padding: 16px;
-    background: #e1f6f1;
-    border-radius: 8px;
-  }
+    display: block !important;
+    width: auto;
+    color: var(--gray-light);
+    text-align: right;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%; /* 19.2px */
 
+    @include down(#{$bp-xlg}) {
+      padding-left: 24px;
+    }
+
+    @include down(#{$bp-xs}) {
+      padding-left: 30px;
+      font-size: 14px;
+    }
+
+    p {
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+    }
+  }
+}
+
+.payment_methods_info {
+  color: var(--color-base);
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%; /* 19.2px */
+  margin-bottom: 24px;
+
+  @include down(#{$bp-xs}) {
+    font-size: 14px;
+  }
 }
 
 .anyweb-checkout__billing {
+  padding: 32px 24px;
+
+  @include down(#{$bp-xs}) {
+    padding: 24px 12px;
+  }
+
   .woocommerce-billing-fields {
-    margin-top: 20px;
 
     > h3 {
       display: none;
@@ -89,31 +362,65 @@ form {
   }
 
   .create-account {
+    position: relative;
+
     &.form-row {
       margin: 0;
       padding: 0;
+    }
+
+    &:before,
+    &:after {
+      content: unset;
     }
   }
 
   label {
     &.woocommerce-form__label-for-checkbox {
-      display: flex;
+      position: relative;
+      display: inline-block !important;
       align-items: flex-start;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 1.5;
+      line-height: 1.2 !important;
+
+      span {
+        position: relative;
+        color: var(--gray-dark);
+        font-family: var(--fm-base);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 120%;
+        margin-left: 16px;
+        padding: 0 0 0 10px;
+
+        @include down(#{$bp-xs}) {
+          font-size: 14px;
+        }
+
+        &:before {
+          left: -16px;
+          height: 100%;
+          object-fit: contain;
+          background-size: 16px 16px;
+        }
+      }
     }
   }
 
   input {
     &#createaccount {
-      position: static;
       flex: 0 0 auto;
-      width: 14px;
-      height: 14px;
-      margin: 3px 0 0;
-      accent-color: #00aaa7;
+
+      &:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 16px;
+        height: 16px;
+        background: url('../image/checkbox.svg') no-repeat;
+      }
+
     }
   }
 }
@@ -121,57 +428,149 @@ form {
 .anyweb-checkout-tabs {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 32px;
   margin-bottom: 24px;
-  font-size: 14px;
-  font-weight: 600;
 
   @include down(#{$bp-xs}) {
-    gap: 20px;
+    gap: 13px;
     font-size: 13px;
+  }
+
+
+  &:not(:has(> :nth-child(2))) {
+    .anyweb-checkout-tabs__active:first-child {
+      padding-right: 0;
+      border-right: unset;
+    }
   }
 }
 
 .anyweb-checkout-tabs__active {
-  color: #ff5a30;
+  color: var(--brand-orange);
+  text-align: center;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 120%; /* 21.6px */
+  padding-right: 32px;
+  border-right: 1px solid #D1D1D1;
+
+  @include down(#{$bp-xs}) {
+    font-size: 14px;
+  }
+
+  &:hover {
+    color: var(--brand-orange);
+  }
+}
+
+.button-container-login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 4px;
+
+  &:first-child {
+    padding-right: 32px;
+    border-right: 1px solid #D1D1D1;
+
+    @include down(#{$bp-xs}) {
+      padding-right: 13px;
+
+      span {
+        @include down(#{$bp-xs}) {
+          max-width: 97px;
+        }
+      }
+    }
+  }
+
+  button {
+    padding: 0;
+    background: transparent;
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 4px;
+
+    @include down(#{$bp-xs}) {
+      max-width: 180px;
+    }
+
+    svg {
+      min-width: 100%;
+    }
+  }
+}
+
+.anyweb-checkout-tabs__button {
+  background: transparent;
+  box-shadow: none;
+  color: var(--brand-green-dark);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 120%; /* 21.6px */
+  text-align: left;
+  cursor: pointer;
+
+  @include down(#{$bp-xs}) {
+    font-size: 14px;
+  }
+
+  &[aria-pressed="true"] {
+    color: var(--brand-orange);
+    text-align: center;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%; /* 21.6px */
+
+    @include down(#{$bp-xs}) {
+      font-size: 14px;
+    }
+
+    span {
+      display: none;
+    }
+  }
+
+  &[aria-pressed="false"] {
+    color: var(--brand-green-dark);
+  }
+
+
+}
+
+.anyweb-checkout-tabs .anyweb-checkout-tabs__button[aria-pressed="true"]
++ .anyweb-checkout-tabs__underline {
+  visibility: hidden;
+}
+
+#anyweb-checkout-login-panel[hidden],
+.anyweb-checkout__billing.is-login-open .woocommerce-billing-fields__field-wrapper,
+.anyweb-checkout__billing.is-login-open .woocommerce-account-fields {
+  display: none;
 }
 
 .anyweb-checkout-tabs__login {
   position: relative;
-  padding: 0 0 6px;
   border: 0;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #00aaa7;
-  font: inherit;
+  color: var(--brand-green-dark);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 120%; /* 21.6px */
   text-align: left;
   cursor: pointer;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 6px;
-    left: -12px;
-    width: 1px;
-    background: #ddd;
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 2px;
-    background: repeating-linear-gradient(
-                    to right,
-                    #00aaa7 0 10px,
-                    transparent 10px 15px
-    );
-  }
-
 }
 
 .anyweb-checkout {
@@ -179,10 +578,11 @@ form {
   .woocommerce-billing-fields__field-wrapper {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 16px;
+    gap: 24px 20px;
 
-    @include down(#{$bp-xs}) {
+    @include down(#{$bp-lg}) {
       grid-template-columns: minmax(0, 1fr);
+      gap: 16px 0;
     }
 
     &::before,
@@ -195,77 +595,312 @@ form {
     float: none;
     width: auto;
     min-width: 0;
-    margin: 0;
-    padding: 0;
+    margin: 0 !important;
+    padding: 0 !important;
 
     &:not(.anyweb-contact-field) {
       grid-column: 1 / -1;
     }
   }
 
+  .woocommerce-account-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 24px;
+
+    #account_password_field,
+    #account_privacy_consent_field {
+      box-sizing: border-box;
+      flex: 1 1 0;
+      width: auto;
+      min-width: 0;
+      float: none;
+      margin: 0;
+      padding: 0;
+
+      @include down(#{$bp-xs}) {
+        float: none;
+        width: 100%;
+      }
+    }
+
+    .create-account-password {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      align-self: stretch;
+
+      @include down(#{$bp-sm}) {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      &::after {
+        content: unset;
+      }
+
+      .clear {
+        display: none;
+      }
+    }
+
+    #account_password_field {
+      float: left;
+      display: flex;
+      min-width: 342px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+
+      @include down(#{$bp-sm}) {
+        width: 100%;
+      }
+
+      label {
+        display: block;
+        color: var(--color-base);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 120%; /* 19.2px */
+
+        @include down(#{$bp-xs}) {
+          font-size: 14px;
+        }
+      }
+
+      .password-input {
+        width: 100%;
+      }
+
+      &:before,
+      &:after {
+        content: unset;
+      }
+    }
+
+    #account_privacy_consent_field {
+      position: relative;
+      float: right;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      flex: 1 0 0;
+      padding-top: 26px;
+
+      @include down(#{$bp-sm}) {
+        padding-top: 0;
+      }
+
+      a {
+        &::before {
+          content: unset;
+        }
+      }
+
+      label {
+        position: relative;
+        display: block;
+        align-items: flex-start;
+        color: var(--color-base);
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 120%; /* 14.4px */
+        padding-left: 26px;
+      }
+
+      input {
+        position: unset;
+        left: unset;
+        -webkit-appearance: none;
+        appearance: none;
+        margin: unset;
+
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 14px;
+          height: 14px;
+          background: url('../image/checkbox-gray.svg') no-repeat;
+          background-size: 100%;
+        }
+
+        &:checked {
+          &::before {
+            background: url('../image/checkbox-checked.svg') no-repeat;
+            background-size: 100%;
+          }
+        }
+      }
+
+
+      a {
+        text-decoration: underline;
+      }
+
+      &::before,
+      &::after {
+        content: unset;
+      }
+    }
+  }
+
   .anyweb-contact-field {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    flex: 1 0 0;
+
+    @include down(#{$bp-xs}) {
+      gap: 4px;
+    }
+
     label {
-      display: block;
-      margin-bottom: 6px;
-      color: #444;
-      font-size: 14px;
-      font-weight: 600;
-      line-height: 1.4;
+      color: var(--gray-dark);
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 120%; /* 19.2px */
+
+      @include down(#{$bp-xs}) {
+        font-size: 14px;
+      }
     }
 
     input {
       &.input-text {
         display: block;
         width: 100%;
-        height: 48px;
-        margin: 0;
-        padding: 12px 16px;
-        border: 1px solid #d8d8d8;
-        border-radius: 28px;
-        background: #fff;
+        height: 60px;
+        padding: 20px;
+        align-items: center;
+        align-self: stretch;
+        border-radius: 1000px;
+        border: 1px solid var(--border-input);
+        background: var(--white, #FFF);
         box-shadow: none;
-        color: #333;
+        color: var(--gray-dark);
         font: inherit;
-        font-size: 14px;
+        font-size: 16px;
         box-sizing: border-box;
+
+        @include down(#{$bp-sm}) {
+          height: 48px;
+        }
       }
 
       &::placeholder {
-        color: #999;
+        color: var(--gray-light);
         opacity: 1;
       }
 
       &:focus {
-        border-color: #00b5ae;
+        border-color: var(--border-input-focus);
         outline: none;
 
         label {
-          color: #00aaa7;
+          color: var(--brand-green-dark);
         }
       }
 
     }
 
-    &.woocommerce-invalid input {
-      border-color: #ff526b;
+    &.woocommerce-invalid input,
+    &.has-contact-error input {
+      border-color: var(--border-color-error);
+      background: var(--bg-input-error);
     }
 
 
     .woocommerce-input-wrapper {
-      display: block;
       width: 100%;
     }
   }
 }
 
 .anyweb-loyalty-notice {
-  margin: 0 0 20px;
-  color: #444;
-  font-size: 14px;
-  line-height: 1.5;
+  color: #000;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%; /* 19.2px */
+  margin: 0 0 24px;
 }
 
 .anyweb-loyalty-notice[hidden] {
   display: none !important;
+}
+
+#anyweb-checkout-login-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
+
+  .clear {
+    display: none;
+  }
+}
+
+body.woocommerce-checkout:has(#anyweb-checkout-coupon-code) {
+  .woocommerce-form-coupon-toggle,
+  form.checkout_coupon {
+    display: none !important;
+  }
+}
+
+.woocommerce-terms-and-conditions-wrapper {
+  label {
+    position: relative;
+    display: inline-flex !important;
+    gap: 10px;
+  }
+
+  span {
+    &::before {
+      content: unset !important;
+    }
+  }
+
+  input {
+    position: unset;
+    left: unset;
+    -webkit-appearance: none;
+    appearance: none;
+    margin: unset;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 14px;
+      height: 14px;
+      background: url('../image/checkbox-gray.svg') no-repeat;
+      background-size: 100%;
+    }
+
+    &:checked {
+      &::before {
+        background: url('../image/checkbox-checked.svg') no-repeat;
+        background-size: 100%;
+      }
+    }
+  }
+
+  .woocommerce-invalid {
+    #terms {
+      outline: unset !important;
+      outline-offset: inherit;
+    }
+  }
 }
 

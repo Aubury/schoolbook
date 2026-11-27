@@ -264,6 +264,18 @@
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+
+  &.hidden {
+    opacity: 0;
+    pointer-events: none;
+    display: block !important;
+  }
+}
+
+.filter-bts-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .delete-filter-button-box {

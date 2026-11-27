@@ -227,6 +227,7 @@ function open_blosks() {
 
 
 add_action( 'woocommerce_after_cart', 'close_blosks', 10 );
+add_action( 'woocommerce_after_checkout_form', 'close_blosks', 10 );
 function close_blosks(){
 
 
@@ -256,6 +257,7 @@ function close_blosks(){
                     </svg>
               </div>
               <div class="modal-content oneclickform">
+             
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -431,3 +433,11 @@ add_action( 'wp_enqueue_scripts', function () {
         wp_enqueue_script( 'wc-cart-fragments' );
     }
 } );
+
+add_filter('woocommerce_get_script_data', function ($params, $handle) {
+    if ('wc-cart-fragments' === $handle && is_array($params)) {
+        $params['request_timeout'] = 20000;
+    }
+
+    return $params;
+}, 10, 2);

@@ -41,6 +41,13 @@ $is_order_page ? $bottom_line = '<div class="header-bottom-line"></div>' : $bott
 <div id="page" class="site">
 	<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Skip to content', 'anyweb' ); ?></a>
 
+        <div id="cart-added-notice"
+             class="cart-added-notice"
+             role="status"
+             aria-live="polite"
+             hidden
+        ></div>
+
     <header class="header">
         <div class="header-top-section">
             <div class="container relative">
@@ -85,11 +92,22 @@ $is_order_page ? $bottom_line = '<div class="header-bottom-line"></div>' : $bott
 
                                                 <div class="mobile-profile-block">
                                                     <div class="header-login-block">
-                                                        <a class="header-login-link" href="<?php echo esc_url( any_web_theme_account_url() ); ?>"
-                                                           aria-label="<?php esc_attr_e('My account', 'anyweb_theme'); ?>">
-                                                            <span></span>
-                                                        </a><!-- end .header-login-link -->
-                                                    </div><!-- end .header-login-block -->
+                                                        <?php if ( is_user_logged_in() ) : ?>
+                                                            <a class="header-login-link is-logged-in"
+                                                               href="<?php echo esc_url( any_web_theme_account_url() ); ?>"
+                                                               aria-label="<?php esc_attr_e( 'My account', 'anyweb_theme' ); ?>">
+                                                                <span aria-hidden="true"></span>
+                                                            </a>
+                                                        <?php else : ?>
+                                                            <button type="button"
+                                                                    class="header-login-link"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#loginModal"
+                                                                    aria-label="<?php esc_attr_e( 'Sign in', 'anyweb_theme' ); ?>">
+                                                                <span aria-hidden="true"></span>
+                                                            </button>
+                                                        <?php endif; ?>
+                                                    </div>
 
                                                     <div class="header-wishlist-block">
                                                         <?php
@@ -232,10 +250,21 @@ $is_order_page ? $bottom_line = '<div class="header-bottom-line"></div>' : $bott
                     <!-- .header-right-section -->
                     <div class="header-right-section">
                         <div class="header-login-block">
-                            <a class="header-login-link" href="<?php echo esc_url( any_web_theme_account_url() ); ?>"
-                               aria-label="<?php esc_attr_e('My account', 'anyweb_theme'); ?>">
-                                <span></span>
-                            </a><!-- end .login-link -->
+                            <?php if ( is_user_logged_in() ) : ?>
+                                <a class="header-login-link is-logged-in"
+                                   href="<?php echo esc_url( any_web_theme_account_url() ); ?>"
+                                   aria-label="<?php esc_attr_e( 'My account', 'anyweb_theme' ); ?>">
+                                    <span aria-hidden="true"></span>
+                                </a>
+                            <?php else : ?>
+                                <button type="button"
+                                        class="header-login-link"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#loginModal"
+                                        aria-label="<?php esc_attr_e( 'Sign in', 'anyweb_theme' ); ?>">
+                                    <span aria-hidden="true"></span>
+                                </button>
+                            <?php endif; ?>
                         </div>
 
                         <div class="header-wishlist-block">
@@ -268,12 +297,6 @@ $is_order_page ? $bottom_line = '<div class="header-bottom-line"></div>' : $bott
                                 </div>
                             </div>
 
-                            <div id="cart-added-notice"
-                                 class="cart-added-notice"
-                                 role="status"
-                                 aria-live="polite"
-                                 hidden
-                            ></div>
                         </div>
                      </div><!-- end .header-left-section -->
 

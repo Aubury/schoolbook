@@ -255,7 +255,10 @@ function disable_cod_for_orders_below_300($available_gateways) {
  * Добавляем некликабельную приписку для заказов менее 300 грн
  */
 
-add_action('woocommerce_review_order_before_payment', 'custom_notice_for_low_amount');
+add_action(
+    'anyweb_checkout_after_payment_methods',
+    'custom_notice_for_low_amount'
+);
 function custom_notice_for_low_amount() {
     $total = WC()->cart->total;
 
@@ -265,7 +268,7 @@ function custom_notice_for_low_amount() {
 
     // Если сумма заказа меньше 300 грн
     if ($total < 300) {
-        $str = '<h4 style="color: #ff0000;">Оплата під час отримання недоступна для замовлень на суму менше ніж 300 грн. Будь ласка, оберіть онлайн-оплату через LiqPay.</h4>';
+        $str = '<p class="payment_methods_info"">Оплата під час отримання доступна для замовлень на суму більше ніж 300 грн.</p>';
     }
 
     foreach (WC()->cart->get_cart() as $cart_item) {
@@ -273,7 +276,7 @@ function custom_notice_for_low_amount() {
 
         // Проверяем, доступен ли товар для предзаказа
         if ($product->is_on_backorder()) {
-            $str = '<h4 style="color: #ff0000;">Опція “оплата під час отримання” недоступна для акції “передзамовлення”. Будь ласка, оберіть онлайн-оплату через LiqPay.</h4>';
+            $str = '<p class="payment_methods_info">Опція “оплата під час отримання” недоступна для акції “передзамовлення”. Будь ласка, оберіть онлайн-оплату через LiqPay.</p>';
             break; // Выходим из цикла, если хотя бы один товар на предзаказе
         }
     }
@@ -917,6 +920,8 @@ add_filter( 'woocommerce_checkout_fields', function ( $fields ) {
         }
     }
 
+    unset( $fields['billing']['billing_city'] );
+
     return $fields;
 }, 100 );
 
@@ -928,32 +933,102 @@ add_action(
 function anyweb_checkout_customer_tabs() {
     $logged_in = is_user_logged_in();
     ?>
+
     <div class="anyweb-checkout-tabs">
         <?php if ( $logged_in ) : ?>
 
-            <span class="anyweb-checkout-tabs__active">
+            <a class="anyweb-checkout-tabs__active"
+               href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>">
                 Особистий кабінет
-            </span>
+            </a>
 
         <?php else : ?>
 
-            <span class="anyweb-checkout-tabs__active">
-                Я новий клієнт
-            </span>
+            <div class="button-container-login">
+                <button
+                        type="button"
+                        class="anyweb-checkout-tabs__button"
+                        data-checkout-view="guest"
+                        aria-pressed="true"
+                >
+                    Я новий клієнт
+                </button>
 
-            <button type="button"
-                    class="anyweb-checkout-tabs__login">
-                Увійти в особистий кабінет
-            </button>
+                <span class="anyweb-checkout-tabs__underline" aria-hidden="true">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="125" height="4" viewBox="0 0 125 4" fill="none">
+  <path d="M36.2721 0.515113C37.2839 0.515113 38.1581 0.860046 38.061 1.70262C37.9881 2.33597 37.5106 2.64134 36.2316 2.70355C31.6664 2.75444 27.3034 2.81097 22.7382 2.78835C21.9368 2.78835 21.1516 2.48865 21.1112 1.77614C21.0626 0.871359 22.0177 0.69604 22.981 0.66211C25.126 0.582942 27.2711 0.588625 29.4161 0.549041C29.5861 0.549041 33.9976 0.498143 36.2802 0.509452L36.2721 0.515113Z" fill="#009E97"/>
+  <path d="M7.24654 0.887914C10.0249 0.853984 10.9697 0.706954 12.8272 0.706954C13.8761 0.706954 14.9571 1.13674 14.917 2.03021C14.877 2.81624 13.9242 3.082 12.9073 3.07069C9.18418 3.03676 5.73327 3.00849 2.01813 2.93497C1.00128 2.91235 -0.151695 2.5674 0.0164467 1.72482C0.136548 1.10279 1.09736 0.673024 2.07419 0.706954C3.68354 0.763502 5.68523 0.933147 7.24654 0.882253V0.887914Z" fill="#009E97"/>
+  <path d="M57.2307 0.0125884C58.4334 -0.0213409 59.8524 -0.0722511 59.8765 1.12658C59.9005 2.0766 58.7059 2.29717 57.5995 2.31979C53.8874 2.39895 50.1674 2.44418 46.4553 2.48376C45.5974 2.49507 44.8117 2.30847 44.7395 1.60727C44.6594 0.78731 45.5252 0.414094 46.4873 0.340581C48.4596 0.187899 55.6353 0.0578329 57.2307 0.0182488V0.0125884Z" fill="#009E97"/>
+  <path d="M73.8123 2.40426C72.0893 2.40426 70.3662 2.42687 68.6432 2.39294C67.4972 2.37032 66.4313 2.0989 66.5035 1.13192C66.5596 0.334581 67.5293 0.0970956 68.515 0.0914407C72.2255 0.0744761 75.944 0.0631663 79.6545 0.0914407C80.6323 0.10275 81.5379 0.425078 81.5699 1.22241C81.61 2.24595 80.5201 2.39295 79.3821 2.3986C77.5228 2.40991 75.6716 2.3986 73.8123 2.3986V2.40426Z" fill="#009E97"/>
+  <path d="M100.653 0.0125884C101.855 -0.0213409 103.274 -0.0722511 103.298 1.12658C103.322 2.0766 102.128 2.29717 101.021 2.31979C97.3093 2.39895 93.5892 2.44418 89.8772 2.48376C89.0193 2.49507 88.2336 2.30847 88.1614 1.60727C88.0812 0.78731 88.9471 0.414094 89.9092 0.340581C91.8815 0.187899 99.0571 0.0578329 100.653 0.0182488V0.0125884Z" fill="#009E97"/>
+  <path d="M117.242 2.40426C115.519 2.40426 113.796 2.42687 112.073 2.39294C110.927 2.37032 109.861 2.0989 109.933 1.13192C109.989 0.334581 110.959 0.0970956 111.945 0.0914407C115.655 0.0744761 119.374 0.0631663 123.084 0.0914407C124.062 0.10275 124.968 0.425078 125 1.22241C125.04 2.24595 123.95 2.39295 122.812 2.3986C120.953 2.40991 119.101 2.3986 117.242 2.3986V2.40426Z" fill="#009E97"/>
+</svg>
+                </span>
+            </div>
+
+            <div class="button-container-login">
+                <button
+                        type="button"
+                        class="anyweb-checkout-tabs__button"
+                        data-checkout-view="login"
+                        aria-pressed="false"
+                        aria-controls="anyweb-checkout-login-panel"
+                >
+                    Увійти в особистий кабінет
+                </button>
+
+                <span class="anyweb-checkout-tabs__underline" aria-hidden="true">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="232" height="4" viewBox="0 0 232 4" fill="none">
+                    <path d="M26.3559 0.853003C27.1272 0.853003 27.7937 1.19794 27.7196 2.04051C27.6641 2.67386 27.3 2.97923 26.3251 3.04144C22.8448 3.09233 19.5188 3.14886 16.0385 3.12624C15.4276 3.12624 14.8291 2.82654 14.7982 2.11403C14.7612 1.20925 15.4893 1.03393 16.2237 1C17.8589 0.920833 19.4941 0.926515 21.1294 0.886931C21.2589 0.886931 24.622 0.836033 26.3621 0.847343L26.3559 0.853003Z" fill="#009E97"/>
+                    <path d="M5.58481 1.2258C7.72604 1.19188 8.45418 1.04484 9.88578 1.04484C10.6941 1.04484 11.5272 1.47463 11.4963 2.3681C11.4655 3.15413 10.7312 3.41989 9.94749 3.40858C7.07812 3.37465 4.41855 3.34638 1.55535 3.27287C0.77167 3.25025 -0.116909 2.90529 0.0126752 2.06271C0.105236 1.44068 0.845723 1.01092 1.59855 1.04484C2.83885 1.10139 4.38152 1.27104 5.58481 1.22014V1.2258Z" fill="#009E97"/>
+                    <path d="M106.215 3.39153C104.314 3.30105 102.988 3.2445 101.661 3.17664C100.908 3.13706 100.149 2.97871 100.137 2.14179C100.131 1.35576 100.84 0.948614 101.575 0.942959C105.45 0.90903 109.325 0.926004 113.206 0.988207C113.836 0.999517 114.329 1.47452 114.249 2.15311C114.15 2.99569 113.447 3.14837 112.694 3.17664C110.349 3.26146 107.998 3.33498 106.215 3.39719V3.39153Z" fill="#009E97"/>
+                    <path d="M69.8857 2.3413C68.9724 2.3922 67.3434 2.48268 65.7081 2.55619C64.9491 2.59012 64.1963 2.47137 64.0668 1.64576C63.9372 0.808842 64.6159 0.503489 65.3811 0.418666C68.8429 0.0510995 72.317 -0.0676501 75.7972 0.0680668C76.6303 0.101996 77.5435 0.294248 77.5806 1.25558C77.6176 2.31869 76.6426 2.31871 75.8281 2.33002C74.0879 2.35263 72.3478 2.33568 69.8857 2.33568V2.3413Z" fill="#009E97"/>
+                    <path d="M122.146 3.0816C121.288 3.0816 118.178 3.16076 118.172 1.79228C118.166 0.423799 120.498 0.746117 121.757 0.757426C123.682 0.774391 125.478 0.768735 127.465 0.225867C128.384 -0.0286022 129.279 -0.271735 129.612 0.712212C129.927 1.63396 129.026 1.86014 128.286 2.18813C126.595 2.72534 124.472 3.03637 122.152 3.0816H122.146Z" fill="#009E97"/>
+                    <path d="M40.9617 0.350479C41.8873 0.31655 42.9795 0.26564 42.998 1.46447C43.0165 2.41449 42.097 2.63506 41.2455 2.65768C38.3885 2.73684 35.5253 2.78207 32.6683 2.82166C32.008 2.83296 31.4033 2.64636 31.3477 1.94516C31.286 1.1252 31.9524 0.751985 32.6929 0.678471C34.2109 0.52579 39.7337 0.395723 40.9617 0.356139V0.350479Z" fill="#009E97"/>
+                    <path d="M52.2827 2.74215C50.956 2.74215 49.6293 2.76476 48.3026 2.73083C47.4202 2.70821 46.5995 2.43679 46.655 1.46981C46.6982 0.672471 47.4449 0.434986 48.2039 0.429331C51.0609 0.412367 53.9241 0.401057 56.7811 0.429331C57.5339 0.440641 58.2312 0.762969 58.2559 1.56031C58.2867 2.58384 57.4475 2.73084 56.5713 2.73649C55.1397 2.7478 53.7143 2.73649 52.2827 2.73649V2.74215Z" fill="#009E97"/>
+                    <path d="M88.1764 2.4419C86.7448 2.40231 85.307 2.38532 83.8754 2.31181C83.357 2.28354 82.8572 2.06302 82.7585 1.52015C82.6351 0.841566 83.0917 0.406133 83.7335 0.31C86.7879 -0.159355 89.8486 0.106415 92.8969 0.406123C93.5572 0.468326 93.9521 0.999886 93.841 1.64454C93.7238 2.32313 93.1067 2.5267 92.4711 2.5267C91.0395 2.5267 89.6018 2.45884 88.1702 2.41926C88.1702 2.42491 88.1702 2.43059 88.1702 2.4419H88.1764Z" fill="#009E97"/>
+                    <path d="M172.671 2.3413C171.758 2.3922 170.129 2.48268 168.493 2.55619C167.734 2.59012 166.981 2.47137 166.852 1.64576C166.722 0.808842 167.401 0.503489 168.166 0.418666C171.628 0.0510995 175.102 -0.0676501 178.582 0.0680668C179.415 0.101996 180.329 0.294248 180.366 1.25558C180.403 2.31869 179.428 2.31871 178.613 2.33002C176.873 2.35263 175.133 2.33568 172.671 2.33568V2.3413Z" fill="#009E97"/>
+                    <path d="M206.54 3.0816C205.683 3.0816 202.573 3.16076 202.566 1.79228C202.56 0.423799 204.893 0.746117 206.152 0.757426C208.077 0.774391 209.873 0.768735 211.859 0.225867C212.779 -0.0286022 213.674 -0.271735 214.007 0.712212C214.322 1.63396 213.421 1.86014 212.68 2.18813C210.989 2.72534 208.867 3.03637 206.547 3.0816H206.54Z" fill="#009E97"/>
+                    <path d="M143.747 0.350479C144.672 0.31655 145.765 0.26564 145.783 1.46447C145.802 2.41449 144.882 2.63506 144.031 2.65768C141.174 2.73684 138.31 2.78207 135.453 2.82166C134.793 2.83296 134.188 2.64636 134.133 1.94516C134.071 1.1252 134.738 0.751985 135.478 0.678471C136.996 0.52579 142.519 0.395723 143.747 0.356139V0.350479Z" fill="#009E97"/>
+                    <path d="M155.068 2.74215C153.741 2.74215 152.414 2.76476 151.088 2.73083C150.205 2.70821 149.385 2.43679 149.44 1.46981C149.483 0.672471 150.23 0.434986 150.989 0.429331C153.846 0.412367 156.709 0.401057 159.566 0.429331C160.319 0.440641 161.016 0.762969 161.041 1.56031C161.072 2.58384 160.233 2.73084 159.356 2.73649C157.925 2.7478 156.499 2.73649 155.068 2.73649V2.74215Z" fill="#009E97"/>
+                    <path d="M190.981 2.4419C189.549 2.40231 188.112 2.38532 186.68 2.31181C186.162 2.28354 185.662 2.06302 185.563 1.52015C185.44 0.841566 185.896 0.406133 186.538 0.31C189.593 -0.159355 192.653 0.106415 195.702 0.406123C196.362 0.468326 196.757 0.999886 196.646 1.64454C196.528 2.32313 195.911 2.5267 195.276 2.5267C193.844 2.5267 192.406 2.45884 190.975 2.41926C190.975 2.42491 190.975 2.43059 190.975 2.4419H190.981Z" fill="#009E97"/>
+                    <path d="M226.317 2.4419C224.885 2.40231 223.448 2.38532 222.016 2.31181C221.498 2.28354 220.998 2.06302 220.899 1.52015C220.776 0.841566 221.232 0.406133 221.874 0.31C224.929 -0.159355 227.989 0.106415 231.038 0.406123C231.698 0.468326 232.093 0.999886 231.982 1.64454C231.864 2.32313 231.247 2.5267 230.612 2.5267C229.18 2.5267 227.742 2.45884 226.311 2.41926C226.311 2.42491 226.311 2.43059 226.311 2.4419H226.317Z" fill="#009E97"/>
+                </svg>
+                </span>
+            </div>
 
         <?php endif; ?>
     </div>
-    <?php echo anyweb_checkout_loyalty_notice(); ?>
+
+    <?php if ( ! $logged_in ) : ?>
+        <div id="anyweb-checkout-login-panel" hidden></div>
+    <?php endif; ?>
+
     <?php
+    if ( function_exists( 'anyweb_checkout_loyalty_notice' ) ) {
+        echo anyweb_checkout_loyalty_notice();
+    }
 }
 
 function anyweb_checkout_loyalty_notice() {
     $discounts = array();
+
+    $cart = WC()->cart;
+
+    if ( ! $cart ) {
+        return;
+    }
+
+//    echo do_shortcode('[saphali_user_discount]');
+
+    $loyalty_discount = (float) $cart->get_coupon_discount_amount(
+        'loyalnist',
+        ! $cart->display_prices_including_tax()
+    );
+
+    if ( round( $loyalty_discount, wc_get_price_decimals() ) <= 0 ) {
+        return;
+    }
 
     if (
         is_user_logged_in()
@@ -985,14 +1060,15 @@ function anyweb_checkout_loyalty_notice() {
 
     ob_start();
 
-    echo var_dump($discounts);
     ?>
     <div class="anyweb-loyalty-notice"
          <?php if (empty($discounts)) : ?>hidden<?php endif; ?>>
 
         <?php if (!empty($discounts)) : ?>
-            Ваша накопичувальна знижка за системою лояльності:
+            Застосована ваша накопичувальна <strong>знижка
             <?php echo wp_kses_post(implode(', ', $discounts)); ?>
+            </strong>
+            за системою лояльності!
         <?php endif; ?>
 
     </div>
@@ -1009,4 +1085,187 @@ add_filter(
 
         return $fragments;
     }
+);
+
+add_filter( 'woocommerce_checkout_fields', function ( $fields ) {
+    $fields['account']['account_password'] = array_replace(
+        $fields['account']['account_password'] ?? array(),
+        array(
+            'type'         => 'password',
+            'label'        => 'Вигадайте пароль',
+            'placeholder'  => 'Введіть ваш пароль',
+            'autocomplete' => 'new-password',
+            'required'     => true,
+            'priority'     => 10,
+        )
+    );
+
+    $privacy_url = get_privacy_policy_url();
+
+    $fields['account']['account_privacy_consent'] = array(
+        'type'     => 'checkbox',
+        'label'    => $privacy_url
+            ? sprintf(
+                'Реєструючись, я даю згоду на обробку персональних даних згідно з <a href="%s">Політикою конфіденційності</a> цього сайту.',
+                esc_url( $privacy_url )
+            )
+            : 'Реєструючись, я даю згоду на обробку персональних даних.',
+        'required' => true,
+        'priority' => 20,
+    );
+
+    return $fields;
+}, 110 );
+
+function anyweb_render_checkout_coupon() {
+    $code    = anyweb_get_applied_promo_code( WC()->cart );
+    $applied = '' !== $code;
+    ?>
+    <div id="anyweb-checkout-coupon-panel">
+        <?php if ( wc_coupons_enabled() ) : ?>
+            <div class="cart-promo-form anyweb-checkout-coupon<?php echo $applied ? ' is-applied' : ''; ?>">
+                <label class="screen-reader-text" for="anyweb-checkout-coupon-code">
+                    <?php esc_html_e( 'Промокод', 'any-web-theme' ); ?>
+                </label>
+
+                <input
+                        type="text"
+                        id="anyweb-checkout-coupon-code"
+                        class="cart-promo-form__input"
+                        placeholder="<?php esc_attr_e( 'Маєте промо-код?', 'any-web-theme' ); ?>"
+                        value="<?php echo esc_attr( $code ); ?>"
+                        <?php if ( $applied ) : ?>readonly<?php endif; ?>
+                >
+
+                <?php if ( $applied ) : ?>
+                    <a
+                            href="#"
+                            class="cart-promo-form__remove woocommerce-remove-coupon"
+                            data-coupon="<?php echo esc_attr( $code ); ?>"
+                            aria-label="<?php esc_attr_e( 'Видалити промокод', 'any-web-theme' ); ?>"
+                    >
+                        <svg width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" aria-hidden="true">
+                            <path d="M7 7L17 17M7 17L17 7"
+                                  stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round"/>
+                        </svg>
+                    </a>
+
+                    <span class="cart-promo-form__button is-applied">
+                        <?php esc_html_e( 'Застосовано', 'any-web-theme' ); ?>
+                    </span>
+                <?php else : ?>
+                    <button
+                            type="button"
+                            class="cart-promo-form__button anyweb-checkout-coupon__apply"
+                    >
+                        <?php esc_html_e( 'Застосувати', 'any-web-theme' ); ?>
+                    </button>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <?php
+}
+
+add_filter( 'woocommerce_update_order_review_fragments', function ( $fragments ) {
+    ob_start();
+    anyweb_render_checkout_coupon();
+    $fragments['#anyweb-checkout-coupon-panel'] = ob_get_clean();
+
+    return $fragments;
+} );
+
+/**
+ * Возвращает первый применённый промокод покупателя.
+ * Служебные купоны Saphali остаются в корзине и участвуют в расчёте.
+ */
+function anyweb_get_applied_promo_code( $cart ) {
+    if ( ! $cart ) {
+        return '';
+    }
+
+    foreach ( $cart->get_coupons() as $code => $coupon ) {
+        if ( 'fixed_total_shop' === $coupon->get_discount_type() ) {
+            continue;
+        }
+
+        return (string) $code;
+    }
+
+    return '';
+}
+
+add_action( 'woocommerce_after_calculate_totals', function ( $cart ) {
+    if ( ! current_user_can( 'manage_woocommerce' ) ) {
+        return;
+    }
+
+    $coupons = array();
+
+    $applied_coupons = $cart->get_applied_coupons();
+    $discount_saphali_shop = WC()->session->get( 'discount_saphali_shop', array() );
+    $discount_totals = $cart->get_coupon_discount_totals();
+    $cart_coupon_types = wc_get_cart_coupon_types();
+    $woocommerce_coupon_is_valid_for_cart = has_filter( 'woocommerce_coupon_is_valid_for_cart' );
+
+    foreach ( $cart->get_coupons() as $code => $coupon ) {
+        $coupons[] = array(
+            'code'            => $code,
+            'type'            => $coupon->get_discount_type(),
+            'actual_discount' => (float) $cart->get_coupon_discount_amount(
+                $code,
+                ! $cart->display_prices_including_tax()
+            )
+        );
+    }
+
+    $data = array(
+        'saphali_session'      => WC()->session
+            ? WC()->session->get( 'discount_saphali_shop', array() )
+            : array(),
+        'coupons'              => $coupons,
+        'subtotal_ex_tax'      => $cart->get_subtotal(),
+        'products_net_ex_tax'  => $cart->get_cart_contents_total(),
+        'coupon_discount'      => $cart->get_discount_total(),
+        'coupon_discount_tax'  => $cart->get_discount_tax(),
+        'fees_ex_tax'          => $cart->get_fee_total(),
+        'order_total'          => $cart->get_total( 'edit' ),
+    );
+
+    wc_get_logger()->info(
+        wp_json_encode( $data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT ),
+        array( 'source' => 'anyweb-discounts' )
+    );
+}, PHP_INT_MAX );
+
+add_filter(
+    'woocommerce_checkout_required_field_notice',
+    function ( $message, $label, $key ) {
+        if ( 'account_privacy_consent' === $key ) {
+            return __( 'Обов’язкове поле', 'any-web-theme' );
+        }
+
+        if ( in_array( $key, [ 'billing_first_name', 'account_password' ], true ) ) {
+            return __( 'обов’язкове поле', 'any-web-theme' );
+        }
+
+        return $message;
+    },
+    10,
+    3
+);
+
+add_filter(
+    'gettext_with_context_woocommerce',
+    function ( $translation, $text, $context ) {
+        if ( 'Billing %s' === $text && 'checkout-validation' === $context ) {
+            return '%s';
+        }
+
+        return $translation;
+    },
+    10,
+    3
 );

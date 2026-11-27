@@ -86,9 +86,7 @@ $recommendations_total = (float) WC()->cart->get_cart_contents_total()
         $applied_coupons = $cart->get_applied_coupons();
 
         // В поле показываем первый применённый промокод.
-        $applied_code = ! empty( $applied_coupons )
-            ? reset( $applied_coupons )
-            : '';
+        $applied_code = anyweb_get_applied_promo_code( $cart );
 
         $remove_coupon_url = $applied_code
             ? add_query_arg(

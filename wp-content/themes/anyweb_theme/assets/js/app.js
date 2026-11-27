@@ -16,9 +16,16 @@ btn.on('click', function(e) {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+	const woocommerce_checkout =document.querySelector('.woocommerce-checkout');
+	const woocommerce_cart = document.querySelector('.woocommerce-cart');
 	const headerTop = document.querySelector('.header-top-section');
+	const cartAddedNotice = document.querySelector('#cart-added-notice');
 
+	if (woocommerce_checkout) return;
+	if (woocommerce_cart) return;
 	if (!headerTop) return;
+
+	const mobileHeader = window.matchMedia('(max-width: 580px)');
 
 	const placeholder = document.createElement('div');
 	placeholder.className = 'header-top-placeholder';
@@ -28,6 +35,13 @@ document.addEventListener('DOMContentLoaded', function () {
 	let ticking = false;
 
 	function updateHeader() {
+		if (!mobileHeader.matches) {
+			headerTop.classList.remove('is-fixed');
+			placeholder.style.display = 'none';
+			ticking = false;
+			return;
+		}
+
 		const adminBar = document.getElementById('wpadminbar');
 
 		// Учитываем видимую часть панели WordPress.
@@ -35,9 +49,18 @@ document.addEventListener('DOMContentLoaded', function () {
 			? Math.max(0, adminBar.getBoundingClientRect().bottom)
 			: 0;
 
+		const styles = window.getComputedStyle(headerTop);
+
+		const headerTopOffset = styles.paddingBottom;
+
 		headerTop.style.setProperty(
 			'--header-admin-offset',
 			adminOffset + 'px'
+		);
+
+		cartAddedNotice.style.setProperty(
+			'--header-offset',
+			headerTopOffset
 		);
 
 		const fixed = window.scrollY + adminOffset > startPosition;
@@ -47,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		headerTop.classList.toggle('is-fixed', fixed);
 
 		ticking = false;
+
 	}
 
 	function measureHeader() {
@@ -73,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	new ResizeObserver(measureHeader).observe(headerTop);
 
 	measureHeader();
+	mobileHeader.addEventListener('change', measureHeader);
 });
 
 ////////////////////////////////////////////////////////////////////////
@@ -352,20 +377,48 @@ window.addEventListener('resize', changePlaceholder);
 
 ///////////////////////// BASKET ///////////////////////////////////////////
 
+// jQuery(function ($) {
+// 	let refreshTimer;
+//
+// 	$(document.body).on(
+// 		'updated_wc_div.anywebHeaderCart ' +
+// 		'updated_cart_totals.anywebHeaderCart',
+// 		function () {
+// 			clearTimeout(refreshTimer);
+//
+// 			refreshTimer = setTimeout(function () {
+// 				$(document.body).trigger('wc_fragment_refresh');
+// 			}, 100);
+// 		}
+// 	);
+// });
+
 jQuery(function ($) {
+	if (!$('body').hasClass('woocommerce-cart')) {
+		return;
+	}
+
 	let refreshTimer;
 
-	$(document.body).on(
-		'updated_wc_div.anywebHeaderCart ' +
-		'updated_cart_totals.anywebHeaderCart',
-		function () {
-			clearTimeout(refreshTimer);
+	function refreshHeaderCart() {
+		clearTimeout(refreshTimer);
 
-			refreshTimer = setTimeout(function () {
-				$(document.body).trigger('wc_fragment_refresh');
-			}, 100);
-		}
-	);
+		refreshTimer = setTimeout(function () {
+			$(document.body).trigger('wc_fragment_refresh');
+		}, 150);
+	}
+
+	$(document.body)
+		.off('.anywebHeaderCartSync')
+		.on(
+			'updated_wc_div.anywebHeaderCartSync ' +
+			'updated_cart_totals.anywebHeaderCartSync ' +
+			'wc_cart_emptied.anywebHeaderCartSync',
+			refreshHeaderCart
+		);
+
+	// Обновляем также после обычной загрузки страницы.
+	refreshHeaderCart();
 });
 
 jQuery(function ($) {
@@ -397,6 +450,75 @@ jQuery(function ($) {
 			window.location.reload();
 		}
 	);
+});
+
+// jQuery(function ($) {
+// 	function updateCartNoticeOffset() {
+// 		const basket = document.querySelector(
+// 			'.header-top-section .header-basket-section'
+// 		);
+//
+// 		if (!basket || !basket.getClientRects().length) return;
+//
+// 		const viewportWidth = document.documentElement.clientWidth;
+// 		const basketRight = basket.getBoundingClientRect().right;
+// 		const offset = Math.max(0, viewportWidth - basketRight);
+//
+// 		document.documentElement.style.setProperty(
+// 			'--cart-notice-right',
+// 			`${offset}px`
+// 		);
+// 	}
+//
+// 	$(window).on('resize load', updateCartNoticeOffset);
+// 	updateCartNoticeOffset();
+// });
+
+jQuery(function ($) {
+	const root = document.documentElement;
+	const header = document.querySelector('.header-top-section');
+	const mobile = window.matchMedia('(max-width: 580px)');
+
+	if (!header) return;
+
+	function updateCartNoticeOffset() {
+		const basket = header.querySelector('.header-basket-section');
+		const icon = basket?.querySelector('.header-basket-block');
+
+		if (!basket || !basket.getClientRects().length) return;
+
+		const viewportWidth = root.clientWidth;
+		const basketRight = basket.getBoundingClientRect().right;
+
+		// Сохраняем прежний отступ для обычного положения окна.
+		root.style.setProperty(
+			'--cart-notice-right',
+			`${Math.max(0, viewportWidth - basketRight)}px`
+		);
+
+		if (
+			!mobile.matches ||
+			!header.classList.contains('is-fixed') ||
+			document.body.matches('.woocommerce-cart, .woocommerce-checkout') ||
+			!icon?.getClientRects().length
+		) return;
+
+		const rect = icon.getBoundingClientRect();
+
+		root.style.setProperty('--cart-notice-mobile-top', `${rect.bottom + 8}px`);
+		root.style.setProperty(
+			'--cart-notice-mobile-right',
+			`${Math.max(8, viewportWidth - rect.right)}px`
+		);
+	}
+
+	$(window).on('resize load', updateCartNoticeOffset);
+	new MutationObserver(updateCartNoticeOffset).observe(header, {
+		attributes: true,
+		attributeFilter: ['class', 'style']
+	});
+
+	updateCartNoticeOffset();
 });
 
 
@@ -459,7 +581,10 @@ jQuery(function ($) {
 
 				if ($button.hasClass('product-preorder')) {
 					buttonHTML = '<span>У кошику</span>';
-				} else if (window.innerWidth > 541) {
+				} else if ($button.hasClass('product-item-detail-buy-button')) {
+					buttonHTML = '<span class="text-block">У кошику</span>';
+				} else
+					if (window.innerWidth > 576) {
 					buttonHTML = '<span class="text-block">У кошику</span>';
 				} else {
 					buttonHTML =
@@ -499,39 +624,6 @@ jQuery(function ($) {
 		'.cart-added-notice__close',
 		hideCartNotice
 	);
-});
-
-jQuery(function ($) {
-	const $notice = $('#cart-added-notice');
-
-	if (!$notice.length) return;
-
-	// Запоминаем исходное место в шапке.
-	const $originalPlace = $('<span hidden></span>');
-	$notice.before($originalPlace);
-
-	const mobileMedia = window.matchMedia('(max-width: 992px)');
-
-	function moveCartAddedNotice() {
-		// Укажи здесь обёртку своих хлебных крошек.
-		const $breadcrumbs = $('#navigation').first();
-
-		if (mobileMedia.matches && $breadcrumbs.length) {
-			let $noticeSlot = $('#cart-added-notice-slot');
-
-			if (!$noticeSlot.length) {
-				$noticeSlot = $('<div id="cart-added-notice-slot"></div>');
-				$noticeSlot.insertAfter($breadcrumbs);
-			}
-
-			$notice.appendTo($noticeSlot);
-		} else {
-			$notice.insertAfter($originalPlace);
-		}
-	}
-
-	mobileMedia.addEventListener('change', moveCartAddedNotice);
-	moveCartAddedNotice();
 });
 
 jQuery(function ($) {
@@ -612,27 +704,337 @@ jQuery(function ($) {
 		.find('span')
 		.text('Зареєструвати новий особистий кабінет за цими даними');
 
-	$(document).on(
-		'click.anywebCheckoutLogin',
-		'.anyweb-checkout-tabs__login',
-		function () {
-			const $login = $('form.woocommerce-form-login').first();
-
-			if (!$login.length) return;
-
-			$login.stop(true, true).slideToggle(200, function () {
-				if ($login.is(':visible')) {
-					$login[0].scrollIntoView({
-						behavior: 'smooth',
-						block: 'center'
-					});
-
-					$login.find('#username').trigger('focus');
-				}
-			});
-		}
+	const $panel = $('#anyweb-checkout-login-panel');
+	const $card = $panel.closest('.anyweb-checkout__billing');
+	const $tabs = $card.find(
+		'.anyweb-checkout-tabs__button[data-checkout-view]'
 	);
+
+	if (!$panel.length || $tabs.length !== 2) return;
+
+	function setView(view) {
+		const showLogin = view === 'login';
+
+		$tabs.each(function () {
+			this.setAttribute(
+				'aria-pressed',
+				String(this.dataset.checkoutView === view)
+			);
+		});
+
+		$panel.prop('hidden', !showLogin);
+		$card.toggleClass('is-login-open', showLogin);
+	}
+
+	setView('guest');
+
+	const $loginForm = $('form.woocommerce-form-login').filter(function () {
+		return !$(this).closest('form.checkout').length &&
+			$(this).find('[name="woocommerce-login-nonce"]').length > 0;
+	}).first();
+
+	if (!$loginForm.length) {
+		console.warn('Не знайдено форму входу WooCommerce на checkout.');
+		return;
+	}
+
+	// Переносим поля, сохраняя их связь со штатной формой входа.
+	const formId = $loginForm.attr('id') || 'anyweb-native-checkout-login';
+
+	$loginForm.attr('id', formId);
+	$loginForm.find('input, button, select, textarea').attr('form', formId);
+	$panel.append($loginForm.contents());
+
+	$('.woocommerce-form-login-toggle').hide();
+
+	$tabs.on('click.anywebCheckoutTabs', function () {
+		setView(this.dataset.checkoutView);
+
+		if (this.dataset.checkoutView === 'login') {
+			$panel.find('[name="username"]').trigger('focus');
+		}
+	});
 });
+
+
+jQuery(function ($) {
+	const fields = [
+		'form.checkout #billing_last_name',
+		'form.checkout #billing_first_name',
+		'form.checkout #billing_email',
+		'form.checkout #billing_phone'
+	].join(', ');
+	const phoneField = 'form.checkout #billing_phone';
+	const touched = new WeakSet();
+
+	function phoneDigits(value) {
+		const digits = value.replace(/\D/g, '');
+
+		if (value.trim().startsWith('+380') || /^380\d{9}$/.test(digits)) {
+			return digits.slice(3);
+		}
+
+		return /^0\d{9}$/.test(digits) ? digits.slice(1) : digits;
+	}
+
+	function formatPhone(input) {
+		const digits = phoneDigits(input.value).slice(0, 9);
+
+		const groups = [
+			digits.slice(0, 2),
+			digits.slice(2, 5),
+			digits.slice(5, 7),
+			digits.slice(7, 9)
+		].filter(Boolean);
+
+		const formatted = '+380' + (groups.length ? ' ' + groups.join(' ') : '');
+
+		if (input.value !== formatted) {
+			input.value = formatted;
+		}
+	}
+
+	function validateField(input) {
+		const $input = $(input);
+		const $row = $input.closest('.form-row');
+		const $label = $row.children('label').first();
+		const value = input.value.trim();
+
+		const isPhone = input.id === 'billing_phone';
+		const isEmail = input.id === 'billing_email';
+		const digits = isPhone ? phoneDigits(value) : '';
+		let message = '';
+
+		if (!value || (isPhone && !digits)) {
+			message = 'обов’язкове поле';
+		} else if (
+			(isPhone && digits.length !== 9) ||
+			(isEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+		) {
+			message = 'в невірному форматі';
+		}
+
+		let $error = $label.children('.anyweb-contact-error');
+
+		if (!$error.length && message) {
+			$error = $('<span>', {
+				class: 'anyweb-contact-error',
+				id: input.id + '-anyweb-error',
+				'aria-live': 'polite'
+			}).appendTo($label);
+		}
+
+		$error.text(message);
+		$row.toggleClass('has-contact-error', Boolean(message));
+		$input.attr('aria-invalid', String(Boolean(message)));
+
+		const errorId = input.id + '-anyweb-error';
+		const descriptions = ($input.attr('aria-describedby') || '')
+			.split(/\s+/)
+			.filter(id => id && id !== errorId);
+
+		if (message) descriptions.push(errorId);
+
+		if (descriptions.length) {
+			$input.attr('aria-describedby', descriptions.join(' '));
+		} else {
+			$input.removeAttr('aria-describedby');
+		}
+	}
+
+	$(document)
+		.on('focusin.anywebContact', phoneField, function () {
+			if (!this.value.trim()) this.value = '+380 ';
+		})
+		.on('input.anywebContact', fields, function () {
+			if (this.id === 'billing_phone') formatPhone(this);
+			if (touched.has(this)) validateField(this);
+		})
+		.on('focusout.anywebContact', fields, function () {
+			if (this.id === 'billing_phone' && !phoneDigits(this.value)) {
+				this.value = '';
+			}
+
+			touched.add(this);
+			validateField(this);
+		});
+
+	$(document.body).on('checkout_error.anywebContact', function () {
+		$(fields).filter(':visible').each(function () {
+			touched.add(this);
+			validateField(this);
+		});
+	});
+});
+
+jQuery(function ($) {
+	const section = '.anyweb-checkout__shipping';
+	const radio = '#shipping_method input[type="radio"].shipping_method';
+
+	function placeShippingFields() {
+		const $section = $(section).first();
+		const $fields = $section.find('.woocommerce-additional-fields')
+			.has('.mrkv_ua_shipping_checkout_fields').first();
+		const $list = $section.find('#shipping_method').first();
+		const $selected = $list.find('input[type="radio"].shipping_method:checked');
+		const $row = $selected.closest('li');
+
+		if (!$fields.length || !$list.length) return;
+
+		if (!$row.length) {
+			$fields.insertBefore($list);
+		} else if ($fields.parent()[0] !== $row[0]) {
+			$fields.appendTo($row);
+		}
+	}
+
+	// Перед пересчётом выносим поля из списка, который может быть заменён.
+	$(document.body).on('update_checkout.anywebShippingFields', function () {
+		const $section = $(section).first();
+		const $list = $section.find('#shipping_method').first();
+		const $fields = $list.find('.woocommerce-additional-fields')
+			.has('.mrkv_ua_shipping_checkout_fields');
+
+		if ($fields.length) $fields.insertBefore($list);
+	});
+
+	$(document.body)
+		.on('updated_checkout.anywebShippingFields', placeShippingFields)
+		.on('change.anywebShippingFields', `${section} ${radio}`, function () {
+			requestAnimationFrame(placeShippingFields);
+		});
+
+	placeShippingFields();
+});
+
+jQuery(function ($) {
+	function formatShippingPrices() {
+		$('.anyweb-checkout__shipping #shipping_method > li > label').each(function () {
+			if (this.querySelector('.anyweb-shipping-price')) return;
+
+			for (const node of this.childNodes) {
+				if (node.nodeType !== Node.TEXT_NODE) continue;
+
+				const text = node.textContent;
+				const match = text.match(
+					/\s+(від\s+\d+(?:[.,]\d+)?\s*грн|БЕЗКОШТОВНО)\s*$/iu
+				);
+
+				if (!match) continue;
+
+				const price = document.createElement('span');
+				price.className = 'anyweb-shipping-price';
+				price.textContent = match[1];
+
+				node.textContent = text.slice(0, match.index);
+				node.after(price);
+				break;
+			}
+		});
+	}
+
+	formatShippingPrices();
+	$(document.body).on('updated_checkout.anywebShippingPrice', formatShippingPrices);
+});
+
+jQuery(function ($) {
+	const inputSelector = '#anyweb-checkout-coupon-code';
+
+	function applyCoupon() {
+		const $input = $(inputSelector);
+
+		if (!$input.length || $input.prop('readonly')) return;
+
+		const code = $input.val().trim();
+
+		if (!code) {
+			$input.trigger('focus');
+			return;
+		}
+
+		const $form = $('form.checkout_coupon').first();
+		if (!$form.length || $form.hasClass('processing')) return;
+
+		$form.find('input[name="coupon_code"]').val(code);
+		$form.trigger('submit');
+	}
+
+	$(document).on(
+		'click.anywebCheckoutCoupon',
+		'#anyweb-checkout-coupon-panel .anyweb-checkout-coupon__apply',
+		applyCoupon
+	);
+
+	$(document).on('keydown.anywebCheckoutCoupon', inputSelector, function (event) {
+		if (event.key !== 'Enter') return;
+
+		event.preventDefault();
+		applyCoupon();
+	});
+});
+
+jQuery(function ($) {
+	const paymentInput = '#anyweb-checkout-payment-methods input[name="payment_method"]';
+
+	function showPaymentError(show) {
+		$('#anyweb-payment-error').prop('hidden', !show);
+		$('#anyweb-checkout-payment').toggleClass('has-payment-error', show);
+	}
+
+	function isPaymentMissing() {
+		const form = document.querySelector('form.checkout');
+
+		return form
+			&& $(paymentInput).filter(':enabled').length > 0
+			&& !new FormData(form).get('payment_method');
+	}
+
+	$(document.body).on('checkout_error', function () {
+		showPaymentError(Boolean(isPaymentMissing()));
+	});
+
+	$(document.body).on('updated_checkout change', function (event) {
+		if (event.type === 'change' && !$(event.target).is(paymentInput)) {
+			return;
+		}
+
+		if (!isPaymentMissing()) {
+			showPaymentError(false);
+		}
+	});
+});
+
+jQuery(function ($) {
+	function moveUkrposhtaPatronymic() {
+		const fields = [
+			{
+				fieldId: 'mrkv_ua_shipping_ukr-poshta_patronymic_field',
+				afterId: 'mrkv_ua_shipping_ukr-poshta_warehouse_field'
+			},
+			{
+				fieldId: 'mrkv_ua_shipping_ukr-poshta_address_patronymic_field',
+				afterId: 'mrkv_ua_shipping_ukr-poshta_address_flat_field'
+			}
+		];
+
+		fields.forEach(function ({ fieldId, afterId }) {
+			const field = document.getElementById(fieldId);
+			const anchor = document.getElementById(afterId);
+
+			if (
+				field && anchor &&
+				field.parentElement === anchor.parentElement &&
+				anchor.nextElementSibling !== field
+			) {
+				anchor.after(field);
+			}
+		});
+	}
+
+	moveUkrposhtaPatronymic();
+	$(document.body).on('updated_checkout', moveUkrposhtaPatronymic);
+});
+
 
 // *************************************************************
 
@@ -1695,6 +2097,25 @@ jQuery(function ($) {
 jQuery(function ($) {
 	const formSelector = '#one-click-buying-form';
 
+	const phoneSelector = [
+		formSelector + ' input.phone-field__input',
+		formSelector + ' input[type="tel"]',
+		formSelector + ' input[name="phone"]:not([type="hidden"])'
+	].join(', ');
+
+	$(document).on('input.oneClickPhoneLimit', phoneSelector, function () {
+		let digits = this.value.replace(/\D/g, '');
+
+		// Поддерживаем вставку полного украинского номера.
+		if (digits.startsWith('380')) {
+			digits = digits.slice(3);
+		} else if (digits.startsWith('0')) {
+			digits = digits.slice(1);
+		}
+
+		this.value = digits.slice(0, 9);
+	});
+
 	function validatePhone(form, showError = false) {
 		const $form = $(form);
 
@@ -1758,6 +2179,14 @@ jQuery(function ($) {
 		$(formSelector).each(function () {
 			// Ошибки показываем своими стилями вместо браузерной подсказки.
 			this.noValidate = true;
+
+			$(this).find(
+				'input.phone-field__input, input[type="tel"], input[name="phone"]:not([type="hidden"])'
+			).attr({
+				inputmode: 'numeric',
+				maxlength: 13
+			});
+
 			validatePhone(this, false);
 		});
 	}
@@ -1766,16 +2195,28 @@ jQuery(function ($) {
 	$(document).on(
 		'input.oneClickPhone change.oneClickPhone focusout.oneClickPhone',
 		formSelector + ' input:not([type="hidden"]):not([type="submit"])',
-		function () {
+		function (event) {
 			const form = this.form;
+			const $field = $(this);
 
-			// Даём плагину завершить проверку имени.
+			const isPhone = $field.is(
+				'.phone-field__input, [type="tel"], [name="phone"]'
+			);
+
+			// Телефон считаем посещённым после выхода из него.
+			if (isPhone && event.type === 'focusout') {
+				$(form).data('phoneTouched', true);
+			}
+
 			setTimeout(function () {
-				validatePhone(form, true);
+				const showError =
+					Boolean($(form).data('phoneTouched')) ||
+					Boolean($(form).data('submitAttempted'));
+
+				validatePhone(form, showError);
 			}, 0);
 		}
 	);
-
 	$(document).on('shown.bs.modal.oneClickPhone', prepareForm);
 
 	// Сохраняем проверку остальных полей твоим плагином.
@@ -1789,6 +2230,8 @@ jQuery(function ($) {
 		if ($form.data('sending')) {
 			return;
 		}
+
+		$form.data('submitAttempted', true);
 
 		if (!validatePhone(this, true)) {
 			return;

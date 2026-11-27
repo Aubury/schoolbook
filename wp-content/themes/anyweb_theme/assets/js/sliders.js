@@ -74,13 +74,6 @@ function setSlickArrowsState($slider, slick) {
             $container.toggleClass('has-slider-arrows', hasArrows);
             $container.toggleClass('has-no-slider-arrows', !hasArrows);
         }
-
-        console.log({
-            slider: $slider[0],
-            slides: slick.slideCount,
-            slidesToShow: slick.options.slidesToShow,
-            arrowsAdded: hasArrows
-        });
     });
 }
 

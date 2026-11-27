@@ -1955,3 +1955,4 @@ function schoolbook_trim_text( $text, $limit = 100 ) {
 
 // });
 
+

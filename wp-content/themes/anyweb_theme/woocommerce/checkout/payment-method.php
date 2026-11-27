@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php echo $gateway->get_title(); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The base gateway title is sanitized; the public filter intentionally allows HTML. */ ?> <?php echo $gateway->get_icon(); /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The base icon attributes are escaped; the public filter intentionally allows HTML. */ ?>
 	</label>
 	<?php if ( $gateway->has_fields() || $gateway->get_description() ) : ?>
-		<div class="payment_box payment_method_<?php echo esc_attr( $gateway->id ); ?>" <?php if ( ! $gateway->chosen ) : /* phpcs:ignore Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace */ ?>style="display:none;"<?php endif; /* phpcs:ignore Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace */ ?>>
+		<div class="payment_box payment_method_<?php echo esc_attr( $gateway->id ); ?>" <?php if ( ! $gateway->chosen ) : /* phpcs:ignore Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace */ ?><?php endif; /* phpcs:ignore Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace */ ?>>
 			<?php $gateway->payment_fields(); ?>
 		</div>
 	<?php endif; ?>
